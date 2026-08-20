@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuth() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuth() && (
+        request.auth.token.email == 'hoangbang1310@gmail.com' ||
+        request.auth.token.email == 'pthngan1310@gmail.com'
+      );
+    }
+
+    // User profile collection
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    // Question banks collection
+    match /questionBanks/{bankId} {
+      allow read, write: if true;
+    }
+
+    // User activity logs collection
+    match /userActivityLogs/{logId} {
+      allow read, write: if true;
+    }
+
+    // Game sessions collection
+    match /gameSessions/{sessionId} {
+      allow read, write: if true;
+    }
+
+    // AI Usage quota tracking
+    match /aiUsage/{userId} {
+      allow read, write: if true;
+    }
+
+    // AI Usage detailed logs
+    match /aiUsageLogs/{logId} {
+      allow read, write: if true;
+    }
+
+    // System configuration
+    match /systemConfig/{docId} {
+      allow read, write: if true;
+    }
+  }
+}
+

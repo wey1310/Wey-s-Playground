@@ -1,0 +1,83 @@
+import express from 'express';
+import { GoogleGenAI } from '@google/genai';
+
+// SỬA LỖI TẠI ĐÂY: Thêm đuôi .js
+import { verifyAndCheckQuota, recordUsage } from './aiUsage.js';
+
+const router = express.Router();
+
+function getGeminiClient(customApiKey?: string) {
+  const apiKey = (customApiKey && typeof customApiKey === 'string' && customApiKey.trim()) || process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY environment variable is not configured.");
+  }
+  return new GoogleGenAI({
+    apiKey: apiKey.trim(),
+    httpOptions: {
+      headers: {
+        "User-Agent": "aistudio-build",
+      },
+    },
+  });
+}
+
+// A generic proxy endpoint for Gemini
+router.post('/', async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const idToken = authHeader?.startsWith('Bearer ') ? authHeader.split('Bearer ')[1] : null;
+  
+  if (!idToken) {
+    return res.status(401).json({ success: false, error: "Vui lòng đăng nhập tài khoản Google để sử dụng tính năng AI." });
+  }
+
+  const mode = req.body.aiMode || 'balanced';
+
+  let quotaData;
+  try {
+    quotaData = await verifyAndCheckQuota(idToken, mode);
+  } catch (err: any) {
+    return res.status(403).json({ success: false, error: err.message });
+  }
+
+  const { uid, email, cost, modelConfig } = quotaData;
+
+  try {
+    const { prompt, contents, systemInstruction, temperature = 0.7, responseMimeType, responseSchema } = req.body;
+
+    let payloadContents = contents || prompt;
+    if (!payloadContents) {
+      throw new Error("Dữ liệu gửi lên phải bao gồm 'prompt' hoặc 'contents'.");
+    }
+
+    if (typeof payloadContents === 'string' && payloadContents.length > 8000) {
+      throw new Error("Độ dài nội dung vượt quá giới hạn cho phép (tối đa 8.000 ký tự).");
+    }
+
+    const customKey = (req.headers['x-gemini-api-key'] as string) || req.body.apiKey;
+    const ai = getGeminiClient(customKey);
+    const config: any = {
+      temperature: Math.min(Math.max(Number(temperature) || 0.7, 0), 1),
+    };
+    
+    if (systemInstruction && typeof systemInstruction === 'string') {
+      config.systemInstruction = systemInstruction.slice(0, 2000);
+    }
+    if (responseMimeType) config.responseMimeType = responseMimeType;
+    if (responseSchema) config.responseSchema = responseSchema;
+
+    const response = await ai.models.generateContent({
+      model: modelConfig.model,
+      contents: payloadContents,
+      config
+    });
+
+    await recordUsage(uid, email, mode, cost, true);
+    res.json({ success: true, text: response.text, data: response });
+  } catch (err: any) {
+    await recordUsage(uid, email, mode, cost, false);
+    console.error("Gemini Proxy Error:", err);
+    res.status(500).json({ success: false, error: err.message || "Lỗi khi gọi API Gemini." });
+  }
+});
+
+export default router;

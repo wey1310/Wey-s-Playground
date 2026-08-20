@@ -1,0 +1,6 @@
+{
+  "name": "Ôn Tập Tri Thức - Đấu Trường Game Show",
+  "description": "Kho game tương tác giáo dục sinh động với hệ thống 27 trò chơi đối kháng & trí tuệ (Dò Boom, Đào Vàng, Truyền Gấu, Sắp Xếp Chữ Cái, Cờ Caro, Cờ Vua, Ô Ăn Quan, Đua Cá Ngựa, Chiếm Lãnh Thổ, Bắn Tàu Chiến...), hỗ trợ lưu danh sách học sinh localStorage và đồng bộ ngân hàng câu hỏi.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
