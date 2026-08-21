@@ -65,11 +65,11 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
 
   // Music Tracks
   const defaultTracks: AudioTrack[] = [
-    { id: 't1', name: 'Nhạc Nền 1', url: 'public/assets/nhacnen/music1.mp3' },
-    { id: 't2', name: 'Nhạc Nền 2', url: 'public/assets/nhacnen/music2.mp3' },
-    { id: 't3', name: 'Nhạc Nền 3', url: 'public/assets/nhacnen/music3.mp3' },
-    { id: 't4', name: 'Nhạc Nền 4', url: 'public/assets/nhacnen/music4.mp3' },
-    { id: 't5', name: 'Nhạc Nền 5', url: 'public/assets/nhacnen/music5.mp3' },
+    { id: 't1', name: 'Nhạc Nền Sôi Động 1', url: '/assets/nhacnen/music1.mp3' },
+    { id: 't2', name: 'Nhạc Nền Vui Nhộn 2', url: '/assets/nhacnen/music2.mp3' },
+    { id: 't3', name: 'Nhạc Nền Thư Giãn 3', url: '/assets/nhacnen/music3.mp3' },
+    { id: 't4', name: 'Nhạc Nền Tràn Năng Lượng 4', url: '/assets/nhacnen/music4.mp3' },
+    { id: 't5', name: 'Nhạc Nền Trò Chơi 5', url: '/assets/nhacnen/music5.mp3' },
   ];
 
   const [tracks, setTracks] = useState<AudioTrack[]>(defaultTracks);

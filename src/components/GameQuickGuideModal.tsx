@@ -21,17 +21,18 @@ export interface GameGuideDetail {
 }
 
 export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
+  // 1. Hộp Quà May Mắn
   openbox: {
     id: 'openbox',
     title: 'Hộp Quà May Mắn',
-    subtitle: 'Mở hộp quà và trả lời câu hỏi',
+    subtitle: 'Mở hộp quà bí mật và trả lời câu hỏi',
     icon: '🎁',
     badge: 'Trắc nghiệm & Mở hộp',
     objective: 'Mở toàn bộ các hộp quà và ghi nhiều điểm nhất cho đội mình.',
     steps: [
-      'Đến lượt, đội nhấp chọn 1 hộp quà bí mật bất kỳ trên màn hình.',
-      'Câu hỏi xuất hiện: thảo luận và chọn đáp án trong thời gian quy định.',
-      'Trả lời ĐÚNG: Hộp quà bung mở, đội nhận ngay +10 điểm.',
+      'Chế độ Ngân Hàng Câu Hỏi: Đến lượt, đội nhấp chọn 1 hộp quà bí mật bất kỳ trên màn hình. Trả lời đúng để bung mở hộp và nhận điểm.',
+      'Chế độ Số Ảo (1 - 1000): Hệ thống mở hộp tương ứng với số thứ tự câu hỏi trong sách. Giáo viên chấm ĐÚNG / SAI trực tiếp.',
+      'Trả lời ĐÚNG: Hộp quà bung mở pháo hoa rực rỡ, đội nhận ngay +10 điểm.',
       'Trả lời SAI: Hộp mở ra dấu X, không nhận điểm và chuyển lượt cho đội kế tiếp.',
     ],
     scoring: [
@@ -42,14 +43,14 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
   open_box: {
     id: 'open_box',
     title: 'Hộp Quà May Mắn',
-    subtitle: 'Mở hộp quà và trả lời câu hỏi',
+    subtitle: 'Mở hộp quà bí mật và trả lời câu hỏi',
     icon: '🎁',
     badge: 'Trắc nghiệm & Mở hộp',
     objective: 'Mở toàn bộ các hộp quà và ghi nhiều điểm nhất cho đội mình.',
     steps: [
-      'Đến lượt, đội nhấp chọn 1 hộp quà bí mật bất kỳ trên màn hình.',
-      'Câu hỏi xuất hiện: thảo luận và chọn đáp án trong thời gian quy định.',
-      'Trả lời ĐÚNG: Hộp quà bung mở, đội nhận ngay +10 điểm.',
+      'Chế độ Ngân Hàng Câu Hỏi: Đến lượt, đội nhấp chọn 1 hộp quà bí mật bất kỳ trên màn hình. Trả lời đúng để bung mở hộp và nhận điểm.',
+      'Chế độ Số Ảo (1 - 1000): Hệ thống mở hộp tương ứng với số thứ tự câu hỏi trong sách. Giáo viên chấm ĐÚNG / SAI trực tiếp.',
+      'Trả lời ĐÚNG: Hộp quà bung mở pháo hoa rực rỡ, đội nhận ngay +10 điểm.',
       'Trả lời SAI: Hộp mở ra dấu X, không nhận điểm và chuyển lượt cho đội kế tiếp.',
     ],
     scoring: [
@@ -57,24 +58,52 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Đội nhiều điểm nhất sau khi mở hết hộp sẽ chiến thắng',
     ],
   },
+
+  // 2. Ô Ăn Quan
   mancala: {
     id: 'mancala',
     title: 'Ô Ăn Quan',
-    subtitle: 'Dân gian kết hợp hỏi đáp rải quân',
+    subtitle: 'Dân gian kết hợp hỏi đáp rải quân chiến thuật',
     icon: '🏺',
     badge: 'Chiến thuật dân gian',
     objective: 'Bốc quân rải vòng quanh bàn cờ để "ăn" nhiều quân Quan và Dân nhất.',
     steps: [
-      'Chọn một ô Dân của phe mình và trả lời ĐÚNG câu hỏi để được bốc quân.',
+      'Chế độ 2 Đội (Bàn cờ Chữ Nhật): Gồm 10 ô Dân (5 hạt/ô) và 2 ô Quan (1 viên Quan + 5 hạt).',
+      'Chế độ 3 Đội (Bàn cờ Tam Giác): Gồm 15 ô Dân và 3 ô Quan chia đều 3 cánh.',
+      'Đến lượt, đội chọn một ô Dân của phe mình và trả lời ĐÚNG câu hỏi để được bốc quân.',
       'Quân tự động rải lần lượt từng hạt vào các ô kế tiếp theo chiều đã chọn.',
       'Nếu hạt cuối cùng dừng trước 1 ô trống và ô tiếp theo có quân ➔ Ăn toàn bộ quân ở ô đó!',
-      'Hết quân hoặc ăn hết 2 ô Quan ➔ Kết thúc ván đấu.',
+      'Hết quân hoặc ăn hết các ô Quan ➔ Kết thúc ván đấu tính điểm.',
     ],
     scoring: [
       'Mỗi hạt Dân ăn được: +1 điểm',
       'Mỗi viên Quan ăn được: +10 điểm',
+      'Đội có tổng số quân quy đổi cao nhất sẽ chiến thắng!',
     ],
   },
+  oanquan: {
+    id: 'oanquan',
+    title: 'Ô Ăn Quan',
+    subtitle: 'Dân gian kết hợp hỏi đáp rải quân chiến thuật',
+    icon: '🏺',
+    badge: 'Chiến thuật dân gian',
+    objective: 'Bốc quân rải vòng quanh bàn cờ để "ăn" nhiều quân Quan và Dân nhất.',
+    steps: [
+      'Chế độ 2 Đội (Bàn cờ Chữ Nhật): Gồm 10 ô Dân (5 hạt/ô) và 2 ô Quan (1 viên Quan + 5 hạt).',
+      'Chế độ 3 Đội (Bàn cờ Tam Giác): Gồm 15 ô Dân và 3 ô Quan chia đều 3 cánh.',
+      'Đến lượt, đội chọn một ô Dân của phe mình và trả lời ĐÚNG câu hỏi để được bốc quân.',
+      'Quân tự động rải lần lượt từng hạt vào các ô kế tiếp theo chiều đã chọn.',
+      'Nếu hạt cuối cùng dừng trước 1 ô trống và ô tiếp theo có quân ➔ Ăn toàn bộ quân ở ô đó!',
+      'Hết quân hoặc ăn hết các ô Quan ➔ Kết thúc ván đấu tính điểm.',
+    ],
+    scoring: [
+      'Mỗi hạt Dân ăn được: +1 điểm',
+      'Mỗi viên Quan ăn được: +10 điểm',
+      'Đội có tổng số quân quy đổi cao nhất sẽ chiến thắng!',
+    ],
+  },
+
+  // 3. Vòng Quay Kỳ Diệu
   wheel: {
     id: 'wheel',
     title: 'Vòng Quay Kỳ Diệu',
@@ -83,16 +112,18 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
     badge: 'May mắn & Tốc độ',
     objective: 'Quay bánh xe để chọn câu hỏi ngẫu nhiên và trả lời đúng để tích lũy điểm.',
     steps: [
-      'Bấm nút "Quay Vòng": Bánh xe xoay tròn và dừng lại ở một ô câu hỏi bất kỳ.',
-      'Cửa sổ câu hỏi hiển thị: đội đang đến lượt thảo luận và chọn đáp án.',
-      'Trả lời ĐÚNG: Nhận +10 điểm và ô số đó được đánh dấu hoàn thành.',
+      'Chế độ Vòng Quay Câu Hỏi: Bấm "Quay Vòng", bánh xe xoay tròn dừng ở ô câu hỏi nào thì đội trả lời câu hỏi đó.',
+      'Chế độ Vòng Quay Điểm Thưởng: Dừng ở ô điểm nào (10đ, 20đ, 50đ, Mất Lượt, Nhân Đôi), trả lời đúng để nhận trọn số điểm đó.',
+      'Trả lời ĐÚNG: Nhận điểm thưởng và ô số đó được đánh dấu hoàn thành.',
       'Trả lời SAI: Không nhận điểm, chuyển lượt quay sang đội tiếp theo.',
     ],
     scoring: [
-      'Mỗi câu trả lời đúng: +10 điểm',
+      'Mỗi câu trả lời đúng: +10 điểm (hoặc theo ô điểm quay được)',
       'Đội nhiều điểm nhất sau khi quay hết các ô sẽ chiến thắng',
     ],
   },
+
+  // 4. Cờ Cá Ngựa Tri Thức
   ludo: {
     id: 'ludo',
     title: 'Cờ Cá Ngựa Tri Thức',
@@ -101,11 +132,11 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
     badge: 'Board Game Cờ Cá Ngựa',
     objective: 'Ra quân, di chuyển khôn ngoan, đá ngựa đối thủ và đưa đủ các chú ngựa leo lên đỉnh chuồng (bậc 6).',
     steps: [
-      'Đến lượt, đội trả lời câu hỏi: Trả lời ĐÚNG sẽ được quyền đổ xí ngầu; trả lời SAI bị mất lượt và chuyển sang đội kế tiếp.',
-      'Luật Ra quân (Xuất chuồng): Đổ được mặt 6 hoặc 1 (1 xí ngầu) / Đôi hoặc Nhất-Lục (2 xí ngầu) để đưa ngựa từ chuồng ra ô xuất phát (nếu ô xuất phát có ngựa đối thủ sẽ đá văng đối thủ!).',
+      'Đến lượt, đội trả lời câu hỏi: Trả lời ĐÚNG sẽ được quyền đổ xí ngầu; trả lời SAI bị mất lượt.',
+      'Luật Xuất chuồng: Đổ được mặt 6 hoặc 1 (1 xí ngầu) / Đôi hoặc Nhất-Lục (2 xí ngầu) để xuất ngựa ra bàn cờ.',
       'Luật Di chuyển & Cản đường: Ngựa đi theo chiều kim đồng hồ đúng số bước. Không thể nhảy qua ngựa khác trên đường đi nếu bị cản.',
       'Luật Đá ngựa: Khi đi đúng số bước tới ô đang có ngựa đối thủ ➔ ĐÁ VĂNG ngựa đối thủ về chuồng và nhận +30 điểm thưởng!',
-      'Luật Vào chuồng & Lên bậc: Khi đi giáp 1 vòng về cửa chuồng, ngựa bắt đầu vào chuồng và leo từng bậc từ 1 đến 6 theo số bước.',
+      'Luật Vào chuồng & Lên bậc: Khi đi giáp 1 vòng về cửa chuồng, ngựa bắt đầu vào chuồng và leo từng bậc từ 1 đến 6 theo số bước đổ được.',
     ],
     scoring: [
       'Đá ngựa đối phương về chuồng: +30 điểm thưởng',
@@ -113,6 +144,28 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Đội có nhiều ngựa vào bậc chuồng cao nhất hoặc điểm cao nhất sẽ chiến thắng!',
     ],
   },
+  cangua: {
+    id: 'cangua',
+    title: 'Cờ Cá Ngựa Tri Thức',
+    subtitle: 'Đổ xí ngầu, xuất chuồng, cản đường, đá ngựa và leo bậc chuồng',
+    icon: '🐎',
+    badge: 'Board Game Cờ Cá Ngựa',
+    objective: 'Ra quân, di chuyển khôn ngoan, đá ngựa đối thủ và đưa đủ các chú ngựa leo lên đỉnh chuồng (bậc 6).',
+    steps: [
+      'Đến lượt, đội trả lời câu hỏi: Trả lời ĐÚNG sẽ được quyền đổ xí ngầu; trả lời SAI bị mất lượt.',
+      'Luật Xuất chuồng: Đổ được mặt 6 hoặc 1 (1 xí ngầu) / Đôi hoặc Nhất-Lục (2 xí ngầu) để xuất ngựa ra bàn cờ.',
+      'Luật Di chuyển & Cản đường: Ngựa đi theo chiều kim đồng hồ đúng số bước. Không thể nhảy qua ngựa khác trên đường đi nếu bị cản.',
+      'Luật Đá ngựa: Khi đi đúng số bước tới ô đang có ngựa đối thủ ➔ ĐÁ VĂNG ngựa đối thủ về chuồng và nhận +30 điểm thưởng!',
+      'Luật Vào chuồng & Lên bậc: Khi đi giáp 1 vòng về cửa chuồng, ngựa bắt đầu vào chuồng và leo từng bậc từ 1 đến 6 theo số bước đổ được.',
+    ],
+    scoring: [
+      'Đá ngựa đối phương về chuồng: +30 điểm thưởng',
+      'Tiến bậc chuồng: +10 điểm × bậc (Bậc 1 = +10đ, Bậc 6 = +60đ)',
+      'Đội có nhiều ngựa vào bậc chuồng cao nhất hoặc điểm cao nhất sẽ chiến thắng!',
+    ],
+  },
+
+  // 5. Cược Điểm Sinh Tử
   betting: {
     id: 'betting',
     title: 'Cược Điểm Sinh Tử',
@@ -121,9 +174,10 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
     badge: 'Mạo hiểm & Quyết đoán',
     objective: 'Quản lý vốn điểm và đặt cược thông minh để dẫn đầu bảng xếp hạng.',
     steps: [
-      'Xem gợi ý chủ đề, chọn số điểm muốn cược (từ 10đ đến toàn bộ điểm hiện có).',
-      'Câu hỏi chính thức hiển thị trên màn hình.',
-      'Trả lời ĐÚNG: Nhận thêm đúng số điểm đã cược (+100%).',
+      'Xem trước chủ đề và độ khó của câu hỏi.',
+      'Đội thảo luận và quyết định cược số điểm (từ 10 điểm đến toàn bộ điểm hiện có - All-in).',
+      'Câu hỏi chính thức hiển thị trên màn hình: trả lời trong thời gian quy định.',
+      'Trả lời ĐÚNG: Nhận thêm đúng 100% số điểm đã cược.',
       'Trả lời SAI: Bị TRỪ đúng số điểm đã đặt cược!',
     ],
     scoring: [
@@ -131,6 +185,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Sai: Điểm hiện tại - Điểm đã cược',
     ],
   },
+
+  // 6. Bingo Tri Thức
   bingo: {
     id: 'bingo',
     title: 'Bingo Tri Thức',
@@ -142,24 +198,27 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Chọn 1 ô số trên bảng lưới và trả lời câu hỏi tương ứng.',
       'Trả lời ĐÚNG: Ô số chuyển thành màu cờ của đội bạn.',
       'Trả lời SAI: Ô số vẫn mở để đội khác chọn ở lượt sau.',
-      'Đội đầu tiên nối đủ 4 hoặc 5 ô liền nhau sẽ hô BINGO và thắng trận!',
+      'Đội đầu tiên nối đủ 4 hoặc 5 ô liên tiếp theo hàng ngang, dọc hoặc chéo sẽ hô BINGO!',
     ],
     scoring: [
       'Mỗi ô chiếm đóng: +10 điểm',
       'Hoàn thành đường BINGO: +100 điểm thưởng chiến thắng',
     ],
   },
+
+  // 7. Chiếm Lãnh Thổ
   territory: {
     id: 'territory',
     title: 'Chiếm Lãnh Thổ',
     subtitle: 'Cắm cờ mở rộng bờ cõi bản đồ',
     icon: '🗺️',
     badge: 'Chiến thuật bản đồ',
-    objective: 'Chiếm đóng nhiều ô đất nhất trên ma trận bản đồ.',
+    objective: 'Chiếm đóng nhiều ô đất nhất trên ma trận bản đồ 36 ô.',
     steps: [
       'Chọn ô đất kề cận lãnh thổ của mình và trả lời câu hỏi.',
       'Trả lời ĐÚNG: Cắm cờ mở rộng bờ cõi (+10 điểm).',
-      'Dùng quyền Thách Đấu (2 lần/game): Tấn công trực tiếp ô đất đối thủ.',
+      'Ô Tài Nguyên Vàng: Chiếm ô có biểu tượng kho báu để nhận điểm nhân 3 (+30đ).',
+      'Quyền Thách Đấu (2 lần/game): Tấn công trực tiếp ô đất đối thủ. Trả lời đúng để cướp trắng ô đất!',
       'Sau khi hết lượt, đội sở hữu diện tích lãnh thổ lớn nhất sẽ chiến thắng.',
     ],
     scoring: [
@@ -168,6 +227,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Thách đấu chiếm đất đối thủ thành công: +25 điểm',
     ],
   },
+
+  // 8. Kéo Co Trí Tuệ
   tug_of_war: {
     id: 'tug_of_war',
     title: 'Kéo Co Trí Tuệ',
@@ -179,7 +240,7 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Hai đội cùng đọc câu hỏi và bấm chuông giành quyền trả lời nhanh.',
       'Trả lời ĐÚNG: Kéo dây +1 nấc về phía sân đội mình.',
       'Trả lời SAI: Dây bị kéo ngược về phía đối thủ!',
-      'Kéo mốc cờ chạm vạch chiến thắng trước ➔ Thắng Knock-out!',
+      'Kéo mốc cờ chạm vạch chiến thắng trước ➔ Thắng Knock-out tuyệt đối!',
     ],
     scoring: [
       'Mỗi câu đúng nhanh nhất: Kéo dây +1 nấc',
@@ -197,13 +258,15 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Hai đội cùng đọc câu hỏi và bấm chuông giành quyền trả lời nhanh.',
       'Trả lời ĐÚNG: Kéo dây +1 nấc về phía sân đội mình.',
       'Trả lời SAI: Dây bị kéo ngược về phía đối thủ!',
-      'Kéo mốc cờ chạm vạch chiến thắng trước ➔ Thắng Knock-out!',
+      'Kéo mốc cờ chạm vạch chiến thắng trước ➔ Thắng Knock-out tuyệt đối!',
     ],
     scoring: [
       'Mỗi câu đúng nhanh nhất: Kéo dây +1 nấc',
       'Kéo cờ qua vạch đích: +100 điểm vinh quang',
     ],
   },
+
+  // 9. Xây Tháp Tri Thức
   tower: {
     id: 'tower',
     title: 'Xây Tháp Tri Thức',
@@ -221,6 +284,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Tầng tháp vàng (Combo chuỗi): +25 điểm',
     ],
   },
+
+  // 10. Mảnh Ghép Bí Ẩn
   puzzle: {
     id: 'puzzle',
     title: 'Mảnh Ghép Bí Ẩn',
@@ -238,6 +303,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Đoán đúng Bức tranh toàn cảnh: +50 đến +100 điểm thưởng',
     ],
   },
+
+  // 11. Đua Xe Siêu Tốc
   race: {
     id: 'race',
     title: 'Đua Xe Siêu Tốc',
@@ -257,6 +324,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Cán đích đầu tiên: +50 điểm Quán quân',
     ],
   },
+
+  // 12. Bắt Pokemon
   pokemon: {
     id: 'pokemon',
     title: 'Bắt Pokemon',
@@ -276,6 +345,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Pokemon Huyền Thoại: +50 CP',
     ],
   },
+
+  // 13. Bắn Tàu Chiến Hạm
   battleship: {
     id: 'battleship',
     title: 'Bắn Tàu Chiến Hạm',
@@ -296,6 +367,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Bắn chìm toàn bộ hạm đội trước: Chiến thắng!',
     ],
   },
+
+  // 14. Đuổi Hình Bắt Chữ
   pictogram: {
     id: 'pictogram',
     title: 'Đuổi Hình Bắt Chữ',
@@ -315,6 +388,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Đoán đúng ở Gợi ý 4+: +30 điểm',
     ],
   },
+
+  // 15. Chiếc Nón Kỳ Diệu
   magic_wheel: {
     id: 'magic_wheel',
     title: 'Chiếc Nón Kỳ Diệu',
@@ -323,10 +398,10 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
     badge: 'Game Show Ô Chữ',
     objective: 'Lật mở các chữ cái trong ô chữ hoặc đoán chính xác toàn bộ từ khóa bí mật.',
     steps: [
-      'Đến lượt, đội trả lời câu hỏi hoặc chọn trực tiếp 1 chữ cái trên bảng ký tự (không có bước quay nón).',
-      'Nếu chữ cái CÓ trong từ khóa: Các ô chữ chứa ký tự đó sẽ tự động lật mở và cộng điểm cho đội (+100đ mỗi chữ cái xuất hiện).',
+      'Đến lượt, đội chọn trực tiếp 1 chữ cái trên bảng ký tự (hoặc trả lời câu hỏi).',
+      'Nếu chữ cái CÓ trong từ khóa: Các ô chữ chứa ký tự đó sẽ tự động lật mở (+100đ mỗi chữ cái).',
       'Nếu chữ cái KHÔNG CÓ: Đội mất lượt và chuyển quyền chọn sang đội tiếp theo.',
-      'Bất kỳ lúc nào, đội có thể bấm "Đoán toàn bộ từ khóa". Nếu đoán đúng, toàn bộ ô chữ bung mở và nhận trọn điểm thưởng còn lại!',
+      'Bất kỳ lúc nào, đội có thể bấm "Đoán toàn bộ từ khóa" để giành trọn số điểm còn lại!',
     ],
     scoring: [
       'Mỗi chữ cái mở đúng: +100 điểm × số lần xuất hiện',
@@ -341,28 +416,30 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
     badge: 'Game Show Ô Chữ',
     objective: 'Lật mở các chữ cái trong ô chữ hoặc đoán chính xác toàn bộ từ khóa bí mật.',
     steps: [
-      'Đến lượt, đội trả lời câu hỏi hoặc chọn trực tiếp 1 chữ cái trên bảng ký tự (không có bước quay nón).',
-      'Nếu chữ cái CÓ trong từ khóa: Các ô chữ chứa ký tự đó sẽ tự động lật mở và cộng điểm cho đội (+100đ mỗi chữ cái xuất hiện).',
+      'Đến lượt, đội chọn trực tiếp 1 chữ cái trên bảng ký tự (hoặc trả lời câu hỏi).',
+      'Nếu chữ cái CÓ trong từ khóa: Các ô chữ chứa ký tự đó sẽ tự động lật mở (+100đ mỗi chữ cái).',
       'Nếu chữ cái KHÔNG CÓ: Đội mất lượt và chuyển quyền chọn sang đội tiếp theo.',
-      'Bất kỳ lúc nào, đội có thể bấm "Đoán toàn bộ từ khóa". Nếu đoán đúng, toàn bộ ô chữ bung mở và nhận trọn điểm thưởng còn lại!',
+      'Bất kỳ lúc nào, đội có thể bấm "Đoán toàn bộ từ khóa" để giành trọn số điểm còn lại!',
     ],
     scoring: [
       'Mỗi chữ cái mở đúng: +100 điểm × số lần xuất hiện',
       'Đoán đúng toàn bộ từ khóa: Nhận toàn bộ số điểm còn lại của các ô chưa mở',
     ],
   },
+
+  // 16. Thử Thách Vận Động (Pose Challenge)
   pose_challenge: {
     id: 'pose_challenge',
-    title: 'Thử Thách Vận Động',
+    title: 'Thử Thách Vận Động (Pose Challenge)',
     subtitle: 'Chọn đáp án bằng động tác hình thể sinh động',
     icon: '🤸',
     badge: 'Vận động & Trắc nghiệm',
-    objective: 'Quan sát 4 đáp án (A, B, C, D) tương ứng với 4 hình ảnh động tác đơn giản, tạo dáng đúng động tác của đáp án bạn chọn để ghi điểm.',
+    objective: 'Quan sát 4 đáp án (A, B, C, D) tương ứng với 4 hình ảnh động tác cơ thể, tạo dáng đúng động tác của đáp án bạn chọn.',
     steps: [
       'Màn hình hiển thị câu hỏi trắc nghiệm cùng 4 lựa chọn A, B, C, D.',
       'Mỗi lựa chọn được gắn kèm một hình ảnh động tác cơ thể đơn giản (giơ tay, dang tay, nghiêng người, kiễng chân...).',
-      'Đội chơi/học sinh chọn đáp án bằng cách thực hiện đúng tư thế động tác gắn với đáp án đó (hoặc bấm chọn trực tiếp).',
-      'Giáo viên/hệ thống xác nhận: Trả lời đúng nhận điểm thưởng và chuyển sang câu hỏi tiếp theo.',
+      'Đội chơi chọn đáp án bằng cách thực hiện đúng tư thế động tác gắn với đáp án đó (hoặc bấm chọn trực tiếp).',
+      'Giáo viên xác nhận: Trả lời đúng nhận điểm thưởng và chuyển sang câu hỏi tiếp theo.',
     ],
     scoring: [
       'Mỗi câu trả lời đúng kèm động tác: +100 điểm (hoặc theo cấu hình)',
@@ -371,22 +448,24 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
   },
   posechallenge: {
     id: 'posechallenge',
-    title: 'Thử Thách Vận Động',
+    title: 'Thử Thách Vận Động (Pose Challenge)',
     subtitle: 'Chọn đáp án bằng động tác hình thể sinh động',
     icon: '🤸',
     badge: 'Vận động & Trắc nghiệm',
-    objective: 'Quan sát 4 đáp án (A, B, C, D) tương ứng với 4 hình ảnh động tác đơn giản, tạo dáng đúng động tác của đáp án bạn chọn để ghi điểm.',
+    objective: 'Quan sát 4 đáp án (A, B, C, D) tương ứng với 4 hình ảnh động tác cơ thể, tạo dáng đúng động tác của đáp án bạn chọn.',
     steps: [
       'Màn hình hiển thị câu hỏi trắc nghiệm cùng 4 lựa chọn A, B, C, D.',
       'Mỗi lựa chọn được gắn kèm một hình ảnh động tác cơ thể đơn giản (giơ tay, dang tay, nghiêng người, kiễng chân...).',
-      'Đội chơi/học sinh chọn đáp án bằng cách thực hiện đúng tư thế động tác gắn với đáp án đó (hoặc bấm chọn trực tiếp).',
-      'Giáo viên/hệ thống xác nhận: Trả lời đúng nhận điểm thưởng và chuyển sang câu hỏi tiếp theo.',
+      'Đội chơi chọn đáp án bằng cách thực hiện đúng tư thế động tác gắn với đáp án đó (hoặc bấm chọn trực tiếp).',
+      'Giáo viên xác nhận: Trả lời đúng nhận điểm thưởng và chuyển sang câu hỏi tiếp theo.',
     ],
     scoring: [
       'Mỗi câu trả lời đúng kèm động tác: +100 điểm (hoặc theo cấu hình)',
       'Đội có tổng điểm cao nhất sau tất cả câu hỏi sẽ chiến thắng!',
     ],
   },
+
+  // 17. Cờ Caro (3x3)
   caro: {
     id: 'caro',
     title: 'Cờ Caro (3x3)',
@@ -406,6 +485,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Thắng ván cờ Caro: Nhận điểm thưởng gấp 3 lần (x3) = +30 điểm!',
     ],
   },
+
+  // 18. Cờ Vua Tri Thức
   chess: {
     id: 'chess',
     title: 'Cờ Vua Tri Thức',
@@ -418,7 +499,7 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Đến lượt, đội bấm "Random Câu Hỏi" để trả lời câu hỏi.',
       'Trả lời ĐÚNG: Nhận điểm câu hỏi và được đi 1 nước cờ trên bàn cờ vua.',
       'Trả lời SAI: Bị mất lượt đi cờ, chuyển lượt sang đội đối phương.',
-      'Định hướng vị trí đi: Nhấp vào quân của đội mình để xem toàn bộ các ô đi hợp lệ (chấm xanh) và ô ăn quân (viền đỏ). Chỉ khi nhấp ô hợp lệ mới đi được!',
+      'Định hướng vị trí đi: Nhấp vào quân của đội mình để xem toàn bộ các ô đi hợp lệ (chấm xanh) và ô ăn quân (viền đỏ).',
       'Bắt được Vua đối phương (hoặc phong cấp, chiếu hết) để giành chiến thắng chung cuộc!',
     ],
     scoring: [
@@ -426,6 +507,375 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Thắng ván Cờ Vua (bắt Vua): Nhận điểm thưởng gấp 5 lần (x5) = +50 điểm!',
     ],
   },
+
+  // 19. Cờ Thú Rừng Xanh
+  co_thu: {
+    id: 'co_thu',
+    title: 'Cờ Thú Rừng Xanh (Animal Chess)',
+    subtitle: 'Đấu cờ 7x9 với 8 cấp thú và quy luật bơi lội, nhảy sông, đặt bẫy',
+    icon: '🦁',
+    badge: 'Chiến thuật động vật',
+    objective: 'Chiếm được Hang đối phương hoặc tiêu diệt toàn bộ thú của đối phương.',
+    steps: [
+      'Bàn cờ 7 hàng 9 cột, 2 đội Đỏ và Xanh. 8 cấp bậc sức mạnh: Chuột (1) < Mèo (2) < Chó (3) < Sói (4) < Báo (5) < Hổ (6) < Sư tử (7) < Voi (8).',
+      'Quy tắc đặc biệt: Chuột (1) là loài duy nhất ăn được Voi (8)!',
+      'Vượt Sông: Chuột có thể bơi xuống sông. Hổ và Sư tử có thể nhảy vọt ngang/dọc qua sông.',
+      'Bẫy & Hang: Thú đối thủ vào ô Bẫy của bạn sẽ bị mất hết sức mạnh (bất kỳ thú nào của bạn cũng ăn được). Bước vào ô HANG đối thủ ➔ Thắng trận ngay!',
+    ],
+    scoring: [
+      'Mỗi thú đối phương ăn được: +10đ đến +80đ tùy cấp thú',
+      'Chiếm được Hang đối phương: +100 điểm vinh quang chiến thắng',
+    ],
+  },
+  cothu: {
+    id: 'cothu',
+    title: 'Cờ Thú Rừng Xanh (Animal Chess)',
+    subtitle: 'Đấu cờ 7x9 với 8 cấp thú và quy luật bơi lội, nhảy sông, đặt bẫy',
+    icon: '🦁',
+    badge: 'Chiến thuật động vật',
+    objective: 'Chiếm được Hang đối phương hoặc tiêu diệt toàn bộ thú của đối phương.',
+    steps: [
+      'Bàn cờ 7 hàng 9 cột, 2 đội Đỏ và Xanh. 8 cấp bậc sức mạnh: Chuột (1) < Mèo (2) < Chó (3) < Sói (4) < Báo (5) < Hổ (6) < Sư tử (7) < Voi (8).',
+      'Quy tắc đặc biệt: Chuột (1) là loài duy nhất ăn được Voi (8)!',
+      'Vượt Sông: Chuột có thể bơi xuống sông. Hổ và Sư tử có thể nhảy vọt ngang/dọc qua sông.',
+      'Bẫy & Hang: Thú đối thủ vào ô Bẫy của bạn sẽ bị mất hết sức mạnh (bất kỳ thú nào của bạn cũng ăn được). Bước vào ô HANG đối thủ ➔ Thắng trận ngay!',
+    ],
+    scoring: [
+      'Mỗi thú đối phương ăn được: +10đ đến +80đ tùy cấp thú',
+      'Chiếm được Hang đối phương: +100 điểm vinh quang chiến thắng',
+    ],
+  },
+
+  // 20. Hái Táo Ông Smith
+  apple_picking: {
+    id: 'apple_picking',
+    title: 'Hái Táo Vườn Ông Smith',
+    subtitle: 'Đua thu thập táo, tránh quy luật chia hết bí mật của Ông Smith',
+    icon: '🍎',
+    badge: 'Toán học & May mắn',
+    objective: 'Di chuyển quanh vườn, hái đủ số táo mục tiêu (mặc định 6 táo) mà không bị Ông Smith bắt.',
+    steps: [
+      'Bàn cờ gồm 36 ô (hoặc theo cấu hình). Mỗi lượt, đội trả lời câu hỏi để gieo xí ngầu di chuyển.',
+      'Ô Táo Thường: Hái được +1 🍎.',
+      'Ô Táo Vàng: Hái được +3 🍎 siêu giá trị.',
+      'Ô Lò Xo: Bật nhảy tiến hoặc lùi ngẫu nhiên.',
+      'QUY LUẬT BÍ MẬT ÔNG SMITH: Ông Smith có 1 số bí mật K (2, 3, 4, 5 hoặc 6). Đội dừng chân ở ô chia hết cho K sẽ bị Ông Smith phát hiện, tịch thu táo hoặc đẩy về ô xuất phát!',
+    ],
+    scoring: [
+      'Mỗi quả táo hái được: +10 điểm',
+      'Đội đầu tiên gom đủ táo mục tiêu: +100 điểm chiến thắng',
+    ],
+  },
+  apple_pick: {
+    id: 'apple_pick',
+    title: 'Hái Táo Vườn Ông Smith',
+    subtitle: 'Đua thu thập táo, tránh quy luật chia hết bí mật của Ông Smith',
+    icon: '🍎',
+    badge: 'Toán học & May mắn',
+    objective: 'Di chuyển quanh vườn, hái đủ số táo mục tiêu (mặc định 6 táo) mà không bị Ông Smith bắt.',
+    steps: [
+      'Bàn cờ gồm 36 ô (hoặc theo cấu hình). Mỗi lượt, đội trả lời câu hỏi để gieo xí ngầu di chuyển.',
+      'Ô Táo Thường: Hái được +1 🍎.',
+      'Ô Táo Vàng: Hái được +3 🍎 siêu giá trị.',
+      'Ô Lò Xo: Bật nhảy tiến hoặc lùi ngẫu nhiên.',
+      'QUY LUẬT BÍ MẬT ÔNG SMITH: Ông Smith có 1 số bí mật K (2, 3, 4, 5 hoặc 6). Đội dừng chân ở ô chia hết cho K sẽ bị Ông Smith phát hiện, tịch thu táo hoặc đẩy về ô xuất phát!',
+    ],
+    scoring: [
+      'Mỗi quả táo hái được: +10 điểm',
+      'Đội đầu tiên gom đủ táo mục tiêu: +100 điểm chiến thắng',
+    ],
+  },
+  applepick: {
+    id: 'applepick',
+    title: 'Hái Táo Vườn Ông Smith',
+    subtitle: 'Đua thu thập táo, tránh quy luật chia hết bí mật của Ông Smith',
+    icon: '🍎',
+    badge: 'Toán học & May mắn',
+    objective: 'Di chuyển quanh vườn, hái đủ số táo mục tiêu (mặc định 6 táo) mà không bị Ông Smith bắt.',
+    steps: [
+      'Bàn cờ gồm 36 ô (hoặc theo cấu hình). Mỗi lượt, đội trả lời câu hỏi để gieo xí ngầu di chuyển.',
+      'Ô Táo Thường: Hái được +1 🍎.',
+      'Ô Táo Vàng: Hái được +3 🍎 siêu giá trị.',
+      'Ô Lò Xo: Bật nhảy tiến hoặc lùi ngẫu nhiên.',
+      'QUY LUẬT BÍ MẬT ÔNG SMITH: Ông Smith có 1 số bí mật K (2, 3, 4, 5 hoặc 6). Đội dừng chân ở ô chia hết cho K sẽ bị Ông Smith phát hiện, tịch thu táo hoặc đẩy về ô xuất phát!',
+    ],
+    scoring: [
+      'Mỗi quả táo hái được: +10 điểm',
+      'Đội đầu tiên gom đủ táo mục tiêu: +100 điểm chiến thắng',
+    ],
+  },
+  applepicking: {
+    id: 'applepicking',
+    title: 'Hái Táo Vườn Ông Smith',
+    subtitle: 'Đua thu thập táo, tránh quy luật chia hết bí mật của Ông Smith',
+    icon: '🍎',
+    badge: 'Toán học & May mắn',
+    objective: 'Di chuyển quanh vườn, hái đủ số táo mục tiêu (mặc định 6 táo) mà không bị Ông Smith bắt.',
+    steps: [
+      'Bàn cờ gồm 36 ô (hoặc theo cấu hình). Mỗi lượt, đội trả lời câu hỏi để gieo xí ngầu di chuyển.',
+      'Ô Táo Thường: Hái được +1 🍎.',
+      'Ô Táo Vàng: Hái được +3 🍎 siêu giá trị.',
+      'Ô Lò Xo: Bật nhảy tiến hoặc lùi ngẫu nhiên.',
+      'QUY LUẬT BÍ MẬT ÔNG SMITH: Ông Smith có 1 số bí mật K (2, 3, 4, 5 hoặc 6). Đội dừng chân ở ô chia hết cho K sẽ bị Ông Smith phát hiện, tịch thu táo hoặc đẩy về ô xuất phát!',
+    ],
+    scoring: [
+      'Mỗi quả táo hái được: +10 điểm',
+      'Đội đầu tiên gom đủ táo mục tiêu: +100 điểm chiến thắng',
+    ],
+  },
+  haitao: {
+    id: 'haitao',
+    title: 'Hái Táo Vườn Ông Smith',
+    subtitle: 'Đua thu thập táo, tránh quy luật chia hết bí mật của Ông Smith',
+    icon: '🍎',
+    badge: 'Toán học & May mắn',
+    objective: 'Di chuyển quanh vườn, hái đủ số táo mục tiêu (mặc định 6 táo) mà không bị Ông Smith bắt.',
+    steps: [
+      'Bàn cờ gồm 36 ô (hoặc theo cấu hình). Mỗi lượt, đội trả lời câu hỏi để gieo xí ngầu di chuyển.',
+      'Ô Táo Thường: Hái được +1 🍎.',
+      'Ô Táo Vàng: Hái được +3 🍎 siêu giá trị.',
+      'Ô Lò Xo: Bật nhảy tiến hoặc lùi ngẫu nhiên.',
+      'QUY LUẬT BÍ MẬT ÔNG SMITH: Ông Smith có 1 số bí mật K (2, 3, 4, 5 hoặc 6). Đội dừng chân ở ô chia hết cho K sẽ bị Ông Smith phát hiện, tịch thu táo hoặc đẩy về ô xuất phát!',
+    ],
+    scoring: [
+      'Mỗi quả táo hái được: +10 điểm',
+      'Đội đầu tiên gom đủ táo mục tiêu: +100 điểm chiến thắng',
+    ],
+  },
+
+  // 21. Sơn Tinh Thủy Tinh
+  son_tinh_thuy_tinh: {
+    id: 'son_tinh_thuy_tinh',
+    title: 'Sơn Tinh Thủy Tinh',
+    subtitle: 'Đại chiến sính lễ Voi 9 ngà, Gà 9 cựa, Ngựa 9 hồng mao',
+    icon: '⚔️',
+    badge: 'Thần thoại đối kháng',
+    objective: 'Thu thập đủ 3 món sính lễ thần kỳ và dâng lên Vua Hùng tại Cung Điện Phong Châu.',
+    steps: [
+      'Bàn cờ 24 ô chia làm vùng Núi Tản Viên, Đồng Bằng, Cung Điện Vua Hùng và Biển Đông.',
+      'Trả lời ĐÚNG câu hỏi để tích lũy Điểm Hành Động (AP) và gieo xúc xắc di chuyển.',
+      '3 Món Sính Lễ: Voi 9 Ngà, Gà 9 Cựa, Ngựa 9 Hồng Mao nằm tại các vị trí bí mật trên bản đồ.',
+      'Phép Thần: Sơn Tinh có thể dựng Luỹ Đá cản đường; Thủy Tinh có thể Dâng Nước ngập lụt làm chậm đối thủ.',
+      'Đội gom đủ 3 sính lễ và về đích Cung Điện đầu tiên sẽ rước Mị Nương và chiến thắng!',
+    ],
+    scoring: [
+      'Mỗi món sính lễ thu thập: +50 điểm',
+      'Dâng sính lễ thành công tại Cung Điện: +150 điểm vinh quang',
+    ],
+  },
+  sontinhthuytinh: {
+    id: 'sontinhthuytinh',
+    title: 'Sơn Tinh Thủy Tinh',
+    subtitle: 'Đại chiến sính lễ Voi 9 ngà, Gà 9 cựa, Ngựa 9 hồng mao',
+    icon: '⚔️',
+    badge: 'Thần thoại đối kháng',
+    objective: 'Thu thập đủ 3 món sính lễ thần kỳ và dâng lên Vua Hùng tại Cung Điện Phong Châu.',
+    steps: [
+      'Bàn cờ 24 ô chia làm vùng Núi Tản Viên, Đồng Bằng, Cung Điện Vua Hùng và Biển Đông.',
+      'Trả lời ĐÚNG câu hỏi để tích lũy Điểm Hành Động (AP) và gieo xúc xắc di chuyển.',
+      '3 Món Sính Lễ: Voi 9 Ngà, Gà 9 Cựa, Ngựa 9 Hồng Mao nằm tại các vị trí bí mật trên bản đồ.',
+      'Phép Thần: Sơn Tinh có thể dựng Luỹ Đá cản đường; Thủy Tinh có thể Dâng Nước ngập lụt làm chậm đối thủ.',
+      'Đội gom đủ 3 sính lễ và về đích Cung Điện đầu tiên sẽ rước Mị Nương và chiến thắng!',
+    ],
+    scoring: [
+      'Mỗi món sính lễ thu thập: +50 điểm',
+      'Dâng sính lễ thành công tại Cung Điện: +150 điểm vinh quang',
+    ],
+  },
+  son_tinh: {
+    id: 'son_tinh',
+    title: 'Sơn Tinh Thủy Tinh',
+    subtitle: 'Đại chiến sính lễ Voi 9 ngà, Gà 9 cựa, Ngựa 9 hồng mao',
+    icon: '⚔️',
+    badge: 'Thần thoại đối kháng',
+    objective: 'Thu thập đủ 3 món sính lễ thần kỳ và dâng lên Vua Hùng tại Cung Điện Phong Châu.',
+    steps: [
+      'Bàn cờ 24 ô chia làm vùng Núi Tản Viên, Đồng Bằng, Cung Điện Vua Hùng và Biển Đông.',
+      'Trả lời ĐÚNG câu hỏi để tích lũy Điểm Hành Động (AP) và gieo xúc xắc di chuyển.',
+      '3 Món Sính Lễ: Voi 9 Ngà, Gà 9 Cựa, Ngựa 9 Hồng Mao nằm tại các vị trí bí mật trên bản đồ.',
+      'Phép Thần: Sơn Tinh có thể dựng Luỹ Đá cản đường; Thủy Tinh có thể Dâng Nước ngập lụt làm chậm đối thủ.',
+      'Đội gom đủ 3 sính lễ và về đích Cung Điện đầu tiên sẽ rước Mị Nương và chiến thắng!',
+    ],
+    scoring: [
+      'Mỗi món sính lễ thu thập: +50 điểm',
+      'Dâng sính lễ thành công tại Cung Điện: +150 điểm vinh quang',
+    ],
+  },
+  sontinh: {
+    id: 'sontinh',
+    title: 'Sơn Tinh Thủy Tinh',
+    subtitle: 'Đại chiến sính lễ Voi 9 ngà, Gà 9 cựa, Ngựa 9 hồng mao',
+    icon: '⚔️',
+    badge: 'Thần thoại đối kháng',
+    objective: 'Thu thập đủ 3 món sính lễ thần kỳ và dâng lên Vua Hùng tại Cung Điện Phong Châu.',
+    steps: [
+      'Bàn cờ 24 ô chia làm vùng Núi Tản Viên, Đồng Bằng, Cung Điện Vua Hùng và Biển Đông.',
+      'Trả lời ĐÚNG câu hỏi để tích lũy Điểm Hành Động (AP) và gieo xúc xắc di chuyển.',
+      '3 Món Sính Lễ: Voi 9 Ngà, Gà 9 Cựa, Ngựa 9 Hồng Mao nằm tại các vị trí bí mật trên bản đồ.',
+      'Phép Thần: Sơn Tinh có thể dựng Luỹ Đá cản đường; Thủy Tinh có thể Dâng Nước ngập lụt làm chậm đối thủ.',
+      'Đội gom đủ 3 sính lễ và về đích Cung Điện đầu tiên sẽ rước Mị Nương và chiến thắng!',
+    ],
+    scoring: [
+      'Mỗi món sính lễ thu thập: +50 điểm',
+      'Dâng sính lễ thành công tại Cung Điện: +150 điểm vinh quang',
+    ],
+  },
+
+  // 22. Hộp Mù May Mắn (Blind Box)
+  blindbox: {
+    id: 'blindbox',
+    title: 'Hộp Mù May Mắn (Blind Box)',
+    subtitle: 'Mở 20 hộp mù bí ẩn theo 9 chủ đề hoạt hình & thế giới',
+    icon: '📦',
+    badge: 'Sưu tầm & May mắn',
+    objective: 'Chọn và khui các hộp mù bí ẩn để tích lũy điểm thưởng cao nhất.',
+    steps: [
+      'Chọn 1 trong 9 chủ đề yêu thích (Conan, Anime, Disney, Động vật, Khủng long, Pokemon...).',
+      'Đến lượt, đội chọn 1 hộp mù chưa mở trên kệ trưng bày.',
+      'Trả lời câu hỏi xuất hiện. Trả lời ĐÚNG: Hộp mù tự động bung nắp hé lộ mô hình nhân vật kèm điểm thưởng (+10, +20, +30, +50 hoặc -10 điểm phạt).',
+      'Trả lời SAI: Hộp vẫn đóng kín và mất lượt cho đội tiếp theo.',
+    ],
+    scoring: [
+      'Điểm trong hộp mù: +10đ, +20đ, +30đ, +50đ hoặc -10đ',
+      'Đội có tổng điểm cao nhất sau khi khui hết hộp sẽ chiến thắng',
+    ],
+  },
+  blind_box: {
+    id: 'blind_box',
+    title: 'Hộp Mù May Mắn (Blind Box)',
+    subtitle: 'Mở 20 hộp mù bí ẩn theo 9 chủ đề hoạt hình & thế giới',
+    icon: '📦',
+    badge: 'Sưu tầm & May mắn',
+    objective: 'Chọn và khui các hộp mù bí ẩn để tích lũy điểm thưởng cao nhất.',
+    steps: [
+      'Chọn 1 trong 9 chủ đề yêu thích (Conan, Anime, Disney, Động vật, Khủng long, Pokemon...).',
+      'Đến lượt, đội chọn 1 hộp mù chưa mở trên kệ trưng bày.',
+      'Trả lời câu hỏi xuất hiện. Trả lời ĐÚNG: Hộp mù tự động bung nắp hé lộ mô hình nhân vật kèm điểm thưởng (+10, +20, +30, +50 hoặc -10 điểm phạt).',
+      'Trả lời SAI: Hộp vẫn đóng kín và mất lượt cho đội tiếp theo.',
+    ],
+    scoring: [
+      'Điểm trong hộp mù: +10đ, +20đ, +30đ, +50đ hoặc -10đ',
+      'Đội có tổng điểm cao nhất sau khi khui hết hộp sẽ chiến thắng',
+    ],
+  },
+
+  // 23. Truyền Gấu Nhịp Điệu
+  bear_passing: {
+    id: 'bear_passing',
+    title: 'Truyền Gấu Nhịp Điệu',
+    subtitle: 'Âm nhạc rộn ràng, dừng bất ngờ chọn học sinh phát biểu',
+    icon: '🧸',
+    badge: 'Hoạt náo & Khởi động',
+    objective: 'Truyền chú gấu bông theo điệu nhạc sôi động và dừng ngẫu nhiên chọn học sinh.',
+    steps: [
+      'Thầy cô chọn bài hát và bấm "BẮT ĐẦU TRUYỀN GẤU".',
+      'Nhạc vang lên, chú gấu bông được chuyền tay liên tục quanh các bạn học sinh.',
+      'Thời gian dừng hoàn toàn NGẪU NHIÊN và BÍ MẬT (không hiển thị đồng hồ đếm ngược).',
+      'Nhạc tắt đột ngột ➔ Chú gấu dừng ở học sinh nào thì bạn đó sẽ được vinh danh trên sân khấu để trả lời câu hỏi hoặc nhận quà!',
+    ],
+    scoring: [
+      'Trò chơi tương tác khởi động không tính điểm đội',
+      'Lưu danh sách học sinh đã được nhận gấu vào bảng vinh danh',
+    ],
+  },
+  bear_pass: {
+    id: 'bear_pass',
+    title: 'Truyền Gấu Nhịp Điệu',
+    subtitle: 'Âm nhạc rộn ràng, dừng bất ngờ chọn học sinh phát biểu',
+    icon: '🧸',
+    badge: 'Hoạt náo & Khởi động',
+    objective: 'Truyền chú gấu bông theo điệu nhạc sôi động và dừng ngẫu nhiên chọn học sinh.',
+    steps: [
+      'Thầy cô chọn bài hát và bấm "BẮT ĐẦU TRUYỀN GẤU".',
+      'Nhạc vang lên, chú gấu bông được chuyền tay liên tục quanh các bạn học sinh.',
+      'Thời gian dừng hoàn toàn NGẪU NHIÊN và BÍ MẬT (không hiển thị đồng hồ đếm ngược).',
+      'Nhạc tắt đột ngột ➔ Chú gấu dừng ở học sinh nào thì bạn đó sẽ được vinh danh trên sân khấu để trả lời câu hỏi hoặc nhận quà!',
+    ],
+    scoring: [
+      'Trò chơi tương tác khởi động không tính điểm đội',
+      'Lưu danh sách học sinh đã được nhận gấu vào bảng vinh danh',
+    ],
+  },
+
+  // 24. Đập Trứng Khủng Long
+  egg_call: {
+    id: 'egg_call',
+    title: 'Đập Trứng Khủng Long',
+    subtitle: 'Chọn quả trứng bí mật, đập vỡ vỏ nở ra tên học sinh',
+    icon: '🥚',
+    badge: 'Gọi tên & Đố vui',
+    objective: 'Chọn các quả trứng khủng long, đập vỏ tìm bạn học sinh trả lời câu hỏi.',
+    steps: [
+      'Danh sách học sinh được hệ thống tự động giấu ngẫu nhiên vào các quả trứng.',
+      'Nhấp chọn 1 quả trứng khủng long bất kỳ trên màn hình.',
+      'Quả trứng nứt vỏ và nở ra tên học sinh may mắn kèm câu hỏi thử thách.',
+      'Học sinh trả lời câu hỏi: Trả lời ĐÚNG nở ra chú Khủng Long Vàng (+10đ); Trả lời SAI nở ra vỏ trứng vỡ.',
+    ],
+    scoring: [
+      'Trả lời đúng câu hỏi: +10 điểm',
+      'Có thể theo dõi bảng điểm cá nhân của từng học sinh sau buổi học',
+    ],
+  },
+  eggcall: {
+    id: 'eggcall',
+    title: 'Đập Trứng Khủng Long',
+    subtitle: 'Chọn quả trứng bí mật, đập vỡ vỏ nở ra tên học sinh',
+    icon: '🥚',
+    badge: 'Gọi tên & Đố vui',
+    objective: 'Chọn các quả trứng khủng long, đập vỏ tìm bạn học sinh trả lời câu hỏi.',
+    steps: [
+      'Danh sách học sinh được hệ thống tự động giấu ngẫu nhiên vào các quả trứng.',
+      'Nhấp chọn 1 quả trứng khủng long bất kỳ trên màn hình.',
+      'Quả trứng nứt vỏ và nở ra tên học sinh may mắn kèm câu hỏi thử thách.',
+      'Học sinh trả lời câu hỏi: Trả lời ĐÚNG nở ra chú Khủng Long Vàng (+10đ); Trả lời SAI nở ra vỏ trứng vỡ.',
+    ],
+    scoring: [
+      'Trả lời đúng câu hỏi: +10 điểm',
+      'Có thể theo dõi bảng điểm cá nhân của từng học sinh sau buổi học',
+    ],
+  },
+
+  // 25. Gọi Tên Ngẫu Nhiên
+  random_call: {
+    id: 'random_call',
+    title: 'Gọi Tên Ngẫu Nhiên',
+    subtitle: 'Vòng quay gọi tên học sinh thông minh, lưu tự động',
+    icon: '🎲',
+    badge: 'Quản lý lớp học',
+    objective: 'Bốc thăm công bằng và ngẫu nhiên học sinh phát biểu, kiểm tra bài cũ.',
+    steps: [
+      'Nhập hoặc dán danh sách học sinh (tự động lưu vào LocalStorage không lo mất).',
+      'Bấm "🎲 BẮT ĐẦU GỌI TÊN": Bảng quay roulette xoay tròn và chọn ra 1 bạn học sinh ngẫu nhiên kèm pháo hoa.',
+      'Tùy chọn bốc câu hỏi ngẫu nhiên từ ngân hàng câu hỏi cho bạn đó trả lời.',
+      'Giáo viên chấm điểm nhanh: Đúng (+10đ), Cần hỗ trợ (+5đ), Chưa đúng (0đ).',
+    ],
+    scoring: [
+      'Đánh giá Đúng: +10 điểm',
+      'Cần hỗ trợ: +5 điểm',
+      'Hỗ trợ chế độ không gọi lặp lại để mọi học sinh đều có cơ hội phát biểu',
+    ],
+  },
+  randomcall: {
+    id: 'randomcall',
+    title: 'Gọi Tên Ngẫu Nhiên',
+    subtitle: 'Vòng quay gọi tên học sinh thông minh, lưu tự động',
+    icon: '🎲',
+    badge: 'Quản lý lớp học',
+    objective: 'Bốc thăm công bằng và ngẫu nhiên học sinh phát biểu, kiểm tra bài cũ.',
+    steps: [
+      'Nhập hoặc dán danh sách học sinh (tự động lưu vào LocalStorage không lo mất).',
+      'Bấm "🎲 BẮT ĐẦU GỌI TÊN": Bảng quay roulette xoay tròn và chọn ra 1 bạn học sinh ngẫu nhiên kèm pháo hoa.',
+      'Tùy chọn bốc câu hỏi ngẫu nhiên từ ngân hàng câu hỏi cho bạn đó trả lời.',
+      'Giáo viên chấm điểm nhanh: Đúng (+10đ), Cần hỗ trợ (+5đ), Chưa đúng (0đ).',
+    ],
+    scoring: [
+      'Đánh giá Đúng: +10 điểm',
+      'Cần hỗ trợ: +5 điểm',
+      'Hỗ trợ chế độ không gọi lặp lại để mọi học sinh đều có cơ hội phát biểu',
+    ],
+  },
+
+  // 26. Đập Chuột Chũi
   whack_a_mole: {
     id: 'whack_a_mole',
     title: 'Đập Chuột Chũi',
@@ -437,8 +887,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Đọc câu hỏi hiển thị trên bảng phía trên sân cỏ.',
       'Các chú chuột chũi trồi lên từ các hang mang theo các đáp án A, B, C, D.',
       'Nhấp chuột hoặc chạm tay vào chú chuột có đáp án ĐÚNG.',
-      'Đập đúng: Hiệu ứng búa gõ sao bay, nhận trọn điểm thưởng câu hỏi.',
-      'Đập sai hoặc đập trúng Chuột Bẫy Bom 💣: Bị choáng váng và trừ điểm!',
+      'Đập đúng: Hiệu ứng búa gõ sao bay, nhận trọn điểm thưởng câu hỏi (+10đ).',
+      'Đập sai hoặc đập trúng Chuột Bẫy Bom 💣: Bị choáng váng và trừ điểm (-5đ)!',
     ],
     scoring: [
       'Đập đúng chuột: +10 điểm',
@@ -456,17 +906,19 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Đọc câu hỏi hiển thị trên bảng phía trên sân cỏ.',
       'Các chú chuột chũi trồi lên từ các hang mang theo các đáp án A, B, C, D.',
       'Nhấp chuột hoặc chạm tay vào chú chuột có đáp án ĐÚNG.',
-      'Đập đúng: Hiệu ứng búa gõ sao bay, nhận trọn điểm thưởng câu hỏi.',
-      'Đập sai hoặc đập trúng Chuột Bẫy Bom 💣: Bị choáng váng và trừ điểm!',
+      'Đập đúng: Hiệu ứng búa gõ sao bay, nhận trọn điểm thưởng câu hỏi (+10đ).',
+      'Đập sai hoặc đập trúng Chuột Bẫy Bom 💣: Bị choáng váng và trừ điểm (-5đ)!',
     ],
     scoring: [
       'Đập đúng chuột: +10 điểm',
       'Đập sai / trúng bẫy: -5 điểm',
     ],
   },
+
+  // 27. Phân Loại
   classification: {
     id: 'classification',
-    title: 'Phân Loại',
+    title: 'Phân Loại Thẻ Bài / Rác Thải',
     subtitle: 'Xếp các đối tượng vào nhóm chuẩn xác',
     icon: '📁',
     badge: 'Tìm hiểu kiến thức',
@@ -482,6 +934,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Phân loại sai: -5 điểm',
     ],
   },
+
+  // 28. Cướp Cờ Tri Thức
   flag_capture: {
     id: 'flag_capture',
     title: 'Cướp Cờ Tri Thức',
@@ -518,9 +972,11 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Trả lời sai: -5 điểm',
     ],
   },
+
+  // 29. Nhảy Bao Bố
   sack_race: {
     id: 'sack_race',
-    title: 'Nhảy Bao Bố',
+    title: 'Nhảy Bao Bố Về Đích',
     subtitle: 'Đua nhảy bao bố trên các làn thi đấu',
     icon: '🌾',
     badge: 'Vận động & Đồng đội',
@@ -539,7 +995,7 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
   },
   sackrace: {
     id: 'sackrace',
-    title: 'Nhảy Bao Bố',
+    title: 'Nhảy Bao Bố Về Đích',
     subtitle: 'Đua nhảy bao bố trên các làn thi đấu',
     icon: '🌾',
     badge: 'Vận động & Đồng đội',
@@ -556,6 +1012,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Về đích đầu tiên: +50 điểm chiến thắng',
     ],
   },
+
+  // 30. Ốc Sên Tinh Mắt
   snail_word_search: {
     id: 'snail_word_search',
     title: 'Ốc Sên Tinh Mắt',
@@ -592,6 +1050,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Tìm hết toàn bộ bảng từ: +50 điểm thưởng',
     ],
   },
+
+  // 31. Dò Boom Tri Thức
   mine_boom: {
     id: 'mine_boom',
     title: 'Dò Boom Tri Thức',
@@ -612,6 +1072,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Ô May Mắn: x2 điểm hoặc bảo vệ miễn nhiễm Boom',
     ],
   },
+
+  // 32. Đào Vàng Tri Thức
   gold_miner: {
     id: 'gold_miner',
     title: 'Đào Vàng Tri Thức',
@@ -634,24 +1096,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Túi quà may mắn: Vàng ngẫu nhiên hoặc Đá',
     ],
   },
-  bear_pass: {
-    id: 'bear_pass',
-    title: 'Truyền Gấu Sân Khấu',
-    subtitle: 'Âm nhạc rộn ràng, dừng bất ngờ tìm bạn may mắn',
-    icon: '🧸',
-    badge: 'Khuấy động lớp học',
-    objective: 'Truyền chú gấu bông theo điệu nhạc sôi động và dừng bất ngờ để chọn học sinh.',
-    steps: [
-      'Thầy cô chọn bài hát và bấm "BẮT ĐẦU TRUYỀN GẤU".',
-      'Nhạc vang lên, chú gấu bông được chuyền tay liên tục quanh các bạn học sinh.',
-      'Thời gian dừng hoàn toàn NGẪU NHIÊN và BÍ MẬT (không hiển thị đồng hồ đếm ngược).',
-      'Nhạc tắt đột ngột ➔ Chú gấu dừng ở học sinh nào thì bạn đó sẽ được vinh danh trên sân khấu!',
-    ],
-    scoring: [
-      'Trò chơi tương tác khởi động không tính điểm đội',
-      'Lưu danh sách học sinh đã được nhận gấu vào bảng vinh danh',
-    ],
-  },
+
+  // 33. Sắp Xếp Chữ Cái
   letter_arrange: {
     id: 'letter_arrange',
     title: 'Sắp Xếp Chữ Cái',
@@ -670,6 +1116,8 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
       'Sử dụng Gợi ý: Hỗ trợ tìm từ mà không mất điểm',
     ],
   },
+
+  // 34. Cờ Tỷ Phú Tri Thức
   monopoly: {
     id: 'monopoly',
     title: 'Cờ Tỷ Phú Tri Thức',
@@ -678,15 +1126,15 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
     badge: 'Boardgame & Đấu trí',
     objective: 'Xây dựng đế chế bất động sản, thu tiền thuê đất và trở thành đội có tổng tài sản lớn nhất.',
     steps: [
-      'Đến lượt: Đội trả lời ĐÚNG câu hỏi tri thức để mở khóa quyền gieo xúc xắc (Sai: Mất lượt).',
-      'Gieo xúc xắc và di chuyển quân cờ quanh 24 ô trên bàn cờ.',
+      'Chế độ Có Câu Hỏi: Đến lượt, đội trả lời ĐÚNG câu hỏi tri thức để mở khóa quyền gieo xúc xắc (Sai: Mất lượt).',
+      'Chế độ Không Câu Hỏi / Tự Do: Gieo xúc xắc trực tiếp quanh 24 ô trên bàn cờ.',
       'Đáp vào ô Đất trống: Có quyền Mua đất để sở hữu và thu tiền thuê khi đối thủ đi vào.',
-      'Đáp vào ô Đất của mình: Có thể chi tiền để Nâng cấp nhà (tăng gấp đôi tiền thuê).',
-      'Đáp vào ô CƠ HỘI / MAY MẮN: Rút thẻ sự kiện nhận thưởng, nhận thẻ khiên miễn tiền thuê, hoặc dịch chuyển.',
+      'Đáp vào ô Đất của mình: Chi tiền để Nâng cấp nhà (tăng gấp đôi tiền thuê).',
+      'Đáp vào ô CƠ HỘI / KHÍ VẬN: Rút thẻ sự kiện nhận thưởng, nhận thẻ khiên miễn tiền thuê, hoặc dịch chuyển.',
       'Đi qua ô START: Nhận ngay lương thưởng +$200 vào tài khoản.',
     ],
     scoring: [
-      'Mỗi câu đúng: Được quyền di chuyển và thực hiện hành động',
+      'Mỗi câu đúng: Được quyền di chuyển và thực hiện hành động kinh tế',
       'Đội cuối cùng không bị phá sản hoặc đạt mốc tài sản mục tiêu sẽ chiến thắng',
     ],
   },
@@ -698,18 +1146,20 @@ export const GAME_GUIDES_DATA: Record<string, GameGuideDetail> = {
     badge: 'Boardgame & Đấu trí',
     objective: 'Xây dựng đế chế bất động sản, thu tiền thuê đất và trở thành đội có tổng tài sản lớn nhất.',
     steps: [
-      'Đến lượt: Đội trả lời ĐÚNG câu hỏi tri thức để mở khóa quyền gieo xúc xắc (Sai: Mất lượt).',
-      'Gieo xúc xắc và di chuyển quân cờ quanh 24 ô trên bàn cờ.',
+      'Chế độ Có Câu Hỏi: Đến lượt, đội trả lời ĐÚNG câu hỏi tri thức để mở khóa quyền gieo xúc xắc (Sai: Mất lượt).',
+      'Chế độ Không Câu Hỏi / Tự Do: Gieo xúc xắc trực tiếp quanh 24 ô trên bàn cờ.',
       'Đáp vào ô Đất trống: Có quyền Mua đất để sở hữu và thu tiền thuê khi đối thủ đi vào.',
-      'Đáp vào ô Đất của mình: Có thể chi tiền để Nâng cấp nhà (tăng gấp đôi tiền thuê).',
-      'Đáp vào ô CƠ HỘI / MAY MẮN: Rút thẻ sự kiện nhận thưởng, nhận thẻ khiên miễn tiền thuê, hoặc dịch chuyển.',
+      'Đáp vào ô Đất của mình: Chi tiền để Nâng cấp nhà (tăng gấp đôi tiền thuê).',
+      'Đáp vào ô CƠ HỘI / KHÍ VẬN: Rút thẻ sự kiện nhận thưởng, nhận thẻ khiên miễn tiền thuê, hoặc dịch chuyển.',
       'Đi qua ô START: Nhận ngay lương thưởng +$200 vào tài khoản.',
     ],
     scoring: [
-      'Mỗi câu đúng: Được quyền di chuyển và thực hiện hành động',
+      'Mỗi câu đúng: Được quyền di chuyển và thực hiện hành động kinh tế',
       'Đội cuối cùng không bị phá sản hoặc đạt mốc tài sản mục tiêu sẽ chiến thắng',
     ],
   },
+
+  // 35. Ma Sói: Ngôi Làng Bí Ẩn
   werewolf_village: {
     id: 'werewolf_village',
     title: 'Ma Sói: Ngôi Làng Bí Ẩn',
@@ -807,8 +1257,13 @@ export const GameQuickGuideModal: React.FC<GameQuickGuideModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const currentId = (gameId || 'openbox').toString();
-  const guide = GAME_GUIDES_DATA[currentId] || GAME_GUIDES_DATA['openbox'];
+  const rawId = (gameId || 'openbox').toString().toLowerCase().trim();
+  const normalizedId = rawId.replace(/[-_]/g, '');
+  const guide = 
+    GAME_GUIDES_DATA[rawId] || 
+    GAME_GUIDES_DATA[normalizedId] || 
+    (Object.entries(GAME_GUIDES_DATA).find(([k]) => k.toLowerCase().replace(/[-_]/g, '') === normalizedId)?.[1]) ||
+    GAME_GUIDES_DATA['openbox'];
 
   return (
     <div

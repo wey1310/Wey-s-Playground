@@ -1,3 +1,21 @@
+
+import { initFirebase } from "./aiUsage.js";
+
+async function resolveApiKey(apiId?: string): Promise<string | undefined> {
+  if (!apiId) return undefined;
+  try {
+    const { adminDb } = initFirebase();
+    if (adminDb) {
+      const doc = await adminDb.collection('geminiApiSecrets').doc(apiId).get();
+      if (doc.exists) {
+        return doc.data().apiKey;
+      }
+    }
+  } catch (e) {
+    console.error("Error resolving API key from Firestore:", e);
+  }
+  return undefined;
+}
 import express from 'express';
 import { GoogleGenAI } from '@google/genai';
 
@@ -23,7 +41,8 @@ function getGeminiClient(customApiKey?: string) {
 
 // A generic proxy endpoint for Gemini
 router.post('/', async (req, res) => {
-  const customKey = (req.headers['x-gemini-api-key'] as string) || req.body.apiKey;
+  const customApiId = (req.headers['x-gemini-api-id'] as string) || req.body.apiId;
+  const customKey = await resolveApiKey(customApiId) || process.env.GEMINI_API_KEY;
   const authHeader = req.headers.authorization;
   const idToken = authHeader?.startsWith('Bearer ') ? authHeader.split('Bearer ')[1] : null;
   const mode = req.body.aiMode || 'balanced';

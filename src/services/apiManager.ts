@@ -1,12 +1,12 @@
 import { GeminiApiConfig, ApiStatus, ApiUsageHistoryItem } from '../types';
+import { db, auth } from '../lib/firebase';
+import { collection, doc, setDoc, getDoc, getDocs, onSnapshot, deleteDoc, updateDoc, Timestamp, query, orderBy, limit } from 'firebase/firestore';
 
 const STORAGE_KEYS = {
-  CONFIGS: 'wey_gemini_api_configs',
   ACTIVE_ID: 'wey_active_api_id',
   USAGE_HISTORY: 'wey_api_usage_history',
 };
 
-// Event listeners for reactive state updates
 type Listener = () => void;
 const listeners: Set<Listener> = new Set();
 
@@ -20,8 +20,47 @@ function notifyListeners() {
   });
 }
 
+let localConfigs: GeminiApiConfig[] = [];
+let localActiveId: string | null = localStorage.getItem(STORAGE_KEYS.ACTIVE_ID);
+let isInitialized = false;
+
+function initFirebaseSync() {
+  if (isInitialized) return;
+  isInitialized = true;
+
+  onSnapshot(collection(db, 'geminiApisPublic'), (snapshot) => {
+    const configs: GeminiApiConfig[] = [];
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      configs.push({
+        ...data,
+        id: doc.id,
+        createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt,
+        updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : data.updatedAt,
+        lastCheckedAt: data.lastCheckedAt?.toDate ? data.lastCheckedAt.toDate().toISOString() : data.lastCheckedAt,
+        lastUsedAt: data.lastUsedAt?.toDate ? data.lastUsedAt.toDate().toISOString() : data.lastUsedAt,
+      } as GeminiApiConfig);
+    });
+    
+    // Default to the first active API if localActiveId is invalid or null
+    if (!localActiveId || !configs.some(c => c.id === localActiveId && c.enabled)) {
+      const firstEnabled = configs.find(c => c.enabled);
+      if (firstEnabled) {
+        localActiveId = firstEnabled.id;
+        localStorage.setItem(STORAGE_KEYS.ACTIVE_ID, firstEnabled.id);
+      }
+    }
+
+    localConfigs = configs;
+    notifyListeners();
+  }, (err) => {
+    console.error("Error listening to geminiApisPublic", err);
+  });
+}
+
 export const apiManager = {
   subscribe(fn: Listener) {
+    if (!isInitialized) initFirebaseSync();
     listeners.add(fn);
     return () => {
       listeners.delete(fn);
@@ -29,36 +68,17 @@ export const apiManager = {
   },
 
   getConfigs(): GeminiApiConfig[] {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEYS.CONFIGS);
-      if (!raw) return [];
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (e) {
-      console.error('Failed to load api configs from localStorage:', e);
-      return [];
-    }
-  },
-
-  setConfigs(configs: GeminiApiConfig[]) {
-    try {
-      localStorage.setItem(STORAGE_KEYS.CONFIGS, JSON.stringify(configs));
-      notifyListeners();
-    } catch (e) {
-      console.error('Failed to save api configs to localStorage:', e);
-    }
+    if (!isInitialized) initFirebaseSync();
+    return localConfigs;
   },
 
   getActiveApiId(): string | null {
-    try {
-      return localStorage.getItem(STORAGE_KEYS.ACTIVE_ID);
-    } catch {
-      return null;
-    }
+    return localActiveId;
   },
 
   setActiveApiId(id: string | null) {
     try {
+      localActiveId = id;
       if (id) {
         localStorage.setItem(STORAGE_KEYS.ACTIVE_ID, id);
       } else {
@@ -71,15 +91,14 @@ export const apiManager = {
   },
 
   getActiveApi(): GeminiApiConfig | null {
-    const activeId = this.getActiveApiId();
     const configs = this.getConfigs();
-    if (activeId) {
-      const found = configs.find(c => c.id === activeId && c.enabled);
+    if (localActiveId) {
+      const found = configs.find(c => c.id === localActiveId && c.enabled);
       if (found) return found;
     }
-    // Fallback: nếu chưa chọn ID cụ thể, tự động lấy cấu hình đầu tiên đang bật
     const firstEnabled = configs.find(c => c.enabled);
     if (firstEnabled) {
+      this.setActiveApiId(firstEnabled.id);
       return firstEnabled;
     }
     return null;
@@ -105,7 +124,7 @@ export const apiManager = {
     return !!active && (active.status === 'ACTIVE' || active.status === 'UNCHECKED');
   },
 
-  saveConfig(
+  async saveConfig(
     data: {
       id?: string;
       name: string;
@@ -116,103 +135,99 @@ export const apiManager = {
       enabled?: boolean;
       status?: ApiStatus;
     }
-  ): GeminiApiConfig {
-    const configs = this.getConfigs();
+  ): Promise<GeminiApiConfig> {
     const now = new Date().toISOString();
     const cleanKey = data.apiKey.trim();
     const cleanEmail = data.email.trim();
     const cleanName = data.name.trim() || `API (${cleanEmail || 'Gemini'})`;
     const model = data.model?.trim() || 'gemini-2.5-flash';
-    // Mặc định nạp key vào là sẵn sàng ACTIVE ngay
-    const initialStatus = data.status || 'ACTIVE';
+    const initialStatus = data.status || 'UNCHECKED';
 
-    let target: GeminiApiConfig;
+    const id = data.id || `api_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
 
-    if (data.id) {
-      const idx = configs.findIndex(c => c.id === data.id);
-      if (idx !== -1) {
-        const existing = configs[idx];
-        target = {
-          ...existing,
-          name: cleanName,
-          email: cleanEmail,
-          apiKey: cleanKey,
-          model,
-          notes: data.notes?.trim() || '',
-          enabled: data.enabled !== undefined ? data.enabled : existing.enabled,
-          status: initialStatus,
-          updatedAt: now,
-        };
-        configs[idx] = target;
-      } else {
-        target = {
-          id: data.id,
-          name: cleanName,
-          email: cleanEmail,
-          apiKey: cleanKey,
-          model,
-          notes: data.notes?.trim() || '',
-          enabled: data.enabled !== undefined ? data.enabled : true,
-          status: initialStatus,
-          totalRequests: 0,
-          successfulRequests: 0,
-          failedRequests: 0,
-          createdAt: now,
-          updatedAt: now,
-        };
-        configs.push(target);
-      }
-    } else {
-      target = {
-        id: `api_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
-        name: cleanName,
-        email: cleanEmail,
-        apiKey: cleanKey,
-        model,
-        notes: data.notes?.trim() || '',
-        enabled: data.enabled !== undefined ? data.enabled : true,
-        status: initialStatus,
+    // This runs on client side. Admin must be logged in.
+    // Save public info
+    const publicData = {
+      name: cleanName,
+      email: cleanEmail,
+      model,
+      notes: data.notes?.trim() || '',
+      enabled: data.enabled !== undefined ? data.enabled : true,
+      status: initialStatus,
+      updatedAt: Timestamp.now(),
+    };
+    
+    if (!data.id) {
+      Object.assign(publicData, {
         totalRequests: 0,
         successfulRequests: 0,
         failedRequests: 0,
+        createdAt: Timestamp.now(),
+      });
+    }
+
+    try {
+      await setDoc(doc(db, 'geminiApisPublic', id), publicData, { merge: true });
+      
+      // Save secret info (Only admin can write here)
+      await setDoc(doc(db, 'geminiApiSecrets', id), { apiKey: cleanKey }, { merge: true });
+      
+      this.setActiveApiId(id);
+
+      return {
+        id,
+        ...publicData,
         createdAt: now,
         updatedAt: now,
-      };
-      configs.push(target);
-    }
-
-    this.setConfigs(configs);
-
-    // Luôn chọn API vừa nạp/sửa làm API hoạt động mặc định
-    this.setActiveApiId(target.id);
-
-    return target;
-  },
-
-  deleteConfig(id: string) {
-    const configs = this.getConfigs().filter(c => c.id !== id);
-    this.setConfigs(configs);
-    if (this.getActiveApiId() === id) {
-      const nextActive = configs.find(c => c.enabled);
-      this.setActiveApiId(nextActive ? nextActive.id : null);
+        apiKey: cleanKey, // Temporarily include it for UI (it won't be saved in public)
+      } as GeminiApiConfig;
+    } catch (e: any) {
+      throw new Error("Lỗi khi lưu cấu hình: " + e.message);
     }
   },
 
-  toggleEnabled(id: string) {
-    const configs = this.getConfigs();
-    const idx = configs.findIndex(c => c.id === id);
-    if (idx !== -1) {
-      configs[idx].enabled = !configs[idx].enabled;
-      configs[idx].updatedAt = new Date().toISOString();
-      this.setConfigs(configs);
-      if (!configs[idx].enabled && this.getActiveApiId() === id) {
-        const nextActive = configs.find(c => c.id !== id && c.enabled);
+  async deleteConfig(id: string) {
+    try {
+      await deleteDoc(doc(db, 'geminiApisPublic', id));
+      await deleteDoc(doc(db, 'geminiApiSecrets', id));
+      if (this.getActiveApiId() === id) {
+        const nextActive = localConfigs.find(c => c.id !== id && c.enabled);
         this.setActiveApiId(nextActive ? nextActive.id : null);
+      }
+    } catch (e: any) {
+      console.error("Lỗi khi xóa cấu hình:", e);
+    }
+  },
+
+  async toggleEnabled(id: string) {
+    const config = localConfigs.find(c => c.id === id);
+    if (config) {
+      try {
+        await updateDoc(doc(db, 'geminiApisPublic', id), {
+          enabled: !config.enabled,
+          updatedAt: Timestamp.now()
+        });
+        if (config.enabled && this.getActiveApiId() === id) { // It was enabled, now disabled
+          const nextActive = localConfigs.find(c => c.id !== id && c.enabled);
+          this.setActiveApiId(nextActive ? nextActive.id : null);
+        }
+      } catch (e) {
+        console.error("Lỗi toggle enabled:", e);
       }
     }
   },
 
-  // Perform genuine verification test against Gemini backend
+  // Need to get secret for testing
+  async getSecretApiKey(id: string): Promise<string> {
+    try {
+      const docSnap = await getDoc(doc(db, 'geminiApiSecrets', id));
+      if (docSnap.exists()) {
+        return docSnap.data().apiKey;
+      }
+    } catch(e) {}
+    return '';
+  },
+
   async validateApi(
     configOrId: string | GeminiApiConfig
   ): Promise<{
@@ -223,45 +238,63 @@ export const apiManager = {
     model?: string;
     message?: string;
   }> {
-    let config: GeminiApiConfig | undefined;
+    let id: string;
+    let apiKey: string = '';
+    let model = 'gemini-2.5-flash';
+    
     if (typeof configOrId === 'string') {
-      config = this.getConfigs().find(c => c.id === configOrId);
-      if (!config) {
-        return { success: false, status: 'ERROR', error: 'Không tìm thấy cấu hình API.' };
-      }
+      id = configOrId;
+      const conf = localConfigs.find(c => c.id === id);
+      if (conf) model = conf.model || 'gemini-2.5-flash';
+      // Fetch key from secret
+       // Import here or top
     } else {
-      config = configOrId;
+      id = configOrId.id;
+      apiKey = configOrId.apiKey;
+      model = configOrId.model || 'gemini-2.5-flash';
+    }
+
+    if (!apiKey) {
+        
+        try {
+            const docSnap = await getDoc(doc(db, 'geminiApiSecrets', id));
+            if (docSnap.exists()) {
+                apiKey = docSnap.data().apiKey;
+            }
+        } catch(e) {}
+    }
+
+    if (!apiKey) {
+      return { success: false, status: 'ERROR', error: 'Không tìm thấy API Key bí mật.' };
     }
 
     // Set status to CHECKING
-    this.updateStatus(config.id, 'CHECKING');
+    this.updateStatus(id, 'CHECKING');
 
     try {
       const res = await fetch('/api/gemini-keys/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          apiKey: config.apiKey,
-          model: config.model || 'gemini-2.5-flash',
+          apiKey: apiKey,
+          model: model,
         }),
       });
 
       const contentType = res.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         const textError = await res.text();
-        console.warn("Phản hồi không phải JSON từ validate API:", res.status, textError.slice(0, 100));
         throw new Error(`Lỗi máy chủ (${res.status}): Không thể xác thực API Key ngay lúc này.`);
       }
 
       const data = await res.json();
-      const now = new Date().toISOString();
-
+      
       if (data.success && data.status === 'ACTIVE') {
-        this.updateConfig(config.id, {
+        await this.updateConfig(id, {
           status: 'ACTIVE',
-          lastCheckedAt: now,
+          lastCheckedAt: Timestamp.now() as any,
           responseTimeMs: data.responseTimeMs,
-          lastError: undefined,
+          lastError: null as any,
         });
         return {
           success: true,
@@ -273,9 +306,9 @@ export const apiManager = {
       } else {
         const status: ApiStatus = data.status || 'ERROR';
         const errorMsg = data.error || 'Kiểm tra API thất bại';
-        this.updateConfig(config.id, {
+        await this.updateConfig(id, {
           status,
-          lastCheckedAt: now,
+          lastCheckedAt: Timestamp.now() as any,
           responseTimeMs: data.responseTimeMs,
           lastError: errorMsg,
         });
@@ -287,11 +320,10 @@ export const apiManager = {
         };
       }
     } catch (e: any) {
-      const now = new Date().toISOString();
       const errorMsg = e.message || 'Lỗi mạng khi kiểm tra API';
-      this.updateConfig(config.id, {
+      await this.updateConfig(id, {
         status: 'ERROR',
-        lastCheckedAt: now,
+        lastCheckedAt: Timestamp.now() as any,
         lastError: errorMsg,
       });
       return {
@@ -302,38 +334,38 @@ export const apiManager = {
     }
   },
 
-  updateStatus(id: string, status: ApiStatus) {
-    const configs = this.getConfigs();
-    const idx = configs.findIndex(c => c.id === id);
-    if (idx !== -1) {
-      configs[idx].status = status;
-      this.setConfigs(configs);
-    }
+  async updateStatus(id: string, status: ApiStatus) {
+    try {
+      await updateDoc(doc(db, 'geminiApisPublic', id), { status });
+    } catch (e) {}
   },
 
   async testAllConfigs() {
     const configs = this.getConfigs();
     for (const config of configs) {
       if (config.enabled) {
-        await this.validateApi(config);
+        await this.validateApi(config.id);
       }
     }
   },
 
-  updateConfig(id: string, updates: Partial<GeminiApiConfig>) {
-    const configs = this.getConfigs();
-    const idx = configs.findIndex(c => c.id === id);
-    if (idx !== -1) {
-      configs[idx] = {
-        ...configs[idx],
-        ...updates,
-        updatedAt: new Date().toISOString(),
-      };
-      this.setConfigs(configs);
+  async updateConfig(id: string, updates: Partial<GeminiApiConfig>) {
+    try {
+      // Remove apiKey from public updates if it exists
+      const publicUpdates = { ...updates };
+      delete publicUpdates.apiKey;
+      delete publicUpdates.id;
+      
+      await updateDoc(doc(db, 'geminiApisPublic', id), {
+        ...publicUpdates,
+        updatedAt: Timestamp.now(),
+      });
+    } catch (e) {
+      console.error("Lỗi updateConfig:", e);
     }
   },
 
-  // Record AI execution usage
+  // Record AI execution usage (frontend logs)
   recordUsage(
     featureName: string,
     success: boolean,
@@ -344,18 +376,20 @@ export const apiManager = {
     const now = new Date().toISOString();
 
     if (active) {
-      const updates: Partial<GeminiApiConfig> = {
-        lastUsedAt: now,
-        totalRequests: (active.totalRequests || 0) + 1,
-        successfulRequests: (active.successfulRequests || 0) + (success ? 1 : 0),
-        failedRequests: (active.failedRequests || 0) + (success ? 0 : 1),
-      };
-      if (responseTimeMs) updates.responseTimeMs = responseTimeMs;
-      if (error) updates.lastError = error;
-      this.updateConfig(active.id, updates);
+       // Only increment local and async update firestore to avoid blocking
+       import('firebase/firestore').then(({ increment }) => {
+          updateDoc(doc(db, 'geminiApisPublic', active.id), {
+            lastUsedAt: Timestamp.now(),
+            totalRequests: increment(1),
+            successfulRequests: increment(success ? 1 : 0),
+            failedRequests: increment(success ? 0 : 1),
+            ...(responseTimeMs ? { responseTimeMs } : {}),
+            ...(error ? { lastError: error } : {})
+          }).catch(console.error);
+       });
     }
 
-    // Append to usage history log
+    // Append to usage history log (Local Storage is fine for logs since it's just history)
     try {
       const history = this.getUsageHistory();
       const item: ApiUsageHistoryItem = {
@@ -370,12 +404,10 @@ export const apiManager = {
         responseTimeMs,
         error,
       };
-      const newHistory = [item, ...history].slice(0, 200); // Keep latest 200 logs
+      const newHistory = [item, ...history].slice(0, 200);
       localStorage.setItem(STORAGE_KEYS.USAGE_HISTORY, JSON.stringify(newHistory));
       notifyListeners();
-    } catch (e) {
-      console.error('Failed to record api usage history:', e);
-    }
+    } catch (e) {}
   },
 
   getUsageHistory(): ApiUsageHistoryItem[] {
@@ -393,9 +425,7 @@ export const apiManager = {
     try {
       localStorage.removeItem(STORAGE_KEYS.USAGE_HISTORY);
       notifyListeners();
-    } catch (e) {
-      console.error('Failed to clear usage history:', e);
-    }
+    } catch (e) {}
   },
 
   // Auto handle error when an AI request fails
@@ -411,11 +441,12 @@ export const apiManager = {
       errorStr.includes('API_KEY_INVALID') ||
       errorStr.includes('API key not valid') ||
       errorStr.includes('INVALID_ARGUMENT') ||
-      errorStr.includes('Chưa cấu hình API')
+      errorStr.includes('Chưa cấu hình API') ||
+      errorStr.includes('chưa được nạp Gemini API Key')
     ) {
       isKeyError = true;
       newStatus = 'INVALID';
-      userMsg = 'API Key hiện tại không hợp lệ hoặc đã bị hủy. Vui lòng chọn hoặc cấu hình API khác.';
+      userMsg = 'API Key hiện tại không hợp lệ. Hệ thống sẽ đổi tự động, hoặc vui lòng chọn API khác.';
     } else if (
       errorStr.includes('RESOURCE_EXHAUSTED') ||
       errorStr.includes('quota') ||
@@ -424,15 +455,15 @@ export const apiManager = {
       isKeyError = true;
       if (errorStr.toLowerCase().includes('rate limit') || errorStr.toLowerCase().includes('rate_limit')) {
         newStatus = 'RATE_LIMITED';
-        userMsg = 'API hiện tại đã chạm giới hạn tốc độ (Rate Limit). Vui lòng đổi sang API khác hoặc thử lại sau.';
+        userMsg = 'API hiện tại đang bận (Rate Limit). Hệ thống sẽ đổi tự động...';
       } else {
         newStatus = 'QUOTA_EXCEEDED';
-        userMsg = 'API hiện tại đã hết hạn mức Quota. Vui lòng chọn API từ tài khoản Gmail/Project khác.';
+        userMsg = 'API hiện tại đã hết hạn mức Quota. Hệ thống sẽ đổi tự động...';
       }
     } else if (errorStr.includes('PERMISSION_DENIED')) {
       isKeyError = true;
       newStatus = 'INVALID';
-      userMsg = 'API Key không có quyền truy cập Gemini. Vui lòng kiểm tra lại cấu hình tài khoản.';
+      userMsg = 'API Key không có quyền truy cập Gemini.';
     }
 
     if (isKeyError && newStatus && active) {
@@ -440,6 +471,10 @@ export const apiManager = {
         status: newStatus,
         lastError: userMsg,
       });
+      // Fallback
+      setTimeout(() => {
+         this.switchToNextActiveApi();
+      }, 500);
     }
 
     return { isKeyError, status: newStatus, message: userMsg };

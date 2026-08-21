@@ -65,16 +65,18 @@ export const ApiManagerModal: React.FC<ApiManagerModalProps> = ({ isOpen, onClos
 
   if (!isOpen) return null;
 
-  const handleEdit = (config: GeminiApiConfig) => {
+    const handleEdit = async (config: GeminiApiConfig) => {
     setEditingConfig(config);
     setFormName(config.name);
     setFormEmail(config.email);
-    setFormApiKey(config.apiKey);
     setFormModel(config.model || 'gemini-2.5-flash');
     setFormNotes(config.notes || '');
     setFormEnabled(config.enabled);
     setFormError(null);
     setActiveTab('create');
+    
+    const secretKey = await apiManager.getSecretApiKey(config.id);
+    setFormApiKey(secretKey);
   };
 
   const handleResetForm = () => {
@@ -103,7 +105,7 @@ export const ApiManagerModal: React.FC<ApiManagerModalProps> = ({ isOpen, onClos
     setFormError(null);
 
     try {
-      const saved = apiManager.saveConfig({
+      const saved = await apiManager.saveConfig({
         id: editingConfig?.id,
         name: formName.trim() || `API (${formEmail.trim()})`,
         email: formEmail.trim(),

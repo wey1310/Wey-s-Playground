@@ -11,10 +11,10 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  // Tự động gắn Gemini API Key đang kích hoạt vào request
+  // Tự động gắn Gemini API Id đang kích hoạt vào request
   const activeApi = apiManager.getActiveApi();
-  if (activeApi && activeApi.apiKey) {
-    headers.set('x-gemini-api-key', activeApi.apiKey);
+  if (activeApi && activeApi.id) {
+    headers.set('x-gemini-api-id', activeApi.id);
   }
   
   // Đảm bảo luôn gửi request dưới dạng JSON

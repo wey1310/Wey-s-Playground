@@ -397,11 +397,26 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
 
               <div className="py-6 sm:py-8">
                 <motion.div
+                  id="displayName"
+                  data-state={isRolling ? 'rolling' : (pickedStudent ? 'selected' : 'idle')}
                   key={displayRollName}
-                  initial={{ y: -15, opacity: 0.7 }}
-                  animate={{ y: 0, opacity: 1 }}
+                  initial={
+                    pickedStudent
+                      ? { y: 24, scale: 0.92, opacity: 0 }
+                      : { y: -12, opacity: 0.7 }
+                  }
+                  animate={
+                    pickedStudent
+                      ? { y: [24, -8, 4, -2, 0], scale: [0.92, 1.05, 0.98, 1.01, 1], opacity: 1 }
+                      : { y: 0, scale: 1, opacity: 1 }
+                  }
+                  transition={
+                    pickedStudent
+                      ? { duration: 0.55, times: [0, 0.55, 0.72, 0.86, 1], ease: "easeOut" }
+                      : { duration: 0.12 }
+                  }
                   className={`text-3xl sm:text-5xl font-black tracking-tight ${
-                    isRolling ? 'text-[#E9D58F]' : (pickedStudent ? 'text-[#FFFDF5]' : 'text-slate-400')
+                    isRolling ? 'text-[#E9D58F]' : (pickedStudent ? 'text-[#FFFDF5] drop-shadow-[0_4px_12px_rgba(233,213,143,0.5)]' : 'text-slate-400')
                   }`}
                 >
                   {displayRollName}

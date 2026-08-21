@@ -1,6 +1,6 @@
 {
   "name": "Ôn Tập Tri Thức - Đấu Trường Game Show",
-  "description": "Kho game tương tác giáo dục sinh động với hệ thống 27 trò chơi đối kháng & trí tuệ (Dò Boom, Đào Vàng, Truyền Gấu, Sắp Xếp Chữ Cái, Cờ Caro, Cờ Vua, Ô Ăn Quan, Đua Cá Ngựa, Chiếm Lãnh Thổ, Bắn Tàu Chiến...), hỗ trợ lưu danh sách học sinh localStorage và đồng bộ ngân hàng câu hỏi.",
+  "description": "Nền tảng trò chơi tương tác giáo dục toàn diện với 34+ trò chơi sinh động, hệ thống Quản Trị Gemini API Key độc lập, Trợ lý AI tạo đề chuẩn CT GDPT 2018, OCR quét tài liệu đa định dạng, linh thú hướng dẫn Wey và tự động lưu danh sách học sinh.",
   "requestFramePermissions": ["camera", "microphone"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

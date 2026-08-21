@@ -23,24 +23,44 @@ function getGeminiClient(customApiKey?: string) {
 }
 
 // Hàm lấy API Key từ Request (headers hoặc body)
-function extractApiKey(req: Request): string | undefined {
-  const headerKey = req.headers['x-gemini-api-key'];
-  if (typeof headerKey === 'string' && headerKey.trim()) {
-    return headerKey.trim();
+// Hàm lấy API Id từ Request
+function extractApiId(req: Request): string | undefined {
+  const headerId = req.headers['x-gemini-api-id'];
+  if (typeof headerId === 'string' && headerId.trim()) {
+    return headerId.trim();
   }
-  if (req.body && typeof req.body.apiKey === 'string' && req.body.apiKey.trim()) {
-    return req.body.apiKey.trim();
+  if (req.body && typeof req.body.apiId === 'string' && req.body.apiId.trim()) {
+    return req.body.apiId.trim();
   }
   return undefined;
 }
 
+async function resolveApiKey(apiId?: string): Promise<string | undefined> {
+  if (!apiId) return undefined;
+  try {
+    const { adminDb } = initFirebase();
+    if (adminDb) {
+      const doc = await adminDb.collection('geminiApiSecrets').doc(apiId).get();
+      if (doc.exists) {
+        return doc.data().apiKey;
+      }
+    }
+  } catch (e) {
+    console.error("Error resolving API key from Firestore:", e);
+  }
+  return undefined;
+}
+
+
 // Hàm kiểm tra và trừ hạn mức (quota) AI
 async function withAiQuota(req: any, res: any, requestedMode: 'fast' | 'balanced' | 'smart', handler: (req: any, res: any, modelConfig: any) => Promise<void>) {
-  const customApiKey = extractApiKey(req);
+  const customApiId = extractApiId(req);
+  const resolvedApiKey = await resolveApiKey(customApiId) || process.env.GEMINI_API_KEY;
+  (req as any).resolvedApiKey = resolvedApiKey;
   const customModel = req.headers['x-gemini-model'] || req.body?.model || (requestedMode === 'smart' ? 'gemini-2.5-pro' : 'gemini-2.5-flash');
 
   // Nếu người dùng/admin đã nạp hoặc chọn Custom API Key (hoặc có sẵn hệ thống), cho phép chạy trực tiếp ngay
-  if (customApiKey || process.env.GEMINI_API_KEY) {
+  if (resolvedApiKey) {
     const modelConfig = {
       model: typeof customModel === 'string' && customModel.trim() ? customModel.trim() : 'gemini-2.5-flash',
       cost: 0,
@@ -102,9 +122,20 @@ apiRouter.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// Endpoint xác thực API Key thật với Google Gemini
+// Endpoint xác thực API Key thật với Google Gemini (Chuẩn REST JSON & Không lộ Key)
 apiRouter.post("/gemini-keys/validate", async (req, res) => {
-  const { apiKey, model = "gemini-2.5-flash" } = req.body;
+  let body = req.body;
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body);
+    } catch {
+      body = {};
+    }
+  }
+
+  const apiKey = body?.apiKey || req.headers['x-gemini-api-key'];
+  const model = body?.model || req.headers['x-gemini-model'] || "gemini-2.5-flash";
+
   if (!apiKey || typeof apiKey !== "string" || !apiKey.trim()) {
     return res.status(400).json({
       success: false,
@@ -118,6 +149,7 @@ apiRouter.post("/gemini-keys/validate", async (req, res) => {
   const testModel = (typeof model === 'string' && model.trim()) ? model.trim() : "gemini-2.5-flash";
 
   try {
+    // KHÔNG dùng fallback process.env.GEMINI_API_KEY ở đây - chỉ kiểm tra key người dùng nhập
     const ai = new GoogleGenAI({
       apiKey: cleanKey,
       httpOptions: {
@@ -127,9 +159,10 @@ apiRouter.post("/gemini-keys/validate", async (req, res) => {
       },
     });
 
+    // Prompt tối thiểu: "Reply with OK." để tối ưu token & tránh tốn quota
     const response = await ai.models.generateContent({
       model: testModel,
-      contents: "Ping test Gemini connection. Respond with OK.",
+      contents: "Reply with OK.",
       config: {
         maxOutputTokens: 10,
         temperature: 0.1,
@@ -138,28 +171,38 @@ apiRouter.post("/gemini-keys/validate", async (req, res) => {
 
     const responseTimeMs = Date.now() - startTime;
 
-    return res.json({
+    return res.status(200).json({
       success: true,
       status: "ACTIVE",
       responseTimeMs,
       model: testModel,
-      message: "✓ API hoạt động bình thường",
+      message: "API hoạt động bình thường",
       checkedAt: new Date().toISOString(),
     });
   } catch (err: any) {
     const responseTimeMs = Date.now() - startTime;
-    const errMessage = String(err.message || err || "");
+    const errMessage = String(err?.message || err || "");
     let status = "ERROR";
-    let userFriendlyError = "Lỗi kết nối Gemini API.";
+    let httpStatus = 200;
+    let userFriendlyError = "Lỗi kết nối khi gửi request tới máy chủ Google AI.";
 
     if (
       errMessage.includes("API_KEY_INVALID") ||
       errMessage.includes("API key not valid") ||
+      errMessage.includes("UNAUTHENTICATED") ||
       errMessage.includes("INVALID_ARGUMENT") ||
       errMessage.includes("400")
     ) {
       status = "INVALID";
-      userFriendlyError = "API Key không hợp lệ. Vui lòng kiểm tra lại key.";
+      httpStatus = 401;
+      userFriendlyError = "API Key không hợp lệ hoặc sai định dạng. Vui lòng kiểm tra lại key.";
+    } else if (
+      errMessage.includes("PERMISSION_DENIED") ||
+      errMessage.includes("403")
+    ) {
+      status = "INVALID";
+      httpStatus = 403;
+      userFriendlyError = "API Key không có quyền truy cập Gemini API hoặc Google Cloud Project bị vô hiệu hóa.";
     } else if (
       errMessage.includes("RESOURCE_EXHAUSTED") ||
       errMessage.includes("quota") ||
@@ -168,23 +211,20 @@ apiRouter.post("/gemini-keys/validate", async (req, res) => {
     ) {
       if (errMessage.toLowerCase().includes("rate limit") || errMessage.toLowerCase().includes("rate_limit")) {
         status = "RATE_LIMITED";
-        userFriendlyError = "Đã vượt quá giới hạn tần suất gọi API (Rate limit). Vui lòng thử lại sau.";
+        httpStatus = 429;
+        userFriendlyError = "Đã vượt quá giới hạn tần suất gọi API (Rate Limit). Vui lòng thử lại sau.";
       } else {
         status = "QUOTA_EXCEEDED";
-        userFriendlyError = "Quota tài khoản đã hết (RESOURCE_EXHAUSTED / Hạn mức đã dùng hết).";
+        httpStatus = 429;
+        userFriendlyError = "API Key đã hết hạn mức Quota (RESOURCE_EXHAUSTED).";
       }
-    } else if (
-      errMessage.includes("PERMISSION_DENIED") ||
-      errMessage.includes("403")
-    ) {
-      status = "INVALID";
-      userFriendlyError = "Không có quyền truy cập Gemini API hoặc dự án bị vô hiệu hóa.";
     } else if (
       errMessage.includes("NOT_FOUND") ||
       errMessage.includes("models/") ||
       errMessage.includes("404")
     ) {
-      status = "ERROR";
+      status = "MODEL_ERROR";
+      httpStatus = 400;
       userFriendlyError = `Model "${testModel}" không khả dụng cho API Key này.`;
     } else if (
       errMessage.includes("FETCH_ERROR") ||
@@ -192,17 +232,18 @@ apiRouter.post("/gemini-keys/validate", async (req, res) => {
       errMessage.includes("network")
     ) {
       status = "ERROR";
+      httpStatus = 500;
       userFriendlyError = "Lỗi kết nối mạng khi gửi request tới máy chủ Google AI.";
     } else {
       status = "ERROR";
-      userFriendlyError = errMessage || "Lỗi không xác định khi kết nối tới Gemini API.";
+      httpStatus = 500;
+      userFriendlyError = errMessage.slice(0, 200) || "Lỗi không xác định khi kết nối tới Gemini API.";
     }
 
-    return res.status(200).json({
+    return res.status(httpStatus).json({
       success: false,
       status,
       error: userFriendlyError,
-      rawError: errMessage,
       responseTimeMs,
       checkedAt: new Date().toISOString(),
     });
@@ -310,7 +351,7 @@ apiRouter.post("/generate-questions", async (req, res) => {
     };
     const typeString = safeTypes.map(t => typeMapping[t] || t).join(", ");
 
-    const ai = getGeminiClient(extractApiKey(req));
+    const ai = getGeminiClient((req as any).resolvedApiKey);
     let safeCount = Math.min(Math.max(1, count), 20); 
 
     // Phân bổ ma trận nhận thức
@@ -534,7 +575,7 @@ apiRouter.post("/parse-document", async (req, res) => {
       });
       return;
     }
-    const ai = getGeminiClient(extractApiKey(req));
+    const ai = getGeminiClient((req as any).resolvedApiKey);
     
     const safeRawText = rawText.slice(0, 25000);
     const prompt = `Bạn là một chuyên gia khảo thí & thẩm định đề thi giáo dục Việt Nam.
@@ -767,7 +808,7 @@ apiRouter.post("/generate-image", async (req, res) => {
     
     if (imagePrompt.length > 2000) throw new Error("Mô tả hình ảnh quá dài");
     
-    const ai = getGeminiClient(extractApiKey(req));
+    const ai = getGeminiClient((req as any).resolvedApiKey);
     const promptText = `Tạo vector SVG học tập môn ${subject}: "${imagePrompt}". Chỉ xuất DUY NHẤT một thẻ <svg ...>...</svg> hoàn chỉnh và hợp lệ, viewBox="0 0 400 300", màu sắc tươi sáng, đẹp mắt.`;
 
     const response = await ai.models.generateContent({
@@ -796,7 +837,7 @@ apiRouter.post("/enhance-question", async (req, res) => {
   const mode = req.body.aiMode || "balanced";
   await withAiQuota(req, res, mode, async (req, res, modelConfig) => {
     const { content, type = "mcq", subject = "Tổng hợp" } = req.body;
-    const ai = getGeminiClient(extractApiKey(req));
+    const ai = getGeminiClient((req as any).resolvedApiKey);
     const safeContent = content.slice(0, 4000);
     const prompt = `Soạn đáp án & giải thích cho câu hỏi: "${safeContent}", loại ${type}, môn ${subject}.`;
 
@@ -818,7 +859,7 @@ apiRouter.post("/generate-wheel-phrase", async (req, res) => {
   const mode = req.body.aiMode || "fast";
   await withAiQuota(req, res, mode, async (req, res, modelConfig) => {
     const { topic = "Tổng hợp" } = req.body;
-    const ai = getGeminiClient(extractApiKey(req));
+    const ai = getGeminiClient((req as any).resolvedApiKey);
     const prompt = `Gợi ý 5 cụm từ Tiếng Việt in hoa cho game show Chiếc nón kỳ diệu, chủ đề: ${topic}. Xuất JSON mảng chuỗi.`;
 
     const response = await ai.models.generateContent({
@@ -835,7 +876,7 @@ apiRouter.post("/generate-pictogram-phrases", async (req, res) => {
   const mode = req.body.aiMode || "fast";
   await withAiQuota(req, res, mode, async (req, res, modelConfig) => {
     const { topic = "Quang hợp" } = req.body;
-    const ai = getGeminiClient(extractApiKey(req));
+    const ai = getGeminiClient((req as any).resolvedApiKey);
     const prompt = `Đề xuất 5 cụm từ Tiếng Việt in hoa cho game Nhìn hình đoán chữ, chủ đề: ${topic}. Xuất JSON mảng chuỗi.`;
 
     const response = await ai.models.generateContent({
@@ -852,7 +893,7 @@ apiRouter.post("/generate-pictogram", async (req, res) => {
   const mode = req.body.aiMode || "smart";
   await withAiQuota(req, res, mode, async (req, res, modelConfig) => {
     const { phrase, difficulty = "medium" } = req.body;
-    const ai = getGeminiClient(extractApiKey(req));
+    const ai = getGeminiClient((req as any).resolvedApiKey);
     const targetHintCount = difficulty === "easy" ? 3 : difficulty === "hard" ? 5 : 4;
     const prompt = `Phân tích cụm từ "${phrase}" thành ${targetHintCount} gợi ý hình ảnh cho game Nhìn hình đoán chữ. Xuất JSON mảng đối tượng: [{"conceptIdea": "...", "provider": "SEARCH", "searchKeyword": "..."}]`;
 

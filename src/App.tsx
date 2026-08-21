@@ -1,3 +1,4 @@
+import { AICameraCallGame } from './components/games/AICameraCallGame';
 import React, { useState } from 'react';
 import { type GameType, type GameId, type GameSetupConfig, type QuestionBank, type Question, type AnswerLog, type Team, PRESET_THEMES } from "./types";
 import { DEFAULT_QUESTION_BANKS } from './data/defaultBanks';
@@ -28,6 +29,8 @@ import { TowerGame } from './components/games/TowerGame';
 import { PuzzleGame } from './components/games/PuzzleGame';
 import { RaceGame } from './components/games/RaceGame';
 import { RandomCallGame } from './components/games/RandomCallGame';
+import { AICameraCallGame } from './components/games/AICameraCallGame';
+
 import { EggCallGame } from './components/games/EggCallGame';
 import { BlindBoxGame } from './components/games/BlindBoxGame';
 import { PokemonGame } from './components/games/PokemonGame';
@@ -107,6 +110,43 @@ interface GameInfo {
 }
 
 const GAMES_LIST: GameInfo[] = [
+  {
+    id: 'ai_star_call',
+    title: 'Ngôi Sao Tri Thức',
+    description: 'Điều khiển bằng AI Camera, giơ ngón tay gọi tên học sinh ngẫu nhiên.',
+    icon: '🌟',
+    badge: 'Camera AI',
+    color: 'from-blue-600 to-indigo-800',
+    tags: ['Khởi động', 'Gọi tên', 'Công Nghệ AI'],
+  },
+  {
+    id: 'ai_galaxy_call',
+    title: 'Dải Ngân Hà',
+    description: 'Hiệu ứng dải ngân hà tuyệt đẹp. Điều khiển 100% bằng cử chỉ tay.',
+    icon: '🌌',
+    badge: 'Camera AI',
+    color: 'from-purple-600 to-indigo-800',
+    tags: ['Khởi động', 'Gọi tên', 'Công Nghệ AI'],
+  },
+  {
+    id: 'ai_nebula_call',
+    title: 'Tinh Vân Huyền Bí',
+    description: 'Thu hút tinh vân bằng bàn tay. Gọi tên học sinh thật ngầu.',
+    icon: '🌠',
+    badge: 'Camera AI',
+    color: 'from-blue-600 to-purple-800',
+    tags: ['Khởi động', 'Gọi tên', 'Công Nghệ AI'],
+  },
+  {
+    id: 'ai_bubble_call',
+    title: 'Bong Bóng Trí Tuệ',
+    description: 'Chỉ tay để làm nổ bong bóng phép thuật gọi tên.',
+    icon: '🫧',
+    badge: 'Camera AI',
+    color: 'from-cyan-600 to-blue-800',
+    tags: ['Khởi động', 'Gọi tên', 'Công Nghệ AI'],
+  },
+
   {
     id: 'eggcall',
     title: 'Đập Trứng Gọi Tên',
@@ -1359,7 +1399,20 @@ export default function App() {
                 ['--gap' as any]: stageMetrics.gap,
               }}
             >
-              {(activeGameConfig.gameId === 'openbox' || activeGameConfig.gameId === 'open_box') && (
+              
+              {activeGameConfig.gameId === 'ai_star_call' && (
+                <AICameraCallGame config={activeGameConfig} questions={currentQuestions} onGameEnd={handleEndGame} themeType="star" />
+              )}
+              {activeGameConfig.gameId === 'ai_galaxy_call' && (
+                <AICameraCallGame config={activeGameConfig} questions={currentQuestions} onGameEnd={handleEndGame} themeType="galaxy" />
+              )}
+              {activeGameConfig.gameId === 'ai_nebula_call' && (
+                <AICameraCallGame config={activeGameConfig} questions={currentQuestions} onGameEnd={handleEndGame} themeType="nebula" />
+              )}
+              {activeGameConfig.gameId === 'ai_bubble_call' && (
+                <AICameraCallGame config={activeGameConfig} questions={currentQuestions} onGameEnd={handleEndGame} themeType="bubble" />
+              )}
+{(activeGameConfig.gameId === 'openbox' || activeGameConfig.gameId === 'open_box') && (
               <OpenBoxGame
                 config={activeGameConfig}
                 questions={currentQuestions}
@@ -2065,6 +2118,21 @@ export default function App() {
           onClose={() => setIsApiManagerModalOpen(false)}
         />
       )}
+
+      <GameQuickGuideModal
+        isOpen={isQuickGuideOpen}
+        onClose={() => setIsQuickGuideOpen(false)}
+        gameId={quickGuideGameId}
+        onStartGame={() => {
+          setIsQuickGuideOpen(false);
+          if (quickGuideGameId) {
+            const foundGame = GAMES_LIST.find(g => g.id === quickGuideGameId);
+            if (foundGame) {
+              handleOpenSetup(foundGame.id as GameType);
+            }
+          }
+        }}
+      />
     </div>
   );
 }

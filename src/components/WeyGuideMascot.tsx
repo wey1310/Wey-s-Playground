@@ -684,62 +684,158 @@ const GUIDE_ITEMS: GuideItem[] = [
       'Bước 5: Đi qua ô START nhận lương +$200; đội có tài sản lớn nhất hoặc sống sót cuối cùng sẽ chiến thắng.'
     ]
   },
+  {
+    id: 'gm_werewolf',
+    category: 'games',
+    title: 'Ma Sói: Ngôi Làng Bí Ẩn',
+    summary: 'Đấu trí điều tra 12 cư dân NPC đêm tự động & Biểu quyết vote treo cổ Ma Sói.',
+    icon: '🐺',
+    badge: 'Trinh thám',
+    tags: ['ma soi', 'werewolf', 'ngoi lang bi an', 'npc', 'vote treo co', 'tien tri', 'bao ve', 'phu thuy', 'tho san'],
+    details: [
+      'Bước 1: Ban đêm (Night Engine): 12 NPC thông minh tự động thực hiện hành động bí mật (Sói cắn, Tiên tri soi, Bảo vệ tạo khiên, Phù thủy cứu/độc, Thợ săn găm đạn).',
+      'Bước 2: Bình minh (Dawn): Ngôi làng công bố danh tính người tử nạn đêm qua (nếu có) và hiển thị Nhật ký Manh Mối đêm không tiết lộ danh tính NPC.',
+      'Bước 3: Biểu quyết Vote Treo Cổ: Đội đến lượt thảo luận và bỏ phiếu Vote 1 NPC tình nghi. NPC bị vote sẽ BỊ TREO CỔ (tử nạn ngay) và hé lộ danh tính thật.',
+      'Bước 4: Nếu Treo cổ đúng Ma Sói: Đội nhận thưởng điểm x2 và loại bỏ mối nguy hiểm cho dân làng.',
+      'Bước 5: Chế độ câu hỏi: Trả lời đúng để nhận quyền Vote hoặc kiểm tra danh tính. Chế độ bỏ qua câu hỏi: Đến lượt là tiến hành vote treo cổ ngay.'
+    ]
+  },
+  {
+    id: 'gm_whackamole',
+    category: 'games',
+    title: 'Đập Chuột Chũi Nhanh Tay',
+    summary: 'Phản xạ nhanh đập trúng chuột mang đáp án đúng, né chuột bẫy bom.',
+    icon: '🔨',
+    badge: 'Phản xạ',
+    tags: ['dap chuot chui', 'whack a mole', 'dap chuot', 'phan xa', 'go bua', 'ne bom', 'khoi dong'],
+    details: [
+      'Bước 1: Đọc câu hỏi hiển thị trên bảng phía trên sân cỏ.',
+      'Bước 2: Các chú chuột chũi trồi lên từ các hang mang theo các đáp án A, B, C, D.',
+      'Bước 3: Nhấp chuột hoặc chạm tay vào chú chuột có đáp án ĐÚNG.',
+      'Bước 4: Đập đúng: Hiệu ứng búa gõ sao bay, nhận trọn điểm thưởng câu hỏi (+10đ).',
+      'Bước 5: Đập sai hoặc đập trúng Chuột Bẫy Bom 💣: Bị choáng váng và trừ điểm (-5đ)!'
+    ]
+  },
+  {
+    id: 'gm_classification',
+    category: 'games',
+    title: 'Phân Loại Thẻ Bài & Rác Thải',
+    summary: 'Kéo thả đối tượng từ kho trung tâm vào đúng nhóm phân loại tương ứng.',
+    icon: '📁',
+    badge: 'Tư duy',
+    tags: ['phan loai', 'classification', 'phan loai the bai', 'phan loai rac', 'keo tha', 'nhom'],
+    details: [
+      'Bước 1: Nhấp chọn một đối tượng (từ, cụm từ, hình ảnh) ở kho trung tâm.',
+      'Bước 2: Nhấp chọn nhóm phân loại phù hợp ở hàng bên dưới (hoặc kéo thả trực tiếp).',
+      'Bước 3: Nếu đúng: Đối tượng bay vào giỏ/nhóm thành công và cộng điểm.',
+      'Bước 4: Nếu sai: Báo hiệu rung lắc và hoàn trả lại kho trung tâm.'
+    ]
+  },
+  {
+    id: 'gm_flagcapture',
+    category: 'games',
+    title: 'Cướp Cờ Tri Thức',
+    summary: 'Trả lời đúng kích hoạt vận động viên bứt tốc cướp cờ vàng về căn cứ.',
+    icon: '🚩',
+    badge: 'Đua tốc độ',
+    tags: ['cuop co tri thuc', 'flag capture', 'cuop co', 'chay nhanh', 'but toc', 'the thao'],
+    details: [
+      'Bước 1: Lá cờ vàng danh dự đặt tại tâm sân khấu thể thao.',
+      'Bước 2: Đến lượt, đội đọc câu hỏi và lựa chọn phương án chính xác.',
+      'Bước 3: Trả lời ĐÚNG: Vận động viên đội bạn bứt tốc lao tới tâm sân khấu giật cờ và chạy về đích!',
+      'Bước 4: Trả lời SAI: Đứng yên tại căn cứ và mất cơ hội cướp cờ ở vòng đấu đó.'
+    ]
+  },
+  {
+    id: 'gm_sackrace',
+    category: 'games',
+    title: 'Nhảy Bao Bố Về Đích',
+    summary: 'Đua nhảy bao bố theo làn thi đấu, trả lời đúng để nhảy tiến lên về đích.',
+    icon: '🌾',
+    badge: 'Đồng đội',
+    tags: ['nhay bao bo', 'sack race', 'dua bao bo', 'lan dua', 've dich', 'van dong'],
+    details: [
+      'Bước 1: Mỗi đội xuất phát tại một làn đua (lane) riêng biệt.',
+      'Bước 2: Đến lượt, đội trả lời câu hỏi hiển thị trên màn hình.',
+      'Bước 3: Trả lời ĐÚNG: Nhân vật nhảy bật bưng bưng tiến lên 1 hoặc 2 bước về phía trước.',
+      'Bước 4: Trả lời SAI: Bị vấp đứng yên tại chỗ.',
+      'Bước 5: Đội đầu tiên nhảy chạm vạch đích sẽ giương cúp vô địch (+50đ)!'
+    ]
+  },
+  {
+    id: 'gm_snailwords',
+    category: 'games',
+    title: 'Ốc Sên Tinh Mắt',
+    summary: 'Tìm từ khóa ẩn giấu trong ma trận chữ cái cùng linh vật Ốc Sên.',
+    icon: '🐌',
+    badge: 'Ô chữ',
+    tags: ['oc sen tinh mat', 'snail word search', 'tim tu', 'ma tran chu', 'tu khoa an'],
+    details: [
+      'Bước 1: Quan sát danh sách từ khóa cần tìm ở cột bên trái.',
+      'Bước 2: Tìm kiếm chuỗi chữ cái tương ứng trong bảng ma trận.',
+      'Bước 3: Nhấp vào ô chữ cái đầu tiên, sau đó nhấp vào ô chữ cái cuối cùng của từ (hoặc kéo chuột).',
+      'Bước 4: Tìm đúng: Từ khóa được highlight nổi bật rực rỡ và Ốc sên nhảy múa chúc mừng (+20đ/từ)!'
+    ]
+  },
 
   // AI Features
   {
     id: 'ai_0',
     category: 'ai',
-    title: '⚠️ Lưu Ý Quan Trọng: Đăng Nhập & Chọn API Trước Khi Dùng AI',
-    summary: 'Đăng nhập Google và xác nhận API Key để tạo đề, quét tài liệu và sinh ảnh không bị gián đoạn.',
+    title: '🔑 Quản Trị Gemini API Key & Kiểm Tra Kết Nối Real-Time',
+    summary: 'Hệ thống Quản Lý API Key độc lập, kiểm tra trạng thái Online/Offline trực tiếp từ Google.',
     icon: '🔑',
-    badge: 'Bắt buộc',
-    tags: ['dang nhap', 'api key', 'chon api', 'gemini', 'openai', 'luu y ai', 'xac thuc', 'cách tạo bộ câu hỏi', 'tai khoan', 'kich hoat ai'],
+    badge: 'Bảo mật & Quản trị',
+    tags: ['api key', 'gemini api', 'quan tri api', 'test key', 'kiem tra api', 'admin api', 'gemini 2.5', 'flash', 'pro', 'chuyen doi api'],
     details: [
-      'Bước 1: Bấm nút "Đăng Nhập Google" ở thanh điều hướng để kích hoạt tài khoản thành viên.',
-      'Bước 2: Chọn Nhà cung cấp AI (Google Gemini hoặc OpenAI) và kiểm tra API Key trong bảng Cài Đặt AI.',
-      'Bước 3: Sau khi đăng nhập và chọn API chuẩn, bạn có thể thoải mái quét đề từ file, sinh câu hỏi tự động và vẽ sơ đồ minh họa siêu tốc!'
+      'Bước 1: Bấm vào biểu tượng Cài Đặt AI / Quản Lý API Key trên thanh tiêu đề.',
+      'Bước 2: Thêm một hoặc nhiều Gemini API Key riêng biệt (mỗi key có nhãn gợi nhớ riêng).',
+      'Bước 3: Bấm nút "Kiểm Tra Trực Tiếp": Hệ thống gửi yêu cầu xác thực thật tới Google, hiển thị mã trạng thái HTTP (200 OK, 400, 401 Unauthorized, 429 Quota Exceeded...).',
+      'Bước 4: Bấm "Chọn Dùng" để đặt làm API Key đang hoạt động cho toàn bộ tính năng AI (Quét tài liệu, Tạo đề thi, Vẽ sơ đồ SVG, Trợ lý ảo).',
+      'Bước 5: Tùy chọn chuyển đổi linh hoạt giữa các mô hình Gemini 2.5 Flash (siêu tốc) hoặc Gemini 2.5 Pro (tư duy sâu).'
     ]
   },
   {
     id: 'ai_1',
     category: 'ai',
-    title: 'Quét Tự Động Tài Liệu / Đề Thi Bằng AI',
-    summary: 'Chuyển toàn bộ đề thi Word/PDF/Text thành ngân hàng câu hỏi trong 3 giây.',
+    title: 'Quét Tự Động Tài Liệu / Đề Thi Bằng AI & OCR Đa Định Dạng',
+    summary: 'Chuyển toàn bộ đề thi Word/PDF/Text/Ảnh thành ngân hàng câu hỏi trong 3 giây.',
     icon: '📄',
     badge: 'AI Siêu Tốc',
-    tags: ['cách tạo bộ câu hỏi', 'quet de', 'quet tai lieu', 'import', 'word', 'pdf', 'text', 'soan cau hoi', 'tu dong', 'tao de', 'nhap de', 'trich xuat', 'doc', 'docx', 'paste text'],
+    tags: ['cách tạo bộ câu hỏi', 'quet de', 'quet tai lieu', 'ocr', 'import', 'word', 'pdf', 'text', 'anh', 'soan cau hoi', 'tu dong', 'tao de', 'nhap de', 'trich xuat', 'doc', 'docx', 'paste text'],
     details: [
       'Bấm nút "Tạo Bằng AI" ở góc trên hoặc vào "Ngân Hàng Câu Hỏi" -> "Quét Tài Liệu AI".',
-      'Dán đoạn văn bản đề thi thô hoặc tài liệu bài học vào khung.',
-      'AI sẽ tự động nhận diện câu hỏi, 4 đáp án A-B-C-D, đáp án đúng và lời giải chi tiết cực kỳ chuẩn xác!'
+      'Dán đoạn văn bản đề thi thô, tải file Word (.docx), file PDF hoặc tải hình ảnh chụp đề thi.',
+      'AI sẽ tự động nhận diện câu hỏi, 4 đáp án A-B-C-D, đáp án đúng, công thức toán LaTeX và lời giải chi tiết cực kỳ chuẩn xác!'
     ]
   },
   {
     id: 'ai_2',
     category: 'ai',
-    title: 'Sinh Câu Hỏi Tự Động Theo Chủ Đề & Khối Lớp',
-    summary: 'Chỉ cần nhập chủ đề (VD: Lịch sử nhà Trần, Thì hiện tại hoàn thành, Phép nhân...).',
+    title: 'Sinh Câu Hỏi Tự Động Chuẩn Chương Trình GDPT 2018',
+    summary: 'Tạo bộ đề theo Khối Lớp, Môn Học và 4 Mức Độ Tư Duy (Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao).',
     icon: '✨',
-    badge: 'Thông minh',
-    tags: ['cách tạo bộ câu hỏi', 'tao cau hoi ai', 'sinh de', 'soan cau hoi', 'mon hoc', 'lop', 'toan', 'van', 'tieng anh', 'lich su', 'trac nghiem', 'gemini'],
+    badge: 'Chuẩn GDPT 2018',
+    tags: ['cách tạo bộ câu hỏi', 'tao cau hoi ai', 'sinh de', 'gdpt 2018', 'nhan biet', 'thong hieu', 'van dung', 'van dung cao', 'mon hoc', 'lop', 'toan', 'van', 'tieng anh', 'lich su', 'trac nghiem', 'gemini'],
     details: [
-      'Chọn môn học, khối lớp và số lượng câu hỏi mong muốn.',
-      'AI sẽ tự động tạo bộ câu hỏi đa dạng (Trắc nghiệm, Đúng/Sai, Điền từ) phù hợp với chuẩn chương trình giáo dục.',
-      'Bạn có thể xem trước, chỉnh sửa đáp án và lưu thẳng vào ngân hàng câu hỏi.'
+      'Chọn Môn Học (Toán, Ngữ Văn, Tiếng Anh, KHTN, Lịch Sử - Địa Lý, Tin Học, GDCD...), Khối Lớp (1 - 12) và Chủ đề bài học.',
+      'Lựa chọn phân bổ 4 mức độ nhận thức: Nhận biết, Thông hiểu, Vận dụng và Vận dụng cao.',
+      'AI sẽ tự động tạo bộ câu hỏi đa dạng (Trắc nghiệm 4 lựa chọn, Đúng/Sai, Điền từ) bám sát yêu cầu cần đạt.',
+      'Bạn có thể xem trước, chỉnh sửa đáp án, bổ sung hình ảnh và lưu thẳng vào ngân hàng câu hỏi.'
     ]
   },
   {
     id: 'ai_3',
     category: 'ai',
-    title: 'Tạo Hình Ảnh Minh Họa Bài Học Bằng AI',
-    summary: 'Minh họa trực quan các khái niệm khoa học, sinh học, địa lý sinh động.',
+    title: 'Tạo Hình Ảnh Minh Họa & Sơ Đồ Vector SVG Bằng AI',
+    summary: 'Minh họa trực quan các khái niệm khoa học, sinh học, địa lý, hình học bằng đồ họa SVG sắc nét.',
     icon: '🎨',
     badge: 'Đồ họa SVG',
-    tags: ['tao anh ai', 've anh', 'minh hoa bai hoc', 'do hoa', 'hinh anh cau hoi', 'svg', 'ai ve anh'],
+    tags: ['tao anh ai', 've anh', 'minh hoa bai hoc', 'do hoa', 'hinh anh cau hoi', 'svg', 'ai ve anh', 'so do hinh hoc', 'vector'],
     details: [
-      'Trong trình chỉnh sửa câu hỏi, bấm "Tạo Ảnh AI".',
-      'Nhập mô tả hình ảnh cần vẽ (VD: Sơ đồ chu trình nước, Mô hình tế bào thực vật, Bản đồ khí hậu...).',
-      'AI sẽ vẽ vector SVG sắc nét, độ nét cao và gắn trực tiếp vào câu hỏi.'
+      'Trong trình chỉnh sửa câu hỏi, bấm nút "Tạo Ảnh AI / Sơ Đồ SVG".',
+      'Nhập mô tả hình ảnh cần vẽ (VD: Sơ đồ chu trình nước, Mô hình tế bào thực vật, Tam giác vuông đồng dạng, Bản đồ khí hậu...).',
+      'AI sẽ sinh mã vector SVG sắc nét không vỡ hạt trên màn hình TV lớn và gắn trực tiếp vào câu hỏi.'
     ]
   },
 
