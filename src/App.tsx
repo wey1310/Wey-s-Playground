@@ -1,4 +1,3 @@
-import { AICameraCallGame } from './components/games/AICameraCallGame';
 import React, { useState } from 'react';
 import { type GameType, type GameId, type GameSetupConfig, type QuestionBank, type Question, type AnswerLog, type Team, PRESET_THEMES } from "./types";
 import { DEFAULT_QUESTION_BANKS } from './data/defaultBanks';
@@ -30,6 +29,7 @@ import { PuzzleGame } from './components/games/PuzzleGame';
 import { RaceGame } from './components/games/RaceGame';
 import { RandomCallGame } from './components/games/RandomCallGame';
 import { AICameraCallGame } from './components/games/AICameraCallGame';
+import { LuckyStarGame } from './components/games/LuckyStarGame';
 
 import { EggCallGame } from './components/games/EggCallGame';
 import { BlindBoxGame } from './components/games/BlindBoxGame';
@@ -164,6 +164,15 @@ const GAMES_LIST: GameInfo[] = [
     badge: 'Trắc nghiệm',
     color: 'from-pink-500 to-purple-600',
     tags: ['Khởi động', 'Đồng đội', 'Luyện tập'],
+  },
+  {
+    id: 'lucky_star',
+    title: '⭐ Ngôi Sao May Mắn',
+    description: 'Bầu trời sao vũ trụ lung linh, xáo trộn huyền ảo và ngẫu nhiên chọn ra học sinh may mắn.',
+    icon: '⭐',
+    badge: 'Mới • Bầu trời sao',
+    color: 'from-amber-500 via-yellow-400 to-amber-600',
+    tags: ['Khởi động', 'Gọi tên', 'Lớp học', 'Vũ trụ'],
   },
   {
     id: 'randomcall',
@@ -1400,6 +1409,9 @@ export default function App() {
               }}
             >
               
+              {(activeGameConfig.gameId === 'lucky_star' || activeGameConfig.gameId === 'luckystar') && (
+                <LuckyStarGame config={activeGameConfig} questions={currentQuestions} onGameEnd={handleEndGame} />
+              )}
               {activeGameConfig.gameId === 'ai_star_call' && (
                 <AICameraCallGame config={activeGameConfig} questions={currentQuestions} onGameEnd={handleEndGame} themeType="star" />
               )}

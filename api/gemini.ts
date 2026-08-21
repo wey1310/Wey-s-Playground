@@ -1,5 +1,9 @@
 
-import { initFirebase } from "./aiUsage.js";
+import express from 'express';
+import { GoogleGenAI } from '@google/genai';
+import { initFirebase, verifyAndCheckQuota, recordUsage } from './aiUsage.js';
+
+const router = express.Router();
 
 async function resolveApiKey(apiId?: string): Promise<string | undefined> {
   if (!apiId) return undefined;
@@ -8,7 +12,7 @@ async function resolveApiKey(apiId?: string): Promise<string | undefined> {
     if (adminDb) {
       const doc = await adminDb.collection('geminiApiSecrets').doc(apiId).get();
       if (doc.exists) {
-        return doc.data().apiKey;
+        return doc.data()?.apiKey;
       }
     }
   } catch (e) {
@@ -16,18 +20,10 @@ async function resolveApiKey(apiId?: string): Promise<string | undefined> {
   }
   return undefined;
 }
-import express from 'express';
-import { GoogleGenAI } from '@google/genai';
 
-// SỬA LỖI TẠI ĐÂY: Thêm đuôi .js
-import { verifyAndCheckQuota, recordUsage } from './aiUsage.js';
-
-const router = express.Router();
-
-function getGeminiClient(customApiKey?: string) {
-  const apiKey = (customApiKey && typeof customApiKey === 'string' && customApiKey.trim()) || process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    throw new Error("GEMINI_API_KEY environment variable is not configured.");
+function getGeminiClient(apiKey: string) {
+  if (!apiKey || typeof apiKey !== 'string' || !apiKey.trim()) {
+    throw new Error("Chưa chọn API Gemini hoặc API không hợp lệ. Vui lòng chọn API trong mục Quản lý API.");
   }
   return new GoogleGenAI({
     apiKey: apiKey.trim(),
@@ -42,68 +38,41 @@ function getGeminiClient(customApiKey?: string) {
 // A generic proxy endpoint for Gemini
 router.post('/', async (req, res) => {
   const customApiId = (req.headers['x-gemini-api-id'] as string) || req.body.apiId;
-  const customKey = await resolveApiKey(customApiId) || process.env.GEMINI_API_KEY;
+  const customKey = await resolveApiKey(customApiId);
   const authHeader = req.headers.authorization;
   const idToken = authHeader?.startsWith('Bearer ') ? authHeader.split('Bearer ')[1] : null;
   const mode = req.body.aiMode || 'balanced';
 
-  // If custom API key or server GEMINI_API_KEY is available, proceed immediately
-  if (customKey || process.env.GEMINI_API_KEY) {
+  if (!customKey) {
+    return res.status(400).json({
+      success: false,
+      error: "Chưa chọn API Gemini hoặc API không hợp lệ. Vui lòng chọn API khả dụng trong mục Quản lý API."
+    });
+  }
+
+  // Quota & Auth check
+  let uid = "guest";
+  let email = "guest@wey.app";
+  let cost = 1;
+  let modelConfig = { model: mode === 'smart' ? 'gemini-2.5-pro' : 'gemini-2.5-flash' };
+
+  if (idToken && !idToken.startsWith('dev-')) {
     try {
-      const { prompt, contents, systemInstruction, temperature = 0.7, responseMimeType, responseSchema, model } = req.body;
-      const payloadContents = contents || prompt;
-      if (!payloadContents) {
-        throw new Error("Dữ liệu gửi lên phải bao gồm 'prompt' hoặc 'contents'.");
-      }
-
-      const ai = getGeminiClient(customKey);
-      const config: any = {
-        temperature: Math.min(Math.max(Number(temperature) || 0.7, 0), 1),
-      };
-      
-      if (systemInstruction && typeof systemInstruction === 'string') {
-        config.systemInstruction = systemInstruction.slice(0, 2000);
-      }
-      if (responseMimeType) config.responseMimeType = responseMimeType;
-      if (responseSchema) config.responseSchema = responseSchema;
-
-      const targetModel = model || (mode === 'smart' ? 'gemini-2.5-pro' : 'gemini-2.5-flash');
-      const response = await ai.models.generateContent({
-        model: targetModel,
-        contents: payloadContents,
-        config
-      });
-
-      return res.json({ success: true, text: response.text, data: response });
+      const quotaData = await verifyAndCheckQuota(idToken, mode);
+      uid = quotaData.uid;
+      email = quotaData.email;
+      cost = quotaData.cost;
+      modelConfig = quotaData.modelConfig;
     } catch (err: any) {
-      console.error("Gemini Proxy Error:", err);
-      return res.status(500).json({ success: false, error: err.message || "Lỗi khi gọi API Gemini." });
+      return res.status(403).json({ success: false, error: err.message || "Tài khoản đã hết hạn mức AI trong ngày." });
     }
   }
-  
-  if (!idToken) {
-    return res.status(401).json({ success: false, error: "Vui lòng nhập/chọn Gemini API Key trong mục 'Quản lý API' hoặc đăng nhập tài khoản Google để sử dụng tính năng AI." });
-  }
-
-  let quotaData;
-  try {
-    quotaData = await verifyAndCheckQuota(idToken, mode);
-  } catch (err: any) {
-    return res.status(403).json({ success: false, error: err.message });
-  }
-
-  const { uid, email, cost, modelConfig } = quotaData;
 
   try {
-    const { prompt, contents, systemInstruction, temperature = 0.7, responseMimeType, responseSchema } = req.body;
-
-    let payloadContents = contents || prompt;
+    const { prompt, contents, systemInstruction, temperature = 0.7, responseMimeType, responseSchema, model } = req.body;
+    const payloadContents = contents || prompt;
     if (!payloadContents) {
-      throw new Error("Dữ liệu gửi lên phải bao gồm 'prompt' hoặc 'contents'.");
-    }
-
-    if (typeof payloadContents === 'string' && payloadContents.length > 8000) {
-      throw new Error("Độ dài nội dung vượt quá giới hạn cho phép (tối đa 8.000 ký tự).");
+      return res.status(400).json({ success: false, error: "Dữ liệu gửi lên phải bao gồm 'prompt' hoặc 'contents'." });
     }
 
     const ai = getGeminiClient(customKey);
@@ -112,23 +81,29 @@ router.post('/', async (req, res) => {
     };
     
     if (systemInstruction && typeof systemInstruction === 'string') {
-      config.systemInstruction = systemInstruction.slice(0, 2000);
+      config.systemInstruction = systemInstruction.slice(0, 4000);
     }
     if (responseMimeType) config.responseMimeType = responseMimeType;
     if (responseSchema) config.responseSchema = responseSchema;
 
+    const targetModel = model || modelConfig.model;
     const response = await ai.models.generateContent({
-      model: modelConfig.model,
+      model: targetModel,
       contents: payloadContents,
       config
     });
 
-    await recordUsage(uid, email, mode, cost, true);
-    res.json({ success: true, text: response.text, data: response });
+    if (idToken && !idToken.startsWith('dev-')) {
+      await recordUsage(uid, email, mode, cost, true);
+    }
+
+    return res.json({ success: true, text: response.text, data: response });
   } catch (err: any) {
-    await recordUsage(uid, email, mode, cost, false);
+    if (idToken && !idToken.startsWith('dev-')) {
+      await recordUsage(uid, email, mode, cost, false);
+    }
     console.error("Gemini Proxy Error:", err);
-    res.status(500).json({ success: false, error: err.message || "Lỗi khi gọi API Gemini." });
+    return res.status(500).json({ success: false, error: err.message || "Lỗi khi gọi API Gemini." });
   }
 });
 

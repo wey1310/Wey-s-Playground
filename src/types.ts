@@ -135,7 +135,7 @@ export type GameId =
   | 'werewolf'
   | 'ma_soi';
 
-export type GameType = | "ai_star_call" | "ai_galaxy_call" | "ai_nebula_call" | "ai_bubble_call"
+export type GameType = | "lucky_star" | "luckystar" | "ai_star_call" | "ai_galaxy_call" | "ai_nebula_call" | "ai_bubble_call"
   | 'openbox'
   | 'mancala'
   | 'wheel'
