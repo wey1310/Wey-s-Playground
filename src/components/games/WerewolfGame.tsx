@@ -262,6 +262,8 @@ export const WerewolfGame: React.FC<WerewolfGameProps> = ({
       isGuessCorrect = targetNpc.role === guessVal;
     }
 
+    const isHanged = guessMode === 'is_werewolf' ? guessVal === 'yes' : true;
+
     // Update Team score & stats
     setTeams(prev => prev.map((t, idx) => {
       if (idx !== activeTeamIndex) return t;
@@ -273,19 +275,20 @@ export const WerewolfGame: React.FC<WerewolfGameProps> = ({
       };
     }));
 
-    // If correct, reveal the NPC
-    if (isGuessCorrect) {
-      setNpcs(prev => prev.map(n => {
-        if (n.id === targetNpc.id) {
-          return {
-            ...n,
-            isRevealed: true,
-            revealedRole: targetNpc.role
-          };
-        }
-        return n;
-      }));
+    // If they vote to hang (guessVal === 'yes' in is_werewolf mode), or if they guess exact role and it's correct (or they just vote to execute?), the user said "vote là vote treo cổ => vote ai => người đó bị treo cổ => chết".
+    setNpcs(prev => prev.map(n => {
+      if (n.id === targetNpc.id) {
+        return {
+          ...n,
+          isRevealed: isGuessCorrect || revealRoleOnDeath || isHanged,
+          revealedRole: (isGuessCorrect || revealRoleOnDeath || isHanged) ? targetNpc.role : n.revealedRole,
+          isAlive: isHanged ? false : n.isAlive
+        };
+      }
+      return n;
+    }));
 
+    if (isGuessCorrect) {
       if (!isMuted) soundFx.winFanfare();
       try {
         confetti({
@@ -297,8 +300,8 @@ export const WerewolfGame: React.FC<WerewolfGameProps> = ({
 
       setFeedbackBanner({
         show: true,
-        title: 'DỰ ĐOÁN XUẤT SẮC!',
-        message: `${activeTeam.name} đã đoán CHÍNH XÁC nhân dạng của ${targetNpc.name} (${targetNpc.role.toUpperCase()})!`,
+        title: 'QUYẾT ĐỊNH XUẤT SẮC!',
+        message: `${activeTeam.name} đã chọn CHÍNH XÁC! ${targetNpc.name} là ${targetNpc.role.toUpperCase()}!${isHanged ? ' Kẻ tình nghi đã bị treo cổ!' : ''}`,
         type: 'success',
         points: potentialPoints
       });
@@ -306,9 +309,9 @@ export const WerewolfGame: React.FC<WerewolfGameProps> = ({
       if (!isMuted) soundFx.wrong();
       setFeedbackBanner({
         show: true,
-        title: 'DỰ ĐOÁN CHƯA CHÍNH XÁC',
-        message: `${activeTeam.name} chưa đoán đúng nhân dạng của ${targetNpc.name}. Nhân dạng vẫn được giữ bí mật!`,
-        type: 'info'
+        title: 'QUYẾT ĐỊNH SAI LẦM',
+        message: `${activeTeam.name} đã phán đoán sai.${isHanged ? ` Người vô tội ${targetNpc.name} đã bị treo cổ oan uổng!` : ' Nhân dạng vẫn là ẩn số!'}`,
+        type: 'danger'
       });
     }
 

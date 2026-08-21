@@ -587,26 +587,26 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
           </div>
 
           {/* Interactive Winding Grid */}
-          <div className="flex-1 overflow-x-auto overflow-y-auto max-h-[520px] custom-scrollbar p-2">
+          <div className="flex-1 w-full h-full p-1 sm:p-2 flex flex-col justify-center overflow-hidden">
             <div 
-              className="min-w-[900px] grid grid-rows-6 gap-2 relative"
+              className="w-full grid grid-rows-6 gap-1 sm:gap-1.5 relative mx-auto max-w-full"
               style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
             >
               {/* Mr. Smith's Secret Blocks (Center Area) */}
               <div 
-                className="col-start-3 col-end-13 row-start-2 row-end-6 flex items-center justify-center gap-4 bg-slate-50/50 rounded-3xl border-2 border-dashed border-[#E3DCBA] p-4"
+                className="col-start-3 col-end-13 row-start-2 row-end-6 flex items-center justify-center gap-1.5 sm:gap-3 bg-slate-50/50 rounded-2xl border-2 border-dashed border-[#E3DCBA] p-1.5 sm:p-3"
               >
                 {[2, 3, 4, 5, 6].map(num => {
                   const isActive = smithSecretNumber === num && showSmithSecret;
                   return (
                     <div 
                       key={num}
-                      className={`w-16 h-16 flex flex-col items-center justify-center rounded-2xl shadow-sm border-2 transition-all duration-500
-                        ${isActive ? 'bg-[#4F683C] border-[#3D522B] text-white scale-110 shadow-lg' : 'bg-white border-[#E3DCBA] text-[#74806B] opacity-70'}
+                      className={`w-10 h-10 sm:w-12 sm:h-12 flex flex-col items-center justify-center rounded-xl shadow-xs border-2 transition-all duration-300
+                        ${isActive ? 'bg-[#4F683C] border-[#3D522B] text-white scale-105 shadow-md' : 'bg-white border-[#E3DCBA] text-[#74806B] opacity-70'}
                       `}
                     >
-                      <span className="text-[10px] font-black uppercase">Smith</span>
-                      <span className="text-2xl font-black">{num}</span>
+                      <span className="text-[8px] font-black uppercase">Smith</span>
+                      <span className="text-sm sm:text-base font-black">{num}</span>
                     </div>
                   );
                 })}
@@ -626,7 +626,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                 }
 
                 if (isDivisiblePreview) {
-                  tileBg += ' ring-2 ring-rose-400 bg-rose-50/80 shadow-md';
+                  tileBg += ' ring-2 ring-rose-400 bg-rose-50/80 shadow-xs';
                 }
 
                 // Only render tiles 1-36 for the ring
@@ -635,43 +635,43 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                 return (
                   <div
                     key={tile.number}
-                    className={`min-h-[72px] p-1.5 rounded-2xl border-2 flex flex-col justify-between relative transition-all ${tileBg}`}
+                    className={`min-h-[44px] sm:min-h-[50px] lg:min-h-[54px] p-1 rounded-xl border-2 flex flex-col justify-between relative transition-all ${tileBg}`}
                     style={{ gridArea: getGridArea(tile.number) }}
                   >
                     {/* Top Tile Info */}
-                    <div className="flex items-center justify-between text-[11px] font-black">
-                      <span className="w-5 h-5 rounded-lg bg-black/5 flex items-center justify-center">
+                    <div className="flex items-center justify-between text-[10px] font-black">
+                      <span className="w-4 h-4 rounded bg-black/5 flex items-center justify-center text-[9px]">
                         {tile.number}
                       </span>
                       {tile.type === 'golden' && (
-                        <span className="text-xs" title="Táo Vàng (+2 Táo)">⭐</span>
+                        <span className="text-[10px]" title="Táo Vàng (+2 Táo)">⭐</span>
                       )}
                       {tile.type === 'spring' && (
-                        <span className="text-xs" title="Lò Xo (+2 Ô)">🌀</span>
+                        <span className="text-[10px]" title="Lò Xo (+2 Ô)">🌀</span>
                       )}
                       {isDivisiblePreview && (
-                        <span className="text-[10px] text-rose-500 font-extrabold" title="Ô Nguy Hiểm Của Ông Smith">⚠️</span>
+                        <span className="text-[9px] text-rose-500 font-extrabold" title="Ô Nguy Hiểm Của Ông Smith">⚠️</span>
                       )}
                     </div>
 
                     {/* Pawns Display */}
-                    <div className="flex flex-wrap gap-1 items-center justify-center my-1">
+                    <div className="flex flex-wrap gap-0.5 items-center justify-center my-0.5">
                       {pawnsOnTile.map(pawn => (
                         <motion.div
                           key={pawn.id}
                           layoutId={`pawn_${pawn.id}`}
-                          className="w-6 h-6 rounded-full flex items-center justify-center text-xs shadow-md border-2 border-white font-black"
+                          className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] shadow-sm border border-white font-black"
                           style={{ backgroundColor: pawn.color }}
                           title={`${pawn.name} (Vị trí: ${tile.number})`}
                         >
-                          <span className="text-[10px]">{pawn.avatar}</span>
+                          <span className="text-[9px]">{pawn.avatar}</span>
                         </motion.div>
                       ))}
 
                       {caughtOnTile.map(cp => (
                         <div
                           key={cp.id}
-                          className="w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center text-[9px] shadow-xs border border-white"
+                          className="w-4 h-4 rounded-full bg-rose-600 text-white flex items-center justify-center text-[8px] shadow-xs border border-white"
                           title={`${cp.name} (Bị bắt)`}
                         >
                           ⛓️
@@ -681,7 +681,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
 
                     {/* Bottom Label if special */}
                     {tile.label && (
-                      <div className="text-[8px] font-extrabold text-center truncate opacity-80">
+                      <div className="text-[7px] font-extrabold text-center truncate opacity-80 leading-tight">
                         {tile.label}
                       </div>
                     )}

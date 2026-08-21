@@ -73,8 +73,16 @@ export const apiManager = {
   getActiveApi(): GeminiApiConfig | null {
     const activeId = this.getActiveApiId();
     const configs = this.getConfigs();
-    if (!activeId) return null;
-    return configs.find(c => c.id === activeId && c.enabled) || null;
+    if (activeId) {
+      const found = configs.find(c => c.id === activeId && c.enabled);
+      if (found) return found;
+    }
+    // Fallback: nếu chưa chọn ID cụ thể, tự động lấy cấu hình đầu tiên đang bật
+    const firstEnabled = configs.find(c => c.enabled);
+    if (firstEnabled) {
+      return firstEnabled;
+    }
+    return null;
   },
 
   getAvailableApis(): GeminiApiConfig[] {
@@ -83,10 +91,9 @@ export const apiManager = {
 
   getActiveOrFirstAvailableApi(): GeminiApiConfig | null {
     const active = this.getActiveApi();
-    if (active && active.status === 'ACTIVE') return active;
+    if (active) return active;
     const available = this.getAvailableApis();
-    const activeState = available.find(c => c.status === 'ACTIVE');
-    return activeState || available[0] || null;
+    return available[0] || null;
   },
 
   hasAnyApis(): boolean {
@@ -95,7 +102,7 @@ export const apiManager = {
 
   hasActiveApi(): boolean {
     const active = this.getActiveApi();
-    return !!active && active.status === 'ACTIVE';
+    return !!active && (active.status === 'ACTIVE' || active.status === 'UNCHECKED');
   },
 
   saveConfig(
@@ -116,6 +123,8 @@ export const apiManager = {
     const cleanEmail = data.email.trim();
     const cleanName = data.name.trim() || `API (${cleanEmail || 'Gemini'})`;
     const model = data.model?.trim() || 'gemini-2.5-flash';
+    // Mặc định nạp key vào là sẵn sàng ACTIVE ngay
+    const initialStatus = data.status || 'ACTIVE';
 
     let target: GeminiApiConfig;
 
@@ -123,7 +132,6 @@ export const apiManager = {
       const idx = configs.findIndex(c => c.id === data.id);
       if (idx !== -1) {
         const existing = configs[idx];
-        const keyChanged = existing.apiKey !== cleanKey;
         target = {
           ...existing,
           name: cleanName,
@@ -132,7 +140,7 @@ export const apiManager = {
           model,
           notes: data.notes?.trim() || '',
           enabled: data.enabled !== undefined ? data.enabled : existing.enabled,
-          status: keyChanged ? 'UNCHECKED' : (data.status || existing.status),
+          status: initialStatus,
           updatedAt: now,
         };
         configs[idx] = target;
@@ -145,7 +153,7 @@ export const apiManager = {
           model,
           notes: data.notes?.trim() || '',
           enabled: data.enabled !== undefined ? data.enabled : true,
-          status: data.status || 'UNCHECKED',
+          status: initialStatus,
           totalRequests: 0,
           successfulRequests: 0,
           failedRequests: 0,
@@ -163,7 +171,7 @@ export const apiManager = {
         model,
         notes: data.notes?.trim() || '',
         enabled: data.enabled !== undefined ? data.enabled : true,
-        status: data.status || 'UNCHECKED',
+        status: initialStatus,
         totalRequests: 0,
         successfulRequests: 0,
         failedRequests: 0,
@@ -175,10 +183,8 @@ export const apiManager = {
 
     this.setConfigs(configs);
 
-    // If no active API was set, set this one
-    if (!this.getActiveApiId()) {
-      this.setActiveApiId(target.id);
-    }
+    // Luôn chọn API vừa nạp/sửa làm API hoạt động mặc định
+    this.setActiveApiId(target.id);
 
     return target;
   },
@@ -239,6 +245,13 @@ export const apiManager = {
           model: config.model || 'gemini-2.5-flash',
         }),
       });
+
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const textError = await res.text();
+        console.warn("Phản hồi không phải JSON từ validate API:", res.status, textError.slice(0, 100));
+        throw new Error(`Lỗi máy chủ (${res.status}): Không thể xác thực API Key ngay lúc này.`);
+      }
 
       const data = await res.json();
       const now = new Date().toISOString();

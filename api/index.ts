@@ -36,11 +36,42 @@ function extractApiKey(req: Request): string | undefined {
 
 // Hàm kiểm tra và trừ hạn mức (quota) AI
 async function withAiQuota(req: any, res: any, requestedMode: 'fast' | 'balanced' | 'smart', handler: (req: any, res: any, modelConfig: any) => Promise<void>) {
+  const customApiKey = extractApiKey(req);
+  const customModel = req.headers['x-gemini-model'] || req.body?.model || (requestedMode === 'smart' ? 'gemini-2.5-pro' : 'gemini-2.5-flash');
+
+  // Nếu người dùng/admin đã nạp hoặc chọn Custom API Key (hoặc có sẵn hệ thống), cho phép chạy trực tiếp ngay
+  if (customApiKey || process.env.GEMINI_API_KEY) {
+    const modelConfig = {
+      model: typeof customModel === 'string' && customModel.trim() ? customModel.trim() : 'gemini-2.5-flash',
+      cost: 0,
+      mode: requestedMode,
+    };
+
+    const authHeader = req.headers.authorization;
+    const idToken = authHeader?.startsWith('Bearer ') ? authHeader.split('Bearer ')[1] : null;
+
+    try {
+      await handler(req, res, modelConfig);
+      // Nếu có idToken thì vẫn ghi nhận lịch sử một cách an toàn
+      if (idToken && !idToken.startsWith('dev-')) {
+        try {
+          const quotaData = await verifyAndCheckQuota(idToken, requestedMode);
+          await recordUsage(quotaData.uid, quotaData.email, requestedMode, 0, true);
+        } catch {}
+      }
+    } catch (err: any) {
+      if (!res.headersSent) {
+        res.status(500).json({ success: false, error: err.message || "Lỗi khi xử lý AI." });
+      }
+    }
+    return;
+  }
+
   const authHeader = req.headers.authorization;
   const idToken = authHeader?.startsWith('Bearer ') ? authHeader.split('Bearer ')[1] : null;
   
   if (!idToken) {
-    return res.status(401).json({ success: false, error: "Vui lòng đăng nhập Google để sử dụng AI." });
+    return res.status(401).json({ success: false, error: "Vui lòng nhập/chọn Gemini API Key trong mục 'Quản lý API' hoặc đăng nhập tài khoản để sử dụng AI." });
   }
 
   let quotaData;

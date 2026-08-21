@@ -71,10 +71,10 @@ export const WerewolfGuessModal: React.FC<WerewolfGuessModalProps> = ({
             <div>
               <span className="text-[10px] font-black uppercase tracking-widest text-amber-200 flex items-center gap-1">
                 <Sparkles className="w-3 h-3" />
-                <span>Quyền Đoán Điều Tra</span>
+                <span>Quyền Bỏ Phiếu Treo Cổ</span>
               </span>
               <h3 className="text-lg sm:text-xl font-black text-white">
-                🔍 {team.name} — AI LÀ KẺ ĐÁNG NGỜ?
+                ⚖️ {team.name} — QUYẾT ĐỊNH TREO CỔ AI?
               </h3>
             </div>
           </div>
@@ -94,7 +94,7 @@ export const WerewolfGuessModal: React.FC<WerewolfGuessModalProps> = ({
             <label className="text-xs font-black uppercase tracking-wider text-[#35452E] flex items-center justify-between mb-2">
               <span className="flex items-center gap-1.5">
                 <UserCheck className="w-4 h-4 text-[#4F683C]" />
-                <span>1. Chọn 1 Cư Dân Còn Sống Để Điều Tra ({aliveNpcs.length} người)</span>
+                <span>1. Chọn 1 Cư Dân Còn Sống Để Treo Cổ ({aliveNpcs.length} người)</span>
               </span>
               <span className="text-[10px] text-slate-500 font-semibold">Nhấp để chọn</span>
             </label>
@@ -164,7 +164,7 @@ export const WerewolfGuessModal: React.FC<WerewolfGuessModalProps> = ({
           <div>
             <label className="block text-xs font-black uppercase tracking-wider text-[#35452E] mb-2 flex items-center gap-1.5">
               <ShieldAlert className="w-4 h-4 text-[#4F683C]" />
-              <span>2. Quyết Định Đoán Cho {selectedNpc?.name || 'Cư Dân Này'}</span>
+              <span>2. Quyết Định Cho {selectedNpc?.name || 'Cư Dân Này'}</span>
             </label>
 
             {guessMode === 'is_werewolf' ? (
@@ -181,8 +181,8 @@ export const WerewolfGuessModal: React.FC<WerewolfGuessModalProps> = ({
                 >
                   <span className="text-3xl">🐺</span>
                   <div>
-                    <div className="text-sm font-black">LÀ MA SÓI</div>
-                    <p className="text-[11px] text-slate-500">Thuộc phe bóng đêm</p>
+                    <div className="text-sm font-black">TREO CỔ (LÀ MA SÓI)</div>
+                    <p className="text-[11px] text-slate-500">Giết kẻ đáng ngờ</p>
                   </div>
                 </button>
 
@@ -197,8 +197,8 @@ export const WerewolfGuessModal: React.FC<WerewolfGuessModalProps> = ({
                 >
                   <span className="text-3xl">🌿</span>
                   <div>
-                    <div className="text-sm font-black">KHÔNG PHẢI SÓI</div>
-                    <p className="text-[11px] text-slate-500">Dân làng hoặc role tốt</p>
+                    <div className="text-sm font-black">KHÔNG TREO CỔ</div>
+                    <p className="text-[11px] text-slate-500">Tha mạng cho người này</p>
                   </div>
                 </button>
               </div>
@@ -228,7 +228,7 @@ export const WerewolfGuessModal: React.FC<WerewolfGuessModalProps> = ({
           </div>
 
           <div className="p-3 bg-amber-50/70 rounded-xl border border-amber-200 text-xs text-amber-900 leading-relaxed font-medium">
-            💡 <strong>Quy tắc điểm:</strong> Đoán đúng nhận ngay <strong className="text-emerald-700 font-extrabold">+{potentialPoints} điểm</strong> ({basePoint} × {multiplier}) và hé lộ nhân dạng NPC. Đoán sai nhận <strong>+0 điểm</strong> (không bị trừ điểm).
+            💡 <strong>Quy tắc điểm:</strong> Nếu quyết định đúng (Treo cổ Sói hoặc Tha cho Dân làng) nhận ngay <strong className="text-emerald-700 font-extrabold">+{potentialPoints} điểm</strong> ({basePoint} × {multiplier}). Người bị treo cổ sẽ chết và bị loại khỏi trò chơi!
           </div>
         </div>
 
@@ -243,7 +243,7 @@ export const WerewolfGuessModal: React.FC<WerewolfGuessModalProps> = ({
             onClick={handleConfirm}
             className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-black text-sm shadow-md hover:shadow-lg transition cursor-pointer"
           >
-            <span>Xác Nhận Dự Đoán</span>
+            <span>Thực Thi Quyết Định</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

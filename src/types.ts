@@ -54,7 +54,7 @@ export interface Team {
   challengesLeft?: number; // For Territory game (2 per game)
 }
 
-export type GameMode = 'bank' | 'number' | 'custom' | 'none';
+export type GameMode = 'bank' | 'number' | 'custom' | 'none' | 'no_questions' | 'skip_questions';
 
 export type GameId =
   | 'open_box'
@@ -84,16 +84,30 @@ export type GameId =
   | 'chess'
   | 'whack_a_mole'
   | 'whackamole'
+  | 'whack_mole'
+  | 'whackmole'
+  | 'dap_chuot'
+  | 'dapchuot'
   | 'classification'
+  | 'phanloai'
+  | 'phan_loai'
   | 'flag_capture'
   | 'flagcapture'
+  | 'cuopco'
+  | 'cuop_co'
   | 'sack_race'
   | 'sackrace'
+  | 'nhaybaobo'
+  | 'nhay_bao_bo'
   | 'snail_word_search'
   | 'snail_words'
+  | 'snailwordsearch'
+  | 'ocsen'
+  | 'oc_sen'
   | 'mine_boom'
   | 'mineboom'
   | 'doboom'
+  | 'do_boom'
   | 'gold_miner'
   | 'goldminer'
   | 'daovang'

@@ -23,14 +23,48 @@ function getGeminiClient(customApiKey?: string) {
 
 // A generic proxy endpoint for Gemini
 router.post('/', async (req, res) => {
+  const customKey = (req.headers['x-gemini-api-key'] as string) || req.body.apiKey;
   const authHeader = req.headers.authorization;
   const idToken = authHeader?.startsWith('Bearer ') ? authHeader.split('Bearer ')[1] : null;
+  const mode = req.body.aiMode || 'balanced';
+
+  // If custom API key or server GEMINI_API_KEY is available, proceed immediately
+  if (customKey || process.env.GEMINI_API_KEY) {
+    try {
+      const { prompt, contents, systemInstruction, temperature = 0.7, responseMimeType, responseSchema, model } = req.body;
+      const payloadContents = contents || prompt;
+      if (!payloadContents) {
+        throw new Error("Dữ liệu gửi lên phải bao gồm 'prompt' hoặc 'contents'.");
+      }
+
+      const ai = getGeminiClient(customKey);
+      const config: any = {
+        temperature: Math.min(Math.max(Number(temperature) || 0.7, 0), 1),
+      };
+      
+      if (systemInstruction && typeof systemInstruction === 'string') {
+        config.systemInstruction = systemInstruction.slice(0, 2000);
+      }
+      if (responseMimeType) config.responseMimeType = responseMimeType;
+      if (responseSchema) config.responseSchema = responseSchema;
+
+      const targetModel = model || (mode === 'smart' ? 'gemini-2.5-pro' : 'gemini-2.5-flash');
+      const response = await ai.models.generateContent({
+        model: targetModel,
+        contents: payloadContents,
+        config
+      });
+
+      return res.json({ success: true, text: response.text, data: response });
+    } catch (err: any) {
+      console.error("Gemini Proxy Error:", err);
+      return res.status(500).json({ success: false, error: err.message || "Lỗi khi gọi API Gemini." });
+    }
+  }
   
   if (!idToken) {
-    return res.status(401).json({ success: false, error: "Vui lòng đăng nhập tài khoản Google để sử dụng tính năng AI." });
+    return res.status(401).json({ success: false, error: "Vui lòng nhập/chọn Gemini API Key trong mục 'Quản lý API' hoặc đăng nhập tài khoản Google để sử dụng tính năng AI." });
   }
-
-  const mode = req.body.aiMode || 'balanced';
 
   let quotaData;
   try {
@@ -53,7 +87,6 @@ router.post('/', async (req, res) => {
       throw new Error("Độ dài nội dung vượt quá giới hạn cho phép (tối đa 8.000 ký tự).");
     }
 
-    const customKey = (req.headers['x-gemini-api-key'] as string) || req.body.apiKey;
     const ai = getGeminiClient(customKey);
     const config: any = {
       temperature: Math.min(Math.max(Number(temperature) || 0.7, 0), 1),

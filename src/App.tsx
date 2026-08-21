@@ -1488,6 +1488,48 @@ export default function App() {
                 onGameEnd={handleEndGame}
               />
             )}
+            {(activeGameConfig.gameId === 'whack_a_mole' || activeGameConfig.gameId === 'whackamole' || activeGameConfig.gameId === 'whack_mole' || activeGameConfig.gameId === 'whackmole' || activeGameConfig.gameId === 'dap_chuot' || activeGameConfig.gameId === 'dapchuot') && (
+              <WhackMoleGame
+                config={activeGameConfig}
+                questions={currentQuestions}
+                onGameEnd={handleEndGame}
+              />
+            )}
+            {(activeGameConfig.gameId === 'classification' || activeGameConfig.gameId === 'phanloai' || activeGameConfig.gameId === 'phan_loai') && (
+              <ClassificationGame
+                config={activeGameConfig}
+                questions={currentQuestions}
+                onGameEnd={handleEndGame}
+              />
+            )}
+            {(activeGameConfig.gameId === 'flag_capture' || activeGameConfig.gameId === 'flagcapture' || activeGameConfig.gameId === 'cuopco' || activeGameConfig.gameId === 'cuop_co') && (
+              <FlagCaptureGame
+                config={activeGameConfig}
+                questions={currentQuestions}
+                onGameEnd={handleEndGame}
+              />
+            )}
+            {(activeGameConfig.gameId === 'sack_race' || activeGameConfig.gameId === 'sackrace' || activeGameConfig.gameId === 'nhaybaobo' || activeGameConfig.gameId === 'nhay_bao_bo') && (
+              <SackRaceGame
+                config={activeGameConfig}
+                questions={currentQuestions}
+                onGameEnd={handleEndGame}
+              />
+            )}
+            {(activeGameConfig.gameId === 'snail_word_search' || activeGameConfig.gameId === 'snailwordsearch' || activeGameConfig.gameId === 'snail_words' || activeGameConfig.gameId === 'ocsen' || activeGameConfig.gameId === 'oc_sen') && (
+              <SnailWordSearchGame
+                config={activeGameConfig}
+                questions={currentQuestions}
+                onGameEnd={handleEndGame}
+              />
+            )}
+            {(activeGameConfig.gameId === 'mine_boom' || activeGameConfig.gameId === 'mineboom' || activeGameConfig.gameId === 'doboom' || activeGameConfig.gameId === 'do_boom') && (
+              <MineBoomGame
+                config={activeGameConfig}
+                questions={currentQuestions}
+                onGameEnd={handleEndGame}
+              />
+            )}
             {activeGameConfig.gameId === 'chess' && (
               <ChessGame
                 config={activeGameConfig}

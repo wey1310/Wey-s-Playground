@@ -149,45 +149,51 @@ export const MonopolyBoard: React.FC<MonopolyBoardProps> = ({
               )}
 
               {/* Main Content: Icon & Name */}
-              <div className="flex-1 flex flex-col items-center justify-center text-center my-0.5">
-                <span className="text-sm sm:text-lg md:text-xl drop-shadow-xs">{tile.icon}</span>
-                <span className="text-[9px] sm:text-[10px] md:text-[11px] font-extrabold text-[#35452E] line-clamp-1 leading-tight px-0.5">
+              <div className="flex-1 flex flex-col items-center justify-center text-center my-0.5 z-10">
+                <span className="text-base sm:text-xl md:text-2xl drop-shadow-xs">{tile.icon}</span>
+                <span className="text-[9px] sm:text-[10px] md:text-[11px] font-[900] text-[#293B23] line-clamp-1 leading-tight px-0.5 mt-0.5">
                   {tile.name}
                 </span>
                 {tile.subtitle && (
-                  <span className="text-[7px] sm:text-[8px] text-[#74806B] font-semibold hidden md:inline truncate max-w-full">
+                  <span className="text-[7px] sm:text-[8px] text-[#55634D] font-bold hidden md:inline truncate max-w-full">
                     {tile.subtitle}
                   </span>
                 )}
               </div>
 
-              {/* Bottom Footer: Price or Rent or Action */}
-              <div className="pt-0.5 border-t border-slate-100 flex items-center justify-between text-[8px] sm:text-[9px] font-bold">
+              {/* Bottom Footer: Price or Rent or Action - Crystal Clear */}
+              <div className="pt-0.5 z-10">
                 {tile.type === 'property' ? (
                   owner ? (
-                    <div className="w-full flex items-center justify-between text-[#35452E]">
-                      <span className="text-[7px] sm:text-[8px] text-[#74806B]">Thuê:</span>
-                      <span className="font-extrabold text-rose-700">${tile.rentLevels[tile.level] || tile.baseRent}</span>
+                    <div className="w-full flex items-center justify-between px-1 py-0.5 rounded bg-rose-50 border border-rose-200 text-[#35452E]">
+                      <span className="text-[7px] sm:text-[8px] font-bold text-rose-800">Thuê:</span>
+                      <span className="text-[8px] sm:text-[9px] font-black text-rose-900">${tile.rentLevels[tile.level] || tile.baseRent}</span>
                     </div>
                   ) : (
-                    <div className="w-full flex items-center justify-between text-[#4F683C]">
-                      <span className="text-[7px] sm:text-[8px]">Giá:</span>
-                      <span className="font-black">${tile.price}</span>
+                    <div className="w-full flex items-center justify-between px-1 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-[#293B23]">
+                      <span className="text-[7px] sm:text-[8px] font-bold text-emerald-800">Giá:</span>
+                      <span className="text-[8px] sm:text-[9px] font-black text-emerald-950">${tile.price}</span>
                     </div>
                   )
                 ) : tile.type === 'start' ? (
-                  <span className="text-emerald-700 font-extrabold w-full text-center">+ $200</span>
+                  <div className="w-full py-0.5 rounded bg-emerald-100 text-emerald-900 font-black text-center text-[8px] sm:text-[9px]">
+                    +$200
+                  </div>
                 ) : tile.type === 'tax' ? (
-                  <span className="text-rose-600 font-extrabold w-full text-center">- ${tile.price || 50}</span>
+                  <div className="w-full py-0.5 rounded bg-rose-100 text-rose-900 font-black text-center text-[8px] sm:text-[9px]">
+                    -${tile.price || 50}
+                  </div>
                 ) : (
-                  <span className="text-[#74806B] font-bold w-full text-center text-[8px]">Ô #{tile.index}</span>
+                  <div className="w-full py-0.5 text-center text-[8px] font-extrabold text-[#74806B]">
+                    Ô #{tile.index}
+                  </div>
                 )}
               </div>
 
               {/* Owner Flag Tag on Corner */}
               {owner && (
                 <div
-                  className="absolute top-0 right-0 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-bl-lg shadow-xs flex items-center justify-center text-[8px] text-white font-black"
+                  className="absolute top-0 right-0 w-4 h-4 rounded-bl-lg shadow-xs flex items-center justify-center text-[8px] text-white font-black z-20"
                   style={{ backgroundColor: owner.color }}
                   title={`Chủ đất: ${owner.name}`}
                 >
@@ -195,27 +201,27 @@ export const MonopolyBoard: React.FC<MonopolyBoardProps> = ({
                 </div>
               )}
 
-              {/* Pawns Standing on this Tile */}
-              <div className="absolute inset-0 pointer-events-none flex items-center justify-center p-1">
-                <div className="flex items-center justify-center gap-1 flex-wrap">
-                  {pawnsHere.map((pawn, idx) => {
+              {/* Pawns Standing on this Tile - Floating without covering text */}
+              {pawnsHere.length > 0 && (
+                <div className="absolute top-1 left-1 pointer-events-none flex items-center gap-0.5 z-30 flex-wrap max-w-[80%]">
+                  {pawnsHere.map((pawn) => {
                     const isCurrentTurn = pawn.id === currentTeam?.id;
                     return (
                       <motion.div
                         key={pawn.id}
                         layoutId={`pawn_${pawn.id}`}
                         animate={isCurrentTurn ? {
-                          scale: [1, 1.25, 1],
-                          y: [0, -6, 0]
+                          scale: [1, 1.2, 1],
+                          y: [0, -3, 0]
                         } : { scale: 1, y: 0 }}
                         transition={{ repeat: isCurrentTurn ? Infinity : 0, duration: 1.2 }}
-                        className="relative z-30"
+                        className="relative"
                       >
                         <div
-                          className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-white shadow-md flex items-center justify-center text-xs sm:text-sm transform transition-transform"
+                          className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white shadow-md flex items-center justify-center text-[8px] sm:text-[10px] transform font-black"
                           style={{
                             backgroundColor: pawn.color,
-                            boxShadow: `0 4px 10px ${pawn.color}88`
+                            boxShadow: `0 2px 6px ${pawn.color}99`
                           }}
                           title={`${pawn.name} ($${pawn.money})`}
                         >
@@ -225,7 +231,7 @@ export const MonopolyBoard: React.FC<MonopolyBoardProps> = ({
                     );
                   })}
                 </div>
-              </div>
+              )}
             </div>
           );
         })}

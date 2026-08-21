@@ -103,12 +103,18 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
   // Ghost hover preview
   const [ghostPos, setGhostPos] = useState<{ r: number; c: number } | null>(null);
 
+  const isSkipQuestions = config.mode === 'none';
+
   // Question & game state
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [currentQuestionNum, setCurrentQuestionNum] = useState<number | null>(null);
-  const [gameState, setGameState] = useState<'WAIT_SPIN' | 'WAIT_JUDGE' | 'WAIT_DICE' | 'WAIT_MOVE' | 'SPEED_SELECT'>('WAIT_SPIN');
+  const [gameState, setGameState] = useState<'WAIT_SPIN' | 'WAIT_JUDGE' | 'WAIT_DICE' | 'WAIT_MOVE' | 'SPEED_SELECT'>(
+    isSkipQuestions ? 'WAIT_DICE' : 'WAIT_SPIN'
+  );
   const [isRollingDice, setIsRollingDice] = useState<boolean>(false);
-  const [statusMessage, setStatusMessage] = useState<string>('Bấm "Quay Lựa Chọn Câu Hỏi" để bắt đầu lượt!');
+  const [statusMessage, setStatusMessage] = useState<string>(
+    isSkipQuestions ? 'Hãy bấm "Lắc Xí Ngầu" để bắt đầu lượt di chuyển!' : 'Bấm "Quay Lựa Chọn Câu Hỏi" để bắt đầu lượt!'
+  );
 
   // Skill purchase per turn
   const [boughtSkills, setBoughtSkills] = useState<Record<string, boolean>>({});
@@ -135,6 +141,13 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
   const activeTeamInfo = LUDO_TEAMS[currentTurnTeamIdx] || LUDO_TEAMS[0];
 
   const handleSpinQuestion = () => {
+    if (config.mode === 'none') {
+      soundFx.winFanfare();
+      setGameState('WAIT_DICE');
+      setStatusMessage(`${activeTeamInfo.name} đang tiến hành tung xúc xắc.`);
+      return;
+    }
+
     soundFx.diceRoll();
 
     if (config.mode === 'bank') {
@@ -473,8 +486,14 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
     setCanRollAgain(false);
     setIsSpecialRoll(false);
     setCurrentTurnTeamIdx((currentTurnTeamIdx + 1) % numTeams);
-    setGameState('WAIT_SPIN');
-    setStatusMessage(`Lượt của ${teams[(currentTurnTeamIdx + 1) % numTeams]?.name}! Bấm "Quay Lựa Chọn Câu Hỏi"`);
+    const nextTeamName = teams[(currentTurnTeamIdx + 1) % numTeams]?.name || 'Đội tiếp theo';
+    if (isSkipQuestions) {
+      setGameState('WAIT_DICE');
+      setStatusMessage(`Lượt của ${nextTeamName}! Hãy bấm "Lắc Xí Ngầu" để di chuyển.`);
+    } else {
+      setGameState('WAIT_SPIN');
+      setStatusMessage(`Lượt của ${nextTeamName}! Bấm "Quay Lựa Chọn Câu Hỏi"`);
+    }
   };
 
   // Hover ghost preview

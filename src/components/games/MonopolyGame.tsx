@@ -93,10 +93,12 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
     }));
   });
 
+  const isSkipQuestions = config.mode === 'none' || (config as any).monopolySkipQuestions === true || config.mode === 'no_questions';
+
   // Current Turn State
   const [currentTeamIndex, setCurrentTeamIndex] = useState<number>(0);
   const [turnCount, setTurnCount] = useState<number>(1);
-  const [phase, setPhase] = useState<MonopolyGamePhase>('QUESTION');
+  const [phase, setPhase] = useState<MonopolyGamePhase>(isSkipQuestions ? 'DICE_READY' : 'QUESTION');
   const [lastDiceRoll, setLastDiceRoll] = useState<number>(1);
   const [isRollingDice, setIsRollingDice] = useState<boolean>(false);
   const [activeTileIndex, setActiveTileIndex] = useState<number | null>(0);
@@ -260,6 +262,12 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
         } : t));
         addLog(currentTeam, 'jail', `Vẫn còn đang cách ly trong tù (${currentTeam.jailTurnsRemaining - 1} lượt còn lại)`);
       }
+    }
+
+    if (config.mode === 'none') {
+      // Chế độ bỏ qua câu hỏi -> trực tiếp sang gieo xúc xắc
+      setPhase('DICE_READY');
+      return;
     }
 
     setIsQuestionModalOpen(true);
@@ -764,7 +772,7 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
 
     setCurrentTeamIndex(nextIdx);
     setActiveTileIndex(teams[nextIdx].position);
-    setPhase('QUESTION');
+    setPhase(isSkipQuestions ? 'DICE_READY' : 'QUESTION');
   };
 
   // Reset Game
@@ -785,7 +793,7 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
     })));
     setCurrentTeamIndex(0);
     setTurnCount(1);
-    setPhase('QUESTION');
+    setPhase(isSkipQuestions ? 'DICE_READY' : 'QUESTION');
     setWinnerTeam(null);
     setLogs([]);
     setActiveTileIndex(0);
