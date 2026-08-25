@@ -1,0 +1,62 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuth() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuth() && (
+        request.auth.token.email == 'hoangbang1310@gmail.com' ||
+        request.auth.token.email == 'pthngan1310@gmail.com'
+      );
+    }
+
+    match /users/{userId} {
+      allow read, write: if isAuth() && (request.auth.uid == userId || isAdmin());
+    }
+
+    match /questionBanks/{bankId} {
+      allow read: if true;
+      allow write: if isAuth() && (resource == null || resource.data.ownerId == request.auth.uid || isAdmin());
+    }
+
+    match /userActivityLogs/{logId} {
+      allow read: if isAdmin();
+      allow write: if isAuth();
+    }
+
+    match /gameSessions/{sessionId} {
+      allow read: if isAdmin();
+      allow write: if true; 
+    }
+
+    match /aiUsage/{userId} {
+      allow read, write: if isAuth() && request.auth.uid == userId;
+    }
+
+    match /aiUsageLogs/{logId} {
+      allow read: if isAdmin();
+      allow write: if isAuth();
+    }
+
+    match /systemConfig/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /geminiApisPublic/{apiId} {
+      allow read: if true;
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['lastUsedAt', 'updatedAt', 'lastCheckedAt', 'totalRequests', 'successfulRequests', 'failedRequests', 'responseTimeMs', 'lastError', 'status'])
+      );
+    }
+
+    match /geminiApiSecrets/{apiId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

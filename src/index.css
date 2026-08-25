@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --wey-primary-green: #6F8F55;
+  --wey-dark-green: #4F683C;
+  --wey-soft-green: #DCEBCB;
+  --wey-paper-cream: #FFFDF5;
+  --wey-warm-cream: #F8F3E5;
+  --wey-paper-border: #DED5B8;
+  --wey-tea-yellow: #E9D58F;
+  --wey-pastel-pink: #F2B6C7;
+  --wey-text-dark: #35452E;
+  --wey-text-secondary: #74806B;
+}
+
+body {
+  font-family: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: #35452E;
+  background-color: #F8F3E5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom sticker paper badge rotate animation & style */
+.wey-badge-sticker {
+  border-radius: 8px 14px 8px 14px;
+  box-shadow: 0 2px 5px rgba(79, 104, 60, 0.08);
+}
+
+/* Custom paper card decorative accent */
+.wey-paper-card {
+  position: relative;
+}
+
+.wey-paper-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, transparent 50%, rgba(222, 213, 184, 0.25) 50%);
+  border-bottom-left-radius: 8px;
+  pointer-events: none;
+}
+
+/* Custom focus ring for Wey Pastel UI */
+.wey-focus-ring:focus {
+  outline: none;
+  border-color: #8FA875;
+  box-shadow: 0 0 0 3px rgba(143, 168, 117, 0.2);
+}
+
+/* Custom sleek scrollbar for classroom screens */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(248, 243, 229, 0.6);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb {
+  background: #B9CDA0;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6F8F55;
+}
+
+/* Game Stage Auto Fit Container */
+.game-stage-container {
+  max-height: clamp(480px, calc(100vh - 130px), 880px);
+  width: 100%;
+}
+
+@keyframes slideUpBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.92);
+  }
+  55% {
+    transform: translateY(-8px) scale(1.05);
+  }
+  72% {
+    transform: translateY(4px) scale(0.98);
+  }
+  86% {
+    transform: translateY(-2px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+#displayName[data-state="selected"] {
+  animation: slideUpBounce 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
