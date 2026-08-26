@@ -22,19 +22,22 @@ import {
   Check,
   AlertTriangle,
   Play,
-  Key
+  Key,
+  Upload
 } from 'lucide-react';
 import { type QuestionBank, type AppUser, ADMIN_EMAILS, type UserActivityLog } from "../types";
 import { getAllUsers, setUserBlockStatus, getActivityLogs } from '../lib/db';
 import { safeAlert, safeConfirm } from '../utils/safeAlert';
 import { AdminApiSection } from './api/AdminApiSection';
+import { GAMES_LIST } from '../App';
 
 export interface WebConfig {
   siteTitle: string;
   siteSubtitle: string;
   bgImageUrl: string;
   announcement: string;
-  primaryTheme: 'matcha' | 'default' | 'pastel';
+  primaryTheme: 'pastel' | 'matcha' | 'sakura' | 'sky' | 'mono';
+  gameAvatars?: Record<string, string>;
 }
 
 interface AdminViewProps {
@@ -72,6 +75,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
   // Web config state
   const [localConfig, setLocalConfig] = useState<WebConfig>(webConfig);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [uploadingAvatars, setUploadingAvatars] = useState<Record<string, boolean>>({});
 
   // Fetch Firestore users
   const fetchUsers = async () => {
@@ -136,6 +140,59 @@ export const AdminView: React.FC<AdminViewProps> = ({
     }
   };
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>, gameId: string) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit for Cloudinary
+      safeAlert("Vui lòng chọn ảnh nhỏ hơn 5MB");
+      return;
+    }
+
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+    if (!cloudName || !uploadPreset) {
+      safeAlert("Chưa cấu hình Cloudinary (VITE_CLOUDINARY_CLOUD_NAME & VITE_CLOUDINARY_UPLOAD_PRESET) trong .env");
+      return;
+    }
+
+    setUploadingAvatars(prev => ({ ...prev, [gameId]: true }));
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', uploadPreset);
+      formData.append('folder', 'wey-playground/avatars');
+
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const data = await response.json();
+      
+      setLocalConfig(prev => ({
+        ...prev,
+        gameAvatars: {
+          ...(prev.gameAvatars || {}),
+          [gameId]: data.secure_url
+        }
+      }));
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      safeAlert("Có lỗi xảy ra khi tải ảnh lên Cloudinary.");
+    } finally {
+      setUploadingAvatars(prev => ({ ...prev, [gameId]: false }));
+      // Reset file input
+      e.target.value = '';
+    }
+  };
+
   const handleSaveWebConfig = (e: React.FormEvent) => {
     e.preventDefault();
     onUpdateWebConfig(localConfig);
@@ -173,12 +230,12 @@ export const AdminView: React.FC<AdminViewProps> = ({
   return (
     <div className="w-full min-h-[calc(100vh-80px)] space-y-6 animate-fade-in pb-12">
       {/* Top Header & Breadcrumb */}
-      <div className="bg-[#FFFDF5] border border-[#DED5B8] rounded-[24px] p-5 sm:p-6 shadow-sm flex flex-wrap items-center justify-between gap-4 wey-paper-card">
+      <div className="bg-w-bg-card border border-w-border rounded-[24px] p-5 sm:p-6 shadow-sm flex flex-wrap items-center justify-between gap-4 wey-paper-card">
         <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={onBackToHome}
-            className="flex items-center gap-2 px-3.5 py-2 bg-[#E9F0D9] hover:bg-[#D4E4C1] text-[#3D522B] font-extrabold text-xs rounded-xl border border-[#B9CDA0] shadow-2xs transition cursor-pointer"
+            className="flex items-center gap-2 px-3.5 py-2 bg-w-accent-light hover:bg-[#D4E4C1] text-w-primary-hover font-extrabold text-xs rounded-xl border border-w-accent-border shadow-2xs transition cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Quay Lại Trang Chủ</span>
@@ -194,22 +251,22 @@ export const AdminView: React.FC<AdminViewProps> = ({
                 • Hệ thống Quản trị Tập trung
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-[900] text-[#35452E] tracking-tight mt-1">
+            <h1 className="text-xl sm:text-2xl font-[900] text-w-text-main tracking-tight mt-1">
               Bảng Quản Trị Hệ Thống Toàn Diện
             </h1>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-[#DED5B8] text-xs font-bold text-[#4F683C]">
+          <div className="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-w-border text-xs font-bold text-w-primary-dark">
             <span>Tổng người dùng:</span>
-            <span className="px-2 py-0.5 rounded-md bg-[#E9F0D9] text-[#2D3F22]">{totalUsers}</span>
+            <span className="px-2 py-0.5 rounded-md bg-w-accent-light text-[#2D3F22]">{totalUsers}</span>
           </div>
 
           <button
             type="button"
             onClick={onBackToHome}
-            className="px-4 py-2 bg-[#6F8F55] hover:bg-[#5F7E4B] text-white font-bold text-xs rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5"
+            className="px-4 py-2 bg-w-primary hover:bg-w-primary-hover text-white font-bold text-xs rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5"
           >
             <Play className="w-3.5 h-3.5 fill-current text-[#E9D58F]" />
             <span>Xem Giao Diện Game</span>
@@ -218,14 +275,14 @@ export const AdminView: React.FC<AdminViewProps> = ({
       </div>
 
       {/* Main Admin Dashboard Container */}
-      <div className="bg-white border border-[#DED5B8] rounded-[24px] shadow-[0_10px_30px_rgba(79,104,60,0.08)] overflow-hidden flex flex-col">
+      <div className="bg-white border border-w-border rounded-[24px] shadow-[0_10px_30px_rgba(79,104,60,0.08)] overflow-hidden flex flex-col">
         {/* Navigation Tabs */}
-        <div className="flex border-b border-[#DED5B8] bg-[#FAF7EE] px-4 sm:px-6 pt-3 gap-2 overflow-x-auto hide-scrollbar">
+        <div className="flex border-b border-w-border bg-w-bg-alt px-4 sm:px-6 pt-3 gap-2 overflow-x-auto hide-scrollbar">
           <button
             onClick={() => setActiveTab('users')}
             className={`flex items-center gap-2 px-4 py-3 font-bold text-xs rounded-t-xl transition border-b-2 cursor-pointer ${
               activeTab === 'users'
-                ? 'border-[#6F8F55] text-[#4F683C] bg-white shadow-xs'
+                ? 'border-w-primary text-w-primary-dark bg-white shadow-xs'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -237,7 +294,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
             onClick={() => setActiveTab('apis')}
             className={`flex items-center gap-2 px-4 py-3 font-bold text-xs rounded-t-xl transition border-b-2 cursor-pointer ${
               activeTab === 'apis'
-                ? 'border-[#6F8F55] text-[#4F683C] bg-white shadow-xs'
+                ? 'border-w-primary text-w-primary-dark bg-white shadow-xs'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -249,7 +306,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
             onClick={() => setActiveTab('limits')}
             className={`flex items-center gap-2 px-4 py-3 font-bold text-xs rounded-t-xl transition border-b-2 cursor-pointer ${
               activeTab === 'limits'
-                ? 'border-[#6F8F55] text-[#4F683C] bg-white shadow-xs'
+                ? 'border-w-primary text-w-primary-dark bg-white shadow-xs'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -261,7 +318,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
             onClick={() => setActiveTab('web')}
             className={`flex items-center gap-2 px-4 py-3 font-bold text-xs rounded-t-xl transition border-b-2 cursor-pointer ${
               activeTab === 'web'
-                ? 'border-[#6F8F55] text-[#4F683C] bg-white shadow-xs'
+                ? 'border-w-primary text-w-primary-dark bg-white shadow-xs'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -273,7 +330,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
             onClick={() => setActiveTab('banks')}
             className={`flex items-center gap-2 px-4 py-3 font-bold text-xs rounded-t-xl transition border-b-2 cursor-pointer ${
               activeTab === 'banks'
-                ? 'border-[#6F8F55] text-[#4F683C] bg-white shadow-xs'
+                ? 'border-w-primary text-w-primary-dark bg-white shadow-xs'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -285,7 +342,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
             onClick={() => setActiveTab('logs')}
             className={`flex items-center gap-2 px-4 py-3 font-bold text-xs rounded-t-xl transition border-b-2 cursor-pointer ${
               activeTab === 'logs'
-                ? 'border-[#6F8F55] text-[#4F683C] bg-white shadow-xs'
+                ? 'border-w-primary text-w-primary-dark bg-white shadow-xs'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -301,9 +358,9 @@ export const AdminView: React.FC<AdminViewProps> = ({
             <div className="space-y-6">
               {/* Stat Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-[#FAF7EE] border border-[#DED5B8] p-4 rounded-2xl">
+                <div className="bg-w-bg-alt border border-w-border p-4 rounded-2xl">
                   <div className="text-xs font-bold text-slate-500">Tổng tài khoản</div>
-                  <div className="text-2xl font-black text-[#35452E] mt-1">{totalUsers}</div>
+                  <div className="text-2xl font-black text-w-text-main mt-1">{totalUsers}</div>
                 </div>
                 <div className="bg-emerald-50/70 border border-emerald-200 p-4 rounded-2xl">
                   <div className="text-xs font-bold text-emerald-700">Đang hoạt động</div>
@@ -316,7 +373,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
               </div>
 
               {/* Control Toolbar */}
-              <div className="flex flex-wrap items-center justify-between gap-3 bg-[#FAF7EE] p-3.5 rounded-2xl border border-[#DED5B8]">
+              <div className="flex flex-wrap items-center justify-between gap-3 bg-w-bg-alt p-3.5 rounded-2xl border border-w-border">
                 <div className="relative flex-1 min-w-[240px]">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
@@ -324,7 +381,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     value={searchUserQuery}
                     onChange={e => setSearchUserQuery(e.target.value)}
                     placeholder="Tìm theo email hoặc tên hiển thị..."
-                    className="w-full pl-9 pr-4 py-2 bg-white border border-[#DED5B8] rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#6F8F55]"
+                    className="w-full pl-9 pr-4 py-2 bg-white border border-w-border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-w-primary"
                   />
                 </div>
 
@@ -332,7 +389,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   <select
                     value={userStatusFilter}
                     onChange={e => setUserStatusFilter(e.target.value as any)}
-                    className="px-3 py-2 bg-white border border-[#DED5B8] rounded-xl text-xs font-bold text-slate-700 focus:outline-none cursor-pointer"
+                    className="px-3 py-2 bg-white border border-w-border rounded-xl text-xs font-bold text-slate-700 focus:outline-none cursor-pointer"
                   >
                     <option value="all">Tất cả trạng thái</option>
                     <option value="active">Đang hoạt động</option>
@@ -342,7 +399,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   <button
                     onClick={fetchUsers}
                     disabled={isLoadingUsers}
-                    className="p-2 bg-white hover:bg-[#E9F0D9] text-[#4F683C] border border-[#DED5B8] rounded-xl transition cursor-pointer"
+                    className="p-2 bg-white hover:bg-w-accent-light text-w-primary-dark border border-w-border rounded-xl transition cursor-pointer"
                     title="Làm mới danh sách"
                   >
                     <RefreshCw className={`w-4 h-4 ${isLoadingUsers ? 'animate-spin' : ''}`} />
@@ -351,10 +408,10 @@ export const AdminView: React.FC<AdminViewProps> = ({
               </div>
 
               {/* Users Table */}
-              <div className="border border-[#DED5B8] rounded-2xl overflow-hidden shadow-2xs">
+              <div className="border border-w-border rounded-2xl overflow-hidden shadow-2xs">
                 {isLoadingUsers ? (
                   <div className="p-12 text-center text-slate-400 space-y-3">
-                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-[#6F8F55]" />
+                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-w-primary" />
                     <p className="text-xs font-bold">Đang tải danh sách người dùng...</p>
                   </div>
                 ) : filteredUsers.length === 0 ? (
@@ -367,7 +424,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs border-collapse">
                       <thead>
-                        <tr className="bg-[#FAF7EE] border-b border-[#DED5B8] text-slate-600 font-extrabold uppercase tracking-wider text-[10px]">
+                        <tr className="bg-w-bg-alt border-b border-w-border text-slate-600 font-extrabold uppercase tracking-wider text-[10px]">
                           <th className="p-4">Người dùng</th>
                           <th className="p-4">Email</th>
                           <th className="p-4">Vai trò</th>
@@ -381,10 +438,10 @@ export const AdminView: React.FC<AdminViewProps> = ({
                           const isAdmin = ADMIN_EMAILS.includes(u.email.toLowerCase());
                           const isBlocked = !!u.isBlocked;
                           return (
-                            <tr key={u.uid} className="hover:bg-[#FAF7EE]/50 transition">
+                            <tr key={u.uid} className="hover:bg-w-bg-alt/50 transition">
                               <td className="p-4">
                                 <div className="flex items-center gap-3">
-                                  <div className="w-9 h-9 rounded-xl bg-[#E9F0D9] border border-[#B9CDA0] flex items-center justify-center text-sm font-black text-[#3D522B] shrink-0">
+                                  <div className="w-9 h-9 rounded-xl bg-w-accent-light border border-w-accent-border flex items-center justify-center text-sm font-black text-w-primary-hover shrink-0">
                                     {u.displayName ? u.displayName.charAt(0).toUpperCase() : u.email.charAt(0).toUpperCase()}
                                   </div>
                                   <div>
@@ -458,17 +515,17 @@ export const AdminView: React.FC<AdminViewProps> = ({
           {/* TAB 2: LIMITS & GUEST PLAY */}
           {activeTab === 'limits' && (
             <div className="space-y-6">
-              <div className="bg-[#FAF7EE] border border-[#DED5B8] p-5 rounded-2xl space-y-3">
+              <div className="bg-w-bg-alt border border-w-border p-5 rounded-2xl space-y-3">
                 <div className="flex items-center gap-2">
-                  <Gamepad2 className="w-5 h-5 text-[#6F8F55]" />
-                  <h3 className="font-extrabold text-[#35452E] text-base">Cơ Chế Giới Hạn Lượt Chơi Khách</h3>
+                  <Gamepad2 className="w-5 h-5 text-w-primary" />
+                  <h3 className="font-extrabold text-w-text-main text-base">Cơ Chế Giới Hạn Lượt Chơi Khách</h3>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   Để khuyến khích giáo viên và học sinh đăng nhập, hệ thống tự động áp dụng chính sách:
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                  <div className="p-4 rounded-xl bg-white border border-[#DED5B8]">
-                    <div className="font-black text-[#35452E] text-sm">👤 Khách vãng lai (Chưa đăng nhập)</div>
+                  <div className="p-4 rounded-xl bg-white border border-w-border">
+                    <div className="font-black text-w-text-main text-sm">👤 Khách vãng lai (Chưa đăng nhập)</div>
                     <p className="text-xs text-slate-500 mt-1">Giới hạn <strong>3 lượt chơi / ngày</strong>. Khi hết lượt hệ thống hiển thị popup yêu cầu đăng nhập.</p>
                   </div>
                   <div className="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200">
@@ -485,63 +542,145 @@ export const AdminView: React.FC<AdminViewProps> = ({
             <form onSubmit={handleSaveWebConfig} className="space-y-6 max-w-2xl">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-black text-[#35452E] uppercase mb-1">
+                  <label className="block text-xs font-black text-w-text-main uppercase mb-1">
+                    Theme Chủ Đạo (Màu Sắc)
+                  </label>
+                  <select
+                    value={localConfig.primaryTheme || 'pastel'}
+                    onChange={e => {
+                      const newTheme = e.target.value as any;
+                      setLocalConfig({ ...localConfig, primaryTheme: newTheme });
+                      onUpdateWebConfig({ ...webConfig, primaryTheme: newTheme });
+                    }}
+                    className="w-full px-3.5 py-2.5 bg-white border border-w-border rounded-xl text-xs focus:ring-2 focus:ring-w-primary cursor-pointer"
+                  >
+                    <option value="pastel">🎨 Pastel (Mặc Định)</option>
+                    <option value="matcha">🍵 Matcha (Xanh Lá Đậm)</option>
+                    <option value="sakura">🌸 Sakura (Hồng Phấn Pastel)</option>
+                    <option value="sky">🌤️ Sky (Xanh Da Trời Mềm Mại)</option>
+                    <option value="mono">📓 Mono (Trắng Đen Tối Giản)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-black text-w-text-main uppercase mb-1">
                     Tiêu Đề Trang Web
                   </label>
                   <input
                     type="text"
                     value={localConfig.siteTitle}
                     onChange={e => setLocalConfig({ ...localConfig, siteTitle: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#DED5B8] rounded-xl text-xs focus:ring-2 focus:ring-[#6F8F55]"
+                    className="w-full px-3.5 py-2.5 bg-white border border-w-border rounded-xl text-xs focus:ring-2 focus:ring-w-primary"
                     placeholder="WEY'S PLAYGROUND..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-black text-[#35452E] uppercase mb-1">
+                  <label className="block text-xs font-black text-w-text-main uppercase mb-1">
                     Phụ Đề / Slogan
                   </label>
                   <input
                     type="text"
                     value={localConfig.siteSubtitle}
                     onChange={e => setLocalConfig({ ...localConfig, siteSubtitle: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#DED5B8] rounded-xl text-xs focus:ring-2 focus:ring-[#6F8F55]"
+                    className="w-full px-3.5 py-2.5 bg-white border border-w-border rounded-xl text-xs focus:ring-2 focus:ring-w-primary"
                     placeholder="Sân chơi câu hỏi tương tác dành cho giáo dục..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-black text-[#35452E] uppercase mb-1">
+                  <label className="block text-xs font-black text-w-text-main uppercase mb-1">
                     URL Hình Nền Tùy Chỉnh (Background Image)
                   </label>
                   <input
                     type="url"
                     value={localConfig.bgImageUrl}
                     onChange={e => setLocalConfig({ ...localConfig, bgImageUrl: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#DED5B8] rounded-xl text-xs focus:ring-2 focus:ring-[#6F8F55]"
+                    className="w-full px-3.5 py-2.5 bg-white border border-w-border rounded-xl text-xs focus:ring-2 focus:ring-w-primary"
                     placeholder="https://images.unsplash.com/..."
                   />
                   <p className="text-[11px] text-slate-400 mt-1">Để trống nếu muốn dùng màu nền Matcha Warm mặc định.</p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-black text-[#35452E] uppercase mb-1">
+                  <label className="block text-xs font-black text-w-text-main uppercase mb-1">
                     Thông Báo Đầu Trang (Announcement Banner)
                   </label>
                   <input
                     type="text"
                     value={localConfig.announcement}
                     onChange={e => setLocalConfig({ ...localConfig, announcement: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-white border border-[#DED5B8] rounded-xl text-xs focus:ring-2 focus:ring-[#6F8F55]"
+                    className="w-full px-3.5 py-2.5 bg-white border border-w-border rounded-xl text-xs focus:ring-2 focus:ring-w-primary"
                     placeholder="Chào mừng quý thầy cô và các em học sinh..."
                   />
+                </div>
+                
+                <div className="pt-6 border-t border-w-border">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Palette className="w-5 h-5 text-w-primary" />
+                    <h3 className="text-sm font-black text-w-text-main uppercase">Ảnh Đại Diện & Biểu Tượng Các Game</h3>
+                  </div>
+                  <p className="text-xs text-slate-500 mb-4">
+                    Nhập URL hình ảnh để thay đổi icon mặc định của từng trò chơi trên màn hình trang chủ. Nếu để trống sẽ sử dụng icon mặc định.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                    {GAMES_LIST.map((game) => {
+                      const avatarUrl = (localConfig.gameAvatars || {})[game.id] || '';
+                      
+                      return (
+                        <div key={game.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                          <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                            <span className="flex items-center gap-2">
+                              <span>{game.icon}</span> 
+                              <span className="truncate max-w-[150px]">{game.title}</span>
+                            </span>
+                            {avatarUrl && (
+                              <img src={avatarUrl} alt="" className="w-6 h-6 rounded-full object-cover border border-slate-300" />
+                            )}
+                          </label>
+                          <div className="flex gap-2">
+                            <input
+                              type="url"
+                              value={avatarUrl}
+                              onChange={(e) => {
+                                setLocalConfig(prev => ({
+                                  ...prev,
+                                  gameAvatars: {
+                                    ...(prev.gameAvatars || {}),
+                                    [game.id]: e.target.value
+                                  }
+                                }));
+                              }}
+                              className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-w-primary"
+                              placeholder="URL ảnh hoặc tải lên..."
+                            />
+                            <label className={`flex items-center justify-center w-9 h-9 shrink-0 bg-white border border-slate-200 rounded-lg ${uploadingAvatars[game.id] ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-slate-50 transition-colors text-slate-500 hover:text-w-primary'}`} title="Tải ảnh lên">
+                              {uploadingAvatars[game.id] ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <Upload className="w-4 h-4" />
+                              )}
+                              <input 
+                                type="file" 
+                                accept="image/*" 
+                                className="hidden" 
+                                disabled={uploadingAvatars[game.id]}
+                                onChange={(e) => handleAvatarUpload(e, game.id)}
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-[#6F8F55] hover:bg-[#5F7E4B] text-white font-black text-xs rounded-xl shadow-xs transition cursor-pointer flex items-center gap-2"
+                  className="px-6 py-2.5 bg-w-primary hover:bg-w-primary-hover text-white font-black text-xs rounded-xl shadow-xs transition cursor-pointer flex items-center gap-2"
                 >
                   <Check className="w-4 h-4" />
                   <span>Lưu Cấu Hình Giao Diện</span>
@@ -553,7 +692,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
           {/* TAB 4: QUESTION BANKS */}
           {activeTab === 'banks' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between gap-3 bg-[#FAF7EE] p-3.5 rounded-2xl border border-[#DED5B8]">
+              <div className="flex items-center justify-between gap-3 bg-w-bg-alt p-3.5 rounded-2xl border border-w-border">
                 <div className="text-xs font-bold text-slate-700">
                   Tổng cộng: <strong>{questionBanks.length}</strong> bộ câu hỏi trong hệ thống
                 </div>
@@ -581,17 +720,17 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       key={b.id}
                       className={`p-4 rounded-2xl border transition flex flex-col justify-between space-y-3 ${
                         isActive
-                          ? 'bg-[#E9F0D9]/70 border-[#6F8F55] shadow-xs'
-                          : 'bg-white border-[#DED5B8] hover:border-[#B9CDA0]'
+                          ? 'bg-w-accent-light/70 border-w-primary shadow-xs'
+                          : 'bg-white border-w-border hover:border-w-accent-border'
                       }`}
                     >
                       <div>
                         <div className="flex items-center justify-between gap-2">
-                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-white border border-[#DED5B8] text-slate-600">
+                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-white border border-w-border text-slate-600">
                             {b.subject || 'Tổng hợp'} • {b.grade || 'Chung'}
                           </span>
                           {isActive && (
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#6F8F55] text-white">
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-w-primary text-white">
                               Đang dùng
                             </span>
                           )}
@@ -603,7 +742,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       <div className="flex items-center gap-2 pt-2 border-t border-[#EFE8D6]">
                         <button
                           onClick={() => onSelectActiveBank(b.id)}
-                          className="flex-1 py-1.5 bg-white hover:bg-[#FAF7EE] text-[#4F683C] text-xs font-bold rounded-lg border border-[#DED5B8] transition cursor-pointer"
+                          className="flex-1 py-1.5 bg-white hover:bg-w-bg-alt text-w-primary-dark text-xs font-bold rounded-lg border border-w-border transition cursor-pointer"
                         >
                           Chọn Dùng
                         </button>
@@ -637,7 +776,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
           {/* TAB 5: LOGS */}
           {activeTab === 'logs' && (
             <div className="space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-3 bg-[#FAF7EE] p-3.5 rounded-2xl border border-[#DED5B8]">
+              <div className="flex flex-wrap items-center justify-between gap-3 bg-w-bg-alt p-3.5 rounded-2xl border border-w-border">
                 <div className="relative flex-1 min-w-[240px]">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
@@ -645,14 +784,14 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     value={logSearchQuery}
                     onChange={e => setLogSearchQuery(e.target.value)}
                     placeholder="Tìm nhật ký theo email, hành động..."
-                    className="w-full pl-9 pr-4 py-2 bg-white border border-[#DED5B8] rounded-xl text-xs focus:ring-2 focus:ring-[#6F8F55]"
+                    className="w-full pl-9 pr-4 py-2 bg-white border border-w-border rounded-xl text-xs focus:ring-2 focus:ring-w-primary"
                   />
                 </div>
 
                 <button
                   onClick={fetchLogs}
                   disabled={isLoadingLogs}
-                  className="p-2 bg-white hover:bg-[#E9F0D9] text-[#4F683C] border border-[#DED5B8] rounded-xl transition cursor-pointer"
+                  className="p-2 bg-white hover:bg-w-accent-light text-w-primary-dark border border-w-border rounded-xl transition cursor-pointer"
                   title="Làm mới nhật ký"
                 >
                   <RefreshCw className={`w-4 h-4 ${isLoadingLogs ? 'animate-spin' : ''}`} />
@@ -660,10 +799,10 @@ export const AdminView: React.FC<AdminViewProps> = ({
               </div>
 
               {/* Logs Table */}
-              <div className="border border-[#DED5B8] rounded-2xl overflow-hidden">
+              <div className="border border-w-border rounded-2xl overflow-hidden">
                 {isLoadingLogs ? (
                   <div className="p-12 text-center text-slate-400">
-                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-[#6F8F55]" />
+                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-w-primary" />
                     <p className="text-xs font-bold mt-2">Đang tải nhật ký...</p>
                   </div>
                 ) : filteredLogs.length === 0 ? (
@@ -675,7 +814,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs border-collapse">
                       <thead>
-                        <tr className="bg-[#FAF7EE] border-b border-[#DED5B8] text-slate-600 font-extrabold uppercase tracking-wider text-[10px]">
+                        <tr className="bg-w-bg-alt border-b border-w-border text-slate-600 font-extrabold uppercase tracking-wider text-[10px]">
                           <th className="p-4">Thời gian</th>
                           <th className="p-4">Người dùng</th>
                           <th className="p-4">Hành động</th>
@@ -684,7 +823,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       </thead>
                       <tbody className="divide-y divide-[#EFE8D6]">
                         {filteredLogs.map(log => (
-                          <tr key={log.id} className="hover:bg-[#FAF7EE]/50 transition">
+                          <tr key={log.id} className="hover:bg-w-bg-alt/50 transition">
                             <td className="p-4 text-slate-500 whitespace-nowrap">
                               {log.timestamp ? new Date(log.timestamp).toLocaleString('vi-VN') : '--'}
                             </td>
@@ -692,7 +831,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                               {log.userEmail || 'Khách (Chưa đăng nhập)'}
                             </td>
                             <td className="p-4">
-                              <span className="px-2.5 py-1 rounded-full bg-[#E9F0D9] text-[#3D522B] font-extrabold text-[10px]">
+                              <span className="px-2.5 py-1 rounded-full bg-w-accent-light text-w-primary-hover font-extrabold text-[10px]">
                                 {log.actionType}
                               </span>
                             </td>

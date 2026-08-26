@@ -256,7 +256,7 @@ export function PoseChallengeGame({ config, questions, onGameEnd }: PoseChalleng
                         (e.target as HTMLImageElement).src = getPoseSvgFallback(idx);
                       }}
                     />
-                    <span className="absolute top-1 left-1 w-6 h-6 rounded-lg bg-emerald-600 text-white font-black text-xs flex items-center justify-center shadow">
+                    <span className="absolute top-1 left-1 w-6 h-6 rounded-lg bg-emerald-600 text-w-text-main font-black text-xs flex items-center justify-center shadow">
                       {String.fromCharCode(65 + idx)}
                     </span>
                   </div>
@@ -299,7 +299,7 @@ export function PoseChallengeGame({ config, questions, onGameEnd }: PoseChalleng
               <button
                 disabled={isAnswered}
                 onClick={() => handleTeacherEvaluation(true)}
-                className="flex-1 sm:flex-initial px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-black text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5"
+                className="flex-1 sm:flex-initial px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5"
               >
                 <Check className="w-4 h-4" />
                 <span>ĐÚNG (+100đ)</span>
@@ -307,7 +307,7 @@ export function PoseChallengeGame({ config, questions, onGameEnd }: PoseChalleng
               <button
                 disabled={isAnswered}
                 onClick={() => handleTeacherEvaluation(false)}
-                className="flex-1 sm:flex-initial px-5 py-2.5 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-black text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5"
+                className="flex-1 sm:flex-initial px-5 py-2.5 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5"
               >
                 <X className="w-4 h-4" />
                 <span>SAI (Mất Lượt)</span>
@@ -329,7 +329,7 @@ export function PoseChallengeGame({ config, questions, onGameEnd }: PoseChalleng
 
         <button
           onClick={() => onGameEnd(teamsState, logs)}
-          className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl shadow transition flex items-center gap-1.5"
+          className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center gap-1.5"
         >
           <Trophy className="w-4 h-4" />
           <span>Kết Thúc Game</span>

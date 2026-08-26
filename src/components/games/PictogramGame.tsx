@@ -2,6 +2,7 @@ import { safeAlert, safeConfirm } from "../../utils/safeAlert";
 import React, { useState, useEffect } from 'react';
 import { GameSetupConfig, Question, AnswerLog, Team } from '../../types';
 import { soundFx } from '../../utils/audio';
+import { fetchWithAuth } from '../../utils/api';
 import {
   Sparkles,
   Check,
@@ -162,12 +163,10 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
     soundFx.buttonClick();
 
     try {
-      const res = await fetch('/api/generate-pictogram-phrases', {
+      const data = await fetchWithAuth('/api/generate-pictogram-phrases', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: topicInput.trim() }),
       });
-      const data = await res.json();
       if (data.success && Array.isArray(data.phrases) && data.phrases.length > 0) {
         const text = data.phrases.join('\n');
         setRawPhrasesInput(text);
@@ -189,16 +188,14 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
     setIsGenerating(true);
 
     try {
-      const res = await fetch('/api/generate-pictogram', {
+      const data = await fetchWithAuth('/api/generate-pictogram', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           phrase: targetPhrase.trim().toUpperCase(),
           difficulty: diffLevel,
         }),
       });
 
-      const data = await res.json();
       if (data.success && Array.isArray(data.hints) && data.hints.length > 0) {
         const formatted: HintImage[] = data.hints.map((h: any, idx: number) => {
           const provider: ImageSourceType = h.provider === 'SEARCH' ? 'SEARCH' : 'GENERATED';
@@ -315,16 +312,14 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
     if (!target) return;
 
     try {
-      const res = await fetch('/api/generate-pictogram', {
+      const data = await fetchWithAuth('/api/generate-pictogram', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           phrase: currentPhrase,
           difficulty,
           hintIndex,
         }),
       });
-      const data = await res.json();
       if (data.success && data.hints && data.hints.length > 0) {
         const item = data.hints[0];
         setHints((prev) =>
@@ -513,7 +508,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
             onClick={() => setIsTeacherEditing(!isTeacherEditing)}
             className={`px-3 py-1.5 rounded-xl font-bold text-xs shadow-sm border transition flex items-center gap-1.5 ${
               isTeacherEditing
-                ? 'bg-amber-500 text-white border-amber-600'
+                ? 'bg-amber-500 text-w-text-main border-amber-600'
                 : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
             }`}
             title="Màn hình chỉnh sửa hình gợi ý của giáo viên"
@@ -548,7 +543,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                     onClick={() => setCustomInputTab('direct')}
                     className={`px-3 py-1 rounded-lg transition ${
                       customInputTab === 'direct'
-                        ? 'bg-amber-500 text-white shadow-sm'
+                        ? 'bg-amber-500 text-w-text-main shadow-sm'
                         : 'text-slate-600 hover:text-amber-900'
                     }`}
                   >
@@ -558,7 +553,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                     onClick={() => setCustomInputTab('topic')}
                     className={`px-3 py-1 rounded-lg transition ${
                       customInputTab === 'topic'
-                        ? 'bg-amber-500 text-white shadow-sm'
+                        ? 'bg-amber-500 text-w-text-main shadow-sm'
                         : 'text-slate-600 hover:text-amber-900'
                     }`}
                   >
@@ -606,7 +601,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                             }}
                             className={`px-2.5 py-1 rounded-lg text-xs font-black transition ${
                               inputPhrase === phrase
-                                ? 'bg-amber-500 text-white shadow'
+                                ? 'bg-amber-500 text-w-text-main shadow'
                                 : 'bg-white text-slate-700 border border-amber-200 hover:bg-amber-100'
                             }`}
                           >
@@ -629,7 +624,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                     <button
                       onClick={handleSuggestPhrasesFromTopic}
                       disabled={isGeneratingTopicPhrases || !topicInput.trim()}
-                      className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs rounded-xl shadow transition flex items-center gap-1.5 disabled:opacity-50"
+                      className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center gap-1.5 disabled:opacity-50"
                     >
                       <Sparkles className={`w-3.5 h-3.5 ${isGeneratingTopicPhrases ? 'animate-spin' : ''}`} />
                       <span>{isGeneratingTopicPhrases ? 'Đang tạo...' : '✨ AI Gợi Ý Cụm Từ'}</span>
@@ -689,7 +684,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                   <button
                     onClick={() => generateHintsForPhrase(inputPhrase, difficulty)}
                     disabled={isGenerating || !inputPhrase.trim()}
-                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs rounded-xl shadow transition flex items-center gap-1.5 disabled:opacity-50"
+                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center gap-1.5 disabled:opacity-50"
                   >
                     <Sparkles className={`w-3.5 h-3.5 ${isGenerating ? 'animate-spin' : ''}`} />
                     <span>{isGenerating ? 'Đang tạo hình...' : '✨ TẠO HÌNH GỢI Ý'}</span>
@@ -718,8 +713,8 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                             onClick={() => handleToggleProvider(idx)}
                             className={`px-2 py-0.5 rounded-full text-[10px] font-black shadow flex items-center gap-1 border ${
                               h.provider === 'SEARCH'
-                                ? 'bg-sky-500 text-white border-sky-600'
-                                : 'bg-purple-600 text-white border-purple-700'
+                                ? 'bg-sky-500 text-w-text-main border-sky-600'
+                                : 'bg-purple-600 text-w-text-main border-purple-700'
                             }`}
                             title="Click để chuyển đổi nguồn SEARCH (kho ảnh) ↔ GENERATED (AI vẽ)"
                           >
@@ -729,7 +724,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                         </div>
 
                         {/* Hover Quick Actions */}
-                        <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2 p-1">
+                        <div className="absolute inset-0 bg-w-bg-alt opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2 p-1">
                           <label className="p-1.5 bg-white text-slate-800 rounded-xl shadow cursor-pointer hover:bg-amber-100 transition text-[11px] font-bold flex items-center gap-1">
                             <Upload className="w-3.5 h-3.5 text-amber-600" />
                             <span>Tải Ảnh</span>
@@ -744,7 +739,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                           <button
                             onClick={() => handleRegenerateHint(idx)}
                             title="Yêu cầu AI vẽ lại hình này"
-                            className="p-1.5 bg-amber-500 text-white rounded-xl shadow hover:bg-amber-600 transition text-[11px] font-bold flex items-center gap-1"
+                            className="p-1.5 bg-amber-500 text-w-text-main rounded-xl shadow hover:bg-amber-600 transition text-[11px] font-bold flex items-center gap-1"
                           >
                             <RefreshCw className="w-3.5 h-3.5" />
                             <span>Tạo lại</span>
@@ -756,7 +751,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between text-[11px] font-bold text-amber-900">
                           <span>Gợi ý #{idx + 1}:</span>
-                          <span className="text-[10px] text-slate-400 italic">Chỉ giáo viên thấy</span>
+                          <span className="text-[10px] text-w-text-muted italic">Chỉ giáo viên thấy</span>
                         </div>
                         <input
                           type="text"
@@ -769,7 +764,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
 
                       {/* Remove Button */}
                       <div className="flex items-center justify-between pt-1 border-t border-slate-100">
-                        <span className="text-[10px] text-slate-400 font-mono">ID: {h.id.slice(-4)}</span>
+                        <span className="text-[10px] text-w-text-muted font-mono">ID: {h.id.slice(-4)}</span>
                         <button
                           onClick={() => handleRemoveCard(idx)}
                           className="px-2 py-1 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-lg transition flex items-center gap-1"
@@ -798,7 +793,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                 soundFx.correct();
               }}
               disabled={isGenerating}
-              className="w-full py-4 bg-[#6B8E5C] hover:bg-[#58784B] text-white font-black text-base rounded-2xl shadow-xl transition flex items-center justify-center gap-2 transform hover:scale-[1.01]"
+              className="w-full py-4 bg-[#6B8E5C] hover:bg-[#58784B] text-w-text-main font-black text-base rounded-2xl shadow-xl transition flex items-center justify-center gap-2 transform hover:scale-[1.01]"
             >
               {isGenerating ? (
                 <RefreshCw className="w-5 h-5 text-amber-200 animate-spin" />
@@ -849,7 +844,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                 <button
                   onClick={handleNextBankQuestion}
                   disabled={currentQuestionIndex >= questions.length - 1 || isGenerating}
-                  className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-lg shadow-sm disabled:opacity-40 transition flex items-center gap-1"
+                  className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-w-text-main font-bold text-xs rounded-lg shadow-sm disabled:opacity-40 transition flex items-center gap-1"
                 >
                   <span>Câu Tiếp</span>
                   <ChevronRight className="w-4 h-4" />
@@ -968,7 +963,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
               <button
                 onClick={handleRevealNextHint}
                 disabled={hints.every((h) => h.isRevealed) || isGenerating}
-                className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs rounded-xl shadow transition flex items-center gap-2 disabled:opacity-50"
+                className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center gap-2 disabled:opacity-50"
               >
                 <Eye className="w-4 h-4" />
                 <span>👁 Hiện Hình Tiếp Theo</span>
@@ -988,7 +983,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
               <button
                 onClick={() => handleAnswerResult(true)}
                 disabled={isGenerating}
-                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow transition flex items-center gap-2 disabled:opacity-50"
+                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center gap-2 disabled:opacity-50"
               >
                 <Check className="w-4 h-4" />
                 <span>ĐÚNG (+200đ)</span>
@@ -997,7 +992,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
               <button
                 onClick={() => handleAnswerResult(false)}
                 disabled={isGenerating}
-                className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl shadow transition flex items-center gap-2 disabled:opacity-50"
+                className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center gap-2 disabled:opacity-50"
               >
                 <X className="w-4 h-4" />
                 <span>SAI (Đổi Lượt)</span>
@@ -1006,7 +1001,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
               <button
                 onClick={handleSkip}
                 disabled={isGenerating}
-                className="px-4 py-2.5 bg-slate-600 hover:bg-slate-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5 disabled:opacity-50"
+                className="px-4 py-2.5 bg-slate-600 hover:bg-slate-700 text-w-text-main font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5 disabled:opacity-50"
               >
                 <SkipForward className="w-4 h-4" />
                 <span>Bỏ Qua</span>
@@ -1016,7 +1011,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                 <button
                   onClick={handleNextBankQuestion}
                   disabled={currentQuestionIndex >= questions.length - 1 || isGenerating}
-                  className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow transition flex items-center gap-1.5 disabled:opacity-50"
+                  className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center gap-1.5 disabled:opacity-50"
                 >
                   <span>Câu Tiếp Theo</span>
                   <ChevronRight className="w-4 h-4" />
@@ -1024,7 +1019,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
               ) : (
                 <button
                   onClick={() => setIsTeacherEditing(true)}
-                  className="px-4 py-2.5 bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs rounded-xl shadow transition"
+                  className="px-4 py-2.5 bg-amber-700 hover:bg-amber-800 text-w-text-main font-bold text-xs rounded-xl shadow transition"
                 >
                   Soạn Cụm Từ Mới
                 </button>
@@ -1032,7 +1027,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
 
               <button
                 onClick={handleFinishGame}
-                className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs rounded-xl shadow transition flex items-center gap-1.5"
+                className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center gap-1.5"
               >
                 <Trophy className="w-4 h-4" />
                 <span>Kết Thúc</span>

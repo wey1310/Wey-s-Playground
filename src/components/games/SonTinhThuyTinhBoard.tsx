@@ -27,7 +27,7 @@ export const SonTinhThuyTinhBoard: React.FC<SonTinhThuyTinhBoardProps> = ({
   };
 
   return (
-    <div className="w-full h-full min-h-[400px] flex flex-col relative bg-[#F4F8F1] rounded-2xl overflow-hidden border-2 border-[#DCEBCB]">
+    <div className="w-full h-full min-h-[400px] flex flex-col relative bg-[#F4F8F1] rounded-2xl overflow-hidden border-2 border-w-accent-muted">
       
       {/* Environmental overlay based on water level */}
       {waterLevel > 1 && (
@@ -45,7 +45,7 @@ export const SonTinhThuyTinhBoard: React.FC<SonTinhThuyTinhBoardProps> = ({
             const pawnsHere = teams.filter(t => t.position === tile.id);
             const sinhLeHere = sinhLeList.find(s => s.tilePosition === tile.id && !s.isCollected);
 
-            let tileBg = 'bg-[#FAF7EE] border-[#E3DCBA] text-slate-700';
+            let tileBg = 'bg-w-bg-alt border-[#E3DCBA] text-slate-700';
             let tileIcon = '🌾';
 
             if (tile.type === 'palace') {
@@ -98,7 +98,7 @@ export const SonTinhThuyTinhBoard: React.FC<SonTinhThuyTinhBoardProps> = ({
 
                 {/* Defensive Wall */}
                 {tile.hasStoneWall && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-black text-[#4F683C] bg-[#E9F0D9] px-2 py-0.5 rounded-md border-2 border-[#B9CDA0] shadow-sm z-20 whitespace-nowrap">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-black text-w-primary-dark bg-w-accent-light px-2 py-0.5 rounded-md border-2 border-w-accent-border shadow-sm z-20 whitespace-nowrap">
                     🛡️ Lũy Đá
                   </div>
                 )}

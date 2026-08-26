@@ -201,14 +201,14 @@ export const BowlingGame: React.FC<BowlingGameProps> = ({
         <div className="flex items-center gap-3">
           <button
             onClick={onBackToHome}
-            className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-white transition-colors"
+            className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-w-text-main transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
             <span className="text-2xl">🎳</span>
             <div>
-              <h1 className="font-black text-sm sm:text-base text-amber-300">
+              <h1 className="font-black text-sm sm:text-base text-amber-600">
                 {config.bowlingGameTitle || 'Bowling Trí Tuệ (Bowling Game)'}
               </h1>
               <span className="text-[11px] text-zinc-400">
@@ -221,13 +221,13 @@ export const BowlingGame: React.FC<BowlingGameProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={handleToggleMute}
-            className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-white transition-colors"
+            className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-w-text-main transition-colors"
           >
             {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
           </button>
           <button
             onClick={handleResetGame}
-            className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-white transition-colors"
+            className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-w-text-main transition-colors"
             title="Chơi lại ván đấu"
           >
             <RotateCcw className="w-5 h-5" />
@@ -261,9 +261,9 @@ export const BowlingGame: React.FC<BowlingGameProps> = ({
           <div className="w-full max-w-4xl mx-auto bg-zinc-900/95 border-2 border-amber-500/40 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-md">
             <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
               <div className="flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-amber-400" />
-                <span className="text-xs font-black text-amber-300 uppercase tracking-wider">
-                  CÂU HỎI MỞ KHÓA LƯỢT NÉM: <strong className="text-white">{activeTeam?.name}</strong>
+                <HelpCircle className="w-4 h-4 text-amber-600" />
+                <span className="text-xs font-black text-amber-600 uppercase tracking-wider">
+                  CÂU HỎI MỞ KHÓA LƯỢT NÉM: <strong className="text-w-text-main">{activeTeam?.name}</strong>
                 </span>
               </div>
               <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
@@ -295,11 +295,11 @@ export const BowlingGame: React.FC<BowlingGameProps> = ({
                           ? 'bg-emerald-600/30 border-emerald-500 text-emerald-300 shadow-lg shadow-emerald-500/20'
                           : showFailure
                           ? 'bg-rose-600/30 border-rose-500 text-rose-300 shadow-lg shadow-rose-500/20'
-                          : 'bg-zinc-950 border-zinc-800 hover:border-amber-400/80 text-zinc-200'
+                          : 'bg-zinc-950 border-zinc-800 hover:border-amber-400 text-zinc-200'
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <span className="w-7 h-7 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-black text-amber-300">
+                        <span className="w-7 h-7 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-black text-amber-600">
                           {String.fromCharCode(65 + idx)}
                         </span>
                         <span>{option}</span>
@@ -330,28 +330,28 @@ export const BowlingGame: React.FC<BowlingGameProps> = ({
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-white/70 backdrop-blur-sm backdrop-blur-xl flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.85, y: 30 }}
               animate={{ scale: 1, y: 0 }}
               className="bg-zinc-900 border-2 border-amber-400 rounded-3xl p-8 max-w-lg w-full text-center shadow-2xl relative overflow-hidden"
             >
-              <div className="w-20 h-20 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-4xl mx-auto mb-4 text-amber-300 shadow-xl shadow-amber-500/30">
+              <div className="w-20 h-20 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-4xl mx-auto mb-4 text-amber-600 shadow-xl shadow-amber-500/30">
                 🏆
               </div>
 
-              <span className="text-xs font-black uppercase tracking-widest text-amber-400">
+              <span className="text-xs font-black uppercase tracking-widest text-amber-600">
                 NHÀ VÔ ĐỊCH BOWLING
               </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-white mt-1 mb-4">
+              <h2 className="text-2xl sm:text-3xl font-black text-w-text-main mt-1 mb-4">
                 {gameState.winnerTeam.name}
               </h2>
 
               <div className="grid grid-cols-3 gap-3 my-6 bg-zinc-950 p-4 rounded-2xl border border-zinc-800">
                 <div>
                   <span className="text-[10px] text-zinc-400 uppercase font-black">Tổng Điểm</span>
-                  <div className="text-lg font-black text-amber-300 mt-0.5">
+                  <div className="text-lg font-black text-amber-600 mt-0.5">
                     {gameState.winnerTeam.totalScore}
                   </div>
                 </div>

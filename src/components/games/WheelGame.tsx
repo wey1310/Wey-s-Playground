@@ -270,15 +270,15 @@ export const WheelGame: React.FC<WheelGameProps> = ({ config, questions, onGameE
         borderColor: themeConfig.wheelBorder,
       }}
     >
-      <div className="absolute inset-0 pointer-events-none bg-slate-950/40 backdrop-blur-[2px]"></div>
+      <div className="absolute inset-0 pointer-events-none bg-w-bg-card backdrop-blur-[2px]"></div>
       
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-950/75 backdrop-blur-md border border-white/20 p-4 rounded-2xl z-10 shadow-xl">
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-w-bg-card backdrop-blur-md border border-white/20 p-4 rounded-2xl z-10 shadow-xl">
         <div className="flex items-center gap-3">
           <span className="text-3xl animate-bounce">🎡</span>
           <div>
 
-            <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-black text-w-text-main flex items-center gap-2">
               <span>Vòng Quay Kỳ Diệu</span>
               <span 
                 className="text-xs px-2.5 py-0.5 rounded-full font-bold border"
@@ -308,13 +308,13 @@ export const WheelGame: React.FC<WheelGameProps> = ({ config, questions, onGameE
                   className={`px-3 py-1.5 rounded-xl border flex items-center gap-2 transition-all ${
                     isTurn
                       ? 'bg-amber-500/30 border-amber-400 text-amber-200 ring-2 ring-amber-400/60 scale-105 shadow-lg'
-                      : 'bg-slate-900/60 border-slate-800 text-slate-300'
+                      : 'bg-w-bg-alt border-w-border text-w-primary-dark'
                   }`}
                 >
                   <span className="text-lg">{team.avatar}</span>
                   <div className="text-xs">
                     <div className="font-bold leading-none" style={{ color: team.color }}>{team.name}</div>
-                    <div className="font-mono text-amber-300 font-extrabold mt-0.5">{team.score} điểm</div>
+                    <div className="font-mono text-amber-600 font-extrabold mt-0.5">{team.score} điểm</div>
                   </div>
                 </div>
               );
@@ -324,7 +324,7 @@ export const WheelGame: React.FC<WheelGameProps> = ({ config, questions, onGameE
 
         <button
           onClick={() => onGameEnd(teams, answerLogs)}
-          className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-black text-xs rounded-xl transition shadow-lg"
+          className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-w-text-main font-black text-xs rounded-xl transition shadow-lg"
         >
           Kết Thúc
         </button>
@@ -493,7 +493,7 @@ export const WheelGame: React.FC<WheelGameProps> = ({ config, questions, onGameE
       />
 
       <div className="text-center text-xs text-slate-200 font-medium pt-2 z-10">
-        Vòng quay hiển thị theo chủ đề <strong className="text-amber-300">{themeInfo.name}</strong>. Mỗi vạch ứng với một câu hỏi ôn tập!
+        Vòng quay hiển thị theo chủ đề <strong className="text-amber-600">{themeInfo.name}</strong>. Mỗi vạch ứng với một câu hỏi ôn tập!
       </div>
     </div>
   );

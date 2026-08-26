@@ -323,7 +323,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
         border: 'border-rose-600',
         text: 'text-rose-900',
         ring: 'ring-rose-500',
-        badge: 'bg-rose-600 text-white border-rose-700',
+        badge: 'bg-rose-600 text-w-text-main border-rose-700',
         stoneFrom: 'from-rose-300 via-rose-400 to-rose-600',
         stoneBorder: 'border-rose-700',
         activeBg: 'bg-rose-200 border-rose-600',
@@ -336,7 +336,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
         border: 'border-cyan-600',
         text: 'text-cyan-900',
         ring: 'ring-cyan-500',
-        badge: 'bg-cyan-600 text-white border-cyan-700',
+        badge: 'bg-cyan-600 text-w-text-main border-cyan-700',
         stoneFrom: 'from-cyan-200 via-cyan-300 to-cyan-500',
         stoneBorder: 'border-cyan-600',
         activeBg: 'bg-cyan-200 border-cyan-600',
@@ -349,7 +349,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
         border: 'border-amber-600',
         text: 'text-amber-900',
         ring: 'ring-amber-500',
-        badge: 'bg-amber-600 text-white border-amber-700',
+        badge: 'bg-amber-600 text-w-text-main border-amber-700',
         stoneFrom: 'from-amber-200 via-yellow-300 to-amber-500',
         stoneBorder: 'border-amber-700',
         activeBg: 'bg-amber-200 border-amber-600',
@@ -362,7 +362,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
         border: 'border-emerald-600',
         text: 'text-emerald-900',
         ring: 'ring-emerald-500',
-        badge: 'bg-emerald-600 text-white border-emerald-700',
+        badge: 'bg-emerald-600 text-w-text-main border-emerald-700',
         stoneFrom: 'from-emerald-200 via-emerald-300 to-emerald-500',
         stoneBorder: 'border-emerald-700',
         activeBg: 'bg-emerald-200 border-emerald-600',
@@ -375,7 +375,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
         border: 'border-purple-600',
         text: 'text-purple-900',
         ring: 'ring-purple-500',
-        badge: 'bg-purple-600 text-white border-purple-700',
+        badge: 'bg-purple-600 text-w-text-main border-purple-700',
         stoneFrom: 'from-purple-200 via-purple-300 to-purple-500',
         stoneBorder: 'border-purple-700',
         activeBg: 'bg-purple-200 border-purple-600',
@@ -388,7 +388,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
         border: 'border-orange-600',
         text: 'text-orange-900',
         ring: 'ring-orange-500',
-        badge: 'bg-orange-600 text-white border-orange-700',
+        badge: 'bg-orange-600 text-w-text-main border-orange-700',
         stoneFrom: 'from-orange-200 via-orange-300 to-orange-500',
         stoneBorder: 'border-orange-700',
         activeBg: 'bg-orange-200 border-orange-600',
@@ -401,7 +401,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
         border: 'border-pink-600',
         text: 'text-pink-900',
         ring: 'ring-pink-500',
-        badge: 'bg-pink-600 text-white border-pink-700',
+        badge: 'bg-pink-600 text-w-text-main border-pink-700',
         stoneFrom: 'from-pink-200 via-pink-300 to-pink-500',
         stoneBorder: 'border-pink-700',
         activeBg: 'bg-pink-200 border-pink-600',
@@ -416,7 +416,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
           border: 'border-rose-600',
           text: 'text-rose-950',
           ring: 'ring-rose-500',
-          badge: 'bg-rose-600 text-white border-rose-700',
+          badge: 'bg-rose-600 text-w-text-main border-rose-700',
           stoneFrom: 'from-rose-200 via-rose-400 to-rose-600',
           stoneBorder: 'border-rose-700',
           activeBg: 'bg-rose-200 border-rose-600',
@@ -427,7 +427,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
           border: 'border-cyan-600',
           text: 'text-cyan-950',
           ring: 'ring-cyan-500',
-          badge: 'bg-cyan-600 text-white border-cyan-700',
+          badge: 'bg-cyan-600 text-w-text-main border-cyan-700',
           stoneFrom: 'from-cyan-200 via-cyan-300 to-cyan-500',
           stoneBorder: 'border-cyan-600',
           activeBg: 'bg-cyan-200 border-cyan-600',
@@ -438,7 +438,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
           border: 'border-amber-600',
           text: 'text-amber-950',
           ring: 'ring-amber-500',
-          badge: 'bg-amber-600 text-white border-amber-700',
+          badge: 'bg-amber-600 text-w-text-main border-amber-700',
           stoneFrom: 'from-amber-200 via-yellow-300 to-amber-500',
           stoneBorder: 'border-amber-700',
           activeBg: 'bg-amber-200 border-amber-600',
@@ -449,7 +449,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
           border: 'border-emerald-600',
           text: 'text-emerald-950',
           ring: 'ring-emerald-500',
-          badge: 'bg-emerald-600 text-white border-emerald-700',
+          badge: 'bg-emerald-600 text-w-text-main border-emerald-700',
           stoneFrom: 'from-emerald-200 via-emerald-300 to-emerald-500',
           stoneBorder: 'border-emerald-700',
           activeBg: 'bg-emerald-200 border-emerald-600',
@@ -460,7 +460,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
           border: 'border-stone-500',
           text: 'text-stone-900',
           ring: 'ring-amber-500',
-          badge: 'bg-stone-700 text-white border-stone-800',
+          badge: 'bg-stone-700 text-w-text-main border-stone-800',
           stoneFrom: 'from-stone-200 via-stone-300 to-stone-400',
           stoneBorder: 'border-stone-500',
           activeBg: 'bg-amber-200 border-amber-600',
@@ -697,7 +697,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
           <div>
             <h2 className="text-xl font-extrabold text-amber-950 flex items-center gap-2">
               <span>Trò Chơi Ô Ăn Quan</span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-600 text-white font-bold">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-600 text-w-text-main font-bold">
                 {numTeams} Đội Chơi
               </span>
             </h2>
@@ -738,7 +738,7 @@ export const MancalaGame: React.FC<MancalaGameProps> = ({ config, questions, onG
               answerLogs
             )
           }
-          className="px-4 py-2 bg-rose-700 hover:bg-rose-600 text-white font-bold text-xs rounded-xl transition shadow-md"
+          className="px-4 py-2 bg-rose-700 hover:bg-rose-600 text-w-text-main font-bold text-xs rounded-xl transition shadow-md"
         >
           Tổng Kết Game
         </button>

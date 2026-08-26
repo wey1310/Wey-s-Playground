@@ -199,7 +199,7 @@ export const TeaBattleSequenceModal: React.FC<TeaBattleSequenceModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/70 backdrop-blur-sm p-4 backdrop-blur-sm">
       <div className="relative w-full max-w-4xl max-h-[90vh] flex flex-col items-center">
         {/* Visual Layer */}
         <AnimatePresence mode="wait">
@@ -220,7 +220,7 @@ export const TeaBattleSequenceModal: React.FC<TeaBattleSequenceModalProps> = ({
           <button
             type="button"
             onClick={() => setPhase('complete')}
-            className={`px-6 py-2 rounded-xl font-black text-white shadow-lg transition-all ${
+            className={`px-6 py-2 rounded-xl font-black text-w-text-main shadow-lg transition-all ${
               phase === 'complete' ? 'hidden' : 'bg-zinc-700 hover:bg-zinc-600'
             }`}
           >

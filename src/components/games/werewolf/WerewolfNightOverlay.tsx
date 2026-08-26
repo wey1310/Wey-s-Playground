@@ -46,7 +46,7 @@ export const WerewolfNightOverlay: React.FC<WerewolfNightOverlayProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-[#050811]/95 backdrop-blur-md text-white select-none overflow-hidden"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-[#050811]/95 backdrop-blur-md text-w-text-main select-none overflow-hidden"
     >
       {/* Mystical Moon and Fog Backdrop */}
       <div className="relative flex flex-col items-center max-w-lg w-full text-center">
@@ -75,7 +75,7 @@ export const WerewolfNightOverlay: React.FC<WerewolfNightOverlayProps> = ({
           transition={{ delay: 0.2 }}
           className="mb-4"
         >
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-indigo-950/80 text-indigo-300 border border-indigo-700/60 mb-2 uppercase tracking-widest">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-w-bg-alt text-indigo-300 border border-indigo-700/60 mb-2 uppercase tracking-widest">
             <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
             <span>Màn Đêm Ma Sói</span>
           </span>
@@ -101,7 +101,7 @@ export const WerewolfNightOverlay: React.FC<WerewolfNightOverlayProps> = ({
         </div>
 
         {/* Animated Action Icons Hint */}
-        <div className="flex items-center justify-center gap-4 py-3 px-6 rounded-2xl bg-indigo-950/40 border border-indigo-800/30 text-indigo-400 text-xs font-bold mb-6">
+        <div className="flex items-center justify-center gap-4 py-3 px-6 rounded-2xl bg-w-bg-alt border border-indigo-800/30 text-indigo-400 text-xs font-bold mb-6">
           <span className="flex items-center gap-1 opacity-70">
             <Shield className="w-4 h-4 text-emerald-400" /> Bảo vệ
           </span>
@@ -118,7 +118,7 @@ export const WerewolfNightOverlay: React.FC<WerewolfNightOverlayProps> = ({
         {/* Skip button if needed */}
         <button
           onClick={onComplete}
-          className="flex items-center gap-2 px-5 py-2 rounded-xl bg-indigo-900/60 hover:bg-indigo-800 text-indigo-200 text-xs font-bold border border-indigo-700/50 transition cursor-pointer"
+          className="flex items-center gap-2 px-5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-800 text-indigo-200 text-xs font-bold border border-indigo-700/50 transition cursor-pointer"
         >
           <span>Chuyển sang bình minh ngay</span>
           <ArrowRight className="w-3.5 h-3.5" />

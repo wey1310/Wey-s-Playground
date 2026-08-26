@@ -71,7 +71,7 @@ export const MonopolyBoard: React.FC<MonopolyBoardProps> = ({
   };
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto aspect-square sm:aspect-[1/0.95] max-h-[82vh] p-1.5 sm:p-3 bg-[#FAF7EE] border-4 border-[#DED5B8] rounded-3xl shadow-[0_16px_40px_rgba(53,69,46,0.15)] flex flex-col justify-between select-none overflow-hidden">
+    <div className="relative w-full max-w-5xl mx-auto aspect-square sm:aspect-[1/0.95] max-h-[82vh] p-1.5 sm:p-3 bg-w-bg-alt border-4 border-w-border rounded-3xl shadow-[0_16px_40px_rgba(53,69,46,0.15)] flex flex-col justify-between select-none overflow-hidden">
       
       {/* 7x7 Perimeter Grid */}
       <div className="grid grid-cols-7 grid-rows-7 gap-1 sm:gap-1.5 w-full h-full relative">
@@ -96,7 +96,7 @@ export const MonopolyBoard: React.FC<MonopolyBoardProps> = ({
                   ? 'border-amber-400 bg-amber-50 ring-4 ring-amber-400/40 shadow-lg z-20 scale-[1.03]'
                   : owner
                   ? 'bg-white shadow-xs'
-                  : 'bg-[#FFFDF5] border-[#DED5B8] hover:border-[#B9CDA0] hover:shadow-sm'
+                  : 'bg-w-bg-card border-w-border hover:border-w-accent-border hover:shadow-sm'
               }`}
             >
               {/* Top Group Color Banner (For Property Tiles) */}
@@ -107,11 +107,11 @@ export const MonopolyBoard: React.FC<MonopolyBoardProps> = ({
                 >
                   {/* House / Hotel Level Icons */}
                   <div className="flex items-center gap-0.5">
-                    {tile.level === 1 && <Home className="w-2.5 h-2.5 text-white fill-white" />}
+                    {tile.level === 1 && <Home className="w-2.5 h-2.5 text-w-text-main fill-white" />}
                     {tile.level === 2 && (
                       <div className="flex items-center gap-0.5">
-                        <Home className="w-2.5 h-2.5 text-white fill-white" />
-                        <Home className="w-2.5 h-2.5 text-white fill-white" />
+                        <Home className="w-2.5 h-2.5 text-w-text-main fill-white" />
+                        <Home className="w-2.5 h-2.5 text-w-text-main fill-white" />
                       </div>
                     )}
                     {tile.level >= 3 && <Hotel className="w-2.5 h-2.5 text-amber-200 fill-amber-200" />}
@@ -130,13 +130,13 @@ export const MonopolyBoard: React.FC<MonopolyBoardProps> = ({
               {/* Special Tile Header Badge */}
               {tile.type !== 'property' && (
                 <div className={`w-full py-0.5 px-1 rounded text-[8px] sm:text-[9px] font-black uppercase text-center truncate ${
-                  tile.type === 'start' ? 'bg-emerald-600 text-white' :
-                  tile.type === 'jail' ? 'bg-slate-700 text-white' :
-                  tile.type === 'rest' ? 'bg-amber-600 text-white' :
-                  tile.type === 'goto_jail' ? 'bg-rose-600 text-white' :
-                  tile.type === 'event' ? 'bg-purple-600 text-white' :
-                  tile.type === 'luck' ? 'bg-teal-600 text-white' :
-                  tile.type === 'tax' ? 'bg-rose-500 text-white' : 'bg-slate-200 text-slate-700'
+                  tile.type === 'start' ? 'bg-emerald-600 text-w-text-main' :
+                  tile.type === 'jail' ? 'bg-slate-700 text-w-text-main' :
+                  tile.type === 'rest' ? 'bg-amber-600 text-w-text-main' :
+                  tile.type === 'goto_jail' ? 'bg-rose-600 text-w-text-main' :
+                  tile.type === 'event' ? 'bg-purple-600 text-w-text-main' :
+                  tile.type === 'luck' ? 'bg-teal-600 text-w-text-main' :
+                  tile.type === 'tax' ? 'bg-rose-500 text-w-text-main' : 'bg-slate-200 text-slate-700'
                 }`}>
                   {tile.type === 'start' ? 'START' :
                    tile.type === 'jail' ? 'NHÀ TÙ' :
@@ -165,7 +165,7 @@ export const MonopolyBoard: React.FC<MonopolyBoardProps> = ({
               <div className="pt-0.5 z-10">
                 {tile.type === 'property' ? (
                   owner ? (
-                    <div className="w-full flex items-center justify-between px-1 py-0.5 rounded bg-rose-50 border border-rose-200 text-[#35452E]">
+                    <div className="w-full flex items-center justify-between px-1 py-0.5 rounded bg-rose-50 border border-rose-200 text-w-text-main">
                       <span className="text-[7px] sm:text-[8px] font-bold text-rose-800">Thuê:</span>
                       <span className="text-[8px] sm:text-[9px] font-black text-rose-900">${tile.rentLevels[tile.level] || tile.baseRent}</span>
                     </div>
@@ -184,7 +184,7 @@ export const MonopolyBoard: React.FC<MonopolyBoardProps> = ({
                     -${tile.price || 50}
                   </div>
                 ) : (
-                  <div className="w-full py-0.5 text-center text-[8px] font-extrabold text-[#74806B]">
+                  <div className="w-full py-0.5 text-center text-[8px] font-extrabold text-w-text-muted">
                     Ô #{tile.index}
                   </div>
                 )}
@@ -193,7 +193,7 @@ export const MonopolyBoard: React.FC<MonopolyBoardProps> = ({
               {/* Owner Flag Tag on Corner */}
               {owner && (
                 <div
-                  className="absolute top-0 right-0 w-4 h-4 rounded-bl-lg shadow-xs flex items-center justify-center text-[8px] text-white font-black z-20"
+                  className="absolute top-0 right-0 w-4 h-4 rounded-bl-lg shadow-xs flex items-center justify-center text-[8px] text-w-text-main font-black z-20"
                   style={{ backgroundColor: owner.color }}
                   title={`Chủ đất: ${owner.name}`}
                 >
@@ -244,7 +244,7 @@ export const MonopolyBoard: React.FC<MonopolyBoardProps> = ({
             gridColumnStart: 2,
             gridColumnEnd: 7,
           }}
-          className="relative bg-gradient-to-br from-[#FFFDF8] via-white to-[#F6F1E3] border-2 border-[#DED5B8]/80 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-inner flex flex-col items-center justify-center z-10 overflow-hidden"
+          className="relative bg-gradient-to-br from-[#FFFDF8] via-white to-[#F6F1E3] border-2 border-w-border/80 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-inner flex flex-col items-center justify-center z-10 overflow-hidden"
         >
           {centerContent}
 
@@ -259,8 +259,8 @@ export const MonopolyBoard: React.FC<MonopolyBoardProps> = ({
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 className={`absolute pointer-events-none font-black text-base sm:text-xl md:text-2xl px-3 py-1 rounded-full shadow-lg border-2 z-50 ${
                   eff.isGain
-                    ? 'bg-emerald-600 text-white border-emerald-400'
-                    : 'bg-rose-600 text-white border-rose-400'
+                    ? 'bg-emerald-600 text-w-text-main border-emerald-400'
+                    : 'bg-rose-600 text-w-text-main border-rose-400'
                 }`}
               >
                 {eff.isGain ? `+$${eff.amount}` : `-$${eff.amount}`}

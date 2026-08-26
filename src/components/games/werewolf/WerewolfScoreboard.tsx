@@ -45,31 +45,31 @@ export const WerewolfScoreboard: React.FC<WerewolfScoreboardProps> = ({
   const activeTeam = teams[activeTeamIndex] || teams[0];
 
   return (
-    <div className="bg-[#FFFDF5] border-b-2 border-[#DED5B8] p-3 sm:p-4 sticky top-0 z-30 shadow-xs flex flex-wrap items-center justify-between gap-3">
+    <div className="bg-w-bg-card border-b-2 border-w-border p-3 sm:p-4 sticky top-0 z-30 shadow-xs flex flex-wrap items-center justify-between gap-3">
       {/* Left: Game Info & Back */}
       <div className="flex items-center gap-2 sm:gap-3">
         <button
           onClick={onBackToHome}
-          className="p-2 rounded-xl bg-[#F8F3E5] hover:bg-[#E9F0D9] text-[#4F683C] border border-[#DED5B8] transition cursor-pointer"
+          className="p-2 rounded-xl bg-w-bg-main hover:bg-w-accent-light text-w-primary-dark border border-w-border transition cursor-pointer"
           title="Về trang chủ"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
 
         <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-950 text-indigo-200 border border-indigo-700/60 flex items-center justify-center text-xl shadow-xs">
+          <div className="w-10 h-10 rounded-2xl bg-w-bg-alt text-indigo-200 border border-indigo-700/60 flex items-center justify-center text-xl shadow-xs">
             🐺
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-sm sm:text-base font-black text-[#35452E] tracking-tight">
+              <h1 className="text-sm sm:text-base font-black text-w-text-main tracking-tight">
                 MA SÓI: NGÔI LÀNG BÍ ẨN
               </h1>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-indigo-900 text-indigo-200 border border-indigo-700">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-indigo-50 text-indigo-200 border border-indigo-700">
                 🌙 Đêm {currentNight}
               </span>
             </div>
-            <p className="text-[11px] font-semibold text-[#74806B]">
+            <p className="text-[11px] font-semibold text-w-text-muted">
               Phiên bản Điều tra Tri thức AI • 12 NPC Cư dân
             </p>
           </div>
@@ -87,11 +87,11 @@ export const WerewolfScoreboard: React.FC<WerewolfScoreboardProps> = ({
               className={`flex items-center gap-2 px-3 py-1.5 rounded-2xl border-2 transition shrink-0 ${
                 isActive
                   ? 'bg-amber-50 border-amber-400 ring-2 ring-amber-400/40 shadow-xs'
-                  : 'bg-white border-[#DED5B8]'
+                  : 'bg-white border-w-border'
               }`}
             >
               <div
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-black text-white shadow-2xs"
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-black text-w-text-main shadow-2xs"
                 style={{ backgroundColor: t.color }}
               >
                 {t.avatar}
@@ -100,7 +100,7 @@ export const WerewolfScoreboard: React.FC<WerewolfScoreboardProps> = ({
                 <div className="text-[10px] font-bold text-slate-500 truncate max-w-[80px]">
                   {t.name}
                 </div>
-                <div className="text-xs font-black text-[#35452E]">
+                <div className="text-xs font-black text-w-text-main">
                   {t.score} đ
                 </div>
               </div>
@@ -121,7 +121,7 @@ export const WerewolfScoreboard: React.FC<WerewolfScoreboardProps> = ({
             className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-black border transition cursor-pointer ${
               skipQuestions
                 ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 border-amber-600 shadow-xs'
-                : 'bg-[#F8F3E5] hover:bg-[#E9F0D9] text-[#4F683C] border-[#B9CDA0]'
+                : 'bg-w-bg-main hover:bg-w-accent-light text-w-primary-dark border-w-accent-border'
             }`}
             title="Bật/Tắt chế độ bỏ qua câu hỏi kiến thức (Vào thẳng lượt vote treo cổ)"
           >
@@ -132,17 +132,17 @@ export const WerewolfScoreboard: React.FC<WerewolfScoreboardProps> = ({
         {/* Teacher Secret Debug Button */}
         <button
           onClick={onOpenDebug}
-          className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-indigo-300 text-xs font-bold border border-indigo-700/60 shadow-xs transition cursor-pointer"
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-w-bg-alt hover:bg-w-accent-light text-indigo-300 text-xs font-bold border border-indigo-700/60 shadow-xs transition cursor-pointer"
           title="Bảng điều khiển bí mật của Giáo viên (Xem vai trò thật, suspicion)"
         >
-          <Key className="w-3.5 h-3.5 text-amber-400" />
+          <Key className="w-3.5 h-3.5 text-amber-600" />
           <span className="hidden sm:inline">GV Debug</span>
         </button>
 
         {onOpenQuickGuide && (
           <button
             onClick={onOpenQuickGuide}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-[#F8F3E5] hover:bg-[#E9F0D9] text-[#4F683C] text-xs font-bold border border-[#B9CDA0] shadow-xs transition cursor-pointer"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-w-bg-main hover:bg-w-accent-light text-w-primary-dark text-xs font-bold border border-w-accent-border shadow-xs transition cursor-pointer"
             title="Xem luật chơi"
           >
             <BookOpen className="w-3.5 h-3.5" />
@@ -152,7 +152,7 @@ export const WerewolfScoreboard: React.FC<WerewolfScoreboardProps> = ({
 
         <button
           onClick={onToggleSound}
-          className="p-2 rounded-xl bg-[#F8F3E5] hover:bg-[#E9F0D9] text-[#4F683C] border border-[#DED5B8] transition cursor-pointer"
+          className="p-2 rounded-xl bg-w-bg-main hover:bg-w-accent-light text-w-primary-dark border border-w-border transition cursor-pointer"
           title={isMuted ? 'Bật âm thanh' : 'Tắt âm thanh'}
         >
           {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
@@ -160,7 +160,7 @@ export const WerewolfScoreboard: React.FC<WerewolfScoreboardProps> = ({
 
         <button
           onClick={onRestartGame}
-          className="p-2 rounded-xl bg-[#F8F3E5] hover:bg-[#E9F0D9] text-[#4F683C] border border-[#DED5B8] transition cursor-pointer"
+          className="p-2 rounded-xl bg-w-bg-main hover:bg-w-accent-light text-w-primary-dark border border-w-border transition cursor-pointer"
           title="Chơi lại ván mới"
         >
           <RotateCcw className="w-4 h-4" />

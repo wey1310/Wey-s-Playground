@@ -52,14 +52,14 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
       case 'hard':
         return { label: 'Độ Khó: Khó (Ẩn Đố Sâu)', bg: 'bg-rose-950 text-rose-300 border-rose-500/50' };
       default:
-        return { label: 'Độ Khó: Vừa (Tiêu Chuẩn)', bg: 'bg-amber-950 text-amber-300 border-amber-500/50' };
+        return { label: 'Độ Khó: Vừa (Tiêu Chuẩn)', bg: 'bg-amber-950 text-amber-600 border-amber-500/50' };
     }
   };
 
   const diffBadge = getDifficultyBadge(currentCase.difficulty);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-white/70 backdrop-blur-sm backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
       {/* Vignette & Atmospheric Glow Background */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-950/20 via-black/80 to-black opacity-90" />
 
@@ -74,7 +74,7 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
         <div className="bg-gradient-to-r from-amber-950 via-[#1f1610] to-black px-5 py-3.5 border-b border-amber-500/30 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
-            <span className="text-[11px] font-black uppercase tracking-widest text-amber-400 font-mono">
+            <span className="text-[11px] font-black uppercase tracking-widest text-amber-600 font-mono">
               HỒ SƠ BÁO CÁO HIỆN TRƯỜNG • TOP SECRET
             </span>
           </div>
@@ -88,7 +88,7 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1.5 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white transition"
+                className="p-1.5 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-w-text-main transition"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -100,12 +100,12 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
         <div className="relative p-5 sm:p-7 border-b border-amber-900/40 bg-gradient-to-b from-amber-950/40 via-transparent to-transparent">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-start gap-4">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-amber-600 to-amber-900 border-2 border-amber-400/60 flex items-center justify-center text-3xl sm:text-4xl shadow-xl shrink-0">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-amber-600 to-amber-900 border-2 border-amber-400 flex items-center justify-center text-3xl sm:text-4xl shadow-xl shrink-0">
                 {currentCase.coverIcon || '🔎'}
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                  <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-600 border border-amber-500/40">
                     VỤ ÁN SỐ #{currentCase.id.toUpperCase().slice(0, 8)}
                   </span>
                   <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-red-950 text-red-300 border border-red-500/40">
@@ -176,8 +176,8 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
                 <div className="absolute -right-6 -bottom-6 opacity-10 text-9xl pointer-events-none select-none">
                   🕵️
                 </div>
-                <div className="flex items-center gap-2 text-amber-400 text-xs font-black uppercase tracking-wider mb-2">
-                  <Flame className="w-4 h-4 text-amber-400 animate-pulse" />
+                <div className="flex items-center gap-2 text-amber-600 text-xs font-black uppercase tracking-wider mb-2">
+                  <Flame className="w-4 h-4 text-amber-600 animate-pulse" />
                   <span>Móc Xích Kịch Tính (Dramatic Case Hook)</span>
                 </div>
                 <p className="text-sm sm:text-base text-amber-100 font-serif italic leading-relaxed">
@@ -188,8 +188,8 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
               {/* Crime Scene & Location Summary */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 rounded-2xl bg-zinc-950/80 border border-amber-900/50 space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-amber-300">
-                    <MapPin className="w-4 h-4 text-amber-400" />
+                  <div className="flex items-center gap-2 text-xs font-bold text-amber-600">
+                    <MapPin className="w-4 h-4 text-amber-600" />
                     <span>Địa Điểm Gây Án:</span>
                   </div>
                   <h4 className="text-sm font-black text-amber-100">
@@ -226,21 +226,21 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
 
               {/* Key Detective Objectives */}
               <div className="p-4 rounded-2xl bg-[#19110b] border border-amber-700/40 space-y-2.5">
-                <h4 className="text-xs font-black uppercase text-amber-400 flex items-center gap-2 tracking-wider">
+                <h4 className="text-xs font-black uppercase text-amber-600 flex items-center gap-2 tracking-wider">
                   <Compass className="w-4 h-4" />
                   <span>3 Mục Tiêu Then Chốt Để Phá Án Thành Công:</span>
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-                  <div className="p-2.5 rounded-xl bg-black/40 border border-amber-900/40 flex items-start gap-2">
-                    <span className="text-amber-400 font-black">1.</span>
+                  <div className="p-2.5 rounded-xl bg-white/70 backdrop-blur-sm border border-amber-900/40 flex items-start gap-2">
+                    <span className="text-amber-600 font-black">1.</span>
                     <span className="text-zinc-200">Khám nghiệm vật chứng & giải mã câu hỏi kiến thức mở khóa manh mối.</span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-black/40 border border-amber-900/40 flex items-start gap-2">
-                    <span className="text-amber-400 font-black">2.</span>
+                  <div className="p-2.5 rounded-xl bg-white/70 backdrop-blur-sm border border-amber-900/40 flex items-start gap-2">
+                    <span className="text-amber-600 font-black">2.</span>
                     <span className="text-zinc-200">Thẩm vấn các nghi phạm & bóc trần mâu thuẫn trong lời khai ngoại phạm.</span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-black/40 border border-amber-900/40 flex items-start gap-2">
-                    <span className="text-amber-400 font-black">3.</span>
+                  <div className="p-2.5 rounded-xl bg-white/70 backdrop-blur-sm border border-amber-900/40 flex items-start gap-2">
+                    <span className="text-amber-600 font-black">3.</span>
                     <span className="text-zinc-200">Chỉ điểm đúng kẻ thủ ác và đưa ra vật chứng quyết định không thể chối cãi!</span>
                   </div>
                 </div>
@@ -279,11 +279,11 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-4 rounded-2xl bg-zinc-900/80 border border-amber-900/40 space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-amber-300">
-                    <Clock className="w-4 h-4 text-amber-400" />
+                  <div className="flex items-center gap-2 text-xs font-bold text-amber-600">
+                    <Clock className="w-4 h-4 text-amber-600" />
                     <span>Lần Cuối Nhìn Thấy (Last Seen):</span>
                   </div>
-                  <p className="text-xs text-zinc-200 leading-relaxed font-mono bg-black/40 p-2.5 rounded-xl border border-zinc-800">
+                  <p className="text-xs text-zinc-200 leading-relaxed font-mono bg-white/70 backdrop-blur-sm p-2.5 rounded-xl border border-zinc-800">
                     {currentCase.victim.lastSeen}
                   </p>
                 </div>
@@ -293,16 +293,16 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
                     <FileText className="w-4 h-4 text-emerald-400" />
                     <span>Báo Cáo Giám Định Y Khoa / Pháp Y:</span>
                   </div>
-                  <p className="text-xs text-zinc-200 leading-relaxed font-mono bg-black/40 p-2.5 rounded-xl border border-zinc-800">
+                  <p className="text-xs text-zinc-200 leading-relaxed font-mono bg-white/70 backdrop-blur-sm p-2.5 rounded-xl border border-zinc-800">
                     {currentCase.victim.medicalReport}
                   </p>
                 </div>
               </div>
 
               {/* Crime Scene Atmosphere */}
-              <div className="p-4 rounded-2xl bg-black/60 border border-amber-700/40 space-y-2">
-                <h4 className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
-                  <MapPin className="w-4 h-4 text-amber-400" />
+              <div className="p-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-amber-700/40 space-y-2">
+                <h4 className="text-xs font-bold text-amber-600 flex items-center gap-1.5">
+                  <MapPin className="w-4 h-4 text-amber-600" />
                   <span>Mô Tả Không Gian Hiện Trường:</span>
                 </h4>
                 <p className="text-xs text-zinc-300 leading-relaxed">
@@ -320,7 +320,7 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
               className="space-y-4"
             >
               <div className="flex items-center justify-between">
-                <label className="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center gap-2">
+                <label className="text-xs font-black uppercase tracking-wider text-amber-600 flex items-center gap-2">
                   <Users className="w-4 h-4" />
                   <span>Danh Sách Đối Tượng Khả Nghi ({currentCase.suspects.length} Người)</span>
                 </label>
@@ -350,7 +350,7 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
                         </div>
                       </div>
 
-                      <p className="text-[11px] text-amber-200/70 italic font-serif line-clamp-2 bg-black/40 p-2 rounded-xl border border-zinc-800/80 mb-2">
+                      <p className="text-[11px] text-amber-200/70 italic font-serif line-clamp-2 bg-white/70 backdrop-blur-sm p-2 rounded-xl border border-zinc-800/80 mb-2">
                         {suspect.initialQuote}
                       </p>
 
@@ -364,7 +364,7 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
                       </div>
                     </div>
 
-                    <div className="mt-3 pt-2 border-t border-zinc-800 text-[10px] text-amber-400/90 font-bold flex items-center gap-1">
+                    <div className="mt-3 pt-2 border-t border-zinc-800 text-[10px] text-amber-600 font-bold flex items-center gap-1">
                       <Eye className="w-3 h-3" />
                       <span>Có thể thẩm vấn khi vào hiện trường</span>
                     </div>
@@ -382,8 +382,8 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
               className="space-y-4"
             >
               <div className="p-4 rounded-2xl bg-amber-950/60 border border-amber-600/40 space-y-2">
-                <h4 className="text-xs font-black uppercase text-amber-300 flex items-center gap-2">
-                  <Fingerprint className="w-4 h-4 text-amber-400" />
+                <h4 className="text-xs font-black uppercase text-amber-600 flex items-center gap-2">
+                  <Fingerprint className="w-4 h-4 text-amber-600" />
                   <span>Quy Tắc Đấu Trí & Tính Điểm Thám Tử:</span>
                 </h4>
                 <p className="text-xs text-amber-100/90 leading-relaxed">
@@ -393,8 +393,8 @@ export const CaseIntro: React.FC<CaseIntroProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
                 <div className="p-3.5 rounded-2xl bg-zinc-950/80 border border-amber-900/40 space-y-1.5">
-                  <div className="font-bold text-amber-300 flex items-center gap-1.5">
-                    <KeyRound className="w-4 h-4 text-amber-400" />
+                  <div className="font-bold text-amber-600 flex items-center gap-1.5">
+                    <KeyRound className="w-4 h-4 text-amber-600" />
                     <span>Lượt Luận Tội (Accusations):</span>
                   </div>
                   <p className="text-zinc-300 leading-relaxed text-[11px]">

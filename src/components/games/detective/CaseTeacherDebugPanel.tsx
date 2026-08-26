@@ -41,7 +41,7 @@ export const CaseTeacherDebugPanel: React.FC<CaseTeacherDebugPanelProps> = ({
   const culprit = currentCase.suspects.find(s => s.id === currentCase.truth.culpritId);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-white/70 backdrop-blur-sm backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
       <motion.div
         initial={{ scale: 0.92, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -55,7 +55,7 @@ export const CaseTeacherDebugPanel: React.FC<CaseTeacherDebugPanelProps> = ({
               <Key className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-black text-amber-300">
+              <h2 className="text-sm sm:text-base font-black text-amber-600">
                 BẢNG ĐIỀU KHIỂN GIÁO VIÊN / QUẢN TRÒ (DEBUG PANEL)
               </h2>
               <p className="text-xs text-zinc-400">
@@ -67,7 +67,7 @@ export const CaseTeacherDebugPanel: React.FC<CaseTeacherDebugPanelProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition"
+            className="p-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-w-text-main transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -77,7 +77,7 @@ export const CaseTeacherDebugPanel: React.FC<CaseTeacherDebugPanelProps> = ({
         <div className="p-6 overflow-y-auto space-y-5 custom-scrollbar text-xs flex-1">
           {/* Secret Case Solution Box */}
           <div className="bg-red-950/60 border border-red-500/60 rounded-2xl p-4 space-y-2">
-            <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-red-600 text-white">
+            <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-red-600 text-w-text-main">
               BÍ MẬT VỤ ÁN (CHỈ DÀNH CHO GIÁO VIÊN)
             </span>
             <div className="space-y-1 pt-1">
@@ -99,7 +99,7 @@ export const CaseTeacherDebugPanel: React.FC<CaseTeacherDebugPanelProps> = ({
                   onClose();
                   onTriggerTruthReveal();
                 }}
-                className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs transition cursor-pointer shadow-md"
+                className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-w-text-main font-black text-xs transition cursor-pointer shadow-md"
               >
                 Mở Màn Phơi Bày Sự Thật Ngay
               </button>
@@ -142,7 +142,7 @@ export const CaseTeacherDebugPanel: React.FC<CaseTeacherDebugPanelProps> = ({
                   <button
                     type="button"
                     onClick={() => onUnlockAllClues(selectedTeamIdx)}
-                    className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-amber-300 border border-zinc-700 text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5"
+                    className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-amber-600 border border-zinc-700 text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     <Unlock className="w-3.5 h-3.5" />
                     <span>Mở Hết Manh Mối</span>
@@ -173,7 +173,7 @@ export const CaseTeacherDebugPanel: React.FC<CaseTeacherDebugPanelProps> = ({
           {/* Switch Case Presets */}
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3">
             <h3 className="font-black text-zinc-200 uppercase text-xs flex items-center gap-1.5">
-              <FolderOpen className="w-4 h-4 text-amber-400" />
+              <FolderOpen className="w-4 h-4 text-amber-600" />
               <span>Chuyển Sang Vụ Án Khác:</span>
             </h3>
 
@@ -206,7 +206,7 @@ export const CaseTeacherDebugPanel: React.FC<CaseTeacherDebugPanelProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-zinc-700 hover:bg-zinc-600 text-white font-bold text-xs transition cursor-pointer"
+            className="px-5 py-2 rounded-xl bg-zinc-700 hover:bg-zinc-600 text-w-text-main font-bold text-xs transition cursor-pointer"
           >
             Đóng Bảng Quản Trò
           </button>

@@ -34,14 +34,14 @@ export const BowlingTeacherPanel: React.FC<BowlingTeacherPanelProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-3">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-amber-400" />
+                <SlidersHorizontal className="w-4 h-4 text-amber-600" />
                 <h4 className="font-black text-sm text-zinc-100 uppercase tracking-wider">
                   Điều Khiển Bowling (GV)
                 </h4>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-7 h-7 rounded-full bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs"
+                className="w-7 h-7 rounded-full bg-zinc-800 text-zinc-400 hover:text-w-text-main flex items-center justify-center text-xs"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -54,7 +54,7 @@ export const BowlingTeacherPanel: React.FC<BowlingTeacherPanelProps> = ({
                   soundFx.playClick();
                   onReThrow();
                 }}
-                className="py-2 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
+                className="py-2 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-600 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Cho Ném Lại</span>
@@ -87,17 +87,17 @@ export const BowlingTeacherPanel: React.FC<BowlingTeacherPanelProps> = ({
                   </div>
 
                   <div className="flex items-center gap-1.5 shrink-0 bg-zinc-900 px-2 py-1 rounded-xl border border-zinc-800">
-                    <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                    <Trophy className="w-3.5 h-3.5 text-amber-600" />
                     <button
                       onClick={() => onAdjustScore(team.id, -5)}
-                      className="text-[11px] text-zinc-400 hover:text-white px-1 font-bold"
+                      className="text-[11px] text-zinc-400 hover:text-w-text-main px-1 font-bold"
                     >
                       -5
                     </button>
-                    <span className="text-xs font-bold text-amber-300">{team.totalScore}</span>
+                    <span className="text-xs font-bold text-amber-600">{team.totalScore}</span>
                     <button
                       onClick={() => onAdjustScore(team.id, 5)}
-                      className="text-[11px] text-zinc-400 hover:text-white px-1 font-bold"
+                      className="text-[11px] text-zinc-400 hover:text-w-text-main px-1 font-bold"
                     >
                       +5
                     </button>
@@ -122,9 +122,9 @@ export const BowlingTeacherPanel: React.FC<BowlingTeacherPanelProps> = ({
 
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="px-4 py-2.5 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 shadow-xl text-zinc-300 hover:text-amber-400 text-xs font-black flex items-center gap-2 transition-all"
+        className="px-4 py-2.5 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 shadow-xl text-zinc-300 hover:text-amber-600 text-xs font-black flex items-center gap-2 transition-all"
       >
-        <SlidersHorizontal className="w-4 h-4 text-amber-400" />
+        <SlidersHorizontal className="w-4 h-4 text-amber-600" />
         <span>Điều Khiển GV</span>
         <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>

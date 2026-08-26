@@ -134,19 +134,19 @@ export const CaseAccusationModal: React.FC<CaseAccusationModalProps> = ({
         {/* Conan Dramatic Spotlight Top Header */}
         <div className="bg-gradient-to-r from-red-950 via-red-900 to-black p-5 border-b-2 border-red-500/60 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-red-600 text-white flex items-center justify-center text-2xl shadow-lg border border-red-400 animate-pulse">
+            <div className="w-12 h-12 rounded-2xl bg-red-600 text-w-text-main flex items-center justify-center text-2xl shadow-lg border border-red-400 animate-pulse">
               👉
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-red-600 text-white">
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-red-600 text-w-text-main">
                   ĐẠI CHIẾN SUY LUẬN
                 </span>
-                <span className="text-xs text-amber-400 font-bold">
+                <span className="text-xs text-amber-600 font-bold">
                   (Lượt đoán: {teamState.guessesLeft}/2)
                 </span>
               </div>
-              <h2 className="text-base sm:text-lg font-black text-white tracking-wide">
+              <h2 className="text-base sm:text-lg font-black text-w-text-main tracking-wide">
                 CHỈ ĐIỂM HUNG THỦ VỤ ÁN
               </h2>
             </div>
@@ -165,7 +165,7 @@ export const CaseAccusationModal: React.FC<CaseAccusationModalProps> = ({
         <div className="p-4 sm:p-6 overflow-y-auto space-y-5 custom-scrollbar flex-1">
           {/* Step 1: Select Suspect */}
           <div className="space-y-2">
-            <label className="text-xs font-black uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
+            <label className="text-xs font-black uppercase text-amber-600 tracking-wider flex items-center gap-1.5">
               <span className="w-5 h-5 rounded-full bg-amber-500 text-black text-xs font-black flex items-center justify-center">1</span>
               <span>Chọn Đối Tượng Bạn Buộc Tội Là Hung Thủ:</span>
             </label>
@@ -180,7 +180,7 @@ export const CaseAccusationModal: React.FC<CaseAccusationModalProps> = ({
                     onClick={() => setSelectedSuspectId(s.id)}
                     className={`p-3 rounded-2xl border-2 text-left transition flex flex-col items-center gap-1.5 cursor-pointer relative ${
                       isSelected
-                        ? 'bg-red-950/90 border-red-500 text-white shadow-lg shadow-red-950/50 scale-105'
+                        ? 'bg-red-950/90 border-red-500 text-w-text-main shadow-lg shadow-red-950/50 scale-105'
                         : 'bg-zinc-900/80 border-zinc-700/80 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
                     }`}
                   >
@@ -189,7 +189,7 @@ export const CaseAccusationModal: React.FC<CaseAccusationModalProps> = ({
                     <span className="text-[10px] text-zinc-400 font-medium line-clamp-1">{s.title}</span>
 
                     {isSelected && (
-                      <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-600 text-white text-[10px] flex items-center justify-center font-black shadow">
+                      <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-600 text-w-text-main text-[10px] flex items-center justify-center font-black shadow">
                         ✓
                       </div>
                     )}
@@ -201,7 +201,7 @@ export const CaseAccusationModal: React.FC<CaseAccusationModalProps> = ({
 
           {/* Step 2: Select Decisive Evidence */}
           <div className="space-y-2">
-            <label className="text-xs font-black uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
+            <label className="text-xs font-black uppercase text-amber-600 tracking-wider flex items-center gap-1.5">
               <span className="w-5 h-5 rounded-full bg-amber-500 text-black text-xs font-black flex items-center justify-center">2</span>
               <span>Chọn Vật Chứng Then Chốt Vạch Trần Thủ Phạm:</span>
             </label>
@@ -234,7 +234,7 @@ export const CaseAccusationModal: React.FC<CaseAccusationModalProps> = ({
           {/* Selected Summary Card */}
           {selectedSuspect && (
             <div className="p-3.5 bg-zinc-900/90 rounded-2xl border border-zinc-700 space-y-1 text-xs">
-              <span className="text-amber-400 font-black uppercase tracking-wider text-[10px] block">
+              <span className="text-amber-600 font-black uppercase tracking-wider text-[10px] block">
                 Tóm Tắt Buộc Tội Của Đội {teamState.teamName}:
               </span>
               <p className="text-zinc-200">
@@ -261,7 +261,7 @@ export const CaseAccusationModal: React.FC<CaseAccusationModalProps> = ({
             className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition cursor-pointer shadow-xl flex items-center gap-2 ${
               isSubmitting
                 ? 'bg-zinc-700 text-zinc-400 cursor-not-allowed'
-                : 'bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white border border-red-400/80 animate-pulse'
+                : 'bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-w-text-main border border-red-400/80 animate-pulse'
             }`}
           >
             <Search className="w-4 h-4" />
@@ -276,12 +276,12 @@ export const CaseAccusationModal: React.FC<CaseAccusationModalProps> = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 z-50 bg-black/95 flex flex-col items-center justify-center p-6 text-center space-y-4"
+              className="absolute inset-0 z-50 bg-white/70 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center space-y-4"
             >
               <div className={`w-20 h-20 rounded-3xl flex items-center justify-center text-4xl shadow-2xl border-4 ${
                 verdictOutcome.isCorrect
-                  ? 'bg-emerald-600 text-white border-emerald-300 animate-bounce'
-                  : 'bg-red-600 text-white border-red-300 animate-shake'
+                  ? 'bg-emerald-600 text-w-text-main border-emerald-300 animate-bounce'
+                  : 'bg-red-600 text-w-text-main border-red-300 animate-shake'
               }`}>
                 {verdictOutcome.isCorrect ? '🏆' : '❌'}
               </div>

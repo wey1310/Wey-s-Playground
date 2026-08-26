@@ -159,19 +159,19 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
   };
 
   return (
-    <div className="flex-1 min-h-0 w-full p-4 sm:p-6 bg-gradient-to-b from-purple-950 via-slate-900 to-indigo-950 text-white rounded-2xl shadow-2xl flex flex-col justify-between">
+    <div className="flex-1 min-h-0 w-full p-4 sm:p-6 bg-gradient-to-b from-purple-950 via-slate-900 to-indigo-950 text-w-text-main rounded-2xl shadow-2xl flex flex-col justify-between">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-900/80 border border-purple-500/30 p-4 rounded-xl">
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-w-bg-alt border border-purple-500/30 p-4 rounded-xl">
         <div className="flex items-center gap-3">
           <span className="text-3xl">🎰</span>
           <div>
-            <h2 className="text-xl font-extrabold text-amber-400 flex items-center gap-2">
+            <h2 className="text-xl font-extrabold text-amber-600 flex items-center gap-2">
               <span>Canh Bạc Tri Thức</span>
               <span className="text-xs px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-normal">
                 Betting Arena
               </span>
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-w-text-muted">
               Đặt cược điểm số + Dùng thẻ Siêu Năng Lực (Khiên, Ma Cà Rồng, x2)!
             </p>
           </div>
@@ -179,7 +179,7 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
 
         <button
           onClick={() => onGameEnd(teams, answerLogs)}
-          className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition shadow"
+          className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-w-text-main font-bold text-xs rounded-xl transition shadow"
         >
           Tổng Kết Game
         </button>
@@ -188,7 +188,7 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
       {/* Main Content */}
       <div className="my-6 space-y-6">
         {/* Question Area */}
-        <div className="bg-slate-900/90 border border-purple-500/40 p-5 rounded-2xl shadow-xl text-center space-y-4">
+        <div className="bg-w-bg-alt border border-purple-500/40 p-5 rounded-2xl shadow-xl text-center space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-purple-400 font-mono">
               ĐẤU TRƯỜNG ĐẶT CƯỢC
@@ -209,16 +209,16 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
             <div className="space-y-3">
               {currentQuestion ? (
                 <div className="text-left space-y-2">
-                  <span className="text-xs font-extrabold text-amber-400 font-mono">
+                  <span className="text-xs font-extrabold text-amber-600 font-mono">
                     CÂU HỎI #{currentQuestionNum}:
                   </span>
-                  <p className="text-base font-bold text-white">{currentQuestion.content}</p>
+                  <p className="text-base font-bold text-w-text-main">{currentQuestion.content}</p>
 
                   {currentQuestion.type === 'mcq' && currentQuestion.options && (
                     <div className="grid grid-cols-2 gap-2 pt-1">
                       {currentQuestion.options.map((opt, oIdx) => (
-                        <div key={oIdx} className="text-xs p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-300">
-                          <span className="font-bold text-amber-400 mr-1">{String.fromCharCode(65 + oIdx)}.</span>
+                        <div key={oIdx} className="text-xs p-2 bg-w-bg-card border border-w-border rounded-lg text-w-primary-dark">
+                          <span className="font-bold text-amber-600 mr-1">{String.fromCharCode(65 + oIdx)}.</span>
                           <span>{opt}</span>
                         </div>
                       ))}
@@ -226,7 +226,7 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
                   )}
                 </div>
               ) : (
-                <div className="text-2xl font-black text-amber-300">
+                <div className="text-2xl font-black text-amber-600">
                   CÂU HỎI SỐ #{currentQuestionNum}
                 </div>
               )}
@@ -248,14 +248,14 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
               return (
                 <div
                   key={team.id}
-                  className="p-4 bg-slate-900/90 border border-slate-800 rounded-2xl space-y-3 shadow-xl flex flex-col justify-between"
+                  className="p-4 bg-w-bg-alt border border-w-border rounded-2xl space-y-3 shadow-xl flex flex-col justify-between"
                 >
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <div className="flex items-center justify-between border-b border-w-border pb-2">
                     <div className="flex items-center gap-2">
                       <span className="text-2xl">{team.avatar}</span>
-                      <span className="font-bold text-xs text-white">{team.name}</span>
+                      <span className="font-bold text-xs text-w-text-main">{team.name}</span>
                     </div>
-                    <span className="font-mono font-black text-amber-400 text-sm">
+                    <span className="font-mono font-black text-amber-600 text-sm">
                       {team.score} điểm
                     </span>
                   </div>
@@ -263,7 +263,7 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
                   {/* Bet Input & Answer */}
                   <div className="space-y-2 text-xs">
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-400 mb-0.5">
+                      <label className="block text-[11px] font-semibold text-w-text-muted mb-0.5">
                         Điểm Cược:
                       </label>
                       <input
@@ -275,12 +275,12 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
                         onChange={(e) =>
                           handleUpdateBet(team.id, 'betPoints', Math.max(1, parseInt(e.target.value) || 0))
                         }
-                        className="w-full bg-slate-950 border border-slate-700 text-amber-300 font-mono font-bold rounded-lg px-2.5 py-1 text-xs focus:outline-none focus:border-amber-500"
+                        className="w-full bg-w-bg-card border border-w-accent-border text-amber-600 font-mono font-bold rounded-lg px-2.5 py-1 text-xs focus:outline-none focus:border-amber-500"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-400 mb-0.5">
+                      <label className="block text-[11px] font-semibold text-w-text-muted mb-0.5">
                         Đáp Án Lựa Chọn:
                       </label>
                       <input
@@ -289,13 +289,13 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
                         value={betObj.answerText}
                         onChange={(e) => handleUpdateBet(team.id, 'answerText', e.target.value)}
                         placeholder="VD: A, B, C, D..."
-                        className="w-full bg-slate-950 border border-slate-700 text-white font-bold rounded-lg px-2.5 py-1 text-xs focus:outline-none focus:border-purple-500"
+                        className="w-full bg-w-bg-card border border-w-accent-border text-w-text-main font-bold rounded-lg px-2.5 py-1 text-xs focus:outline-none focus:border-purple-500"
                       />
                     </div>
 
                     {/* Special Cards */}
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+                      <label className="block text-[11px] font-semibold text-w-text-muted mb-1">
                         Thẻ Thẻ Đặc Biệt:
                       </label>
                       <div className="grid grid-cols-3 gap-1">
@@ -307,8 +307,8 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
                           }
                           className={`p-1.5 rounded-lg border text-[10px] font-bold flex flex-col items-center gap-0.5 transition ${
                             betObj.cardUsed === 'shield'
-                              ? 'bg-blue-600/30 border-blue-500 text-blue-300'
-                              : 'bg-slate-950 border-slate-800 text-slate-500'
+                              ? 'bg-blue-600/30 border-blue-500 text-blue-800'
+                              : 'bg-w-bg-card border-w-border text-slate-500'
                           }`}
                         >
                           <Shield className="w-3.5 h-3.5" />
@@ -324,7 +324,7 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
                           className={`p-1.5 rounded-lg border text-[10px] font-bold flex flex-col items-center gap-0.5 transition ${
                             betObj.cardUsed === 'vampire'
                               ? 'bg-purple-600/30 border-purple-500 text-purple-300'
-                              : 'bg-slate-950 border-slate-800 text-slate-500'
+                              : 'bg-w-bg-card border-w-border text-slate-500'
                           }`}
                         >
                           <Zap className="w-3.5 h-3.5" />
@@ -340,7 +340,7 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
                           className={`p-1.5 rounded-lg border text-[10px] font-bold flex flex-col items-center gap-0.5 transition ${
                             betObj.cardUsed === 'double'
                               ? 'bg-rose-600/30 border-rose-500 text-rose-300'
-                              : 'bg-slate-950 border-slate-800 text-slate-500'
+                              : 'bg-w-bg-card border-w-border text-slate-500'
                           }`}
                         >
                           <Flame className="w-3.5 h-3.5" />
@@ -384,7 +384,7 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
         )}
       </div>
 
-      <div className="text-center text-xs text-slate-400 font-medium">
+      <div className="text-center text-xs text-w-text-muted font-medium">
         Đặc quyền: Thẻ Khiên bảo vệ điểm; Thẻ Hút lấy điểm sai của đối thủ; Thẻ x2 gấp đôi phần thưởng!
       </div>
     </div>

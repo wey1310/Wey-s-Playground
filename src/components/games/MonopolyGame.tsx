@@ -809,14 +809,14 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
   }, [questionPool, currentQuestionIdx]);
 
   return (
-    <div className="min-h-screen bg-[#F4EFE0] flex flex-col justify-between text-[#35452E] select-none p-2 sm:p-4">
+    <div className="min-h-screen bg-[#F4EFE0] flex flex-col justify-between text-w-text-main select-none p-2 sm:p-4">
       {/* 1. TOP NAVIGATION HEADER */}
-      <header className="bg-[#FFFDF5] border-2 border-[#DED5B8] rounded-2xl sm:rounded-3xl p-2 sm:p-3.5 shadow-xs flex items-center justify-between mb-2 sm:mb-3">
+      <header className="bg-w-bg-card border-2 border-w-border rounded-2xl sm:rounded-3xl p-2 sm:p-3.5 shadow-xs flex items-center justify-between mb-2 sm:mb-3">
         <div className="flex items-center gap-2 sm:gap-3">
           <button
             type="button"
             onClick={onBackToHome}
-            className="p-2 sm:px-3 sm:py-2 bg-[#F8F3E5] hover:bg-[#E9F0D9] text-[#4F683C] text-xs font-black rounded-xl border border-[#B9CDA0] shadow-2xs transition flex items-center gap-1.5 cursor-pointer"
+            className="p-2 sm:px-3 sm:py-2 bg-w-bg-main hover:bg-w-accent-light text-w-primary-dark text-xs font-black rounded-xl border border-w-accent-border shadow-2xs transition flex items-center gap-1.5 cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Trang Chủ</span>
@@ -825,13 +825,13 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
           <div className="flex items-center gap-2">
             <span className="text-2xl sm:text-3xl">🎩</span>
             <div>
-              <h1 className="text-sm sm:text-base font-black text-[#35452E] flex items-center gap-1.5">
+              <h1 className="text-sm sm:text-base font-black text-w-text-main flex items-center gap-1.5">
                 <span>CỜ TỶ PHÚ TRI THỨC</span>
-                <span className="text-[10px] font-extrabold px-2 py-0.2 bg-[#E9F0D9] text-[#4F683C] rounded-full border border-[#B9CDA0]">
+                <span className="text-[10px] font-extrabold px-2 py-0.2 bg-w-accent-light text-w-primary-dark rounded-full border border-w-accent-border">
                   Vòng {turnCount}
                 </span>
               </h1>
-              <p className="text-[10px] text-[#74806B] font-bold hidden md:block">
+              <p className="text-[10px] text-w-text-muted font-bold hidden md:block">
                 Boardgame giáo dục kinh tế &amp; thử thách tri thức theo lượt
               </p>
             </div>
@@ -844,7 +844,7 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
             <button
               type="button"
               onClick={() => onOpenQuickGuide('monopoly')}
-              className="p-2 bg-[#FFFDF5] hover:bg-[#E9F0D9] text-[#4F683C] text-xs font-black rounded-xl border border-[#B9CDA0] shadow-2xs transition flex items-center gap-1 cursor-pointer"
+              className="p-2 bg-w-bg-card hover:bg-w-accent-light text-w-primary-dark text-xs font-black rounded-xl border border-w-accent-border shadow-2xs transition flex items-center gap-1 cursor-pointer"
               title="Xem luật chơi"
             >
               <BookOpen className="w-4 h-4" />
@@ -855,7 +855,7 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
           <button
             type="button"
             onClick={handleRestartGame}
-            className="p-2 bg-[#FFFDF5] hover:bg-rose-50 text-rose-700 text-xs font-black rounded-xl border border-rose-200 shadow-2xs transition flex items-center gap-1 cursor-pointer"
+            className="p-2 bg-w-bg-card hover:bg-rose-50 text-rose-700 text-xs font-black rounded-xl border border-rose-200 shadow-2xs transition flex items-center gap-1 cursor-pointer"
             title="Chơi lại ván mới"
           >
             <RotateCcw className="w-4 h-4" />
@@ -890,7 +890,7 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
               <div className="w-full h-full flex flex-col items-center justify-between text-center p-2 sm:p-3">
                 {/* Center Header: Current Team Turn Pill */}
                 <div
-                  className="px-3.5 py-1.5 rounded-full text-white text-xs sm:text-sm font-black shadow-sm flex items-center gap-2 border border-white"
+                  className="px-3.5 py-1.5 rounded-full text-w-text-main text-xs sm:text-sm font-black shadow-sm flex items-center gap-2 border border-white"
                   style={{ backgroundColor: currentTeam.color }}
                 >
                   <span className="text-base">{currentTeam.avatar}</span>
@@ -904,17 +904,17 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
                   {phase === 'QUESTION' && (
                     <div className="space-y-2.5 animate-fade-in">
                       <div className="text-3xl sm:text-4xl animate-bounce">📚</div>
-                      <div className="text-xs sm:text-sm font-black text-[#35452E]">
+                      <div className="text-xs sm:text-sm font-black text-w-text-main">
                         Thử Thách Tri Thức
                       </div>
-                      <p className="text-[11px] text-[#74806B] font-bold">
+                      <p className="text-[11px] text-w-text-muted font-bold">
                         Trả lời đúng câu hỏi để mở khóa lượt gieo xúc xắc di chuyển!
                       </p>
 
                       <button
                         type="button"
                         onClick={handleStartQuestion}
-                        className="px-6 py-3 bg-[#4F683C] hover:bg-[#3D522B] text-white text-xs sm:text-sm font-black rounded-2xl shadow-md transition hover:scale-105 active:scale-95 flex items-center justify-center gap-2 mx-auto cursor-pointer"
+                        className="px-6 py-3 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main text-xs sm:text-sm font-black rounded-2xl shadow-md transition hover:scale-105 active:scale-95 flex items-center justify-center gap-2 mx-auto cursor-pointer"
                       >
                         <Play className="w-4 h-4 fill-white" />
                         <span>Mở Câu Hỏi Tri Thức</span>
@@ -939,7 +939,7 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
                   {phase === 'PAWN_MOVING' && (
                     <div className="space-y-2 animate-fade-in">
                       <div className="text-3xl animate-pulse">🚶‍♂️💨</div>
-                      <div className="text-xs sm:text-sm font-black text-[#35452E]">
+                      <div className="text-xs sm:text-sm font-black text-w-text-main">
                         Đang di chuyển {lastDiceRoll} bước...
                       </div>
                     </div>
@@ -949,14 +949,14 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
                   {phase === 'TURN_SUMMARY' && (
                     <div className="space-y-3 animate-fade-in">
                       <div className="text-3xl">✨</div>
-                      <div className="text-xs sm:text-sm font-black text-[#35452E]">
+                      <div className="text-xs sm:text-sm font-black text-w-text-main">
                         Hoàn thành lượt chơi!
                       </div>
 
                       <button
                         type="button"
                         onClick={handleNextTurn}
-                        className="px-6 py-3 bg-[#4F683C] hover:bg-[#3D522B] text-white text-xs sm:text-sm font-black rounded-2xl shadow-md transition hover:scale-105 active:scale-95 flex items-center justify-center gap-2 mx-auto cursor-pointer"
+                        className="px-6 py-3 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main text-xs sm:text-sm font-black rounded-2xl shadow-md transition hover:scale-105 active:scale-95 flex items-center justify-center gap-2 mx-auto cursor-pointer"
                       >
                         <span>Chuyển Lượt Đội Tiếp Theo</span>
                         <ChevronRight className="w-4 h-4" />
@@ -966,7 +966,7 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
                 </div>
 
                 {/* Center Footer Stats */}
-                <div className="text-[10px] text-[#74806B] font-bold">
+                <div className="text-[10px] text-w-text-muted font-bold">
                   Số dư hiện tại: <strong className="text-emerald-700 font-black">${currentTeam.money.toLocaleString()}</strong>
                 </div>
               </div>
@@ -1040,32 +1040,32 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
 
       {/* D. GAME OVER VICTORY MODAL */}
       {phase === 'GAME_OVER' && winnerTeam && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/70 backdrop-blur-sm backdrop-blur-sm animate-fade-in">
           <motion.div
             initial={{ opacity: 0, scale: 0.85, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-[#FFFDF5] border-4 border-[#DED5B8] rounded-3xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl space-y-5"
+            className="bg-w-bg-card border-4 border-w-border rounded-3xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl space-y-5"
           >
             <div className="text-5xl sm:text-6xl animate-bounce">🏆</div>
 
             <div className="space-y-1">
-              <h2 className="text-2xl sm:text-3xl font-black text-[#35452E]">
+              <h2 className="text-2xl sm:text-3xl font-black text-w-text-main">
                 QUÁN QUÂN CỜ TỶ PHÚ!
               </h2>
-              <p className="text-xs sm:text-sm text-[#74806B] font-bold">
+              <p className="text-xs sm:text-sm text-w-text-muted font-bold">
                 Chúc mừng đội đã xuất sắc chiến thắng đấu trường tri thức &amp; bất động sản!
               </p>
             </div>
 
             {/* Winner Badge */}
             <div
-              className="p-4 rounded-2xl text-white shadow-md flex items-center justify-center gap-3"
+              className="p-4 rounded-2xl text-w-text-main shadow-md flex items-center justify-center gap-3"
               style={{ backgroundColor: winnerTeam.color }}
             >
               <span className="text-3xl">{winnerTeam.avatar}</span>
               <div className="text-left">
                 <div className="text-lg font-black">{winnerTeam.name}</div>
-                <div className="text-xs text-white/90 font-bold">
+                <div className="text-xs text-w-text-main/90 font-bold">
                   Tổng tài sản: ${winnerTeam.money.toLocaleString()}
                 </div>
               </div>
@@ -1084,7 +1084,7 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
               <button
                 type="button"
                 onClick={handleRestartGame}
-                className="flex-1 py-3 bg-[#4F683C] hover:bg-[#3D522B] text-white text-xs sm:text-sm font-black rounded-2xl shadow-md transition hover:scale-105 active:scale-95 cursor-pointer"
+                className="flex-1 py-3 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main text-xs sm:text-sm font-black rounded-2xl shadow-md transition hover:scale-105 active:scale-95 cursor-pointer"
               >
                 Chơi Ván Mới
               </button>

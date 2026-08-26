@@ -591,18 +591,17 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
         setStudents(prev => prev.map(s => winnerIds.has(s.id) ? { ...s, selected: true } : s));
         setWinners(pickedWinners);
         setGameState('RESULT');
-        setShowResultModal(true);
         audio.playVictory();
 
         try {
           confetti({
-            particleCount: 80,
-            spread: 70,
-            origin: { y: 0.6 },
+            particleCount: 120,
+            spread: 90,
+            origin: { y: 0.5 },
             colors: ['#FDE047', '#FCD34D', '#FB923C', '#38BDF8', '#A78BFA', '#34D399', '#FFFFFF'],
           });
         } catch {}
-      }, 2000);
+      }, 1600);
 
       return () => clearTimeout(timer);
     }
@@ -799,7 +798,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
     <div
       ref={containerRef}
       id="lucky-star-game-container"
-      className="relative w-full h-[90vh] min-h-[640px] max-h-[1080px] bg-gradient-to-b from-[#060814] via-[#0B0F2A] to-[#040612] text-white rounded-3xl overflow-hidden shadow-2xl border border-indigo-950/60 select-none flex flex-col font-sans"
+      className="relative w-full h-[90vh] min-h-[640px] max-h-[1080px] bg-gradient-to-b from-[#060814] via-[#0B0F2A] to-[#040612] text-w-text-main rounded-3xl overflow-hidden shadow-2xl border border-indigo-950/60 select-none flex flex-col font-sans"
     >
       {/* Dynamic Cosmic Twinkling Stars Canvas */}
       <canvas
@@ -818,26 +817,26 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
       <div className="relative z-10 pt-3 pb-2 px-4 sm:px-6 flex flex-col items-center justify-center">
         {/* Quick status chips */}
         <div className="w-full flex items-center justify-between text-xs sm:text-sm font-medium text-amber-200/90 mb-1">
-          <div className="flex items-center gap-2 bg-indigo-950/70 border border-amber-500/30 px-3 py-1.5 rounded-full backdrop-blur-md shadow-lg">
-            <Sparkles className="w-4 h-4 text-amber-400 animate-spin" style={{ animationDuration: '6s' }} />
+          <div className="flex items-center gap-2 bg-w-bg-alt border border-amber-500/30 px-3 py-1.5 rounded-full backdrop-blur-md shadow-lg">
+            <Sparkles className="w-4 h-4 text-amber-600 animate-spin" style={{ animationDuration: '6s' }} />
             <span>Vòng {roundNumber}</span>
-            <span className="text-white/40">•</span>
-            <span>Đã gọi: <strong className="text-amber-300 font-bold">{calledStudentsCount}</strong> / {totalStudents}</span>
-            <span className="text-white/40">•</span>
+            <span className="text-w-text-main/40">•</span>
+            <span>Đã gọi: <strong className="text-amber-600 font-bold">{calledStudentsCount}</strong> / {totalStudents}</span>
+            <span className="text-w-text-main/40">•</span>
             <span>Còn lại: <strong className="text-emerald-400 font-bold">{remainingCount}</strong></span>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSoundEnabled(!soundEnabled)}
-              className="p-2 rounded-xl bg-indigo-950/70 hover:bg-indigo-900 border border-amber-500/30 text-amber-300 transition-all shadow-md active:scale-95 cursor-pointer"
+              className="p-2 rounded-xl bg-w-bg-alt hover:bg-indigo-50 border border-amber-500/30 text-amber-600 transition-all shadow-md active:scale-95 cursor-pointer"
               title={soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh'}
             >
               {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4 text-red-400" />}
             </button>
             <button
               onClick={toggleFullscreen}
-              className="p-2 rounded-xl bg-indigo-950/70 hover:bg-indigo-900 border border-amber-500/30 text-amber-300 transition-all shadow-md active:scale-95 cursor-pointer"
+              className="p-2 rounded-xl bg-w-bg-alt hover:bg-indigo-50 border border-amber-500/30 text-amber-600 transition-all shadow-md active:scale-95 cursor-pointer"
               title="Toàn màn hình"
             >
               {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -867,7 +866,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
           <div className="h-full flex flex-col items-center justify-center text-center p-6">
             <Star className="w-16 h-16 text-yellow-400/50 mb-3 animate-bounce" />
             <h3 className="text-xl font-bold text-amber-200">Chưa có học sinh nào trong lớp</h3>
-            <p className="text-sm text-slate-400 mt-1 mb-4 max-w-md">
+            <p className="text-sm text-w-text-muted mt-1 mb-4 max-w-md">
               Thầy cô hãy nhấn "Quản lý danh sách" để dán danh sách lớp hoặc nạp danh sách mẫu có sẵn.
             </p>
             <button
@@ -899,7 +898,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                   top: `${star.y}%`,
                   transform: 'translate(-50%, -50%)',
                   transition: isSpinning || isStopping ? 'none' : 'transform 0.4s ease-out, opacity 0.4s ease',
-                  opacity: isDimmed ? 0.35 : 1,
+                  opacity: isDimmed ? (gameState === 'RESULT' ? 0.15 : 0.35) : 1,
                   zIndex: isWinnerStar ? 40 : star.selected ? 5 : 20,
                 }}
                 className="flex flex-col items-center justify-center cursor-pointer group select-none"
@@ -938,10 +937,10 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                 <div
                   className={`mt-1 px-2.5 py-0.5 rounded-full text-center whitespace-nowrap text-xs sm:text-sm font-bold tracking-wide backdrop-blur-md border shadow-lg transition-all ${
                     star.selected
-                      ? 'bg-slate-900/80 text-slate-400 border-slate-700/60 line-through'
+                      ? 'bg-w-bg-alt text-w-text-muted border-w-accent-border line-through'
                       : isWinnerStar
                       ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 border-white shadow-[0_0_20px_#FDE047] scale-110'
-                      : 'bg-slate-950/80 text-amber-100 border-amber-400/40 group-hover:border-amber-300 group-hover:text-white'
+                      : 'bg-w-bg-card text-amber-100 border-amber-400 group-hover:border-amber-300 group-hover:text-w-text-main'
                   }`}
                 >
                   {star.name}
@@ -953,24 +952,201 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
             );
           })
         )}
+
+        {/* DRAMATIC ON-STAGE ZOOM SHOWCASE FOR N WINNING STARS */}
+        <AnimatePresence>
+          {gameState === 'RESULT' && winners.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-30 flex flex-col items-center justify-center p-4 sm:p-6 bg-w-bg-card backdrop-blur-xs pointer-events-auto"
+            >
+              {/* Grand Cosmic Spotlight Halo */}
+              <div className="absolute w-[500px] h-[500px] bg-gradient-to-r from-amber-500/25 via-yellow-400/20 to-orange-500/25 rounded-full blur-3xl pointer-events-none animate-pulse" />
+
+              {/* Title Ribbon */}
+              <motion.div
+                initial={{ scale: 0.8, y: -20, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className="relative z-10 mb-4 px-6 py-2 bg-gradient-to-r from-amber-500/30 via-indigo-950/90 to-amber-500/30 border border-amber-400 rounded-full shadow-[0_0_30px_rgba(251,191,36,0.6)] backdrop-blur-md flex items-center gap-2 text-amber-200"
+              >
+                <Sparkles className="w-5 h-5 text-yellow-300 animate-spin" style={{ animationDuration: '4s' }} />
+                <span className="text-sm sm:text-lg font-black tracking-widest uppercase text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-yellow-100">
+                  {winners.length > 1 ? `✨ ${winners.length} NGÔI SAO MAY MẮN ĐÃ TỎA SÁNG ✨` : '✨ NGÔI SAO MAY MẮN ĐÃ TỎA SÁNG ✨'}
+                </span>
+                <Sparkles className="w-5 h-5 text-yellow-300 animate-spin" style={{ animationDuration: '4s' }} />
+              </motion.div>
+
+              {/* ZOOMED STARS ARENA (Flex / Grid Display) */}
+              <div
+                className={`relative z-10 w-full flex flex-wrap items-center justify-center gap-4 sm:gap-8 max-w-5xl my-2 max-h-[60vh] overflow-y-auto px-2`}
+              >
+                {winners.map((winner, idx) => {
+                  const isSingle = winners.length === 1;
+                  const isDouble = winners.length === 2;
+                  const isTriple = winners.length === 3;
+
+                  return (
+                    <motion.div
+                      key={winner.id}
+                      initial={{ scale: 0.1, rotate: -20, opacity: 0 }}
+                      animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                      exit={{ scale: 0.1, opacity: 0 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 260,
+                        damping: 18,
+                        delay: idx * 0.12,
+                      }}
+                      className="flex flex-col items-center justify-center text-center group"
+                    >
+                      {/* Enormous Pulsating Star Container */}
+                      <div className="relative flex items-center justify-center">
+                        {/* Sunburst background rays */}
+                        <div
+                          className="absolute inset-0 w-32 h-32 sm:w-44 sm:h-44 -top-6 -left-6 rounded-full bg-radial from-amber-300/40 via-yellow-500/10 to-transparent blur-md pointer-events-none animate-spin"
+                          style={{ animationDuration: '12s' }}
+                        />
+
+                        {/* Cosmic Rings */}
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ repeat: Infinity, duration: 8, ease: 'linear' }}
+                          className="absolute -inset-4 sm:-inset-6 rounded-full border border-dashed border-amber-300/60 pointer-events-none"
+                        />
+
+                        {/* GIANT STAR SVG */}
+                        <motion.svg
+                          animate={{
+                            scale: [1, 1.08, 1],
+                            rotate: [0, 4, -4, 0],
+                          }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 3,
+                            ease: 'easeInOut',
+                          }}
+                          viewBox="0 0 24 24"
+                          className={`${
+                            isSingle
+                              ? 'w-28 h-28 sm:w-40 sm:h-40'
+                              : isDouble
+                              ? 'w-24 h-24 sm:w-32 sm:h-32'
+                              : isTriple
+                              ? 'w-20 h-20 sm:w-28 sm:h-28'
+                              : 'w-16 h-16 sm:w-24 sm:h-24'
+                          } drop-shadow-[0_0_35px_#FDE047]`}
+                        >
+                          <defs>
+                            <linearGradient id={`starGoldGrad_${idx}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stopColor="#FFFBEB" />
+                              <stop offset="40%" stopColor="#FDE047" />
+                              <stop offset="80%" stopColor="#F59E0B" />
+                              <stop offset="100%" stopColor="#D97706" />
+                            </linearGradient>
+                          </defs>
+                          <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                            fill={`url(#starGoldGrad_${idx})`}
+                            stroke="#FFFFFF"
+                            strokeWidth="1.2"
+                          />
+                        </motion.svg>
+
+                        {/* Star Number Badge */}
+                        <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-gradient-to-r from-red-600 to-amber-500 text-w-text-main font-black text-[10px] sm:text-xs px-2 py-0.5 rounded-full border-2 border-white shadow-lg">
+                          #{idx + 1}
+                        </div>
+                      </div>
+
+                      {/* Grand Zoomed Name Badge */}
+                      <motion.div
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: idx * 0.12 + 0.2 }}
+                        className="mt-3 sm:mt-4 px-4 sm:px-6 py-1.5 sm:py-2.5 bg-gradient-to-b from-[#1E1B4B] via-[#0F172A] to-[#020617] border-2 border-amber-400 rounded-2xl shadow-[0_0_25px_rgba(251,191,36,0.8)] backdrop-blur-xl flex flex-col items-center"
+                      >
+                        <span className="text-[10px] sm:text-xs text-amber-600 font-bold uppercase tracking-wider flex items-center gap-1">
+                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                          <span>Học sinh may mắn</span>
+                        </span>
+                        <h3
+                          className={`${
+                            isSingle
+                              ? 'text-2xl sm:text-4xl md:text-5xl'
+                              : isDouble
+                              ? 'text-xl sm:text-3xl'
+                              : 'text-lg sm:text-2xl'
+                          } font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-yellow-100 drop-shadow-[0_0_20px_rgba(251,191,36,0.9)] mt-0.5 whitespace-nowrap`}
+                        >
+                          {winner.name}
+                        </h3>
+                      </motion.div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              {/* Quick On-Stage Action Dock */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="relative z-10 flex flex-wrap items-center justify-center gap-3 mt-4"
+              >
+                <button
+                  onClick={() => {
+                    if (remainingCount > 0) {
+                      handleStart();
+                    } else {
+                      handleNewRound();
+                    }
+                  }}
+                  className="px-6 py-2.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 font-black rounded-xl shadow-[0_0_25px_rgba(251,191,36,0.7)] hover:brightness-110 active:scale-95 transition-all text-xs sm:text-sm flex items-center gap-2 cursor-pointer uppercase tracking-wide"
+                >
+                  <Play className="w-4 h-4 fill-slate-950" />
+                  <span>{remainingCount > 0 ? `GỌI TIẾP ${Math.min(pickCount, remainingCount)} EM` : 'BẮT ĐẦU VÒNG MỚI'}</span>
+                </button>
+
+                <button
+                  onClick={() => setShowResultModal(true)}
+                  className="px-4 py-2.5 bg-w-bg-alt hover:bg-indigo-50 border border-amber-500/40 text-amber-200 font-bold rounded-xl text-xs sm:text-sm flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
+                >
+                  <Award className="w-4 h-4 text-amber-600" />
+                  <span>Xem thiệp chúc mừng</span>
+                </button>
+
+                <button
+                  onClick={() => setGameState('IDLE')}
+                  className="px-4 py-2.5 bg-w-bg-alt hover:bg-w-accent-light border border-w-accent-border text-w-primary-dark font-bold rounded-xl text-xs sm:text-sm flex items-center gap-1.5 transition-all cursor-pointer"
+                  title="Thu nhỏ để xem toàn cảnh bầu trời các ngôi sao"
+                >
+                  <span>Thu nhỏ / Bầu trời</span>
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Bottom Interactive Command Dock */}
-      <div className="relative z-20 px-4 sm:px-6 py-3.5 bg-slate-950/90 backdrop-blur-xl border-t border-amber-500/25 flex flex-wrap items-center justify-between gap-3 shadow-2xl">
+      <div className="relative z-20 px-4 sm:px-6 py-3.5 bg-w-bg-card backdrop-blur-xl border-t border-amber-500/25 flex flex-wrap items-center justify-between gap-3 shadow-2xl">
         {/* Left Action Buttons */}
         <div className="flex items-center gap-2 flex-wrap">
           <button
             id="lucky-star-manage-btn"
             onClick={() => setShowManageModal(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 bg-indigo-950/80 hover:bg-indigo-900 text-amber-200 border border-amber-500/40 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md active:scale-95 cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 bg-w-bg-alt hover:bg-indigo-50 text-amber-200 border border-amber-500/40 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md active:scale-95 cursor-pointer"
           >
-            <Users className="w-4 h-4 text-amber-400" />
+            <Users className="w-4 h-4 text-amber-600" />
             <span className="hidden sm:inline">Quản lý</span> Danh sách ({students.length})
           </button>
 
           {/* Direct Pick Count Input & Selector */}
-          <div className="flex items-center gap-1.5 bg-indigo-950/90 border border-amber-500/40 px-2.5 py-1.5 rounded-xl shadow-md">
-            <span className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1">
+          <div className="flex items-center gap-1.5 bg-w-bg-alt border border-amber-500/40 px-2.5 py-1.5 rounded-xl shadow-md">
+            <span className="text-xs font-bold text-amber-600 uppercase tracking-wider flex items-center gap-1">
               <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
               <span>Số lượng gọi:</span>
             </span>
@@ -978,7 +1154,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
             <button
               onClick={() => setPickCount(prev => Math.max(1, prev - 1))}
               disabled={pickCount <= 1 || gameState === 'SPINNING' || gameState === 'STOPPING'}
-              className="w-6 h-6 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-30 text-amber-200 font-black text-xs flex items-center justify-center cursor-pointer"
+              className="w-6 h-6 rounded-lg bg-w-accent-light hover:bg-slate-700 disabled:opacity-30 text-amber-200 font-black text-xs flex items-center justify-center cursor-pointer"
             >
               -
             </button>
@@ -995,20 +1171,20 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                   setPickCount(Math.max(1, Math.min(remainingCount || 50, val)));
                 }
               }}
-              className="w-12 text-center bg-slate-900 border border-amber-400/50 rounded-lg py-0.5 text-sm font-black text-yellow-300 focus:outline-none focus:ring-1 focus:ring-yellow-400"
+              className="w-12 text-center bg-w-bg-alt border border-amber-400 rounded-lg py-0.5 text-sm font-black text-yellow-300 focus:outline-none focus:ring-1 focus:ring-yellow-400"
             />
 
             <button
               onClick={() => setPickCount(prev => Math.min(Math.max(1, remainingCount), prev + 1))}
               disabled={pickCount >= remainingCount || gameState === 'SPINNING' || gameState === 'STOPPING'}
-              className="w-6 h-6 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-30 text-amber-200 font-black text-xs flex items-center justify-center cursor-pointer"
+              className="w-6 h-6 rounded-lg bg-w-accent-light hover:bg-slate-700 disabled:opacity-30 text-amber-200 font-black text-xs flex items-center justify-center cursor-pointer"
             >
               +
             </button>
 
             <button
               onClick={() => setShowCountSelectModal(true)}
-              className="ml-1 text-[11px] font-bold text-amber-300/80 hover:text-amber-200 underline cursor-pointer"
+              className="ml-1 text-[11px] font-bold text-amber-600 hover:text-amber-200 underline cursor-pointer"
             >
               Chọn nhanh
             </button>
@@ -1018,10 +1194,10 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
             id="lucky-star-shuffle-btn"
             onClick={handleShufflePositions}
             disabled={gameState === 'SPINNING' || gameState === 'STOPPING'}
-            className="p-2.5 bg-indigo-950/80 hover:bg-indigo-900 disabled:opacity-40 text-amber-200 border border-amber-500/40 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md active:scale-95 cursor-pointer"
+            className="p-2.5 bg-w-bg-alt hover:bg-indigo-50 disabled:opacity-40 text-amber-200 border border-amber-500/40 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md active:scale-95 cursor-pointer"
             title="Đổi vị trí các ngôi sao"
           >
-            <Shuffle className="w-4 h-4 text-amber-400" />
+            <Shuffle className="w-4 h-4 text-amber-600" />
           </button>
         </div>
 
@@ -1041,7 +1217,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
             <button
               id="lucky-star-stop-btn"
               onClick={handleStop}
-              className="flex items-center gap-2.5 px-8 sm:px-12 py-3 bg-gradient-to-r from-red-600 via-rose-500 to-red-600 text-white font-black text-lg sm:text-xl rounded-2xl shadow-[0_0_30px_rgba(239,68,68,0.7)] hover:shadow-[0_0_45px_rgba(239,68,68,1)] hover:scale-105 active:scale-95 transition-all uppercase tracking-wider animate-pulse cursor-pointer"
+              className="flex items-center gap-2.5 px-8 sm:px-12 py-3 bg-gradient-to-r from-red-600 via-rose-500 to-red-600 text-w-text-main font-black text-lg sm:text-xl rounded-2xl shadow-[0_0_30px_rgba(239,68,68,0.7)] hover:shadow-[0_0_45px_rgba(239,68,68,1)] hover:scale-105 active:scale-95 transition-all uppercase tracking-wider animate-pulse cursor-pointer"
             >
               <Square className="w-6 h-6 fill-white" />
               <span>DỪNG LẠI</span>
@@ -1052,7 +1228,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
             id="lucky-star-new-round-btn"
             onClick={handleNewRound}
             disabled={gameState === 'SPINNING' || gameState === 'STOPPING'}
-            className="flex items-center gap-1.5 px-4 py-3 bg-slate-900 hover:bg-slate-800 disabled:opacity-40 text-amber-300 border border-amber-500/40 rounded-2xl font-bold text-sm transition-all shadow-md active:scale-95 cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-3 bg-w-bg-alt hover:bg-w-accent-light disabled:opacity-40 text-amber-600 border border-amber-500/40 rounded-2xl font-bold text-sm transition-all shadow-md active:scale-95 cursor-pointer"
             title="Làm mới vòng chơi, gọi lại toàn bộ lớp"
           >
             <RotateCcw className="w-4 h-4" />
@@ -1061,8 +1237,8 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
         </div>
 
         {/* Right Speed Multiplier Controls */}
-        <div className="flex items-center gap-2 bg-indigo-950/80 border border-amber-500/30 px-3 py-1.5 rounded-xl">
-          <Sliders className="w-4 h-4 text-amber-400" />
+        <div className="flex items-center gap-2 bg-w-bg-alt border border-amber-500/30 px-3 py-1.5 rounded-xl">
+          <Sliders className="w-4 h-4 text-amber-600" />
           <span className="text-xs text-amber-200/80 font-medium hidden sm:inline">Tốc độ:</span>
           <div className="flex items-center gap-1">
             {[0.5, 1.0, 1.5, 2.0].map(speed => (
@@ -1089,7 +1265,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 select-none"
+            className="absolute inset-0 z-50 bg-w-bg-card backdrop-blur-md flex items-center justify-center p-4 select-none"
           >
             <motion.div
               initial={{ scale: 0.5, y: 50, rotate: -3 }}
@@ -1101,13 +1277,13 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
               {/* Close icon */}
               <button
                 onClick={() => setShowResultModal(false)}
-                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-full bg-white/5 hover:bg-white/10 cursor-pointer"
+                className="absolute top-4 right-4 p-2 text-w-text-muted hover:text-w-text-main rounded-full bg-white/5 hover:bg-white/10 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
               {/* Sparkles header */}
-              <div className="flex items-center justify-center gap-2 text-amber-300 mb-1">
+              <div className="flex items-center justify-center gap-2 text-amber-600 mb-1">
                 <Sparkles className="w-6 h-6 animate-spin text-yellow-300" />
                 <span className="text-sm sm:text-base font-black tracking-widest uppercase">✨ NGÔI SAO MAY MẮN ✨</span>
                 <Sparkles className="w-6 h-6 animate-spin text-yellow-300" />
@@ -1133,7 +1309,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                     initial={{ scale: 0.8, y: 20 }}
                     animate={{ scale: 1, y: 0 }}
                     transition={{ delay: i * 0.1 }}
-                    className="p-4 bg-gradient-to-b from-amber-500/20 via-slate-900/90 to-slate-950 border-2 border-amber-400/80 rounded-2xl flex flex-col items-center justify-center shadow-lg hover:scale-102 transition-all"
+                    className="p-4 bg-gradient-to-b from-amber-500/20 via-slate-900/90 to-slate-950 border-2 border-amber-400 rounded-2xl flex flex-col items-center justify-center shadow-lg hover:scale-102 transition-all"
                   >
                     {/* Golden Star Graphic */}
                     <div className="relative my-1">
@@ -1173,7 +1349,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
 
                 <button
                   onClick={() => setShowResultModal(false)}
-                  className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-2xl transition-all text-sm sm:text-base cursor-pointer"
+                  className="px-6 py-3 bg-w-accent-light hover:bg-slate-700 text-w-text-main font-bold rounded-2xl transition-all text-sm sm:text-base cursor-pointer"
                 >
                   Đóng
                 </button>
@@ -1190,23 +1366,23 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 select-none"
+            className="absolute inset-0 z-50 bg-w-bg-card backdrop-blur-md flex items-center justify-center p-4 select-none"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-900 border border-amber-500/40 w-full max-w-2xl max-h-[85vh] rounded-3xl p-6 shadow-2xl flex flex-col text-slate-100"
+              className="bg-w-bg-alt border border-amber-500/40 w-full max-w-2xl max-h-[85vh] rounded-3xl p-6 shadow-2xl flex flex-col text-slate-100"
             >
               {/* Header */}
-              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-                <div className="flex items-center gap-2 text-amber-300">
-                  <Users className="w-6 h-6 text-amber-400" />
+              <div className="flex items-center justify-between pb-4 border-b border-w-border">
+                <div className="flex items-center gap-2 text-amber-600">
+                  <Users className="w-6 h-6 text-amber-600" />
                   <h3 className="text-xl font-bold">Quản Lý Danh Sách Học Sinh ({students.length})</h3>
                 </div>
                 <button
                   onClick={() => setShowManageModal(false)}
-                  className="p-2 text-slate-400 hover:text-white rounded-full bg-white/5 hover:bg-white/10 cursor-pointer"
+                  className="p-2 text-w-text-muted hover:text-w-text-main rounded-full bg-white/5 hover:bg-white/10 cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -1222,7 +1398,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                     value={newStudentName}
                     onChange={e => setNewStudentName(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleAddStudent()}
-                    className="flex-1 px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-sm"
+                    className="flex-1 px-4 py-2.5 bg-w-bg-card border border-w-accent-border rounded-xl text-w-text-main placeholder-slate-500 focus:outline-none focus:border-amber-400 text-sm"
                   />
                   <button
                     onClick={handleAddStudent}
@@ -1234,8 +1410,8 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                 </div>
 
                 {/* Bulk Paste Area */}
-                <div className="bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
-                  <label className="block text-xs font-bold text-amber-300 mb-1.5 uppercase">
+                <div className="bg-w-bg-card p-4 rounded-2xl border border-w-border">
+                  <label className="block text-xs font-bold text-amber-600 mb-1.5 uppercase">
                     📋 Dán danh sách cả lớp (Mỗi dòng một tên):
                   </label>
                   <textarea
@@ -1243,14 +1419,14 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                     placeholder={`Nguyễn Văn A\nTrần Thị B\nLê Văn C\nPhạm Thị D`}
                     value={pasteText}
                     onChange={e => setPasteText(e.target.value)}
-                    className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:border-amber-400 text-sm font-mono"
+                    className="w-full p-3 bg-w-bg-alt border border-w-accent-border rounded-xl text-w-text-main placeholder-slate-600 focus:outline-none focus:border-amber-400 text-sm font-mono"
                   />
                   <div className="flex items-center justify-between mt-2">
-                    <span className="text-xs text-slate-400">Tự động loại bỏ số thứ tự ở đầu dòng</span>
+                    <span className="text-xs text-w-text-muted">Tự động loại bỏ số thứ tự ở đầu dòng</span>
                     <button
                       onClick={handlePasteRoster}
                       disabled={!pasteText.trim()}
-                      className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white font-bold rounded-xl text-xs transition-all active:scale-95 cursor-pointer"
+                      className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-w-text-main font-bold rounded-xl text-xs transition-all active:scale-95 cursor-pointer"
                     >
                       Áp dụng danh sách mới
                     </button>
@@ -1260,7 +1436,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                 {/* Current Students List */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold text-slate-400 uppercase">Danh sách hiện tại:</span>
+                    <span className="text-xs font-bold text-w-text-muted uppercase">Danh sách hiện tại:</span>
                     <div className="flex items-center gap-2 flex-wrap">
                       <StudentImportButton
                         onImport={(names) => {
@@ -1294,7 +1470,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                       />
                       <button
                         onClick={handleLoadDefaults}
-                        className="text-xs text-amber-400 hover:underline cursor-pointer"
+                        className="text-xs text-amber-600 hover:underline cursor-pointer"
                       >
                         Nạp 20 tên mẫu
                       </button>
@@ -1308,14 +1484,14 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                     </div>
                   </div>
 
-                  <div className="max-h-56 overflow-y-auto space-y-1.5 border border-slate-800 rounded-2xl p-2 bg-slate-950/50">
+                  <div className="max-h-56 overflow-y-auto space-y-1.5 border border-w-border rounded-2xl p-2 bg-w-bg-card">
                     {students.length === 0 ? (
                       <p className="text-center text-xs text-slate-500 py-6">Danh sách trống</p>
                     ) : (
                       students.map((student, idx) => (
                         <div
                           key={student.id}
-                          className="flex items-center justify-between px-3 py-2 bg-slate-900 hover:bg-slate-800/80 rounded-xl text-sm border border-slate-800"
+                          className="flex items-center justify-between px-3 py-2 bg-w-bg-alt hover:bg-w-accent-light rounded-xl text-sm border border-w-border"
                         >
                           <div className="flex items-center gap-2 flex-1 mr-2">
                             <span className="text-xs text-amber-500/80 w-6 font-mono font-bold">{idx + 1}.</span>
@@ -1325,7 +1501,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                                 value={editNameValue}
                                 onChange={e => setEditNameValue(e.target.value)}
                                 onKeyDown={e => e.key === 'Enter' && handleSaveEdit(student.id)}
-                                className="px-2 py-0.5 bg-slate-950 border border-amber-400 rounded text-sm text-white flex-1"
+                                className="px-2 py-0.5 bg-w-bg-card border border-amber-400 rounded text-sm text-w-text-main flex-1"
                                 autoFocus
                               />
                             ) : (
@@ -1349,7 +1525,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                                   setEditingStudentId(student.id);
                                   setEditNameValue(student.name);
                                 }}
-                                className="p-1.5 text-slate-400 hover:text-amber-300 rounded cursor-pointer"
+                                className="p-1.5 text-w-text-muted hover:text-amber-600 rounded cursor-pointer"
                                 title="Đổi tên"
                               >
                                 <Edit3 className="w-4 h-4" />
@@ -1357,7 +1533,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                             )}
                             <button
                               onClick={() => handleDeleteStudent(student.id)}
-                              className="p-1.5 text-slate-400 hover:text-red-400 rounded cursor-pointer"
+                              className="p-1.5 text-w-text-muted hover:text-red-400 rounded cursor-pointer"
                               title="Xóa"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -1371,7 +1547,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
               </div>
 
               {/* Footer */}
-              <div className="pt-4 border-t border-slate-800 flex justify-end">
+              <div className="pt-4 border-t border-w-border flex justify-end">
                 <button
                   onClick={() => setShowManageModal(false)}
                   className="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all cursor-pointer"
@@ -1391,33 +1567,33 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 select-none"
+            className="absolute inset-0 z-50 bg-w-bg-card backdrop-blur-md flex items-center justify-center p-4 select-none"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-900 border border-amber-500/40 w-full max-w-md rounded-3xl p-6 shadow-2xl text-slate-100 text-center"
+              className="bg-w-bg-alt border border-amber-500/40 w-full max-w-md rounded-3xl p-6 shadow-2xl text-slate-100 text-center"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-                <h3 className="text-lg font-bold text-amber-300 flex items-center gap-2">
-                  <ListOrdered className="w-5 h-5 text-amber-400" />
+              <div className="flex items-center justify-between pb-3 border-b border-w-border mb-4">
+                <h3 className="text-lg font-bold text-amber-600 flex items-center gap-2">
+                  <ListOrdered className="w-5 h-5 text-amber-600" />
                   <span>Chọn số lượng học sinh gọi mỗi lượt</span>
                 </h3>
                 <button
                   onClick={() => setShowCountSelectModal(false)}
-                  className="p-1.5 text-slate-400 hover:text-white rounded-full cursor-pointer"
+                  className="p-1.5 text-w-text-muted hover:text-w-text-main rounded-full cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <p className="text-xs text-slate-400 mb-4">
+              <p className="text-xs text-w-text-muted mb-4">
                 Nhập số hoặc chọn nhanh số lượng học sinh được xướng tên may mắn trong mỗi lần quay (Còn {remainingCount} em chưa gọi).
               </p>
 
               {/* Custom Number Input inside Modal */}
-              <div className="p-3 bg-slate-950 rounded-2xl border border-amber-500/40 mb-4 flex items-center justify-between gap-3">
+              <div className="p-3 bg-w-bg-card rounded-2xl border border-amber-500/40 mb-4 flex items-center justify-between gap-3">
                 <span className="text-xs font-bold text-amber-200">Gõ số lượng tùy chọn:</span>
                 <div className="flex items-center gap-2">
                   <input
@@ -1426,7 +1602,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                     max={remainingCount || 50}
                     value={customInputCount}
                     onChange={(e) => setCustomInputCount(e.target.value)}
-                    className="w-20 px-3 py-1.5 bg-slate-900 border border-amber-400 rounded-xl text-center font-bold text-amber-300 text-sm focus:outline-none"
+                    className="w-20 px-3 py-1.5 bg-w-bg-alt border border-amber-400 rounded-xl text-center font-bold text-amber-600 text-sm focus:outline-none"
                   />
                   <button
                     onClick={() => {
@@ -1455,7 +1631,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                     className={`py-2.5 rounded-xl font-black text-sm border transition-all cursor-pointer ${
                       pickCount === count
                         ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-lg'
-                        : 'bg-slate-950 text-slate-200 border-slate-700 hover:border-amber-400 disabled:opacity-30'
+                        : 'bg-w-bg-card text-slate-200 border-w-accent-border hover:border-amber-400 disabled:opacity-30'
                     }`}
                   >
                     {count} em
@@ -1465,7 +1641,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
 
               <button
                 onClick={() => setShowCountSelectModal(false)}
-                className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-sm cursor-pointer"
+                className="w-full py-2.5 bg-w-accent-light hover:bg-slate-700 text-w-text-main font-bold rounded-xl text-sm cursor-pointer"
               >
                 Đóng
               </button>

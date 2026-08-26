@@ -245,9 +245,9 @@ export const CaroGame: React.FC<CaroGameProps> = ({ config, questions, banks = [
   };
 
   return (
-    <div className={`flex-1 min-h-0 w-full p-3 sm:p-5 bg-gradient-to-b ${themeInfo.bgClass} rounded-[24px] shadow-2xl flex flex-col justify-between border-2 sm:border-4 border-[#DED5B8] relative`}>
+    <div className={`flex-1 min-h-0 w-full p-3 sm:p-5 bg-gradient-to-b ${themeInfo.bgClass} rounded-[24px] shadow-2xl flex flex-col justify-between border-2 sm:border-4 border-w-border relative`}>
       {/* Top Header & Scoreboard */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white/95 backdrop-blur-md border border-[#DED5B8] p-3 sm:p-4 rounded-2xl shadow-sm">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white/95 backdrop-blur-md border border-w-border p-3 sm:p-4 rounded-2xl shadow-sm">
         {/* Team 1 (X) */}
         <div
           className={`flex-1 flex items-center gap-3 p-2.5 sm:p-3 rounded-xl border-2 transition-all ${
@@ -264,7 +264,7 @@ export const CaroGame: React.FC<CaroGameProps> = ({ config, questions, banks = [
               <span className="font-black text-rose-600 text-sm sm:text-base truncate">
                 {teams[0].name}
               </span>
-              <span className="px-2 py-0.5 rounded-md bg-rose-600 text-white font-black text-xs">
+              <span className="px-2 py-0.5 rounded-md bg-rose-600 text-w-text-main font-black text-xs">
                 X
               </span>
             </div>
@@ -297,7 +297,7 @@ export const CaroGame: React.FC<CaroGameProps> = ({ config, questions, banks = [
         >
           <div className="flex-1 text-right min-w-0">
             <div className="flex items-center justify-end gap-1.5">
-              <span className="px-2 py-0.5 rounded-md bg-blue-600 text-white font-black text-xs">
+              <span className="px-2 py-0.5 rounded-md bg-blue-600 text-w-text-main font-black text-xs">
                 O
               </span>
               <span className="font-black text-blue-600 text-sm sm:text-base truncate">
@@ -356,7 +356,7 @@ export const CaroGame: React.FC<CaroGameProps> = ({ config, questions, banks = [
                     </span>
                   )}
                   {cell === null && !roundWinner && (
-                    <span className="text-slate-300 opacity-0 hover:opacity-40 text-2xl font-bold">
+                    <span className="text-w-primary-dark opacity-0 hover:opacity-40 text-2xl font-bold">
                       {currentSymbol}
                     </span>
                   )}
@@ -367,11 +367,11 @@ export const CaroGame: React.FC<CaroGameProps> = ({ config, questions, banks = [
 
           {/* Round Finished Overlay */}
           {roundWinner && (
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-xs rounded-[28px] flex flex-col items-center justify-center p-6 text-center animate-fade-in z-20">
+            <div className="absolute inset-0 bg-white/70 backdrop-blur-sm backdrop-blur-xs rounded-[28px] flex flex-col items-center justify-center p-6 text-center animate-fade-in z-20">
               {roundWinner === 'TIE' ? (
                 <>
                   <div className="text-5xl mb-2">🤝</div>
-                  <h3 className="text-xl sm:text-2xl font-black text-white mb-1">
+                  <h3 className="text-xl sm:text-2xl font-black text-w-text-main mb-1">
                     VÁN ĐẤU HÒA!
                   </h3>
                   <p className="text-xs text-amber-200 font-bold mb-4">
@@ -381,10 +381,10 @@ export const CaroGame: React.FC<CaroGameProps> = ({ config, questions, banks = [
               ) : (
                 <>
                   <div className="text-5xl mb-2">🏆</div>
-                  <h3 className="text-xl sm:text-2xl font-black text-amber-300 mb-1">
+                  <h3 className="text-xl sm:text-2xl font-black text-amber-600 mb-1">
                     {roundWinner.name} CHIẾN THẮNG!
                   </h3>
-                  <p className="text-xs sm:text-sm text-white font-extrabold mb-4 bg-amber-500/30 px-4 py-1.5 rounded-full border border-amber-400">
+                  <p className="text-xs sm:text-sm text-w-text-main font-extrabold mb-4 bg-amber-500/30 px-4 py-1.5 rounded-full border border-amber-400">
                     Thưởng thắng Caro x3: +{winBonusPts} Điểm!
                   </p>
                 </>
@@ -394,7 +394,7 @@ export const CaroGame: React.FC<CaroGameProps> = ({ config, questions, banks = [
                 <button
                   type="button"
                   onClick={handleNextRound}
-                  className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-w-text-main font-extrabold text-xs sm:text-sm rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer"
                 >
                   <RefreshCw className="w-4 h-4" />
                   <span>Chơi Ván Tiếp Theo</span>
@@ -402,7 +402,7 @@ export const CaroGame: React.FC<CaroGameProps> = ({ config, questions, banks = [
                 <button
                   type="button"
                   onClick={() => onGameEnd(teams, answerLogs)}
-                  className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-w-text-main font-extrabold text-xs sm:text-sm rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer"
                 >
                   <Trophy className="w-4 h-4 text-amber-200" />
                   <span>Tổng Kết Trò Chơi</span>
@@ -414,7 +414,7 @@ export const CaroGame: React.FC<CaroGameProps> = ({ config, questions, banks = [
       </div>
 
       {/* Bottom Action Controls */}
-      <div className="bg-white/95 backdrop-blur-md border border-[#DED5B8] p-3 sm:p-4 rounded-2xl shadow-sm flex flex-wrap items-center justify-between gap-3">
+      <div className="bg-white/95 backdrop-blur-md border border-w-border p-3 sm:p-4 rounded-2xl shadow-sm flex flex-wrap items-center justify-between gap-3">
         {/* Left Info / Question Status */}
         <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
           <span className="p-1.5 bg-amber-100 rounded-lg text-amber-800">
@@ -438,8 +438,8 @@ export const CaroGame: React.FC<CaroGameProps> = ({ config, questions, banks = [
                 hasMoveRight
                   ? 'bg-slate-200 text-slate-500 border-slate-300 cursor-not-allowed'
                   : currentTurnIdx === 0
-                  ? 'bg-rose-600 hover:bg-rose-700 text-white border-rose-700 shadow-rose-200 animate-pulse hover:scale-105'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white border-blue-700 shadow-blue-200 animate-pulse hover:scale-105'
+                  ? 'bg-rose-600 hover:bg-rose-700 text-w-text-main border-rose-700 shadow-rose-200 animate-pulse hover:scale-105'
+                  : 'bg-blue-600 hover:bg-blue-700 text-w-text-main border-blue-700 shadow-blue-200 animate-pulse hover:scale-105'
               }`}
             >
               <Dices className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200" />
@@ -482,7 +482,7 @@ export const CaroGame: React.FC<CaroGameProps> = ({ config, questions, banks = [
           <button
             type="button"
             onClick={() => onGameEnd(teams, answerLogs)}
-            className="px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-extrabold transition shadow-sm flex items-center gap-1 cursor-pointer"
+            className="px-3 py-2 bg-rose-600 hover:bg-rose-700 text-w-text-main rounded-xl text-xs font-extrabold transition shadow-sm flex items-center gap-1 cursor-pointer"
           >
             <Trophy className="w-3.5 h-3.5 text-amber-200" />
             <span>Tổng Kết</span>

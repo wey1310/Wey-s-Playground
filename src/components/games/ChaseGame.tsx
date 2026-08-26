@@ -152,7 +152,7 @@ export const ChaseGame: React.FC<ChaseGameProps> = ({
   const isHuntingReady = gameState.phase === 'idle' && answeredCorrectlyThisTurn === true;
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-3 sm:p-5 flex flex-col justify-between select-none">
+    <div className="min-h-screen bg-zinc-950 text-w-text-main p-3 sm:p-5 flex flex-col justify-between select-none">
       
       {/* Top Header Bar */}
       <div className="w-full max-w-6xl mx-auto flex items-center justify-between gap-2 mb-2">
@@ -167,7 +167,7 @@ export const ChaseGame: React.FC<ChaseGameProps> = ({
         {/* Center Title Badge */}
         <div className="flex items-center gap-2 bg-purple-500/10 border border-purple-400/30 px-4 py-1.5 rounded-full shadow-inner">
           <span className="text-xl">🐱🧀🐭</span>
-          <h1 className="text-sm sm:text-base font-black text-amber-300 uppercase tracking-wide">
+          <h1 className="text-sm sm:text-base font-black text-amber-600 uppercase tracking-wide">
             TOM & JERRY: CUỘC RƯỢT ĐUỔI TRONG PHÒNG KHÁCH
           </h1>
         </div>
@@ -218,7 +218,7 @@ export const ChaseGame: React.FC<ChaseGameProps> = ({
 
         {/* Round End Overlay */}
         {gameState.phase === 'round_end' && gameState.lastRoundSummary && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm p-4 backdrop-blur-sm">
             <motion.div 
               initial={{ scale: 0.85, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -253,7 +253,7 @@ export const ChaseGame: React.FC<ChaseGameProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={handleOpenQA}
           disabled={gameState.phase !== 'idle'}
-          className={`relative flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl sm:rounded-r-full font-black text-white text-xs sm:text-sm tracking-wider uppercase transition-all shadow-lg overflow-hidden border-2 border-pink-400/60 ${
+          className={`relative flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl sm:rounded-r-full font-black text-w-text-main text-xs sm:text-sm tracking-wider uppercase transition-all shadow-lg overflow-hidden border-2 border-pink-400/60 ${
             gameState.phase === 'idle'
               ? 'bg-gradient-to-r from-fuchsia-600 via-purple-600 to-indigo-600 hover:shadow-fuchsia-500/50 cursor-pointer animate-pulse'
               : 'bg-zinc-800/80 text-zinc-500 border-zinc-700 cursor-not-allowed'
@@ -272,7 +272,7 @@ export const ChaseGame: React.FC<ChaseGameProps> = ({
         </motion.button>
 
         {/* CENTER: Jerry Row Counter (Displaying active Jerry mice poses) */}
-        <div className="flex items-center justify-center gap-2 sm:gap-3 py-1 px-3 bg-black/40 border border-yellow-500/20 rounded-2xl overflow-x-auto">
+        <div className="flex items-center justify-center gap-2 sm:gap-3 py-1 px-3 bg-white/70 backdrop-blur-sm border border-yellow-500/20 rounded-2xl overflow-x-auto">
           {[1, 2, 3, 4, 5].map((idx) => {
             const hasCaught = activeTeam.jerryCatchesCount >= idx;
             return (
@@ -305,7 +305,7 @@ export const ChaseGame: React.FC<ChaseGameProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={() => handleTriggerTomCatch()}
           disabled={gameState.phase !== 'idle'}
-          className={`relative flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl sm:rounded-l-full font-black text-white text-xs sm:text-sm tracking-wider uppercase transition-all shadow-lg overflow-hidden border-2 border-emerald-400/60 ${
+          className={`relative flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl sm:rounded-l-full font-black text-w-text-main text-xs sm:text-sm tracking-wider uppercase transition-all shadow-lg overflow-hidden border-2 border-emerald-400/60 ${
             gameState.phase === 'idle'
               ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 hover:shadow-emerald-500/50 cursor-pointer'
               : 'bg-zinc-800/80 text-zinc-500 border-zinc-700 cursor-not-allowed'
@@ -335,7 +335,7 @@ export const ChaseGame: React.FC<ChaseGameProps> = ({
       {/* QA MODAL POPUP */}
       <AnimatePresence>
         {isQuestionModalOpen && currentQuestion && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-4 backdrop-blur-md">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/70 backdrop-blur-sm p-4 backdrop-blur-md">
             <motion.div 
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -358,14 +358,14 @@ export const ChaseGame: React.FC<ChaseGameProps> = ({
                   <button
                     type="button"
                     onClick={() => handleAnswerQuestion(true)}
-                    className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1 shadow-md transition-all"
+                    className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-w-text-main text-xs font-black flex items-center gap-1 shadow-md transition-all"
                   >
                     <CheckCircle2 className="w-3.5 h-3.5" /> ĐÚNG
                   </button>
                   <button
                     type="button"
                     onClick={() => handleAnswerQuestion(false)}
-                    className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black flex items-center gap-1 shadow-md transition-all"
+                    className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-w-text-main text-xs font-black flex items-center gap-1 shadow-md transition-all"
                   >
                     <XCircle className="w-3.5 h-3.5" /> SAI
                   </button>
@@ -373,8 +373,8 @@ export const ChaseGame: React.FC<ChaseGameProps> = ({
               </div>
 
               {/* Question Content Box */}
-              <div className="bg-black/50 border border-purple-500/30 rounded-2xl p-5 sm:p-6 mb-6 text-center shadow-inner">
-                <h2 className="text-xl sm:text-2xl font-black text-white leading-relaxed">
+              <div className="bg-white/70 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-5 sm:p-6 mb-6 text-center shadow-inner">
+                <h2 className="text-xl sm:text-2xl font-black text-w-text-main leading-relaxed">
                   {currentQuestion.content}
                 </h2>
               </div>
@@ -409,7 +409,7 @@ export const ChaseGame: React.FC<ChaseGameProps> = ({
                         }}
                         className={`p-4 rounded-2xl border-2 text-left text-sm sm:text-base font-bold flex items-center gap-3 transition-all cursor-pointer ${btnStyle}`}
                       >
-                        <span className="w-8 h-8 rounded-xl bg-purple-500 text-white font-black text-sm flex items-center justify-center shrink-0 shadow-md">
+                        <span className="w-8 h-8 rounded-xl bg-purple-500 text-w-text-main font-black text-sm flex items-center justify-center shrink-0 shadow-md">
                           {String.fromCharCode(65 + idx)}
                         </span>
                         <span className="flex-1 leading-snug">{option}</span>

@@ -483,7 +483,7 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
   };
 
   return (
-    <div className="flex-1 min-h-0 w-full p-3 sm:p-5 bg-gradient-to-b from-sky-950 via-blue-950 to-slate-950 rounded-3xl shadow-2xl flex flex-col justify-between border-4 border-sky-400 text-white relative overflow-hidden select-none">
+    <div className="flex-1 min-h-0 w-full p-3 sm:p-5 bg-gradient-to-b from-sky-950 via-blue-950 to-slate-950 rounded-3xl shadow-2xl flex flex-col justify-between border-4 border-sky-400 text-w-text-main relative overflow-hidden select-none">
       {/* Keyframe Animations */}
       <style>{`
         @keyframes floatBob1 {
@@ -512,7 +512,7 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
       `}</style>
 
       {/* TOP HEADER */}
-      <div className="z-10 bg-slate-900/90 backdrop-blur border-2 border-sky-400/60 p-3 sm:p-4 rounded-2xl shadow-lg flex flex-wrap items-center justify-between gap-3">
+      <div className="z-10 bg-w-bg-alt backdrop-blur border-2 border-sky-400/60 p-3 sm:p-4 rounded-2xl shadow-lg flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="text-3xl animate-bounce">⚓</span>
           <div>
@@ -534,7 +534,7 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
             CÂU {Math.min(currentQuestionIndex + 1, totalQuestions)} / {totalQuestions}
           </div>
 
-          <div className="px-3 py-1.5 bg-amber-500/20 border border-amber-400/50 rounded-xl text-xs font-black text-amber-300 flex items-center gap-1.5">
+          <div className="px-3 py-1.5 bg-amber-500/20 border border-amber-400 rounded-xl text-xs font-black text-amber-600 flex items-center gap-1.5">
             <span>🚩 LƯỢT:</span>
             <span style={{ color: activeTeam.color }}>{activeTeam.name}</span>
           </div>
@@ -549,7 +549,7 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
 
           <button
             onClick={() => onGameEnd(teamsState, answerLogs)}
-            className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white font-black text-xs rounded-xl shadow transition flex items-center gap-1"
+            className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center gap-1"
           >
             <Trophy className="w-3.5 h-3.5" />
             <span>Kết Thúc</span>
@@ -559,15 +559,15 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
 
       {/* RANDOM BONUS ROULETTE MODAL */}
       {rouletteModal.isOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-slate-900 border-4 border-amber-400 p-6 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-4 relative overflow-hidden">
-            <div className="text-2xl font-black text-amber-300 uppercase tracking-widest flex items-center justify-center gap-2">
-              <Gift className="w-7 h-7 text-amber-400 animate-bounce" />
+        <div className="fixed inset-0 z-50 bg-w-bg-card backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-w-bg-alt border-4 border-amber-400 p-6 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-4 relative overflow-hidden">
+            <div className="text-2xl font-black text-amber-600 uppercase tracking-widest flex items-center justify-center gap-2">
+              <Gift className="w-7 h-7 text-amber-600 animate-bounce" />
               <span>🎁 CHÚC MỪNG! ĐÁNH CHÌM TÀU</span>
             </div>
 
             <p className="text-xs text-sky-200">
-              Đã đánh chìm <strong className="text-amber-300">{rouletteModal.sunkShipName}</strong>! Vòng quay may mắn trao phần thưởng chiến thuật:
+              Đã đánh chìm <strong className="text-amber-600">{rouletteModal.sunkShipName}</strong>! Vòng quay may mắn trao phần thưởng chiến thuật:
             </p>
 
             {/* Roulette Spinning vs Result View */}
@@ -577,13 +577,13 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
                   <div className="w-20 h-20 rounded-full border-4 border-amber-400 border-t-transparent animate-[spinWheel_1.5s_linear_infinite] flex items-center justify-center text-3xl">
                     🎁
                   </div>
-                  <span className="text-xs font-bold text-amber-300 animate-pulse">
+                  <span className="text-xs font-bold text-amber-600 animate-pulse">
                     Đang quay phần thưởng ngẫu nhiên...
                   </span>
                 </div>
               ) : (
                 rouletteModal.winningBonus && (
-                  <div className="p-4 bg-slate-800 rounded-2xl border-2 border-amber-400 space-y-2 animate-bounce">
+                  <div className="p-4 bg-w-accent-light rounded-2xl border-2 border-amber-400 space-y-2 animate-bounce">
                     <span className="text-5xl">{rouletteModal.winningBonus.icon}</span>
                     <h3
                       className="text-lg font-black tracking-wider uppercase"
@@ -619,7 +619,7 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
         {/* LEFT PANEL: TEAMS STATUS & ACTIVE BONUSES */}
         <div className="lg:col-span-3 space-y-3">
           {/* Teams Status Cards */}
-          <div className="bg-slate-900/85 border border-sky-400/40 p-3 rounded-2xl shadow-md space-y-2.5">
+          <div className="bg-w-bg-alt border border-sky-400/40 p-3 rounded-2xl shadow-md space-y-2.5">
             <h3 className="text-xs font-black text-sky-300 uppercase tracking-wider flex items-center justify-between">
               <span>HẠM ĐỘI & BONUS</span>
               <span className="text-[10px] bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded-full border border-sky-400/30">
@@ -640,14 +640,14 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
                     className={`p-3 rounded-2xl border-2 transition-all relative overflow-hidden ${
                       isActive
                         ? 'bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 border-amber-400 shadow-xl scale-102 ring-2 ring-amber-400/30'
-                        : 'bg-slate-900/60 border-slate-700/80 text-slate-300 opacity-90'
+                        : 'bg-w-bg-alt border-w-accent-border text-w-primary-dark opacity-90'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="text-2xl">{team.avatar}</span>
                         <div>
-                          <div className="text-xs font-black text-white flex items-center gap-1">
+                          <div className="text-xs font-black text-w-text-main flex items-center gap-1">
                             <span style={{ color: team.color }}>{team.name}</span>
                             {isActive && (
                               <span className="px-1.5 py-0.5 text-[9px] bg-amber-500 text-slate-950 font-black rounded-full animate-pulse">
@@ -655,7 +655,7 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
                               </span>
                             )}
                           </div>
-                          <div className="text-[11px] text-amber-300 font-mono font-bold">
+                          <div className="text-[11px] text-amber-600 font-mono font-bold">
                             {team.score} Điểm
                           </div>
                         </div>
@@ -666,8 +666,8 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
                     </div>
 
                     {/* TEAM'S BONUS INVENTORY (🎁 BONUS CỦA ĐỘI) */}
-                    <div className="mt-2 pt-2 border-t border-slate-800">
-                      <div className="text-[10px] font-bold text-amber-300 mb-1 flex items-center gap-1">
+                    <div className="mt-2 pt-2 border-t border-w-border">
+                      <div className="text-[10px] font-bold text-amber-600 mb-1 flex items-center gap-1">
                         <Gift className="w-3 h-3" />
                         <span>🎁 BONUS CỦA ĐỘI ({bonuses.length}):</span>
                       </div>
@@ -684,7 +684,7 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
                                 className={`px-2 py-0.5 rounded-lg text-[10px] font-bold flex items-center gap-1 border transition ${
                                   isActive && attackGranted
                                     ? 'bg-amber-500/30 border-amber-400 text-amber-200 hover:bg-amber-500 hover:text-slate-950 cursor-pointer animate-pulse'
-                                    : 'bg-slate-800 border-slate-700 text-slate-400'
+                                    : 'bg-w-accent-light border-w-accent-border text-w-text-muted'
                                 }`}
                                 title={bInfo.description}
                               >
@@ -705,9 +705,9 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
           </div>
 
           {/* All Ships Status Overview */}
-          <div className="bg-slate-900/85 border border-sky-400/40 p-3 rounded-2xl shadow-md space-y-2 max-h-48 overflow-y-auto pr-1">
-            <div className="text-xs font-black text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Flame className="w-4 h-4 text-amber-400" />
+          <div className="bg-w-bg-alt border border-sky-400/40 p-3 rounded-2xl shadow-md space-y-2 max-h-48 overflow-y-auto pr-1">
+            <div className="text-xs font-black text-amber-600 uppercase tracking-wider flex items-center gap-1.5">
+              <Flame className="w-4 h-4 text-amber-600" />
               <span>DANH SÁCH TÀU HẠM ĐỘI</span>
             </div>
             <div className="space-y-1.5">
@@ -717,12 +717,12 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
                   className={`p-1.5 rounded-xl border flex items-center justify-between text-xs transition-all ${
                     s.isSunk
                       ? 'bg-rose-950/60 border-rose-600/50 text-rose-300 line-through opacity-60'
-                      : 'bg-slate-800/80 border-sky-400/30 text-sky-100'
+                      : 'bg-w-accent-light border-sky-400/30 text-sky-100'
                   }`}
                 >
                   <div className="flex items-center gap-1 font-bold text-[11px]">
                     <span style={{ color: s.teamColor }}>● {s.teamName}</span>
-                    <span className="text-slate-300">- {s.name}</span>
+                    <span className="text-w-primary-dark">- {s.name}</span>
                   </div>
                   <div className="flex items-center gap-0.5 text-xs">
                     {s.isSunk ? (
@@ -799,7 +799,7 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
                           }}
                         >
                           <span style={{ color: ship.teamColor }}>{ship.teamName}</span>
-                          <span className="text-slate-300">| {ship.name}</span>
+                          <span className="text-w-primary-dark">| {ship.name}</span>
                           <div className="flex items-center gap-0.5 ml-1">
                             {Array.from({ length: ship.maxHp }).map((_, hIdx) => (
                               <span
@@ -844,7 +844,7 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
 
                       {/* Target Crosshair Glow */}
                       {isTargetable && (
-                        <div className="absolute -inset-2 rounded-2xl border-2 border-dashed border-amber-400/80 animate-spin pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute -inset-2 rounded-2xl border-2 border-dashed border-amber-400 animate-spin pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
                       )}
                     </div>
                   </div>
@@ -863,14 +863,14 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
                   {explosionTarget.isShieldBlocked ? (
                     <div className="flex flex-col items-center justify-center">
                       <span className="text-6xl animate-bounce">🛡️</span>
-                      <span className="text-sm font-black text-blue-300 bg-slate-900/90 px-3 py-1 rounded-full border border-blue-400">
+                      <span className="text-sm font-black text-blue-800 bg-w-bg-alt px-3 py-1 rounded-full border border-blue-400">
                         KHIÊN BẢO VỆ CHẶN ĐÒN!
                       </span>
                     </div>
                   ) : (
                     <div className="relative flex items-center justify-center">
                       <span className="text-6xl animate-[boomPulse_0.8s_ease-out_forwards]">💥</span>
-                      <span className="absolute text-3xl font-black text-amber-300 animate-bounce">
+                      <span className="absolute text-3xl font-black text-amber-600 animate-bounce">
                         BOOM!
                       </span>
                     </div>
@@ -883,9 +883,9 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
       </div>
 
       {/* BOTTOM CONTROL & QUESTION PANEL */}
-      <div className="z-10 mt-2 bg-slate-900/95 border-2 border-sky-400/70 p-4 rounded-2xl shadow-xl space-y-3">
+      <div className="z-10 mt-2 bg-w-bg-alt border-2 border-sky-400/70 p-4 rounded-2xl shadow-xl space-y-3">
         {/* Action Status Banner */}
-        <div className="p-3 bg-slate-950/90 rounded-xl border border-sky-400/40 text-center flex flex-wrap items-center justify-between gap-2">
+        <div className="p-3 bg-w-bg-card rounded-xl border border-sky-400/40 text-center flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2 text-left">
             <span className="text-2xl">{activeTeam.avatar}</span>
             <div>
@@ -897,12 +897,12 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
                   </span>
                 )}
                 {activeHeavyShell && (
-                  <span className="ml-2 px-2 py-0.5 bg-rose-600 text-white text-[10px] font-black rounded-full">
+                  <span className="ml-2 px-2 py-0.5 bg-rose-600 text-w-text-main text-[10px] font-black rounded-full">
                     🔥 ĐẠN MẠNH (2 HP)
                   </span>
                 )}
               </div>
-              <div className="text-[11px] font-bold text-amber-300">
+              <div className="text-[11px] font-bold text-amber-600">
                 {lastActionResult
                   ? lastActionResult
                   : attackGranted
@@ -918,7 +918,7 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
               <>
                 <button
                   onClick={handleAnswerCorrect}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl shadow transition flex items-center gap-1.5 border border-emerald-400"
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center gap-1.5 border border-emerald-400"
                 >
                   <Check className="w-4 h-4" />
                   <span>✓ ĐÚNG (Cho Bắn Tàu)</span>
@@ -926,7 +926,7 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
 
                 <button
                   onClick={handleAnswerWrong}
-                  className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-black text-xs rounded-xl shadow transition flex items-center gap-1.5 border border-rose-400"
+                  className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center gap-1.5 border border-rose-400"
                 >
                   <X className="w-4 h-4" />
                   <span>✕ SAI (Mất Lượt)</span>
@@ -945,17 +945,17 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
         <div className="p-4 bg-sky-950/70 rounded-xl border border-sky-400/30 space-y-3">
           <div className="flex items-center justify-between text-xs text-sky-300 font-bold border-b border-sky-800/80 pb-2">
             <span className="flex items-center gap-1.5">
-              <HelpCircle className="w-4 h-4 text-amber-400" />
+              <HelpCircle className="w-4 h-4 text-amber-600" />
               <span>CÂU HỎI #{currentQuestionIndex + 1}</span>
             </span>
-            <span className="text-[11px] text-slate-400 font-normal">
+            <span className="text-[11px] text-w-text-muted font-normal">
               Giáo viên xem câu trả lời của học sinh ➔ Nhấn "✓ ĐÚNG" hoặc "✕ SAI"
             </span>
           </div>
 
           {currentQuestion ? (
             <div className="space-y-3">
-              <div className="text-sm sm:text-base font-black text-white leading-relaxed">
+              <div className="text-sm sm:text-base font-black text-w-text-main leading-relaxed">
                 {currentQuestion.content}
               </div>
 
@@ -966,9 +966,9 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
                     return (
                       <div
                         key={optIdx}
-                        className="p-2.5 bg-slate-900/80 border border-sky-400/30 rounded-xl text-xs font-bold text-sky-100 flex items-center gap-2 hover:border-amber-400/60 transition"
+                        className="p-2.5 bg-w-bg-alt border border-sky-400/30 rounded-xl text-xs font-bold text-sky-100 flex items-center gap-2 hover:border-amber-400 transition"
                       >
-                        <span className="w-6 h-6 rounded-lg bg-sky-800 text-amber-300 flex items-center justify-center font-mono font-black text-xs shrink-0">
+                        <span className="w-6 h-6 rounded-lg bg-sky-800 text-amber-600 flex items-center justify-center font-mono font-black text-xs shrink-0">
                           {optionLetter}
                         </span>
                         <span>{opt}</span>
@@ -979,7 +979,7 @@ export function BattleshipGame({ config, questions, onGameEnd }: BattleshipGameP
               )}
             </div>
           ) : (
-            <div className="text-xs text-slate-400 font-bold italic py-2">
+            <div className="text-xs text-w-text-muted font-bold italic py-2">
               Chưa có câu hỏi. Nhấn "✓ ĐÚNG" để cho phép học sinh chọn tàu bắn trực tiếp!
             </div>
           )}

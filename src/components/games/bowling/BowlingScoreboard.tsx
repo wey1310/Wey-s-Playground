@@ -48,7 +48,7 @@ export const BowlingScoreboard: React.FC<BowlingScoreboardProps> = ({
                   <span className="font-black text-xs sm:text-sm text-zinc-100 truncate">
                     {team.name}
                   </span>
-                  <span className="text-xs font-black text-amber-400 shrink-0 flex items-center gap-0.5">
+                  <span className="text-xs font-black text-amber-600 shrink-0 flex items-center gap-0.5">
                     <Trophy className="w-3.5 h-3.5" /> {team.totalScore}
                   </span>
                 </div>
@@ -56,7 +56,7 @@ export const BowlingScoreboard: React.FC<BowlingScoreboardProps> = ({
                 <div className="flex items-center gap-2 mt-1 text-[11px] text-zinc-400">
                   <span>💥 Đổ: <strong>{team.totalPinsKnocked}</strong> pin</span>
                   {team.strikeCount > 0 && (
-                    <span className="text-amber-400 font-bold flex items-center gap-0.5">
+                    <span className="text-amber-600 font-bold flex items-center gap-0.5">
                       <Flame className="w-3 h-3" /> {team.strikeCount} Strike
                     </span>
                   )}

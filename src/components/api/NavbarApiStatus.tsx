@@ -77,7 +77,7 @@ export const NavbarApiStatus: React.FC<NavbarApiStatusProps> = ({
             ? 'bg-rose-50 hover:bg-rose-100 text-rose-800 border-rose-300 ring-2 ring-rose-400/20'
             : cooldownKeys > 0
             ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-300'
-            : 'bg-[#E9F0D9] hover:bg-[#DDE8CA] text-[#35452E] border-[#B9CDA0]'
+            : 'bg-w-accent-light hover:bg-[#DDE8CA] text-w-text-main border-w-accent-border'
         }`}
       >
         <div className="flex items-center gap-1.5">
@@ -94,7 +94,7 @@ export const NavbarApiStatus: React.FC<NavbarApiStatusProps> = ({
             />
           </span>
 
-          <Sparkles className="w-3.5 h-3.5 text-[#6F8F55]" />
+          <Sparkles className="w-3.5 h-3.5 text-w-primary" />
         </div>
 
         <span className="hidden sm:inline font-black">
@@ -115,12 +115,12 @@ export const NavbarApiStatus: React.FC<NavbarApiStatusProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.96 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-white border border-[#DED5B8] shadow-xl z-50 p-4 space-y-3"
+            className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-white border border-w-border shadow-xl z-50 p-4 space-y-3"
           >
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-[#E9F0D9] flex items-center justify-center text-[#35452E]">
-                  <Sparkles className="w-4 h-4 text-[#6F8F55]" />
+                <div className="w-7 h-7 rounded-lg bg-w-accent-light flex items-center justify-center text-w-text-main">
+                  <Sparkles className="w-4 h-4 text-w-primary" />
                 </div>
                 <div>
                   <h4 className="text-xs font-black text-slate-800">Vercel Gemini Key Pool</h4>
@@ -137,7 +137,7 @@ export const NavbarApiStatus: React.FC<NavbarApiStatusProps> = ({
 
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-2 text-center text-xs">
-              <div className="bg-[#FAF7EE] p-2 rounded-xl border border-[#DED5B8]">
+              <div className="bg-w-bg-alt p-2 rounded-xl border border-w-border">
                 <div className="text-[9px] font-bold text-slate-400 uppercase">Tổng Key</div>
                 <div className="font-black text-slate-800 text-sm mt-0.5">{totalKeys}</div>
               </div>
@@ -152,9 +152,9 @@ export const NavbarApiStatus: React.FC<NavbarApiStatusProps> = ({
             </div>
 
             {/* Last Used Model */}
-            <div className="bg-[#FAF7EE] p-2.5 rounded-xl border border-[#DED5B8] flex items-center justify-between text-xs">
+            <div className="bg-w-bg-alt p-2.5 rounded-xl border border-w-border flex items-center justify-between text-xs">
               <div className="flex items-center gap-1.5 text-slate-600">
-                <Layers className="w-3.5 h-3.5 text-[#6F8F55]" />
+                <Layers className="w-3.5 h-3.5 text-w-primary" />
                 <span className="text-[11px] font-bold">Model vừa dùng:</span>
               </div>
               <span className="font-mono font-extrabold text-purple-700 text-[11px]">
@@ -186,7 +186,7 @@ export const NavbarApiStatus: React.FC<NavbarApiStatusProps> = ({
                   setIsOpen(false);
                   onOpenManagerModal();
                 }}
-                className="flex-1 py-2 bg-[#6F8F55] hover:bg-[#5F7E4B] text-white rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+                className="flex-1 py-2 bg-w-primary hover:bg-w-primary-hover text-white rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 <span>Xem Chi Tiết Pool</span>

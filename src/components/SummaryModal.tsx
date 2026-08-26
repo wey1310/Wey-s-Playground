@@ -45,17 +45,17 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
   const winner = sortedTeams.length > 0 ? sortedTeams[0] : null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-[#35452E]/40 backdrop-blur-sm animate-fade-in overflow-y-auto">
-      <div className="bg-[#FFFDF5] border border-[#DED5B8] w-full max-w-3xl rounded-[22px] sm:rounded-[26px] shadow-[0_12px_36px_rgba(79,104,60,0.18)] overflow-hidden flex flex-col max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2rem)] my-auto wey-paper-card">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-w-text-main/40 backdrop-blur-sm animate-fade-in overflow-y-auto">
+      <div className="bg-w-bg-card border border-w-border w-full max-w-3xl rounded-[22px] sm:rounded-[26px] shadow-[0_12px_36px_rgba(79,104,60,0.18)] overflow-hidden flex flex-col max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2rem)] my-auto wey-paper-card">
         {/* Header */}
-        <div className="p-5 bg-[#F8F3E5] border-b border-[#DED5B8] text-center relative shrink-0">
-          <div className="inline-flex p-3 bg-[#E9D58F] text-[#35452E] rounded-[20px] border border-[#DED5B8] shadow-sm mb-2 animate-bounce">
+        <div className="p-5 bg-w-bg-main border-b border-w-border text-center relative shrink-0">
+          <div className="inline-flex p-3 bg-[#E9D58F] text-w-text-main rounded-[20px] border border-w-border shadow-sm mb-2 animate-bounce">
             <Trophy className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-[800] text-[#35452E] tracking-tight">
+          <h2 className="text-2xl font-[800] text-w-text-main tracking-tight">
             TỔNG KẾT KẾT QUẢ
           </h2>
-          <p className="text-xs text-[#74806B] font-[600] mt-0.5">Bảng Vinh Danh & Nhật Ký Đáp Án Bài Học</p>
+          <p className="text-xs text-w-text-muted font-[600] mt-0.5">Bảng Vinh Danh & Nhật Ký Đáp Án Bài Học</p>
         </div>
 
         {/* Body */}
@@ -164,10 +164,10 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="p-3 sm:p-4 bg-[#F8F3E5] border-t border-[#DED5B8] flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 shrink-0">
+        <div className="p-3 sm:p-4 bg-w-bg-main border-t border-w-border flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 shrink-0">
           <button
             onClick={onGoHome}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-[#FFFDF5] hover:bg-[#F8F3E5] text-[#35452E] font-[700] text-xs sm:text-sm rounded-[14px] border border-[#DED5B8] transition cursor-pointer min-h-[44px]"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-w-bg-card hover:bg-w-bg-main text-w-text-main font-[700] text-xs sm:text-sm rounded-[14px] border border-w-border transition cursor-pointer min-h-[44px]"
           >
             <Home className="w-4 h-4" />
             <span>Trang Chủ</span>
@@ -175,7 +175,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
 
           <button
             onClick={onPlayAgain}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-[#6F8F55] hover:bg-[#5F7E4B] text-white font-[800] text-xs sm:text-sm rounded-[15px] shadow-md transition border border-[#5F7E4B] cursor-pointer min-h-[44px]"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-w-primary hover:bg-w-primary-hover text-white font-[800] text-xs sm:text-sm rounded-[15px] shadow-md transition border border-w-primary-hover cursor-pointer min-h-[44px]"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Chơi Lại Ván Này</span>

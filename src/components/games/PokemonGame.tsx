@@ -241,7 +241,7 @@ export const PokemonGame: React.FC<GameProps> = ({ config, questions, onGameEnd 
   };
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 w-full relative p-4 sm:p-6 rounded-3xl overflow-hidden shadow-inner bg-slate-900 border-4 border-amber-800/40">
+    <div className="flex flex-col flex-1 min-h-0 w-full relative p-4 sm:p-6 rounded-3xl overflow-hidden shadow-inner bg-w-bg-alt border-4 border-amber-800/40">
        {/* Top Header */}
        <div className="flex justify-between items-center z-20 mb-4 bg-white/90 backdrop-blur px-6 py-3 rounded-2xl border border-amber-200 shadow-md">
          <div className="flex items-center gap-3">
@@ -293,7 +293,7 @@ export const PokemonGame: React.FC<GameProps> = ({ config, questions, onGameEnd 
                      {Array.from({ length: team.pokeballs }).map((_, i) => (
                        <img key={i} src="/assets/games/pokemon/Ball.png" alt="Pokeball" className="w-4 h-4 object-contain inline" />
                      ))}
-                     {team.pokeballs === 0 && <span className="text-[11px] text-slate-400 italic">Chưa có</span>}
+                     {team.pokeballs === 0 && <span className="text-[11px] text-w-text-muted italic">Chưa có</span>}
                    </div>
                  </div>
 
@@ -307,7 +307,7 @@ export const PokemonGame: React.FC<GameProps> = ({ config, questions, onGameEnd 
                      </div>
                    </div>
                  ) : (
-                   <div className="mt-2 text-[10px] text-slate-400 italic">Đang chọn vị trí...</div>
+                   <div className="mt-2 text-[10px] text-w-text-muted italic">Đang chọn vị trí...</div>
                  )}
                </div>
              );
@@ -352,7 +352,7 @@ export const PokemonGame: React.FC<GameProps> = ({ config, questions, onGameEnd 
                    className="w-8 sm:w-10 h-8 sm:h-10 object-contain drop-shadow-xl hover:brightness-110" 
                  />
                  {isOccupiedByOther && (
-                   <span className="text-[9px] bg-red-600 text-white font-bold px-1 rounded">Đang đấu</span>
+                   <span className="text-[9px] bg-red-600 text-w-text-main font-bold px-1 rounded">Đang đấu</span>
                  )}
                </div>
              );
@@ -360,9 +360,9 @@ export const PokemonGame: React.FC<GameProps> = ({ config, questions, onGameEnd 
 
            {/* Active Team Encounter Popup Banner inside Map */}
            {activeEncounter && (
-             <div className="absolute top-4 right-4 z-40 bg-slate-900/90 backdrop-blur-md p-4 rounded-2xl border-2 border-amber-400 text-white shadow-2xl max-w-xs flex flex-col items-center gap-2 animate-in zoom-in-95">
+             <div className="absolute top-4 right-4 z-40 bg-w-bg-alt backdrop-blur-md p-4 rounded-2xl border-2 border-amber-400 text-w-text-main shadow-2xl max-w-xs flex flex-col items-center gap-2 animate-in zoom-in-95">
                <div className="flex items-center justify-between w-full">
-                 <span className="text-xs font-black text-amber-300 uppercase tracking-wider">{activeTeam.name} ĐANG ĐẤU</span>
+                 <span className="text-xs font-black text-amber-600 uppercase tracking-wider">{activeTeam.name} ĐANG ĐẤU</span>
                  <img src={`/assets/games/pokemon/x${activeEncounter.multiplier}.png`} alt="multiplier" className="h-5 object-contain" />
                </div>
 
@@ -373,12 +373,12 @@ export const PokemonGame: React.FC<GameProps> = ({ config, questions, onGameEnd 
                />
 
                {/* Health / Progress Bar */}
-               <div className="w-full bg-slate-800 h-3.5 rounded-full overflow-hidden border border-slate-700 relative">
+               <div className="w-full bg-w-accent-light h-3.5 rounded-full overflow-hidden border border-w-accent-border relative">
                  <div 
                    className="bg-gradient-to-r from-emerald-500 to-teal-400 flex-1 min-h-0 w-full transition-all duration-300"
                    style={{ width: `${(activeEncounter.hp / activeEncounter.maxHp) * 100}%` }}
                  />
-                 <span className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white drop-shadow">
+                 <span className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-w-text-main drop-shadow">
                    HP: {activeEncounter.hp} / {activeEncounter.maxHp}
                  </span>
                </div>
@@ -419,13 +419,13 @@ export const PokemonGame: React.FC<GameProps> = ({ config, questions, onGameEnd 
            {activeEncounter ? (
              <button 
                onClick={() => setShowQuestion(true)} 
-               className="px-8 py-3.5 bg-[#6B8E5C] hover:bg-[#58784B] active:scale-95 text-white font-black rounded-full shadow-2xl transition-all border-2 border-amber-200 flex items-center gap-2 text-sm sm:text-base"
+               className="px-8 py-3.5 bg-[#6B8E5C] hover:bg-[#58784B] active:scale-95 text-w-text-main font-black rounded-full shadow-2xl transition-all border-2 border-amber-200 flex items-center gap-2 text-sm sm:text-base"
              >
                <Sword className="w-5 h-5 text-amber-200 animate-pulse" />
                <span>Tấn Công / Trả Lời Câu Hỏi</span>
              </button>
            ) : (
-             <div className="px-6 py-2.5 bg-slate-900/90 text-amber-300 font-extrabold rounded-full border border-amber-400/50 shadow-lg text-xs sm:text-sm text-center">
+             <div className="px-6 py-2.5 bg-w-bg-alt text-amber-600 font-extrabold rounded-full border border-amber-400 shadow-lg text-xs sm:text-sm text-center">
                👉 {activeTeam.name}: Lựa chọn 1 vị trí (1 - 20) trên bản đồ để khiêu chiến Pokemon!
              </div>
            )}

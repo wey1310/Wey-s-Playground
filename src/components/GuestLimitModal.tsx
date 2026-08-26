@@ -30,7 +30,7 @@ export const GuestLimitModal: React.FC<GuestLimitModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#FFFDF5] border-2 border-[#DED5B8] w-full max-w-md rounded-[28px] shadow-2xl overflow-hidden flex flex-col relative">
+      <div className="bg-w-bg-card border-2 border-w-border w-full max-w-md rounded-[28px] shadow-2xl overflow-hidden flex flex-col relative">
         {/* Top Header */}
         <div className="p-5 bg-gradient-to-r from-amber-500 via-rose-500 to-pink-600 text-white flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -51,7 +51,7 @@ export const GuestLimitModal: React.FC<GuestLimitModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 space-y-5 text-[#35452E]">
+        <div className="p-6 space-y-5 text-w-text-main">
           <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl space-y-2 text-center">
             <div className="text-2xl font-black text-amber-900">
               {playsUsed}/{maxPlays} Lượt
@@ -65,37 +65,37 @@ export const GuestLimitModal: React.FC<GuestLimitModalProps> = ({
           </div>
 
           <div className="space-y-2.5">
-            <h4 className="text-xs font-black uppercase text-[#4F683C] tracking-wide">
+            <h4 className="text-xs font-black uppercase text-w-primary-dark tracking-wide">
               Đăng nhập Google để nhận quyền lợi:
             </h4>
             <div className="space-y-2">
-              <div className="flex items-center gap-2.5 text-xs font-bold text-[#35452E]">
-                <CheckCircle2 className="w-4 h-4 text-[#6F8F55] shrink-0" />
+              <div className="flex items-center gap-2.5 text-xs font-bold text-w-text-main">
+                <CheckCircle2 className="w-4 h-4 text-w-primary shrink-0" />
                 <span>Chơi KHÔNG GIỚI HẠN tất cả các mini game</span>
               </div>
-              <div className="flex items-center gap-2.5 text-xs font-bold text-[#35452E]">
-                <CheckCircle2 className="w-4 h-4 text-[#6F8F55] shrink-0" />
+              <div className="flex items-center gap-2.5 text-xs font-bold text-w-text-main">
+                <CheckCircle2 className="w-4 h-4 text-w-primary shrink-0" />
                 <span>Tạo và lưu trữ ngân hàng câu hỏi lên đám mây</span>
               </div>
-              <div className="flex items-center gap-2.5 text-xs font-bold text-[#35452E]">
-                <CheckCircle2 className="w-4 h-4 text-[#6F8F55] shrink-0" />
+              <div className="flex items-center gap-2.5 text-xs font-bold text-w-text-main">
+                <CheckCircle2 className="w-4 h-4 text-w-primary shrink-0" />
                 <span>Tạo câu hỏi tự động bằng AI siêu tốc</span>
               </div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="space-y-2 pt-2 border-t border-[#DED5B8]">
+          <div className="space-y-2 pt-2 border-t border-w-border">
             <button
               onClick={handleLogin}
-              className="w-full py-3.5 px-4 bg-[#6F8F55] hover:bg-[#5F7E4B] text-white font-black text-sm rounded-[18px] shadow-[0_4px_16px_rgba(111,143,85,0.35)] transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              className="w-full py-3.5 px-4 bg-w-primary hover:bg-w-primary-hover text-white font-black text-sm rounded-[18px] shadow-[0_4px_16px_rgba(111,143,85,0.35)] transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
             >
               <LogIn className="w-4 h-4" />
               <span>Đăng Nhập Ngay Bằng Google</span>
             </button>
             <button
               onClick={onClose}
-              className="w-full py-2.5 text-xs font-bold text-[#74806B] hover:text-[#35452E] transition"
+              className="w-full py-2.5 text-xs font-bold text-w-text-muted hover:text-w-text-main transition"
             >
               Để sau (Quay lại trang chủ)
             </button>

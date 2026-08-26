@@ -261,7 +261,7 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
   const handleFinishGame = () => {
     stopAllAudio();
     const fakeTeams: Team[] = [
-      { id: 't1', name: 'Lớp Học', avatar: '🧸', color: '#4F683C', score: chosenStudents.length }
+      { id: 't1', name: 'Lớp Học', avatar: '🧸', color: '#E08283', score: chosenStudents.length }
     ];
     onGameEnd(fakeTeams, []);
   };
@@ -269,19 +269,19 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col items-center justify-between p-3 sm:p-5 max-w-6xl mx-auto select-none">
       {/* Top Header */}
-      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/90 backdrop-blur-sm p-4 rounded-3xl border-2 border-[#DED5B8] shadow-sm mb-4">
+      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/90 backdrop-blur-sm p-4 rounded-3xl border-2 border-w-border shadow-sm mb-4">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-2xl shadow-xs">
             🧸
           </div>
           <div>
-            <h1 className="text-xl font-[900] text-[#35452E] flex items-center gap-2">
+            <h1 className="text-xl font-[900] text-w-text-main flex items-center gap-2">
               Truyền Gấu Sân Khấu
               <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
                 Vòng {roundNumber}
               </span>
             </h1>
-            <p className="text-xs font-bold text-[#74806B]">
+            <p className="text-xs font-bold text-w-text-muted">
               Âm nhạc phát rộn ràng • Chú gấu dừng bất ngờ khi nhạc tắt để tìm người may mắn!
             </p>
           </div>
@@ -303,13 +303,13 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
             buttonText="📁 Tải file Excel/CSV"
           />
 
-          <div className="text-xs font-bold text-[#74806B] bg-[#FFFDF5] px-3 py-1.5 rounded-xl border border-[#DED5B8]">
-            Đã chọn: <strong className="text-[#4F683C]">{chosenStudents.length}/{students.length}</strong> học sinh
+          <div className="text-xs font-bold text-w-text-muted bg-w-bg-card px-3 py-1.5 rounded-xl border border-w-border">
+            Đã chọn: <strong className="text-w-primary-dark">{chosenStudents.length}/{students.length}</strong> học sinh
           </div>
 
           <button
             onClick={handleFinishGame}
-            className="px-3.5 py-2 bg-[#4F683C] hover:bg-[#3D522F] text-white text-xs font-black rounded-xl shadow-xs transition cursor-pointer"
+            className="px-3.5 py-2 bg-w-primary-dark hover:bg-[#3D522F] text-w-text-main text-xs font-black rounded-xl shadow-xs transition cursor-pointer"
           >
             Hoàn Tất
           </button>
@@ -319,10 +319,10 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
       {/* Main Play Area */}
       <div className="w-full flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
         {/* Left: Teacher Control Deck & Music Selector */}
-        <div className="lg:col-span-4 flex flex-col justify-between bg-white rounded-3xl p-5 border-2 border-[#DED5B8] shadow-sm min-h-[380px]">
+        <div className="lg:col-span-4 flex flex-col justify-between bg-white rounded-3xl p-5 border-2 border-w-border shadow-sm min-h-[380px]">
           <div>
-            <h3 className="text-sm font-[900] text-[#35452E] flex items-center gap-2 pb-2 border-b border-[#DED5B8] mb-3">
-              <Music className="w-4 h-4 text-[#4F683C]" />
+            <h3 className="text-sm font-[900] text-w-text-main flex items-center gap-2 pb-2 border-b border-w-border mb-3">
+              <Music className="w-4 h-4 text-w-primary-dark" />
               <span>Bảng Điều Khiển Âm Nhạc</span>
             </h3>
 
@@ -335,8 +335,8 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
                   disabled={gameState === 'playing'}
                   className={`w-full p-2.5 rounded-xl text-left text-xs font-bold flex items-center justify-between border transition ${
                     selectedTrackId === track.id
-                      ? 'bg-[#E9F0D9] border-[#4F683C] text-[#35452E]'
-                      : 'bg-[#FFFDF5] border-[#DED5B8] text-[#74806B] hover:bg-[#F8F4E6]'
+                      ? 'bg-w-accent-light border-w-primary-dark text-w-text-main'
+                      : 'bg-w-bg-card border-w-border text-w-text-muted hover:bg-[#F8F4E6]'
                   }`}
                 >
                   <div className="flex items-center gap-2 truncate">
@@ -344,14 +344,14 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
                     <span className="truncate">{track.name}</span>
                   </div>
                   {selectedTrackId === track.id && (
-                    <span className="w-2 h-2 rounded-full bg-[#4F683C]" />
+                    <span className="w-2 h-2 rounded-full bg-w-primary-dark" />
                   )}
                 </button>
               ))}
             </div>
 
             {/* Upload MP3 Option */}
-            <label className="w-full py-2.5 px-3 bg-[#FFFDF5] hover:bg-[#E9F0D9] text-[#4F683C] border-2 border-dashed border-[#B9CDA0] rounded-xl text-xs font-black flex items-center justify-center gap-2 cursor-pointer transition mb-4">
+            <label className="w-full py-2.5 px-3 bg-w-bg-card hover:bg-w-accent-light text-w-primary-dark border-2 border-dashed border-w-accent-border rounded-xl text-xs font-black flex items-center justify-center gap-2 cursor-pointer transition mb-4">
               <Upload className="w-4 h-4" />
               <span>Thêm Tệp Nhạc MP3 Của Thầy Cô</span>
               <input
@@ -364,14 +364,14 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
             </label>
 
             {/* Config Mode & Volume */}
-            <div className="space-y-2.5 text-xs font-bold text-[#74806B]">
+            <div className="space-y-2.5 text-xs font-bold text-w-text-muted">
               <div className="flex items-center justify-between">
                 <span>Chế độ phát nhạc:</span>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setMusicMode('random')}
                     className={`px-2 py-1 rounded-lg border text-[11px] ${
-                      musicMode === 'random' ? 'bg-[#4F683C] text-white border-[#4F683C]' : 'bg-white border-[#DED5B8]'
+                      musicMode === 'random' ? 'bg-w-primary-dark text-w-text-main border-w-primary-dark' : 'bg-white border-w-border'
                     }`}
                   >
                     Ngẫu Nhiên
@@ -379,7 +379,7 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
                   <button
                     onClick={() => setMusicMode('order')}
                     className={`px-2 py-1 rounded-lg border text-[11px] ${
-                      musicMode === 'order' ? 'bg-[#4F683C] text-white border-[#4F683C]' : 'bg-white border-[#DED5B8]'
+                      musicMode === 'order' ? 'bg-w-primary-dark text-w-text-main border-w-primary-dark' : 'bg-white border-w-border'
                     }`}
                   >
                     Cố Định
@@ -393,12 +393,12 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
                   type="checkbox"
                   checked={noRepeat}
                   onChange={e => setNoRepeat(e.target.checked)}
-                  className="rounded accent-[#4F683C] cursor-pointer"
+                  className="rounded accent-w-primary-dark cursor-pointer"
                 />
               </div>
 
               <div className="flex items-center gap-2 pt-1">
-                <Volume2 className="w-4 h-4 text-[#4F683C]" />
+                <Volume2 className="w-4 h-4 text-w-primary-dark" />
                 <input
                   type="range"
                   min="0"
@@ -406,18 +406,18 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
                   step="0.05"
                   value={volume}
                   onChange={e => setVolume(parseFloat(e.target.value))}
-                  className="w-full accent-[#4F683C] cursor-pointer"
+                  className="w-full accent-w-primary-dark cursor-pointer"
                 />
               </div>
             </div>
           </div>
 
           {/* Primary Action Button */}
-          <div className="mt-4 pt-3 border-t border-[#DED5B8]">
+          <div className="mt-4 pt-3 border-t border-w-border">
             {gameState === 'playing' ? (
               <button
                 onClick={handleManualStop}
-                className="w-full py-4 bg-red-500 hover:bg-red-600 text-white font-[900] text-base rounded-2xl shadow-lg border-2 border-red-600 animate-pulse flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-4 bg-red-500 hover:bg-red-600 text-w-text-main font-[900] text-base rounded-2xl shadow-lg border-2 border-red-600 animate-pulse flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Square className="w-5 h-5 fill-current" />
                 <span>DỪNG NHẠC NGAY (CHỌN GẤU)</span>
@@ -425,7 +425,7 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
             ) : (
               <button
                 onClick={handleStartRound}
-                className="w-full py-4 bg-[#6F8F55] hover:bg-[#5F7E4B] text-white font-[900] text-base rounded-2xl shadow-lg border-2 border-[#5F7E4B] transform hover:-translate-y-0.5 transition flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-4 bg-w-primary hover:bg-w-primary-hover text-w-text-main font-[900] text-base rounded-2xl shadow-lg border-2 border-w-primary-hover transform hover:-translate-y-0.5 transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Play className="w-5 h-5 fill-current" />
                 <span>BẮT ĐẦU TRUYỀN GẤU 🧸</span>
@@ -435,11 +435,11 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
         </div>
 
         {/* Right: Interactive Stage Area */}
-        <div className="lg:col-span-8 flex flex-col justify-between bg-gradient-to-b from-[#FFFDF5] to-[#F5EFE0] rounded-3xl p-5 border-2 border-[#DED5B8] shadow-sm min-h-[420px] relative overflow-hidden">
+        <div className="lg:col-span-8 flex flex-col justify-between bg-gradient-to-b from-w-bg-card to-[#F5EFE0] rounded-3xl p-5 border-2 border-w-border shadow-sm min-h-[420px] relative overflow-hidden">
           {/* Stage Atmosphere Header */}
           <div className="w-full flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-black uppercase tracking-wider text-[#4F683C] bg-white px-3 py-1 rounded-xl border border-[#B9CDA0]">
+              <span className="text-xs font-black uppercase tracking-wider text-w-primary-dark bg-white px-3 py-1 rounded-xl border border-w-accent-border">
                 Sân Khấu Truyền Gấu ({students.length} Học Sinh)
               </span>
             </div>
@@ -472,7 +472,7 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
                 🧸
               </div>
               <div className="mt-2 text-center">
-                <span className="text-xs font-black text-[#4F683C] bg-white/90 px-3 py-1 rounded-full border border-[#DED5B8] shadow-xs">
+                <span className="text-xs font-black text-w-primary-dark bg-white/90 px-3 py-1 rounded-full border border-w-border shadow-xs">
                   {gameState === 'playing' ? 'Đang Chuyền Tay...' : 'Wey Teddy Bear'}
                 </span>
               </div>
@@ -494,10 +494,10 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
                       isWinner
                         ? 'bg-amber-300 border-amber-600 text-amber-950 font-black shadow-lg scale-105 ring-4 ring-amber-400'
                         : isHoldingBear && gameState === 'playing'
-                        ? 'bg-[#E9F0D9] border-[#4F683C] text-[#35452E] font-black scale-105 shadow-md'
+                        ? 'bg-w-accent-light border-w-primary-dark text-w-text-main font-black scale-105 shadow-md'
                         : isAlreadyChosen
-                        ? 'bg-slate-100 border-slate-200 text-slate-400 opacity-60'
-                        : 'bg-white border-[#DED5B8] text-[#35452E]'
+                        ? 'bg-slate-100 border-slate-200 text-w-text-muted opacity-60'
+                        : 'bg-white border-w-border text-w-text-main'
                     }`}
                   >
                     <span className="text-base">
@@ -523,7 +523,7 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
                 <h2 className="text-xs font-black uppercase tracking-widest text-amber-950 mb-1">
                   NHẠC ĐÃ DỪNG! BẠN ĐÃ ĐƯỢC CHỌN:
                 </h2>
-                <h1 className="text-2xl sm:text-4xl font-[900] text-[#35452E] tracking-tight bg-white/90 py-2 px-4 rounded-2xl border-2 border-amber-500 max-w-md mx-auto shadow-sm">
+                <h1 className="text-2xl sm:text-4xl font-[900] text-w-text-main tracking-tight bg-white/90 py-2 px-4 rounded-2xl border-2 border-amber-500 max-w-md mx-auto shadow-sm">
                   {selectedWinner}
                 </h1>
                 <p className="text-xs font-bold text-amber-950 mt-3">
@@ -531,7 +531,7 @@ export const BearPassingGame: React.FC<BearPassingGameProps> = ({
                 </p>
                 <button
                   onClick={handleStartRound}
-                  className="mt-4 px-6 py-2.5 bg-[#4F683C] hover:bg-[#3D522F] text-white text-xs font-black rounded-xl shadow-md transition cursor-pointer"
+                  className="mt-4 px-6 py-2.5 bg-w-primary-dark hover:bg-[#3D522F] text-w-text-main text-xs font-black rounded-xl shadow-md transition cursor-pointer"
                 >
                   Bắt Đầu Vòng Tiếp Theo ➔
                 </button>

@@ -27,7 +27,7 @@ export const LoginButton: React.FC<LoginButtonProps> = ({ onCloudBanksLoaded }) 
 
   if (loading || isLoggingIn) {
     return (
-      <div className="flex items-center gap-1.5 px-3 py-2 bg-[#E9F0D9] border border-[#B9CDA0] rounded-[18px] text-xs font-[700] text-[#4F683C]">
+      <div className="flex items-center gap-1.5 px-3 py-2 bg-w-accent-light border border-w-accent-border rounded-[18px] text-xs font-[700] text-w-primary-dark">
         <Loader2 className="w-3.5 h-3.5 animate-spin" />
         <span className="hidden sm:inline">Đang kết nối...</span>
       </div>
@@ -36,21 +36,21 @@ export const LoginButton: React.FC<LoginButtonProps> = ({ onCloudBanksLoaded }) 
 
   if (user) {
     return (
-      <div className="flex items-center gap-2 bg-[#E9F0D9] border border-[#B9CDA0] pl-2 pr-1.5 py-1 rounded-[20px] text-xs font-[800] text-[#35452E] shadow-[0_2px_8px_rgba(79,104,60,0.06)]">
+      <div className="flex items-center gap-2 bg-w-accent-light border border-w-accent-border pl-2 pr-1.5 py-1 rounded-[20px] text-xs font-[800] text-w-text-main shadow-[0_2px_8px_rgba(79,104,60,0.06)]">
         {user.photoURL ? (
           <img
             src={user.photoURL}
             alt={user.displayName || 'User'}
-            className="w-6 h-6 rounded-full object-cover border border-[#B9CDA0]"
+            className="w-6 h-6 rounded-full object-cover border border-w-accent-border"
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-6 h-6 rounded-full bg-[#4F683C] text-white flex items-center justify-center text-[10px] font-black">
+          <div className="w-6 h-6 rounded-full bg-w-primary-dark text-white flex items-center justify-center text-[10px] font-black">
             {(user.displayName || user.email || 'U')[0].toUpperCase()}
           </div>
         )}
         <div className="flex flex-col text-left max-w-[120px] sm:max-w-[160px] truncate leading-tight">
-          <span className="truncate text-[11px] font-bold text-[#35452E]">
+          <span className="truncate text-[11px] font-bold text-w-text-main">
             {user.displayName || user.email?.split('@')[0]}
           </span>
           <span className="text-[9px] text-[#637559] truncate font-medium">
@@ -58,7 +58,7 @@ export const LoginButton: React.FC<LoginButtonProps> = ({ onCloudBanksLoaded }) 
           </span>
         </div>
         {isAdmin && (
-          <span className="bg-[#4F683C] text-[#E9D58F] px-1.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-0.5">
+          <span className="bg-w-primary-dark text-[#E9D58F] px-1.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-0.5">
             <Shield className="w-2.5 h-2.5" />
             ADMIN
           </span>
@@ -66,7 +66,7 @@ export const LoginButton: React.FC<LoginButtonProps> = ({ onCloudBanksLoaded }) 
         <button
           onClick={logout}
           title="Đăng xuất"
-          className="p-1.5 hover:bg-[#DCEBCB] hover:text-[#E05252] rounded-full text-[#4F683C] transition ml-0.5"
+          className="p-1.5 hover:bg-w-accent-muted hover:text-[#E05252] rounded-full text-w-primary-dark transition ml-0.5"
         >
           <LogOut className="w-3.5 h-3.5" />
         </button>
@@ -77,10 +77,10 @@ export const LoginButton: React.FC<LoginButtonProps> = ({ onCloudBanksLoaded }) 
   return (
     <button
       onClick={handleLogin}
-      className="flex items-center gap-1.5 px-3.5 py-2 bg-[#FFFDF5] hover:bg-[#F8F3E5] text-[#4F683C] font-[800] text-xs rounded-[18px] border border-[#C9D8B8] shadow-[0_2px_8px_rgba(79,104,60,0.06)] hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+      className="flex items-center gap-1.5 px-3.5 py-2 bg-w-bg-card hover:bg-w-bg-main text-w-primary-dark font-[800] text-xs rounded-[18px] border border-[#C9D8B8] shadow-[0_2px_8px_rgba(79,104,60,0.06)] hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
       title="Đăng nhập tài khoản Google để lưu trữ đám mây & không giới hạn lượt chơi"
     >
-      <LogIn className="w-3.5 h-3.5 text-[#6F8F55]" />
+      <LogIn className="w-3.5 h-3.5 text-w-primary" />
       <span className="hidden sm:inline">Đăng Nhập Google</span>
       <span className="sm:hidden">Đăng Nhập</span>
     </button>

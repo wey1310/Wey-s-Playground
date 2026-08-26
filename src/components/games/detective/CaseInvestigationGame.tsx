@@ -300,13 +300,13 @@ export const CaseInvestigationGame: React.FC<CaseInvestigationGameProps> = ({
                 onClick={() => setCurrentTeamIndex(idx)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
                   isActive 
-                    ? 'bg-amber-600 text-white shadow-[0_0_10px_rgba(217,119,6,0.4)] border border-amber-400' 
+                    ? 'bg-amber-600 text-w-text-main shadow-[0_0_10px_rgba(217,119,6,0.4)] border border-amber-400' 
                     : 'bg-[#2a1d12] text-amber-500/70 border border-[#3d2716] hover:bg-[#382718]'
                 }`}
               >
                 <span>{t.avatar}</span>
                 <span className="truncate max-w-[80px]">{t.teamName}</span>
-                <span className="bg-black/30 px-1.5 py-0.5 rounded text-[10px]">{t.score}đ</span>
+                <span className="bg-white/70 backdrop-blur-sm px-1.5 py-0.5 rounded text-[10px]">{t.score}đ</span>
               </button>
             );
           })}
@@ -331,12 +331,12 @@ export const CaseInvestigationGame: React.FC<CaseInvestigationGameProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
+                <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-600 font-bold border border-amber-500/30">
                   {currentCase.badge}
                 </span>
                 <h1 className="text-lg font-black text-amber-100">{currentCase.title}</h1>
               </div>
-              <div className="flex items-center gap-2 text-xs text-amber-300/60 mt-0.5">
+              <div className="flex items-center gap-2 text-xs text-amber-600 mt-0.5">
                 <span className="flex items-center gap-1"><Pin className="w-3 h-3"/> {currentCase.crimeSceneName}</span>
                 <span>•</span>
                 <span className="flex items-center gap-1"><User className="w-3 h-3"/> Nạn nhân: {currentCase.victim.name}</span>
@@ -381,7 +381,7 @@ export const CaseInvestigationGame: React.FC<CaseInvestigationGameProps> = ({
           </div>
           <button 
             onClick={() => setIsCaseBriefOpen(true)}
-            className="mt-4 w-full py-2 rounded-lg bg-amber-900/30 text-amber-400 text-xs font-bold border border-amber-900/50 hover:bg-amber-900/50"
+            className="mt-4 w-full py-2 rounded-lg bg-amber-900/30 text-amber-600 text-xs font-bold border border-amber-900/50 hover:bg-amber-900/50"
           >
             ĐỌC TOÀN BỘ HỒ SƠ
           </button>
@@ -470,11 +470,11 @@ export const CaseInvestigationGame: React.FC<CaseInvestigationGameProps> = ({
            <div className="space-y-2 flex-1">
              <div className="flex justify-between items-center text-xs">
                 <span className="text-amber-50/70">Manh mối</span>
-                <span className="font-black text-amber-400">{activeTeam.unlockedClueIds.length} / {currentCase.clues.length}</span>
+                <span className="font-black text-amber-600">{activeTeam.unlockedClueIds.length} / {currentCase.clues.length}</span>
              </div>
              <div className="flex justify-between items-center text-xs">
                 <span className="text-amber-50/70">Đã tra vấn</span>
-                <span className="font-black text-amber-400">{activeTeam.interrogatedSuspectIds.length} / {currentCase.suspects.length}</span>
+                <span className="font-black text-amber-600">{activeTeam.interrogatedSuspectIds.length} / {currentCase.suspects.length}</span>
              </div>
              <div className="flex justify-between items-center text-xs">
                 <span className="text-amber-50/70">Lượt đoán</span>
@@ -482,7 +482,7 @@ export const CaseInvestigationGame: React.FC<CaseInvestigationGameProps> = ({
              </div>
              <div className="flex justify-between items-center text-xs mt-2 pt-2 border-t border-[#3b2a1c]">
                 <span className="text-amber-50/70">Điểm</span>
-                <span className="font-black text-amber-400 text-lg">{activeTeam.score}</span>
+                <span className="font-black text-amber-600 text-lg">{activeTeam.score}</span>
              </div>
            </div>
 
@@ -496,7 +496,7 @@ export const CaseInvestigationGame: React.FC<CaseInvestigationGameProps> = ({
              <button 
                onClick={() => setIsAccusationOpen(true)}
                disabled={activeTeam.guessesLeft <= 0 || activeTeam.solved}
-               className="w-full py-2.5 bg-red-700 hover:bg-red-600 disabled:bg-stone-800 disabled:text-stone-500 rounded-lg text-xs font-black text-white flex items-center justify-center gap-1 border border-red-500 shadow-md"
+               className="w-full py-2.5 bg-red-700 hover:bg-red-600 disabled:bg-stone-800 disabled:text-stone-500 rounded-lg text-xs font-black text-w-text-main flex items-center justify-center gap-1 border border-red-500 shadow-md"
              >
                <Sparkles className="w-3.5 h-3.5"/> CHỈ ĐIỂM HUNG THỦ
              </button>
@@ -511,7 +511,7 @@ export const CaseInvestigationGame: React.FC<CaseInvestigationGameProps> = ({
       
       {/* Case Brief Modal */}
       {isCaseBriefOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-white/70 backdrop-blur-sm backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#fcf7ed] w-full max-w-2xl max-h-[85vh] rounded-2xl p-6 overflow-y-auto custom-scrollbar border-4 border-[#cfa574] relative">
             <button onClick={() => setIsCaseBriefOpen(false)} className="absolute top-4 right-4 p-1 rounded bg-stone-200 text-stone-600 hover:text-stone-900"><XCircle className="w-6 h-6"/></button>
             <h2 className="text-2xl font-black text-stone-900 mb-4">{currentCase.title}</h2>
@@ -542,7 +542,7 @@ export const CaseInvestigationGame: React.FC<CaseInvestigationGameProps> = ({
 
       {/* Clue Detail Modal */}
       {inspectedClue && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-white/70 backdrop-blur-sm backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#fcf7ed] w-full max-w-xl max-h-[85vh] rounded-2xl p-6 overflow-y-auto custom-scrollbar border-4 border-[#cfa574] relative">
             <button onClick={() => setInspectedClue(null)} className="absolute top-4 right-4 p-1 rounded bg-stone-200 text-stone-600 hover:text-stone-900"><XCircle className="w-6 h-6"/></button>
             <div className="flex items-center gap-4 mb-6">
@@ -653,7 +653,7 @@ export const CaseInvestigationGame: React.FC<CaseInvestigationGameProps> = ({
 
       <AnimatePresence>
         {isQuizModalOpen && questions.length > 0 && (
-          <div className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[100] bg-white/70 backdrop-blur-sm backdrop-blur-md flex items-center justify-center p-4">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -666,13 +666,13 @@ export const CaseInvestigationGame: React.FC<CaseInvestigationGameProps> = ({
                     ❓
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-amber-300">
+                    <h3 className="text-sm font-black text-amber-600">
                       THỬ THÁCH GIẢI MÃ VẬT CHỨNG
                     </h3>
                   </div>
                 </div>
               </div>
-              <div className="bg-black/40 p-4 rounded-2xl border border-amber-900/60">
+              <div className="bg-white/70 backdrop-blur-sm p-4 rounded-2xl border border-amber-900/60">
                 <p className="text-sm font-bold text-zinc-100 leading-relaxed">
                   {questions[currentQuestionIndex % questions.length]?.content}
                 </p>
@@ -698,7 +698,7 @@ export const CaseInvestigationGame: React.FC<CaseInvestigationGameProps> = ({
                       onClick={() => handleAnswerQuestion(idx)}
                       className={`p-3 rounded-xl border-2 text-left text-xs transition flex items-center gap-2 ${btnStyle}`}
                     >
-                      <span className="w-6 h-6 rounded-lg bg-black/30 font-black flex items-center justify-center shrink-0">
+                      <span className="w-6 h-6 rounded-lg bg-white/70 backdrop-blur-sm font-black flex items-center justify-center shrink-0">
                         {String.fromCharCode(65 + idx)}
                       </span>
                       <span className="font-semibold line-clamp-2">{opt}</span>

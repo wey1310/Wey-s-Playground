@@ -58,7 +58,7 @@ export const LetterArrangeGame: React.FC<LetterArrangeGameProps> = ({
       return config.teams.map(t => ({ ...t, score: t.score || 0 }));
     }
     return [
-      { id: 'team-1', name: 'Đội 1', avatar: '🦁', color: '#4F683C', score: 0 },
+      { id: 'team-1', name: 'Đội 1', avatar: '🦁', color: '#E08283', score: 0 },
       { id: 'team-2', name: 'Đội 2', avatar: '🐯', color: '#3B82F6', score: 0 },
     ];
   });
@@ -335,19 +335,19 @@ export const LetterArrangeGame: React.FC<LetterArrangeGameProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col items-center justify-between p-3 sm:p-5 max-w-6xl mx-auto select-none">
       {/* Top Header & Scoreboard */}
-      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/90 backdrop-blur-sm p-4 rounded-3xl border-2 border-[#DED5B8] shadow-sm mb-4">
+      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/90 backdrop-blur-sm p-4 rounded-3xl border-2 border-w-border shadow-sm mb-4">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-2xl shadow-xs">
             🔤
           </div>
           <div>
-            <h1 className="text-xl font-[900] text-[#35452E] flex items-center gap-2">
+            <h1 className="text-xl font-[900] text-w-text-main flex items-center gap-2">
               Sắp Xếp Chữ Cái
               <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
                 Câu {puzzleIndex + 1}/{puzzles.length}
               </span>
             </h1>
-            <p className="text-xs font-bold text-[#74806B]">
+            <p className="text-xs font-bold text-w-text-muted">
               Ghép các thẻ chữ cái bị xáo trộn thành từ khóa tiếng Việt chuẩn xác
             </p>
           </div>
@@ -360,21 +360,21 @@ export const LetterArrangeGame: React.FC<LetterArrangeGameProps> = ({
               key={t.id}
               className={`px-4 py-2 rounded-2xl border-2 transition-all flex items-center gap-2.5 ${
                 idx === currentTeamIndex
-                  ? 'bg-[#E9F0D9] border-[#4F683C] shadow-md scale-105 ring-2 ring-[#4F683C]/20'
-                  : 'bg-[#FFFDF5] border-[#DED5B8]'
+                  ? 'bg-w-accent-light border-w-primary-dark shadow-md scale-105 ring-2 ring-w-primary-dark/20'
+                  : 'bg-w-bg-card border-w-border'
               }`}
             >
               <span className="text-xl">{t.avatar}</span>
               <div>
-                <span className="text-xs font-black text-[#35452E] block">{t.name}</span>
-                <span className="text-sm font-[900] text-[#4F683C]">{t.score} điểm</span>
+                <span className="text-xs font-black text-w-text-main block">{t.name}</span>
+                <span className="text-sm font-[900] text-w-primary-dark">{t.score} điểm</span>
               </div>
             </div>
           ))}
 
           <button
             onClick={handleFinishGame}
-            className="px-3.5 py-2 bg-[#4F683C] hover:bg-[#3D522F] text-white text-xs font-black rounded-xl shadow-xs transition cursor-pointer"
+            className="px-3.5 py-2 bg-w-primary-dark hover:bg-[#3D522F] text-w-text-main text-xs font-black rounded-xl shadow-xs transition cursor-pointer"
           >
             Tổng Kết
           </button>
@@ -382,15 +382,15 @@ export const LetterArrangeGame: React.FC<LetterArrangeGameProps> = ({
       </div>
 
       {/* Main Puzzle Stage */}
-      <div className="w-full flex-1 bg-gradient-to-b from-[#FFFDF5] to-[#F5EFE0] rounded-3xl p-5 sm:p-8 border-2 border-[#DED5B8] shadow-sm flex flex-col justify-between min-h-[460px]">
+      <div className="w-full flex-1 bg-gradient-to-b from-w-bg-card to-[#F5EFE0] rounded-3xl p-5 sm:p-8 border-2 border-w-border shadow-sm flex flex-col justify-between min-h-[460px]">
         {/* Question Header & Hint */}
-        <div className="w-full flex items-center justify-between pb-3 border-b border-[#DED5B8]">
+        <div className="w-full flex items-center justify-between pb-3 border-b border-w-border">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black uppercase tracking-wider text-[#4F683C] bg-white px-3 py-1 rounded-xl border border-[#B9CDA0]">
+            <span className="text-xs font-black uppercase tracking-wider text-w-primary-dark bg-white px-3 py-1 rounded-xl border border-w-accent-border">
               Lượt của: {activeTeam.name}
             </span>
             {currentPuzzle.hint && (
-              <span className="text-xs font-bold text-[#74806B] hidden sm:inline">
+              <span className="text-xs font-bold text-w-text-muted hidden sm:inline">
                 💡 {currentPuzzle.hint}
               </span>
             )}
@@ -423,15 +423,15 @@ export const LetterArrangeGame: React.FC<LetterArrangeGameProps> = ({
 
         {/* 1. Answer Target Row (Placed Letters) */}
         <div className="my-auto py-6 flex flex-col items-center justify-center">
-          <div className="text-[11px] font-extrabold uppercase tracking-widest text-[#74806B] mb-2 flex items-center gap-1">
+          <div className="text-[11px] font-extrabold uppercase tracking-widest text-w-text-muted mb-2 flex items-center gap-1">
             <span>VÙNG ĐÁP ÁN CỦA ĐỘI</span>
             <span>({placedTiles.length} Ký Tự Đã Đặt)</span>
           </div>
 
           {/* Answer Slot Container */}
-          <div className="min-h-[72px] w-full max-w-4xl p-3 bg-white/90 rounded-3xl border-2 border-[#DED5B8] shadow-inner flex items-center justify-center gap-2 flex-wrap">
+          <div className="min-h-[72px] w-full max-w-4xl p-3 bg-white/90 rounded-3xl border-2 border-w-border shadow-inner flex items-center justify-center gap-2 flex-wrap">
             {placedTiles.length === 0 ? (
-              <span className="text-xs font-bold text-slate-400 italic">
+              <span className="text-xs font-bold text-w-text-muted italic">
                 Chạm hoặc bấm các thẻ chữ cái bên dưới để sắp xếp vào đây...
               </span>
             ) : (
@@ -456,7 +456,7 @@ export const LetterArrangeGame: React.FC<LetterArrangeGameProps> = ({
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleRemovePlacedTile(tile, idx)}
-                    className="w-12 h-14 sm:w-14 sm:h-16 rounded-2xl bg-gradient-to-b from-[#6F8F55] to-[#4F683C] border-2 border-[#3D522F] text-white text-xl sm:text-2xl font-[900] shadow-md flex items-center justify-center transition cursor-pointer"
+                    className="w-12 h-14 sm:w-14 sm:h-16 rounded-2xl bg-gradient-to-b from-w-primary to-w-primary-dark border-2 border-[#3D522F] text-w-text-main text-xl sm:text-2xl font-[900] shadow-md flex items-center justify-center transition cursor-pointer"
                     title="Chạm để đưa lại về kho chữ"
                   >
                     {tile.char}
@@ -492,7 +492,7 @@ export const LetterArrangeGame: React.FC<LetterArrangeGameProps> = ({
 
         {/* 2. Scrambled Letter Tiles Pool */}
         <div className="w-full flex flex-col items-center">
-          <div className="text-[11px] font-extrabold uppercase tracking-widest text-[#74806B] mb-2">
+          <div className="text-[11px] font-extrabold uppercase tracking-widest text-w-text-muted mb-2">
             KHO KÝ TỰ BỊ XÁO TRỘN
           </div>
 
@@ -516,7 +516,7 @@ export const LetterArrangeGame: React.FC<LetterArrangeGameProps> = ({
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleSelectPoolTile(tile)}
                   disabled={isAnswerChecked}
-                  className="w-12 h-14 sm:w-14 sm:h-16 rounded-2xl bg-white hover:bg-[#E9F0D9] border-2 border-[#DED5B8] hover:border-[#4F683C] text-[#35452E] text-xl sm:text-2xl font-[900] shadow-sm hover:shadow-md flex items-center justify-center transition cursor-pointer"
+                  className="w-12 h-14 sm:w-14 sm:h-16 rounded-2xl bg-white hover:bg-w-accent-light border-2 border-w-border hover:border-w-primary-dark text-w-text-main text-xl sm:text-2xl font-[900] shadow-sm hover:shadow-md flex items-center justify-center transition cursor-pointer"
                 >
                   {tile.char}
                 </motion.button>
@@ -557,7 +557,7 @@ export const LetterArrangeGame: React.FC<LetterArrangeGameProps> = ({
             <button
               onClick={handleCheckAnswer}
               disabled={placedTiles.length === 0 || isAnswerChecked}
-              className="px-6 py-2.5 bg-[#4F683C] hover:bg-[#3D522F] text-white text-xs font-black rounded-2xl shadow-md transition flex items-center gap-2 cursor-pointer"
+              className="px-6 py-2.5 bg-w-primary-dark hover:bg-[#3D522F] text-w-text-main text-xs font-black rounded-2xl shadow-md transition flex items-center gap-2 cursor-pointer"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>HOÀN TẤT & KIỂM TRA</span>

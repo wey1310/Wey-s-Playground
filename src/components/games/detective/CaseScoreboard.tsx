@@ -73,7 +73,7 @@ export const CaseScoreboard: React.FC<CaseScoreboardProps> = ({
           <button
             type="button"
             onClick={onBackToHome}
-            className="p-2 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 transition cursor-pointer flex items-center gap-1.5 text-xs font-bold"
+            className="p-2 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-w-text-main border border-zinc-700 transition cursor-pointer flex items-center gap-1.5 text-xs font-bold"
             title="Quay lại sảnh chính"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -81,15 +81,15 @@ export const CaseScoreboard: React.FC<CaseScoreboardProps> = ({
           </button>
 
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-lg shadow-md border border-amber-400/40">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-lg shadow-md border border-amber-400">
               {currentCase.coverIcon || '🔎'}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xs sm:text-sm font-black text-amber-300 tracking-wide line-clamp-1">
+                <h2 className="text-xs sm:text-sm font-black text-amber-600 tracking-wide line-clamp-1">
                   {currentCase.title}
                 </h2>
-                <span className="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-500/40">
+                <span className="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-amber-950/80 text-amber-600 border border-amber-500/40">
                   {currentCase.badge}
                 </span>
               </div>
@@ -103,7 +103,7 @@ export const CaseScoreboard: React.FC<CaseScoreboardProps> = ({
             <button
               type="button"
               onClick={onToggleMute}
-              className="p-2 rounded-xl bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700"
+              className="p-2 rounded-xl bg-zinc-800 text-zinc-300 hover:text-w-text-main border border-zinc-700"
             >
               {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
             </button>
@@ -138,7 +138,7 @@ export const CaseScoreboard: React.FC<CaseScoreboardProps> = ({
                     {t.failed && <XCircle className="w-3.5 h-3.5 text-rose-400 inline" />}
                   </div>
                   <div className="flex items-center gap-1.5 text-[10px]">
-                    <span className="text-amber-400 font-extrabold">{t.score} điểm</span>
+                    <span className="text-amber-600 font-extrabold">{t.score} điểm</span>
                     <span className="text-zinc-500">•</span>
                     <span className="text-zinc-300">
                       {t.guessesLeft}/2 🔎
@@ -179,10 +179,10 @@ export const CaseScoreboard: React.FC<CaseScoreboardProps> = ({
               className="px-2.5 py-1.5 rounded-xl bg-[#2e1d11] hover:bg-[#3d2717] text-amber-200 border border-amber-600/50 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
               title="Mở danh sách học sinh và nạp file"
             >
-              <Users className="w-3.5 h-3.5 text-amber-400" />
+              <Users className="w-3.5 h-3.5 text-amber-600" />
               <span className="hidden sm:inline">DS Học Sinh</span>
               {studentsCount > 0 && (
-                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-amber-950 text-amber-300 border border-amber-700">
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-amber-950 text-amber-600 border border-amber-700">
                   {studentsCount}
                 </span>
               )}
@@ -196,7 +196,7 @@ export const CaseScoreboard: React.FC<CaseScoreboardProps> = ({
               className="px-2.5 py-1.5 rounded-xl bg-amber-950/70 hover:bg-amber-900 text-amber-200 border border-amber-600/40 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
               title="Xem lại báo cáo hồ sơ vụ án (Briefing)"
             >
-              <FileSearch className="w-3.5 h-3.5 text-amber-400" />
+              <FileSearch className="w-3.5 h-3.5 text-amber-600" />
               <span className="hidden sm:inline">Hồ Sơ</span>
             </button>
           )}
@@ -207,7 +207,7 @@ export const CaseScoreboard: React.FC<CaseScoreboardProps> = ({
             className="px-2.5 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-amber-200 border border-zinc-700 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
             title="Xem dòng thời gian vụ án"
           >
-            <Clock className="w-3.5 h-3.5 text-amber-400" />
+            <Clock className="w-3.5 h-3.5 text-amber-600" />
             <span className="hidden sm:inline">Timeline</span>
           </button>
 
@@ -217,7 +217,7 @@ export const CaseScoreboard: React.FC<CaseScoreboardProps> = ({
             disabled={!canAccuse}
             className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition cursor-pointer shadow-md ${
               canAccuse
-                ? 'bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white border border-red-400/60 animate-pulse'
+                ? 'bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-w-text-main border border-red-400/60 animate-pulse'
                 : 'bg-zinc-800 text-zinc-500 border-zinc-700 cursor-not-allowed'
             }`}
             title="Chỉ điểm hung thủ Conan Style"
@@ -230,7 +230,7 @@ export const CaseScoreboard: React.FC<CaseScoreboardProps> = ({
             <button
               type="button"
               onClick={onToggleMute}
-              className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 transition"
+              className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-w-text-main border border-zinc-700 transition"
               title={isMuted ? 'Bật âm thanh' : 'Tắt âm thanh'}
             >
               {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
@@ -240,7 +240,7 @@ export const CaseScoreboard: React.FC<CaseScoreboardProps> = ({
               <button
                 type="button"
                 onClick={onOpenQuickGuide}
-                className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-amber-300 border border-zinc-700 transition"
+                className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-amber-600 border border-zinc-700 transition"
                 title="Hướng dẫn luật chơi"
               >
                 <HelpCircle className="w-4 h-4" />
@@ -250,7 +250,7 @@ export const CaseScoreboard: React.FC<CaseScoreboardProps> = ({
             <button
               type="button"
               onClick={onOpenDebug}
-              className="p-2 rounded-xl bg-amber-950/80 hover:bg-amber-900 text-amber-300 border border-amber-600/50 transition"
+              className="p-2 rounded-xl bg-amber-950/80 hover:bg-amber-900 text-amber-600 border border-amber-600/50 transition"
               title="Bảng điều khiển giáo viên (Bí Mật)"
             >
               <Key className="w-4 h-4" />
@@ -264,19 +264,19 @@ export const CaseScoreboard: React.FC<CaseScoreboardProps> = ({
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-7xl mx-auto bg-gradient-to-r from-amber-500/20 via-amber-600/30 to-amber-500/20 border border-amber-400/80 rounded-xl px-3 py-1.5 flex items-center justify-between shadow-md"
+          className="max-w-7xl mx-auto bg-gradient-to-r from-amber-500/20 via-amber-600/30 to-amber-500/20 border border-amber-400 rounded-xl px-3 py-1.5 flex items-center justify-between shadow-md"
         >
           <div className="flex items-center gap-2 text-xs">
             <span className="w-6 h-6 rounded-lg bg-amber-400 text-zinc-950 flex items-center justify-center font-black text-xs shadow-xs">
               🕵️‍♂️
             </span>
-            <span className="text-amber-300 font-bold uppercase tracking-wider text-[11px]">
+            <span className="text-amber-600 font-bold uppercase tracking-wider text-[11px]">
               Thám Tử Đang Phá Án:
             </span>
-            <span className="text-white font-black text-xs sm:text-sm bg-black/40 px-2.5 py-0.5 rounded-lg border border-amber-400/40">
+            <span className="text-w-text-main font-black text-xs sm:text-sm bg-white/70 backdrop-blur-sm px-2.5 py-0.5 rounded-lg border border-amber-400">
               {activeStudent}
             </span>
-            <span className="hidden sm:inline text-amber-400/70 text-[11px]">
+            <span className="hidden sm:inline text-amber-600 text-[11px]">
               (Đại diện cho {activeTeam.teamName})
             </span>
           </div>
@@ -297,7 +297,7 @@ export const CaseScoreboard: React.FC<CaseScoreboardProps> = ({
               <button
                 type="button"
                 onClick={onClearActiveStudent}
-                className="p-1 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white transition cursor-pointer"
+                className="p-1 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-w-text-main transition cursor-pointer"
                 title="Bỏ chọn thám tử này"
               >
                 <X className="w-3.5 h-3.5" />

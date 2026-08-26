@@ -253,7 +253,7 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
 
   return (
     <div 
-      className="w-full h-[100dvh] flex flex-col bg-slate-950 text-slate-100 overflow-hidden font-sans relative select-none"
+      className="w-full h-[100dvh] flex flex-col bg-w-bg-card text-slate-100 overflow-hidden font-sans relative select-none"
       style={{
         backgroundImage: `radial-gradient(circle at 50% 30%, rgba(30, 27, 75, 0.8), rgba(2, 6, 23, 0.95)), url('${themeConfig.bg}')`,
         backgroundSize: 'cover',
@@ -261,19 +261,19 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
       }}
     >
       {/* Top Navigation Bar */}
-      <header className="bg-black/60 backdrop-blur-md px-4 py-3 flex flex-wrap items-center justify-between border-b border-white/10 z-30 shrink-0">
+      <header className="bg-white/70 backdrop-blur-sm backdrop-blur-md px-4 py-3 flex flex-wrap items-center justify-between border-b border-white/10 z-30 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 to-purple-600 flex items-center justify-center shadow-lg shadow-pink-500/20">
-            <Gift className="w-6 h-6 text-white animate-pulse" />
+            <Gift className="w-6 h-6 text-w-text-main animate-pulse" />
           </div>
           <div>
-            <h1 className="text-xl sm:text-2xl font-[900] tracking-tight text-white flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-[900] tracking-tight text-w-text-main flex items-center gap-2">
               BLIND BOX
               <span className="text-xs px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30 font-bold">
                 Mở Hộp Bí Ẩn
               </span>
             </h1>
-            <p className="text-[11px] text-slate-400 font-medium hidden sm:block">
+            <p className="text-[11px] text-w-text-muted font-medium hidden sm:block">
               Trả lời đúng câu hỏi để giành quyền mở hộp quà may mắn!
             </p>
           </div>
@@ -284,17 +284,17 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
           <select 
             value={selectedTheme} 
             onChange={e => setSelectedTheme(e.target.value)}
-            className="bg-slate-800/90 text-white text-xs font-bold border border-white/20 rounded-xl px-3 py-2 outline-none hover:border-pink-500 transition-colors cursor-pointer"
+            className="bg-w-accent-light text-w-text-main text-xs font-bold border border-white/20 rounded-xl px-3 py-2 outline-none hover:border-pink-500 transition-colors cursor-pointer"
           >
             {THEMES.map(t => (
-              <option key={t.id} value={t.id} className="bg-slate-900 text-white">{t.name}</option>
+              <option key={t.id} value={t.id} className="bg-w-bg-alt text-w-text-main">{t.name}</option>
             ))}
           </select>
 
           <button
             onClick={initBoxes}
             title="Làm mới 20 hộp"
-            className="p-2 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all border border-white/10 flex items-center gap-1.5 text-xs font-bold"
+            className="p-2 bg-white/10 hover:bg-white/20 text-w-text-main rounded-xl transition-all border border-white/10 flex items-center gap-1.5 text-xs font-bold"
           >
             <RefreshCcw className="w-4 h-4" />
             <span className="hidden md:inline">Xáo Lại Hộp</span>
@@ -302,7 +302,7 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
 
           <button 
             onClick={() => onGameEnd(teams, answerLogs)}
-            className="px-4 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-rose-600/30 transition-all active:scale-95 flex items-center gap-1.5"
+            className="px-4 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-rose-600/30 transition-all active:scale-95 flex items-center gap-1.5"
           >
             <Trophy className="w-4 h-4" />
             Kết Thúc
@@ -318,9 +318,9 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             className={`absolute top-16 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-2xl font-bold text-sm shadow-2xl backdrop-blur-md border flex items-center gap-2 ${
-              toastMessage.type === 'success' ? 'bg-emerald-500/90 text-white border-emerald-400' :
-              toastMessage.type === 'error' ? 'bg-rose-500/90 text-white border-rose-400' :
-              'bg-blue-500/90 text-white border-blue-400'
+              toastMessage.type === 'success' ? 'bg-emerald-500/90 text-w-text-main border-emerald-400' :
+              toastMessage.type === 'error' ? 'bg-rose-500/90 text-w-text-main border-rose-400' :
+              'bg-blue-500/90 text-w-text-main border-blue-400'
             }`}
           >
             <Sparkles className="w-5 h-5" />
@@ -336,13 +336,13 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
         <div className="w-full lg:w-72 xl:w-80 flex flex-col gap-3 shrink-0">
           
           {/* Turn Action Card */}
-          <div className="bg-slate-900/80 backdrop-blur-md rounded-2xl p-4 border border-white/10 shadow-xl flex flex-col gap-3">
+          <div className="bg-w-bg-alt backdrop-blur-md rounded-2xl p-4 border border-white/10 shadow-xl flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-black uppercase tracking-wider text-pink-400 flex items-center gap-1.5">
-                <Crown className="w-4 h-4 text-amber-400" />
+                <Crown className="w-4 h-4 text-amber-600" />
                 Lượt Của Đội
               </span>
-              <span className="text-[10px] font-bold bg-white/10 px-2 py-0.5 rounded-full text-slate-300">
+              <span className="text-[10px] font-bold bg-white/10 px-2 py-0.5 rounded-full text-w-primary-dark">
                 Còn {unopenedCount} Hộp
               </span>
             </div>
@@ -356,14 +356,14 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
               }}
             >
               <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-md font-bold shrink-0 text-white"
+                className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-md font-bold shrink-0 text-w-text-main"
                 style={{ backgroundColor: currentTeam.color }}
               >
                 {currentTeam.avatar}
               </div>
               <div className="truncate flex-1">
-                <div className="font-black text-base text-white truncate">{currentTeam.name}</div>
-                <div className="text-xs font-bold text-amber-300">{currentTeam.score} điểm</div>
+                <div className="font-black text-base text-w-text-main truncate">{currentTeam.name}</div>
+                <div className="text-xs font-bold text-amber-600">{currentTeam.score} điểm</div>
               </div>
             </div>
 
@@ -371,7 +371,7 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
             {phase === 'IDLE' && (
               <button
                 onClick={handleDrawQuestion}
-                className="w-full py-3.5 px-4 bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 hover:from-pink-400 hover:to-indigo-500 text-white font-black text-sm rounded-xl shadow-lg shadow-pink-500/25 transition-all transform active:scale-95 flex items-center justify-center gap-2 animate-pulse"
+                className="w-full py-3.5 px-4 bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 hover:from-pink-400 hover:to-indigo-500 text-w-text-main font-black text-sm rounded-xl shadow-lg shadow-pink-500/25 transition-all transform active:scale-95 flex items-center justify-center gap-2 animate-pulse"
               >
                 <Dices className="w-5 h-5" />
                 BỐC CÂU HỎI CHO ĐỘI
@@ -393,15 +393,15 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
             )}
 
             {phase === 'QUESTION' && (
-              <div className="w-full py-2.5 px-4 bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold text-xs rounded-xl text-center">
+              <div className="w-full py-2.5 px-4 bg-amber-500/20 border border-amber-500/40 text-amber-600 font-bold text-xs rounded-xl text-center">
                 Đang trả lời câu hỏi #{activeQuestionNum}...
               </div>
             )}
           </div>
 
           {/* Leaderboard & Team Switcher */}
-          <div className="flex-1 bg-slate-900/80 backdrop-blur-md rounded-2xl p-4 border border-white/10 shadow-xl flex flex-col overflow-hidden">
-            <div className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3 flex items-center justify-between">
+          <div className="flex-1 bg-w-bg-alt backdrop-blur-md rounded-2xl p-4 border border-white/10 shadow-xl flex flex-col overflow-hidden">
+            <div className="text-xs font-black uppercase tracking-wider text-w-text-muted mb-3 flex items-center justify-between">
               <span>Danh Sách Đội ({teams.length})</span>
               <span className="text-[10px] text-slate-500">Bấm để đổi lượt</span>
             </div>
@@ -423,17 +423,17 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
                   >
                     <div className="flex items-center gap-2.5 truncate">
                       <div 
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-base shadow-sm font-bold text-white shrink-0"
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-base shadow-sm font-bold text-w-text-main shrink-0"
                         style={{ backgroundColor: team.color }}
                       >
                         {team.avatar}
                       </div>
                       <div className="truncate">
-                        <div className="font-bold text-xs text-white truncate flex items-center gap-1">
+                        <div className="font-bold text-xs text-w-text-main truncate flex items-center gap-1">
                           {team.name}
                           {isActive && <Crown className="w-3 h-3 text-yellow-400 shrink-0" />}
                         </div>
-                        <div className="text-[11px] font-extrabold text-amber-300">{team.score}đ</div>
+                        <div className="text-[11px] font-extrabold text-amber-600">{team.score}đ</div>
                       </div>
                     </div>
 
@@ -441,14 +441,14 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
                     <div className="flex items-center gap-1 shrink-0" onClick={e => e.stopPropagation()}>
                       <button
                         onClick={() => handleAdjustScore(idx, -10)}
-                        className="w-6 h-6 rounded-md bg-white/10 hover:bg-rose-500/50 text-white flex items-center justify-center text-xs transition-colors"
+                        className="w-6 h-6 rounded-md bg-white/10 hover:bg-rose-500/50 text-w-text-main flex items-center justify-center text-xs transition-colors"
                         title="Trừ 10 điểm"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
                       <button
                         onClick={() => handleAdjustScore(idx, 10)}
-                        className="w-6 h-6 rounded-md bg-white/10 hover:bg-emerald-500/50 text-white flex items-center justify-center text-xs transition-colors"
+                        className="w-6 h-6 rounded-md bg-white/10 hover:bg-emerald-500/50 text-w-text-main flex items-center justify-center text-xs transition-colors"
                         title="Cộng 10 điểm"
                       >
                         <Plus className="w-3 h-3" />
@@ -462,7 +462,7 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
         </div>
 
         {/* Right Side: 20 Blind Boxes Grid */}
-        <div className="flex-1 bg-slate-900/60 backdrop-blur-md rounded-2xl p-3 sm:p-5 border border-white/10 shadow-2xl flex flex-col overflow-hidden">
+        <div className="flex-1 bg-w-bg-alt backdrop-blur-md rounded-2xl p-3 sm:p-5 border border-white/10 shadow-2xl flex flex-col overflow-hidden">
           
           {/* Header instructions */}
           <div className="flex items-center justify-between mb-3 shrink-0">
@@ -474,8 +474,8 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
             </div>
 
             {phase === 'CAN_PICK_BOX' && (
-              <div className="flex items-center gap-1.5 text-xs font-black text-amber-300 bg-amber-500/20 border border-amber-500/40 px-3 py-1 rounded-full animate-pulse">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <div className="flex items-center gap-1.5 text-xs font-black text-amber-600 bg-amber-500/20 border border-amber-500/40 px-3 py-1 rounded-full animate-pulse">
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
                 Click vào 1 hộp chưa mở để nhận quà!
               </div>
             )}
@@ -494,10 +494,10 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
                   onClick={() => handleBoxClick(box.id)}
                   className={`relative aspect-square rounded-2xl flex items-center justify-center transition-all ${
                     box.opened
-                      ? 'bg-slate-800/80 border-2 border-white/20 shadow-inner'
+                      ? 'bg-w-accent-light border-2 border-white/20 shadow-inner'
                       : isPickable
                         ? 'cursor-pointer ring-4 ring-amber-400 ring-offset-2 ring-offset-slate-900 bg-gradient-to-br from-purple-900/80 to-pink-900/80 border-2 border-amber-300 shadow-[0_0_20px_rgba(251,191,36,0.5)] animate-pulse'
-                        : 'cursor-pointer bg-slate-800/40 border border-white/10 hover:border-white/30 hover:bg-slate-800/70'
+                        : 'cursor-pointer bg-w-accent-light border border-white/10 hover:border-white/30 hover:bg-w-accent-light'
                   }`}
                 >
                   {box.opened ? (
@@ -505,7 +505,7 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
                     <div className="absolute inset-0 p-2 flex flex-col items-center justify-between text-center overflow-hidden">
                       {/* Owner Tag */}
                       <div 
-                        className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full border border-white shadow-md flex items-center justify-center text-xs font-bold text-white z-20"
+                        className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full border border-white shadow-md flex items-center justify-center text-xs font-bold text-w-text-main z-20"
                         style={{ backgroundColor: box.ownerColor || '#64748b' }}
                         title={`Được mở bởi: ${box.ownerName}`}
                       >
@@ -515,7 +515,7 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
                       {/* Item Emoji & Index */}
                       <div className="flex-1 flex flex-col items-center justify-center mt-2">
                         <span className="text-3xl sm:text-4xl filter drop-shadow-md">{box.emoji}</span>
-                        <span className="text-[10px] font-bold text-slate-300 mt-1 line-clamp-1 max-w-[90%]">
+                        <span className="text-[10px] font-bold text-w-primary-dark mt-1 line-clamp-1 max-w-[90%]">
                           {box.name}
                         </span>
                       </div>
@@ -544,7 +544,7 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
                       </div>
 
                       {/* Box Number Tag */}
-                      <div className="absolute bottom-1.5 font-black text-xs sm:text-sm text-white/70 bg-black/40 px-2 py-0.5 rounded-full border border-white/10">
+                      <div className="absolute bottom-1.5 font-black text-xs sm:text-sm text-w-text-main/70 bg-white/70 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10">
                         #{box.id + 1}
                       </div>
 
@@ -565,17 +565,17 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
       {/* QUESTION MODAL */}
       <AnimatePresence>
         {phase === 'QUESTION' && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/70 backdrop-blur-sm backdrop-blur-md">
             <motion.div 
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-slate-900 rounded-3xl w-full max-w-3xl overflow-hidden shadow-2xl border-2 border-pink-500/50 flex flex-col max-h-[90vh]"
+              className="bg-w-bg-alt rounded-3xl w-full max-w-3xl overflow-hidden shadow-2xl border-2 border-pink-500/50 flex flex-col max-h-[90vh]"
             >
               {/* Header */}
-              <div className="bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 text-white p-5 sm:p-6 text-center relative flex-shrink-0">
+              <div className="bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 text-w-text-main p-5 sm:p-6 text-center relative flex-shrink-0">
                 <div className="flex items-center justify-center gap-2 mb-1.5">
-                  <span className="bg-white/20 text-white font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+                  <span className="bg-white/20 text-w-text-main font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider">
                     Lượt của: {currentTeam.avatar} {currentTeam.name}
                   </span>
                 </div>
@@ -587,7 +587,7 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
               </div>
 
               {/* Body */}
-              <div className="p-5 sm:p-8 overflow-y-auto flex-1 bg-slate-950/80 flex flex-col justify-center">
+              <div className="p-5 sm:p-8 overflow-y-auto flex-1 bg-w-bg-card flex flex-col justify-center">
                 {/* MCQ Mode with options */}
                 {config.mode === 'bank' && activeQuestion && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -607,12 +607,12 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
                         <button
                           key={index}
                           onClick={() => handleAnswerSubmit(isCorrect, `${label}. ${optionText}`)}
-                          className="bg-slate-900 hover:bg-pink-600/20 border-2 border-slate-800 hover:border-pink-500 p-4 sm:p-5 rounded-2xl text-left transition-all group flex items-center gap-3.5 shadow-sm hover:shadow-pink-500/10 active:scale-[0.98]"
+                          className="bg-w-bg-alt hover:bg-pink-600/20 border-2 border-w-border hover:border-pink-500 p-4 sm:p-5 rounded-2xl text-left transition-all group flex items-center gap-3.5 shadow-sm hover:shadow-pink-500/10 active:scale-[0.98]"
                         >
-                          <div className="w-10 h-10 rounded-xl bg-slate-800 group-hover:bg-pink-500 text-slate-300 group-hover:text-white flex items-center justify-center font-black text-lg transition-colors shrink-0 shadow-inner">
+                          <div className="w-10 h-10 rounded-xl bg-w-accent-light group-hover:bg-pink-500 text-w-primary-dark group-hover:text-w-text-main flex items-center justify-center font-black text-lg transition-colors shrink-0 shadow-inner">
                             {label}
                           </div>
-                          <span className="text-sm sm:text-base font-bold text-slate-200 group-hover:text-white">
+                          <span className="text-sm sm:text-base font-bold text-slate-200 group-hover:text-w-text-main">
                             {optionText}
                           </span>
                         </button>
@@ -624,17 +624,17 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
                 {/* Number / Oral Mode (Teacher judges) */}
                 {(config.mode === 'number' || !activeQuestion) && (
                   <div className="flex flex-col items-center justify-center py-4 text-center">
-                    <div className="w-28 h-28 rounded-3xl bg-slate-900 border-4 border-pink-500/50 flex items-center justify-center text-6xl font-[900] text-pink-400 shadow-2xl shadow-pink-500/20 mb-6">
+                    <div className="w-28 h-28 rounded-3xl bg-w-bg-alt border-4 border-pink-500/50 flex items-center justify-center text-6xl font-[900] text-pink-400 shadow-2xl shadow-pink-500/20 mb-6">
                       {activeQuestionNum}
                     </div>
-                    <p className="text-sm sm:text-base text-slate-300 font-semibold mb-8 max-w-md">
+                    <p className="text-sm sm:text-base text-w-primary-dark font-semibold mb-8 max-w-md">
                       Học sinh đội <strong className="text-pink-400">{currentTeam.name}</strong> trả lời câu hỏi số #{activeQuestionNum}. Giáo viên đánh giá:
                     </p>
 
                     <div className="flex items-center gap-4 w-full max-w-md">
                       <button
                         onClick={() => handleAnswerSubmit(true, 'Đúng')}
-                        className="flex-1 py-4 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-black text-base rounded-2xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2"
+                        className="flex-1 py-4 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-w-text-main font-black text-base rounded-2xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2"
                       >
                         <CheckCircle2 className="w-5 h-5" />
                         ĐÚNG (Được mở hộp)
@@ -642,7 +642,7 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
 
                       <button
                         onClick={() => handleAnswerSubmit(false, 'Sai')}
-                        className="flex-1 py-4 bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-black text-base rounded-2xl shadow-lg shadow-rose-600/30 transition-all flex items-center justify-center gap-2"
+                        className="flex-1 py-4 bg-rose-600 hover:bg-rose-500 active:scale-95 text-w-text-main font-black text-base rounded-2xl shadow-lg shadow-rose-600/30 transition-all flex items-center justify-center gap-2"
                       >
                         <XCircle className="w-5 h-5" />
                         SAI (Mất lượt)
@@ -659,28 +659,28 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
       {/* REVEALED BOX MODAL */}
       <AnimatePresence>
         {phase === 'REVEALED_BOX' && revealedBox && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/70 backdrop-blur-sm backdrop-blur-md">
             <motion.div 
               initial={{ scale: 0.6, opacity: 0, rotate: -10 }}
               animate={{ scale: 1, opacity: 1, rotate: 0 }}
               exit={{ scale: 0.6, opacity: 0 }}
               className="bg-gradient-to-b from-slate-900 to-slate-950 rounded-3xl p-6 sm:p-8 max-w-md w-full border-2 border-amber-400 text-center shadow-[0_0_50px_rgba(251,191,36,0.3)] flex flex-col items-center"
             >
-              <div className="text-xs font-black text-amber-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+              <div className="text-xs font-black text-amber-600 uppercase tracking-widest mb-1 flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4" />
                 MỞ HỘP BÍ ẨN #{revealedBox.id + 1}
               </div>
 
-              <div className="text-sm font-bold text-slate-300 mb-4">
-                Chúc mừng <strong className="text-white">{currentTeam.name}</strong> đã nhận được:
+              <div className="text-sm font-bold text-w-primary-dark mb-4">
+                Chúc mừng <strong className="text-w-text-main">{currentTeam.name}</strong> đã nhận được:
               </div>
 
               {/* Item Avatar / Animation */}
-              <div className="w-32 h-32 rounded-3xl bg-amber-500/10 border-2 border-amber-400/40 flex items-center justify-center text-7xl shadow-2xl mb-4 animate-bounce">
+              <div className="w-32 h-32 rounded-3xl bg-amber-500/10 border-2 border-amber-400 flex items-center justify-center text-7xl shadow-2xl mb-4 animate-bounce">
                 {revealedBox.emoji}
               </div>
 
-              <h4 className="text-2xl font-[900] text-white mb-2">
+              <h4 className="text-2xl font-[900] text-w-text-main mb-2">
                 {revealedBox.name}
               </h4>
 
@@ -692,7 +692,7 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
 
               <button
                 onClick={handleNextTurn}
-                className="w-full py-4 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-black text-base rounded-2xl shadow-xl shadow-pink-500/25 transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="w-full py-4 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-w-text-main font-black text-base rounded-2xl shadow-xl shadow-pink-500/25 transition-all active:scale-95 flex items-center justify-center gap-2"
               >
                 Tiếp Tục Lượt Sau
                 <ChevronRight className="w-5 h-5" />

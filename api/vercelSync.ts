@@ -1,4 +1,4 @@
-import fetch from 'node-fetch'; // wait, node >= 18 has fetch built-in, and this is tsx server.ts. Let's use global fetch.
+// Using native global fetch (Node.js 18+ and Vercel Serverless)
 
 const VERCEL_API_URL = "https://api.vercel.com";
 

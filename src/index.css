@@ -1,33 +1,115 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
+@theme {
+  --color-w-bg-main: var(--w-bg-main);
+  --color-w-bg-card: var(--w-bg-card);
+  --color-w-bg-alt: var(--w-bg-alt);
+  --color-w-bg-tag: var(--w-bg-tag);
+  --color-w-border: var(--w-border);
+  --color-w-accent-light: var(--w-accent-light);
+  --color-w-accent-muted: var(--w-accent-muted);
+  --color-w-accent-border: var(--w-accent-border);
+  --color-w-primary: var(--w-primary);
+  --color-w-primary-dark: var(--w-primary-dark);
+  --color-w-primary-hover: var(--w-primary-hover);
+  --color-w-text-main: var(--w-text-main);
+  --color-w-text-muted: var(--w-text-muted);
+}
+
 :root {
-  --wey-primary-green: #6F8F55;
-  --wey-dark-green: #4F683C;
-  --wey-soft-green: #DCEBCB;
-  --wey-paper-cream: #FFFDF5;
-  --wey-warm-cream: #F8F3E5;
-  --wey-paper-border: #DED5B8;
-  --wey-tea-yellow: #E9D58F;
-  --wey-pastel-pink: #F2B6C7;
-  --wey-text-dark: #35452E;
-  --wey-text-secondary: #74806B;
+  /* Cohesive Pastel Palette (Light Pinks, Greens, Warm Creams) */
+  --w-bg-main: #FFF8F3; /* Warm cream */
+  --w-bg-card: #FEFAF8; /* Soft paper cream */
+  --w-bg-alt: #FDF1EA;
+  --w-bg-tag: #FCEBE2;
+  --w-border: #F5D3C8;
+  --w-accent-light: #F0F9F4; /* Light pastel green */
+  --w-accent-muted: #D6EFE1; /* Soft green */
+  --w-accent-border: #B2DDC5; /* Green border */
+  --w-primary: #F29C9F; /* Light pink */
+  --w-primary-dark: #D87B7F;
+  --w-primary-hover: #E88C8F;
+  --w-text-main: #4A403E;
+  --w-text-muted: #8C7D7B;
+}
+
+.theme-matcha {
+  --w-bg-main: #F8F3E5;
+  --w-bg-card: #FFFDF5;
+  --w-bg-alt: #FAF7EE;
+  --w-bg-tag: #F8F4E8;
+  --w-border: #DED5B8;
+  --w-accent-light: #E9F0D9;
+  --w-accent-muted: #DCEBCB;
+  --w-accent-border: #B9CDA0;
+  --w-primary: #6F8F55;
+  --w-primary-dark: #4F683C;
+  --w-primary-hover: #3D522B;
+  --w-text-main: #35452E;
+  --w-text-muted: #74806B;
+}
+
+.theme-sakura {
+  --w-bg-main: #FEF9F5;
+  --w-bg-card: #FEF6F5;
+  --w-bg-alt: #FDF2E9;
+  --w-bg-tag: #FDEDEC;
+  --w-border: #FADBD8;
+  --w-accent-light: #E8F8F5;
+  --w-accent-muted: #D1F2EB;
+  --w-accent-border: #A3E4D7;
+  --w-primary: #F1948A;
+  --w-primary-dark: #E08283;
+  --w-primary-hover: #D98880;
+  --w-text-main: #2C3E50;
+  --w-text-muted: #7F8C8D;
+}
+
+.theme-sky {
+  --w-bg-main: #F4F6F7;
+  --w-bg-card: #FFFFFF;
+  --w-bg-alt: #EBF5FB;
+  --w-bg-tag: #E8F8F5;
+  --w-border: #D6EAF8;
+  --w-accent-light: #FEF9E7;
+  --w-accent-muted: #FCF3CF;
+  --w-accent-border: #F9E79F;
+  --w-primary: #5DADE2;
+  --w-primary-dark: #2874A6;
+  --w-primary-hover: #2E86C1;
+  --w-text-main: #1B2631;
+  --w-text-muted: #5D6D7E;
+}
+
+.theme-mono {
+  --w-bg-main: #F2F3F4;
+  --w-bg-card: #FFFFFF;
+  --w-bg-alt: #E5E7E9;
+  --w-bg-tag: #EBEDEF;
+  --w-border: #D5D8DC;
+  --w-accent-light: #F8F9FA;
+  --w-accent-muted: #EAECEE;
+  --w-accent-border: #BFC9CA;
+  --w-primary: #566573;
+  --w-primary-dark: #212F3D;
+  --w-primary-hover: #273746;
+  --w-text-main: #17202A;
+  --w-text-muted: #7F8C8D;
 }
 
 body {
   font-family: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  color: #35452E;
-  background-color: #F8F3E5;
+  color: var(--w-text-main);
+  background-color: var(--w-bg-main);
   -webkit-font-smoothing: antialiased;
 }
 
-/* Custom sticker paper badge rotate animation & style */
 .wey-badge-sticker {
   border-radius: 8px 14px 8px 14px;
-  box-shadow: 0 2px 5px rgba(79, 104, 60, 0.08);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
-/* Custom paper card decorative accent */
 .wey-paper-card {
   position: relative;
 }
@@ -39,36 +121,34 @@ body {
   right: 0;
   width: 28px;
   height: 28px;
-  background: linear-gradient(135deg, transparent 50%, rgba(222, 213, 184, 0.25) 50%);
+  background: linear-gradient(135deg, transparent 50%, var(--w-border) 50%);
+  opacity: 0.5;
   border-bottom-left-radius: 8px;
   pointer-events: none;
 }
 
-/* Custom focus ring for Wey Pastel UI */
 .wey-focus-ring:focus {
   outline: none;
-  border-color: #8FA875;
-  box-shadow: 0 0 0 3px rgba(143, 168, 117, 0.2);
+  border-color: var(--w-primary);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Custom sleek scrollbar for classroom screens */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(248, 243, 229, 0.6);
+  background: rgba(0,0,0, 0.05);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #B9CDA0;
+  background: var(--w-accent-border);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #6F8F55;
+  background: var(--w-primary);
 }
 
-/* Game Stage Auto Fit Container */
 .game-stage-container {
   max-height: clamp(480px, calc(100vh - 130px), 880px);
   width: 100%;

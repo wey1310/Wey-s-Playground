@@ -28,14 +28,14 @@ export const WerewolfDawnModal: React.FC<WerewolfDawnModalProps> = ({
   const deadNpcs = resolution.casualties.map(id => npcs.find(n => n.id === id)).filter(Boolean) as NPCVillager[];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-md animate-fade-in select-none">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-white/70 backdrop-blur-sm backdrop-blur-md animate-fade-in select-none">
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="w-full max-w-xl bg-[#FFFDF5] border-2 border-[#DED5B8] rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col max-h-[90vh]"
+        className="w-full max-w-xl bg-w-bg-card border-2 border-w-border rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col max-h-[90vh]"
       >
         {/* Header - Rising Sun */}
-        <div className="p-4 sm:p-5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white flex items-center justify-between">
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-w-text-main flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl shadow-inner">
               <Sun className="w-6 h-6 text-yellow-100 animate-spin-slow" />
@@ -44,13 +44,13 @@ export const WerewolfDawnModal: React.FC<WerewolfDawnModalProps> = ({
               <span className="text-[10px] font-black uppercase tracking-widest text-amber-100">
                 Diễn Biến Sau Đêm {nightNumber}
               </span>
-              <h3 className="text-lg sm:text-xl font-black text-white">
+              <h3 className="text-lg sm:text-xl font-black text-w-text-main">
                 🌅 BÌNH MINH LÓ RẠNG
               </h3>
             </div>
           </div>
 
-          <div className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-xs font-bold text-white border border-white/30">
+          <div className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-xs font-bold text-w-text-main border border-white/30">
             Đêm {nightNumber}
           </div>
         </div>
@@ -87,7 +87,7 @@ export const WerewolfDawnModal: React.FC<WerewolfDawnModalProps> = ({
             </div>
           ) : (
             <div className="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-200 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xl shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500 text-w-text-main flex items-center justify-center text-xl shrink-0">
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <div>
@@ -119,20 +119,20 @@ export const WerewolfDawnModal: React.FC<WerewolfDawnModalProps> = ({
           )}
 
           {/* Random Team Selected Announcement */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-[#E9F0D9] via-[#F4F8EC] to-[#E9F0D9] border-2 border-[#B9CDA0]">
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-w-accent-light via-[#F4F8EC] to-w-accent-light border-2 border-w-accent-border">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-black uppercase tracking-wider text-[#4F683C] flex items-center gap-1.5">
+              <span className="text-[11px] font-black uppercase tracking-wider text-w-primary-dark flex items-center gap-1.5">
                 <UserCheck className="w-4 h-4" />
                 <span>Lượt Điều Tra Đêm {nightNumber}</span>
               </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-[#35452E] border border-[#B9CDA0]">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-w-text-main border border-w-accent-border">
                 Random 1 Đội
               </span>
             </div>
 
-            <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#B9CDA0] shadow-xs">
+            <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-w-accent-border shadow-xs">
               <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-sm text-white font-black"
+                className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-sm text-w-text-main font-black"
                 style={{ backgroundColor: selectedTeam.color }}
               >
                 {selectedTeam.avatar}
@@ -147,7 +147,7 @@ export const WerewolfDawnModal: React.FC<WerewolfDawnModalProps> = ({
               </div>
             </div>
             
-            <p className="text-[11px] text-[#4F683C] font-semibold mt-2 text-center">
+            <p className="text-[11px] text-w-primary-dark font-semibold mt-2 text-center">
               {skipQuestions 
                 ? '⚡ Đang bật chế độ BỎ QUA CÂU HỎI: Vào thẳng màn hình chọn cư dân và biểu quyết treo cổ!'
                 : '💡 Trả lời đúng câu hỏi kiến thức để mở khóa quyền chọn và đoán NPC!'}
@@ -156,14 +156,14 @@ export const WerewolfDawnModal: React.FC<WerewolfDawnModalProps> = ({
         </div>
 
         {/* Footer Action */}
-        <div className="p-4 bg-[#F8F3E5] border-t border-[#DED5B8] flex flex-wrap items-center justify-between gap-3">
+        <div className="p-4 bg-w-bg-main border-t border-w-border flex flex-wrap items-center justify-between gap-3">
           {onToggleSkipQuestions ? (
-            <label className="flex items-center gap-2 text-xs font-bold text-[#35452E] cursor-pointer">
+            <label className="flex items-center gap-2 text-xs font-bold text-w-text-main cursor-pointer">
               <input
                 type="checkbox"
                 checked={skipQuestions}
                 onChange={onToggleSkipQuestions}
-                className="w-4 h-4 accent-[#4F683C] rounded"
+                className="w-4 h-4 accent-w-primary-dark rounded"
               />
               <span>⚡ Bỏ qua câu hỏi (Vote ngay)</span>
             </label>
@@ -171,7 +171,7 @@ export const WerewolfDawnModal: React.FC<WerewolfDawnModalProps> = ({
 
           <button
             onClick={onProceedToQuestion}
-            className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm shadow-md hover:shadow-lg transition cursor-pointer"
+            className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-w-text-main font-black text-sm shadow-md hover:shadow-lg transition cursor-pointer"
           >
             {skipQuestions ? (
               <>

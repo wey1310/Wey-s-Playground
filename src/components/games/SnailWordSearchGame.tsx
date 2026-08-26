@@ -60,7 +60,7 @@ export const SnailWordSearchGame: React.FC<SnailWordSearchGameProps> = ({
     if (config.teams && config.teams.length > 0) {
       return config.teams.map(t => ({ ...t, score: 0 }));
     }
-    return [{ id: 'team_1', name: 'Đội 1', avatar: '🐌', color: '#4F683C', score: 0 }];
+    return [{ id: 'team_1', name: 'Đội 1', avatar: '🐌', color: '#E08283', score: 0 }];
   });
   const [currentTeamIndex, setCurrentTeamIndex] = useState(0);
 
@@ -314,7 +314,7 @@ export const SnailWordSearchGame: React.FC<SnailWordSearchGameProps> = ({
   return (
     <div className="flex-1 flex flex-col items-center w-full max-w-6xl mx-auto select-none px-2 sm:px-4 py-2">
       {/* Top Bar: Teams, Progress, Timer */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 items-center bg-[#FFFDF5] border border-[#DED5B8] p-3 sm:p-4 rounded-2xl shadow-xs wey-paper-card mb-3">
+      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 items-center bg-w-bg-card border border-w-border p-3 sm:p-4 rounded-2xl shadow-xs wey-paper-card mb-3">
         {/* Teams */}
         <div className="flex items-center gap-2 overflow-x-auto py-1">
           {teams.map((t, idx) => {
@@ -324,17 +324,17 @@ export const SnailWordSearchGame: React.FC<SnailWordSearchGameProps> = ({
                 key={t.id}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all ${
                   isTurn
-                    ? 'bg-[#E9F0D9] border-[#4F683C] shadow-sm scale-105 ring-2 ring-[#4F683C]/30'
+                    ? 'bg-w-accent-light border-w-primary-dark shadow-sm scale-105 ring-2 ring-w-primary-dark/30'
                     : 'bg-white border-slate-200 opacity-80'
                 }`}
               >
                 <span className="text-xl">{t.avatar || '🐌'}</span>
                 <div>
-                  <div className="text-[11px] font-bold text-[#35452E] flex items-center gap-1">
+                  <div className="text-[11px] font-bold text-w-text-main flex items-center gap-1">
                     {t.name}
-                    {isTurn && <span className="w-2 h-2 rounded-full bg-[#4F683C] animate-ping" />}
+                    {isTurn && <span className="w-2 h-2 rounded-full bg-w-primary-dark animate-ping" />}
                   </div>
-                  <div className="text-xs font-extrabold text-[#4F683C]">{t.score} đ</div>
+                  <div className="text-xs font-extrabold text-w-primary-dark">{t.score} đ</div>
                 </div>
               </div>
             );
@@ -343,8 +343,8 @@ export const SnailWordSearchGame: React.FC<SnailWordSearchGameProps> = ({
 
         {/* Found Words Progress */}
         <div className="text-center">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#E9F0D9] text-[#4F683C] border border-[#B9CDA0] rounded-full text-xs font-bold shadow-2xs">
-            <Search className="w-4 h-4 text-[#4F683C]" />
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-w-accent-light text-w-primary-dark border border-w-accent-border rounded-full text-xs font-bold shadow-2xs">
+            <Search className="w-4 h-4 text-w-primary-dark" />
             Đã tìm thấy: {foundWords.length} / {wordPlacements.length} từ
           </span>
         </div>
@@ -369,14 +369,14 @@ export const SnailWordSearchGame: React.FC<SnailWordSearchGameProps> = ({
         {/* Left Side: Mascot Snail + Target Words Checklist */}
         <div className="lg:col-span-1 space-y-3">
           {/* Animated Mascot Snail Box */}
-          <div className="bg-[#FFFDF5] border-2 border-[#DED5B8] rounded-3xl p-4 shadow-sm text-center wey-paper-card">
+          <div className="bg-w-bg-card border-2 border-w-border rounded-3xl p-4 shadow-sm text-center wey-paper-card">
             <div className="text-5xl sm:text-6xl mb-1 transform transition-transform hover:scale-110 cursor-pointer animate-bounce">
               {snailMood === 'cheering' ? '🐌🎉' : snailMood === 'victory' ? '🏆🐌' : '🐌🔍'}
             </div>
-            <div className="text-xs font-[800] text-[#35452E]">
+            <div className="text-xs font-[800] text-w-text-main">
               Ốc Sên Tinh Mắt
             </div>
-            <p className="text-[10px] font-bold text-[#74806B] mt-0.5">
+            <p className="text-[10px] font-bold text-w-text-muted mt-0.5">
               {snailMood === 'cheering'
                 ? 'Hoan hô! Bạn tìm ra 1 từ rồi!'
                 : 'Nhấp chữ đầu rồi nhấp chữ cuối của từ!'}
@@ -384,10 +384,10 @@ export const SnailWordSearchGame: React.FC<SnailWordSearchGameProps> = ({
           </div>
 
           {/* Words List to Search */}
-          <div className="bg-[#FFFDF5] border border-[#DED5B8] rounded-3xl p-4 shadow-sm wey-paper-card space-y-2">
-            <h4 className="text-xs font-[900] uppercase tracking-wider text-[#4F683C] flex items-center justify-between">
+          <div className="bg-w-bg-card border border-w-border rounded-3xl p-4 shadow-sm wey-paper-card space-y-2">
+            <h4 className="text-xs font-[900] uppercase tracking-wider text-w-primary-dark flex items-center justify-between">
               <span>Danh Sách Từ Cần Tìm</span>
-              <span className="text-[10px] bg-[#E9F0D9] text-[#4F683C] px-2 py-0.5 rounded-full">
+              <span className="text-[10px] bg-w-accent-light text-w-primary-dark px-2 py-0.5 rounded-full">
                 {wordPlacements.length} từ
               </span>
             </h4>
@@ -400,13 +400,13 @@ export const SnailWordSearchGame: React.FC<SnailWordSearchGameProps> = ({
                     key={item.word}
                     className={`flex items-center justify-between p-2 rounded-xl text-xs font-[800] transition-all ${
                       isFound
-                        ? 'bg-[#E9F0D9] text-[#4F683C] line-through border border-[#B9CDA0]'
-                        : 'bg-white text-[#35452E] border border-[#E8DFCA]'
+                        ? 'bg-w-accent-light text-w-primary-dark line-through border border-w-accent-border'
+                        : 'bg-white text-w-text-main border border-[#E8DFCA]'
                     }`}
                   >
                     <span>{item.word}</span>
                     {isFound ? (
-                      <Check className="w-4 h-4 text-[#4F683C]" />
+                      <Check className="w-4 h-4 text-w-primary-dark" />
                     ) : (
                       <span className="w-2 h-2 rounded-full bg-slate-300" />
                     )}
@@ -418,9 +418,9 @@ export const SnailWordSearchGame: React.FC<SnailWordSearchGameProps> = ({
         </div>
 
         {/* Center/Right: Word Matrix Canvas Board */}
-        <div className="lg:col-span-3 bg-[#FFFDF5] border-2 border-[#4F683C]/30 rounded-3xl p-3 sm:p-6 shadow-md wey-paper-card flex flex-col items-center justify-center">
+        <div className="lg:col-span-3 bg-w-bg-card border-2 border-w-primary-dark/30 rounded-3xl p-3 sm:p-6 shadow-md wey-paper-card flex flex-col items-center justify-center">
           <div
-            className="grid gap-1 sm:gap-2 p-2 sm:p-4 bg-[#F8F4E8] rounded-2xl border-2 border-[#E8DFCA] shadow-inner"
+            className="grid gap-1 sm:gap-2 p-2 sm:p-4 bg-w-bg-tag rounded-2xl border-2 border-[#E8DFCA] shadow-inner"
             style={{
               gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`,
             }}
@@ -432,11 +432,11 @@ export const SnailWordSearchGame: React.FC<SnailWordSearchGameProps> = ({
                 // Check if part of active selection
                 const isSelected = currentSelectionCells.some(cell => cell.r === r && cell.c === c);
 
-                let cellStyle = 'bg-white hover:bg-[#E9F0D9] text-[#35452E] border-[#DED5B8]';
+                let cellStyle = 'bg-white hover:bg-w-accent-light text-w-text-main border-w-border';
                 if (foundItem) {
                   cellStyle = foundItem.color;
                 } else if (isSelected) {
-                  cellStyle = 'bg-[#4F683C] text-white border-[#384C2A] scale-105 ring-2 ring-[#4F683C]/30 shadow-md';
+                  cellStyle = 'bg-w-primary-dark text-w-text-main border-[#384C2A] scale-105 ring-2 ring-w-primary-dark/30 shadow-md';
                 }
 
                 return (
@@ -454,7 +454,7 @@ export const SnailWordSearchGame: React.FC<SnailWordSearchGameProps> = ({
             )}
           </div>
 
-          <div className="mt-3 text-center text-xs font-bold text-[#74806B]">
+          <div className="mt-3 text-center text-xs font-bold text-w-text-muted">
             Mẹo: Nhấp chuột vào ô chữ cái đầu tiên, sau đó nhấp vào ô chữ cái kết thúc của từ để khoanh vùng!
           </div>
         </div>

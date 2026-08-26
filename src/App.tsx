@@ -104,7 +104,7 @@ import {
   X,
 } from 'lucide-react';
 
-interface GameInfo {
+export interface GameInfo {
   id: GameType;
   title: string;
   description: string;
@@ -114,7 +114,7 @@ interface GameInfo {
   tags?: string[];
 }
 
-const GAMES_LIST: GameInfo[] = [
+export const GAMES_LIST: GameInfo[] = [
   {
     id: 'ai_star_call',
     title: 'Ngôi Sao Tri Thức',
@@ -530,15 +530,15 @@ const getTagColor = (tag: string) => {
 const getBadgeStyle = (badge: string) => {
   switch (badge) {
     case 'Trắc nghiệm':
-      return 'bg-[#E9F0D9] text-[#4F683C] border-[#B9CDA0]';
+      return 'bg-w-accent-light text-w-primary-dark border-w-accent-border';
     case 'Trí tuệ':
       return 'bg-[#FAF3D1] text-[#7A6218] border-[#E9D58F]';
     case 'May mắn':
       return 'bg-[#FBE8EC] text-[#913B53] border-[#F2B6C7]';
     case 'Chiến thuật':
-      return 'bg-[#E2EED3] text-[#3D522B] border-[#B9CDA0]';
+      return 'bg-[#E2EED3] text-w-primary-hover border-w-accent-border';
     case 'Mạo hiểm':
-      return 'bg-[#E9F0D9] text-[#4F683C] border-[#B9CDA0]';
+      return 'bg-w-accent-light text-w-primary-dark border-w-accent-border';
     case 'Kịch tính':
       return 'bg-[#FBE8EC] text-[#913B53] border-[#F2B6C7]';
     case 'Đồng đội':
@@ -546,21 +546,21 @@ const getBadgeStyle = (badge: string) => {
     case 'Tốc độ':
       return 'bg-[#FBE8EC] text-[#913B53] border-[#F2B6C7]';
     case 'Kiên trì':
-      return 'bg-[#E2EED3] text-[#3D522B] border-[#B9CDA0]';
+      return 'bg-[#E2EED3] text-w-primary-hover border-w-accent-border';
     case 'Khám phá':
-      return 'bg-[#E9F0D9] text-[#4F683C] border-[#B9CDA0]';
+      return 'bg-w-accent-light text-w-primary-dark border-w-accent-border';
     case 'Cạnh tranh':
       return 'bg-[#FBE8EC] text-[#913B53] border-[#F2B6C7]';
     case 'Sưu tầm':
       return 'bg-[#FAF3D1] text-[#7A6218] border-[#E9D58F]';
     case 'Đấu trí':
-      return 'bg-[#E2EED3] text-[#3D522B] border-[#B9CDA0]';
+      return 'bg-[#E2EED3] text-w-primary-hover border-w-accent-border';
     case 'Ô chữ':
       return 'bg-[#FAF3D1] text-[#7A6218] border-[#E9D58F]';
     case 'Vận động':
-      return 'bg-[#E2EED3] text-[#3D522B] border-[#B9CDA0]';
+      return 'bg-[#E2EED3] text-w-primary-hover border-w-accent-border';
     default:
-      return 'bg-[#E9F0D9] text-[#4F683C] border-[#B9CDA0]';
+      return 'bg-w-accent-light text-w-primary-dark border-w-accent-border';
   }
 };
 
@@ -686,13 +686,26 @@ export default function App() {
       siteSubtitle: "Kho Game Online Sinh Động Của Wey",
       bgImageUrl: "/assets/home-bg.webp",
       announcement: "",
-      primaryTheme: "default",
+      primaryTheme: "pastel",
     };
   });
 
   React.useEffect(() => {
     localStorage.setItem('wey_web_config', JSON.stringify(webConfig));
     document.title = webConfig.siteTitle || "WEY'S PLAYGROUND";
+    
+    // Apply dynamic theme to body
+    const themeClass = webConfig.primaryTheme && webConfig.primaryTheme !== 'pastel' ? `theme-${webConfig.primaryTheme}` : '';
+    // Remove all theme classes first
+    Array.from(document.body.classList).forEach(c => {
+      if (c.startsWith('theme-')) {
+        document.body.classList.remove(c);
+      }
+    });
+    // Add the selected theme if any
+    if (themeClass) {
+      document.body.classList.add(themeClass);
+    }
   }, [webConfig]);
 
   // Handler to keep only the single latest question bank ("Chốt cái mới nhất thôi")
@@ -1216,8 +1229,8 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen text-[#35452E] flex flex-col justify-between selection:bg-[#DCEBCB] selection:text-[#35452E] transition-all duration-700 ${
-        !activeGameConfig ? 'bg-[#F8F3E5]/60' : ''
+      className={`min-h-screen text-w-text-main flex flex-col justify-between selection:bg-w-accent-muted selection:text-w-text-main transition-all duration-700 ${
+        !activeGameConfig ? 'bg-w-bg-main/60' : ''
       }`}
       style={getAppBackgroundStyle()}
     >
@@ -1230,7 +1243,7 @@ export default function App() {
       )}
 
       {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-[#FFFDF5]/90 backdrop-blur-md border-b border-[#DED5B8]/80 shadow-[0_4px_20px_rgba(79,104,60,0.06)] px-4 sm:px-6 py-3.5">
+      <header className="sticky top-0 z-40 bg-w-bg-card/90 backdrop-blur-md border-b border-w-border/80 shadow-[0_4px_20px_rgba(79,104,60,0.06)] px-4 sm:px-6 py-3.5">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           {/* Brand Logo */}
           <div
@@ -1246,10 +1259,10 @@ export default function App() {
               className="h-12 sm:h-[54px] w-auto object-contain rounded-xl drop-shadow-[0_3px_6px_rgba(79,104,60,0.12)] group-hover:scale-105 group-hover:-rotate-2 transition-transform duration-300 ease-out"
             />
             <div>
-              <h1 className="text-lg sm:text-xl font-[800] text-[#4F683C] tracking-tight leading-none">
+              <h1 className="text-lg sm:text-xl font-[800] text-w-primary-dark tracking-tight leading-none">
                 {webConfig.siteTitle || "WEY'S PLAYGROUND"}
               </h1>
-              <p className="text-[11px] font-[700] text-[#74806B] mt-0.5">
+              <p className="text-[11px] font-[700] text-w-text-muted mt-0.5">
                 {webConfig.siteSubtitle || "Kho Game Online Sinh Động Của Wey"}
               </p>
             </div>
@@ -1262,9 +1275,9 @@ export default function App() {
                 setActiveGameConfig(null);
                 setCurrentView('question-bank');
               }}
-              className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-[#E2EED3] hover:bg-[#D4E4C1] text-[#3D522B] font-[700] text-[11px] sm:text-xs rounded-[16px] shadow-[0_4px_12px_rgba(79,104,60,0.12)] hover:shadow-[0_6px_16px_rgba(79,104,60,0.18)] transition-all duration-200 border border-[#B9CDA0]"
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-[#E2EED3] hover:bg-[#D4E4C1] text-w-primary-hover font-[700] text-[11px] sm:text-xs rounded-[16px] shadow-[0_4px_12px_rgba(79,104,60,0.12)] hover:shadow-[0_6px_16px_rgba(79,104,60,0.18)] transition-all duration-200 border border-w-accent-border"
             >
-              <Database className="w-4 h-4 text-[#4F683C]" />
+              <Database className="w-4 h-4 text-w-primary-dark" />
               <span className="hidden sm:inline">Ngân Hàng Câu Hỏi</span>
               <span className="sm:hidden">NHCH</span>
             </button>
@@ -1277,7 +1290,7 @@ export default function App() {
                   setActiveGameConfig(null);
                   setCurrentView('admin');
                 }}
-                className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 bg-[#4F683C] hover:bg-[#3E522F] text-[#E9D58F] text-xs font-[800] rounded-[18px] shadow-sm hover:-translate-y-0.5 transition-all cursor-pointer border border-[#E9D58F]/30"
+                className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 bg-w-primary-dark hover:bg-[#3E522F] text-[#E9D58F] text-xs font-[800] rounded-[18px] shadow-sm hover:-translate-y-0.5 transition-all cursor-pointer border border-[#E9D58F]/30"
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-[#E9D58F]" />
                 <span>Admin Hub</span>
@@ -1306,21 +1319,21 @@ export default function App() {
                 soundFx.buttonClick();
                 setIsAiModalOpen(true);
               }}
-              className="flex items-center gap-1.5 px-3.5 sm:px-4.5 py-2 bg-[#F2B6C7] hover:bg-[#EEA3B7] text-[#35452E] text-xs font-[800] rounded-[18px] border border-[#E59EB2] shadow-[0_3px_10px_rgba(242,182,199,0.35)] hover:-translate-y-0.5 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 sm:px-4.5 py-2 bg-[#F2B6C7] hover:bg-[#EEA3B7] text-w-text-main text-xs font-[800] rounded-[18px] border border-[#E59EB2] shadow-[0_3px_10px_rgba(242,182,199,0.35)] hover:-translate-y-0.5 transition-all cursor-pointer"
             >
-              <Sparkles className="w-4 h-4 text-[#FFFDF5] animate-spin" />
+              <Sparkles className="w-4 h-4 text-w-bg-card animate-spin" />
               <span className="hidden sm:inline">Tạo Bằng AI</span>
             </button>
 
             <button
               onClick={toggleMute}
-              className="p-2.5 bg-[#FFFDF5] hover:bg-[#F8F3E5] text-[#4F683C] rounded-[18px] border border-[#D8CFAF] shadow-[0_2px_8px_rgba(79,104,60,0.06)] hover:-translate-y-0.5 transition-all cursor-pointer"
+              className="p-2.5 bg-w-bg-card hover:bg-w-bg-main text-w-primary-dark rounded-[18px] border border-[#D8CFAF] shadow-[0_2px_8px_rgba(79,104,60,0.06)] hover:-translate-y-0.5 transition-all cursor-pointer"
               title={isMuted ? 'Bật Âm Thanh' : 'Tắt Âm Thanh'}
             >
               {isMuted ? (
                 <VolumeX className="w-4 h-4 text-[#E05252]" />
               ) : (
-                <Volume2 className="w-4 h-4 text-[#6F8F55]" />
+                <Volume2 className="w-4 h-4 text-w-primary" />
               )}
             </button>
 
@@ -1330,10 +1343,10 @@ export default function App() {
                 soundFx.buttonClick();
                 setIsBgMusicModalOpen(true);
               }}
-              className="p-2.5 bg-[#FFFDF5] hover:bg-[#E9F0D9] text-[#4F683C] rounded-[18px] border border-[#B9CDA0] shadow-[0_2px_8px_rgba(79,104,60,0.06)] hover:-translate-y-0.5 transition-all cursor-pointer relative group"
+              className="p-2.5 bg-w-bg-card hover:bg-w-accent-light text-w-primary-dark rounded-[18px] border border-w-accent-border shadow-[0_2px_8px_rgba(79,104,60,0.06)] hover:-translate-y-0.5 transition-all cursor-pointer relative group"
               title="Nhạc Nền Thư Giãn (Looping Background Music)"
             >
-              <Music className="w-4 h-4 text-[#4F683C] group-hover:scale-110 transition-transform" />
+              <Music className="w-4 h-4 text-w-primary-dark group-hover:scale-110 transition-transform" />
               <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping opacity-75" />
               <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full" />
             </button>
@@ -1387,15 +1400,15 @@ export default function App() {
             }}
           >
             {/* Active Game Top Bar */}
-            <div className={`flex flex-wrap items-center justify-between gap-2 bg-[#FFFDF5] border border-[#DED5B8] ${
+            <div className={`flex flex-wrap items-center justify-between gap-2 bg-w-bg-card border border-w-border ${
               stageMetrics.isCompactHeight ? 'px-2.5 py-1.5' : 'px-3.5 py-2'
             } rounded-xl shadow-xs wey-paper-card shrink-0 ${isFullscreen ? 'sticky top-0 z-50' : ''}`}>
               <div className="flex items-center gap-2">
                 <span className="text-lg sm:text-xl">{selectedGameInfo?.icon || '🎮'}</span>
                 <div>
-                  <h3 className="text-xs sm:text-sm font-[800] text-[#35452E] flex items-center gap-2">
+                  <h3 className="text-xs sm:text-sm font-[800] text-w-text-main flex items-center gap-2">
                     <span>{selectedGameInfo?.title || 'Trò chơi'}</span>
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-[#E9F0D9] text-[#4F683C] border border-[#B9CDA0]">
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-w-accent-light text-w-primary-dark border border-w-accent-border">
                       Đang chơi
                     </span>
                     {isFullscreen && (
@@ -1411,7 +1424,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={toggleFullscreen}
-                  className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-slate-100 text-[#3D522B] text-xs font-bold rounded-lg border border-slate-300 shadow-2xs transition hover:-translate-y-0.5 cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-slate-100 text-w-primary-hover text-xs font-bold rounded-lg border border-slate-300 shadow-2xs transition hover:-translate-y-0.5 cursor-pointer"
                   title={isFullscreen ? "Thu nhỏ" : "Phóng to toàn màn hình máy chiếu"}
                 >
                   {isFullscreen ? <Minimize className="w-3.5 h-3.5" /> : <Maximize className="w-3.5 h-3.5" />}
@@ -1421,7 +1434,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => handleOpenQuickGuide(activeGameConfig.gameId)}
-                  className="flex items-center gap-1 px-2.5 py-1 bg-[#E9F0D9] hover:bg-[#D4E4C1] text-[#3D522B] text-xs font-bold rounded-lg border border-[#B9CDA0] shadow-2xs transition hover:-translate-y-0.5 cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 py-1 bg-w-accent-light hover:bg-[#D4E4C1] text-w-primary-hover text-xs font-bold rounded-lg border border-w-accent-border shadow-2xs transition hover:-translate-y-0.5 cursor-pointer"
                   title="Xem nhanh hướng dẫn luật chơi"
                 >
                   <BookOpen className="w-3.5 h-3.5" />
@@ -1848,20 +1861,20 @@ export default function App() {
           /* HOME VIEW - GAME CATALOG, SEARCH & TAGS */
           <div className="space-y-6">
             {/* Active Question Bank Banner & Quick Switcher */}
-            <div className="bg-[#FFFDF5] border-2 border-[#DED5B8] rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="bg-w-bg-card border-2 border-w-border rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#E9F0D9] text-[#4F683C] flex items-center justify-center text-xl shrink-0 border border-[#B9CDA0]">
+                <div className="w-10 h-10 rounded-xl bg-w-accent-light text-w-primary-dark flex items-center justify-center text-xl shrink-0 border border-w-accent-border">
                   📚
                 </div>
                 <div>
-                  <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#74806B]">
+                  <div className="text-[11px] font-extrabold uppercase tracking-wider text-w-text-muted">
                     Ngân Hàng Câu Hỏi Đang Dùng
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm sm:text-base font-extrabold text-[#35452E]">
+                    <span className="text-sm sm:text-base font-extrabold text-w-text-main">
                       {activeBank?.name || 'Ngân hàng mặc định'}
                     </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#E9F0D9] text-[#4F683C] border border-[#B9CDA0]">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-w-accent-light text-w-primary-dark border border-w-accent-border">
                       {currentQuestions.length} câu hỏi
                     </span>
                   </div>
@@ -1872,39 +1885,39 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setCurrentView('question-bank')}
-                  className="flex-1 sm:flex-initial px-3.5 py-2 bg-white hover:bg-slate-50 text-[#3D522B] text-xs font-extrabold rounded-xl border border-[#DED5B8] shadow-2xs transition hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-1.5"
+                  className="flex-1 sm:flex-initial px-3.5 py-2 bg-white hover:bg-slate-50 text-w-primary-hover text-xs font-extrabold rounded-xl border border-w-border shadow-2xs transition hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  <Database className="w-3.5 h-3.5 text-[#4F683C]" />
+                  <Database className="w-3.5 h-3.5 text-w-primary-dark" />
                   <span>Đổi Bộ Câu Hỏi</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsAiModalOpen(true)}
-                  className="flex-1 sm:flex-initial px-3.5 py-2 bg-[#F2B6C7] hover:bg-[#EEA3B7] text-[#35452E] text-xs font-extrabold rounded-xl border border-[#E59EB2] shadow-2xs transition hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-1.5"
+                  className="flex-1 sm:flex-initial px-3.5 py-2 bg-[#F2B6C7] hover:bg-[#EEA3B7] text-w-text-main text-xs font-extrabold rounded-xl border border-[#E59EB2] shadow-2xs transition hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-[#FFFDF5]" />
+                  <Sparkles className="w-3.5 h-3.5 text-w-bg-card" />
                   <span>Tạo Bằng AI</span>
                 </button>
               </div>
             </div>
 
             {/* Search and Tags Filter Bar */}
-            <div className="bg-[#FFFDF5] border-2 border-[#DED5B8] rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+            <div className="bg-w-bg-card border-2 border-w-border rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
               {/* Search Bar */}
               <div className="relative">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#74806B]" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-w-text-muted" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Tìm kiếm trò chơi theo tên hoặc mô tả (ví dụ: 'đua xe', 'gọi tên', 'vòng quay', 'trắc nghiệm')..."
-                  className="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DED5B8] rounded-xl text-xs sm:text-sm font-bold text-[#35452E] placeholder-[#74806B]/60 focus:outline-none focus:border-[#4F683C] focus:ring-2 focus:ring-[#4F683C]/20 transition shadow-inner"
+                  className="w-full pl-10 pr-10 py-2.5 bg-white border border-w-border rounded-xl text-xs sm:text-sm font-bold text-w-text-main placeholder-w-text-muted/60 focus:outline-none focus:border-w-primary-dark focus:ring-2 focus:ring-w-primary-dark/20 transition shadow-inner"
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#74806B] hover:text-[#35452E] transition"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-w-text-muted hover:text-w-text-main transition"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -1913,7 +1926,7 @@ export default function App() {
 
               {/* Tag Filtering Chips */}
               <div className="flex items-center gap-1.5 flex-wrap">
-                <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#74806B] flex items-center gap-1 mr-1">
+                <div className="text-[11px] font-extrabold uppercase tracking-wider text-w-text-muted flex items-center gap-1 mr-1">
                   <Tag className="w-3.5 h-3.5" />
                   <span>Phân loại:</span>
                 </div>
@@ -1924,8 +1937,8 @@ export default function App() {
                   onClick={() => setSelectedTag(null)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition cursor-pointer flex items-center gap-1 ${
                     selectedTag === null
-                      ? 'bg-[#4F683C] text-white shadow-xs'
-                      : 'bg-white text-[#55644E] border border-[#DED5B8] hover:bg-[#E9F0D9]'
+                      ? 'bg-w-primary-dark text-white shadow-xs'
+                      : 'bg-white text-w-text-muted border border-w-border hover:bg-w-accent-light'
                   }`}
                 >
                   <span>Tất cả</span>
@@ -1943,8 +1956,8 @@ export default function App() {
                       onClick={() => setSelectedTag(isActive ? null : tag)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition cursor-pointer flex items-center gap-1 ${
                         isActive
-                          ? 'bg-[#4F683C] text-white shadow-xs'
-                          : 'bg-white text-[#55644E] border border-[#DED5B8] hover:bg-[#E9F0D9]'
+                          ? 'bg-w-primary-dark text-white shadow-xs'
+                          : 'bg-white text-w-text-muted border border-w-border hover:bg-w-accent-light'
                       }`}
                     >
                       <span>{tag}</span>
@@ -1956,11 +1969,11 @@ export default function App() {
 
               {/* Result Count and Active Filters Bar */}
               {(searchQuery || selectedTag) && (
-                <div className="flex items-center justify-between pt-2 border-t border-[#DED5B8]/60 text-xs font-bold text-[#74806B]">
+                <div className="flex items-center justify-between pt-2 border-t border-w-border/60 text-xs font-bold text-w-text-muted">
                   <div className="flex items-center gap-2">
-                    <Filter className="w-3.5 h-3.5 text-[#4F683C]" />
+                    <Filter className="w-3.5 h-3.5 text-w-primary-dark" />
                     <span>
-                      Tìm thấy <strong className="text-[#4F683C]">{filteredGames.length}</strong> trò chơi phù hợp
+                      Tìm thấy <strong className="text-w-primary-dark">{filteredGames.length}</strong> trò chơi phù hợp
                     </span>
                   </div>
                   <button
@@ -1985,18 +1998,22 @@ export default function App() {
                   return (
                     <div
                       key={game.id}
-                      className="group bg-[#FFFDF5] hover:bg-white border-2 border-[#DED5B8] hover:border-[#B9CDA0] rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 relative overflow-hidden"
+                      className="group bg-w-bg-card hover:bg-white border-2 border-w-border hover:border-w-accent-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 relative overflow-hidden"
                     >
                       {/* Top Badges & Meta */}
                       <div className="space-y-3">
                         <div className="flex items-center justify-between gap-2">
-                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#E9F0D9] to-[#DCEBCB] border border-[#B9CDA0] flex items-center justify-center text-2xl shadow-xs group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                            {game.icon}
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-w-accent-light to-w-accent-muted border border-w-accent-border flex items-center justify-center text-2xl shadow-xs group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 overflow-hidden">
+                            {webConfig.gameAvatars?.[game.id] ? (
+                              <img src={webConfig.gameAvatars[game.id]} alt={game.title} className="w-full h-full object-cover" />
+                            ) : (
+                              game.icon
+                            )}
                           </div>
 
                           <div className="flex items-center gap-1.5 flex-wrap justify-end">
                             {game.badge && (
-                              <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-[#E9F0D9] text-[#4F683C] border border-[#B9CDA0]">
+                              <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-w-accent-light text-w-primary-dark border border-w-accent-border">
                                 {game.badge}
                               </span>
                             )}
@@ -2010,10 +2027,10 @@ export default function App() {
 
                         {/* Title & Description */}
                         <div>
-                          <h3 className="text-base font-extrabold text-[#35452E] group-hover:text-[#4F683C] transition-colors line-clamp-1">
+                          <h3 className="text-base font-extrabold text-w-text-main group-hover:text-w-primary-dark transition-colors line-clamp-1">
                             {game.title}
                           </h3>
-                          <p className="text-xs text-[#74806B] font-medium mt-1 line-clamp-2 leading-relaxed">
+                          <p className="text-xs text-w-text-muted font-medium mt-1 line-clamp-2 leading-relaxed">
                             {game.description}
                           </p>
                         </div>
@@ -2028,7 +2045,7 @@ export default function App() {
                                   e.stopPropagation();
                                   setSelectedTag(t);
                                 }}
-                                className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#F8F4E8] text-[#55644E] hover:bg-[#E9F0D9] hover:text-[#4F683C] transition cursor-pointer border border-[#DED5B8]"
+                                className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-w-bg-tag text-w-text-muted hover:bg-w-accent-light hover:text-w-primary-dark transition cursor-pointer border border-w-border"
                               >
                                 #{t}
                               </span>
@@ -2038,11 +2055,11 @@ export default function App() {
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="pt-4 mt-4 border-t border-[#DED5B8]/70 flex items-center gap-2">
+                      <div className="pt-4 mt-4 border-t border-w-border/70 flex items-center gap-2">
                         <button
                           type="button"
                           onClick={() => handleOpenSetup(game.id)}
-                          className="flex-1 py-2.5 px-3 bg-[#4F683C] hover:bg-[#3D522B] text-white text-xs font-black rounded-xl shadow-xs hover:shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer transform group-hover:scale-[1.02]"
+                          className="flex-1 py-2.5 px-3 bg-w-primary-dark hover:bg-w-primary-hover text-white text-xs font-black rounded-xl shadow-xs hover:shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer transform group-hover:scale-[1.02]"
                         >
                           <Play className="w-3.5 h-3.5 fill-current" />
                           <span>Chơi Ngay</span>
@@ -2051,7 +2068,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={(e) => handleOpenQuickGuide(game.id, e)}
-                          className="p-2.5 bg-white hover:bg-slate-50 text-[#74806B] hover:text-[#35452E] rounded-xl border border-[#DED5B8] shadow-2xs transition cursor-pointer"
+                          className="p-2.5 bg-white hover:bg-slate-50 text-w-text-muted hover:text-w-text-main rounded-xl border border-w-border shadow-2xs transition cursor-pointer"
                           title="Xem luật chơi"
                         >
                           <BookOpen className="w-4 h-4" />
@@ -2063,15 +2080,15 @@ export default function App() {
               </div>
             ) : (
               /* Empty Search State */
-              <div className="bg-[#FFFDF5] border-2 border-[#DED5B8] rounded-3xl p-12 text-center space-y-4 max-w-lg mx-auto">
-                <div className="w-16 h-16 rounded-3xl bg-[#E9F0D9] text-[#4F683C] flex items-center justify-center text-3xl mx-auto shadow-xs border border-[#B9CDA0]">
+              <div className="bg-w-bg-card border-2 border-w-border rounded-3xl p-12 text-center space-y-4 max-w-lg mx-auto">
+                <div className="w-16 h-16 rounded-3xl bg-w-accent-light text-w-primary-dark flex items-center justify-center text-3xl mx-auto shadow-xs border border-w-accent-border">
                   🔍
                 </div>
                 <div>
-                  <h3 className="text-lg font-extrabold text-[#35452E]">
+                  <h3 className="text-lg font-extrabold text-w-text-main">
                     Không tìm thấy trò chơi nào
                   </h3>
-                  <p className="text-xs text-[#74806B] font-medium mt-1 leading-relaxed">
+                  <p className="text-xs text-w-text-muted font-medium mt-1 leading-relaxed">
                     Không có trò chơi nào khớp với từ khóa "{searchQuery}" hoặc phân loại đã chọn.
                   </p>
                 </div>
@@ -2081,7 +2098,7 @@ export default function App() {
                     setSearchQuery('');
                     setSelectedTag(null);
                   }}
-                  className="px-5 py-2.5 bg-[#4F683C] hover:bg-[#3D522B] text-white text-xs font-extrabold rounded-xl shadow-xs transition cursor-pointer"
+                  className="px-5 py-2.5 bg-w-primary-dark hover:bg-w-primary-hover text-white text-xs font-extrabold rounded-xl shadow-xs transition cursor-pointer"
                 >
                   Xem Tất Cả Trò Chơi
                 </button>
@@ -2093,8 +2110,8 @@ export default function App() {
 
       {/* Footer */}
       {!activeGameConfig && currentView === 'home' && (
-        <footer className="w-full text-center py-6 mt-8 border-t border-[#DED5B8] bg-[#FFFDF5]/80">
-          <p className="text-[#74806B] font-bold text-sm">© 2026 Wey Playground. All rights reserved.</p>
+        <footer className="w-full text-center py-6 mt-8 border-t border-w-border bg-w-bg-card/80">
+          <p className="text-w-text-muted font-bold text-sm">© 2026 Wey Playground. All rights reserved.</p>
         </footer>
       )}
 

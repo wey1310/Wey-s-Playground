@@ -58,7 +58,7 @@ export const TERRAIN_CONFIG: Record<TerrainType, { name: string; icon: string; d
   forest: { name: 'Rừng', icon: '🌳', defaultDef: 2, bgClass: 'bg-emerald-950/80 border-emerald-600', textClass: 'text-emerald-300', desc: 'Phòng thủ tốt (DEF 2)', bgImage: '/assets/games/territory/forest.jpg' },
   mountain: { name: 'Núi', icon: '⛰️', defaultDef: 3, bgClass: 'bg-stone-900/90 border-stone-600', textClass: 'text-stone-300', desc: 'Pháo đài kiên cố (DEF 3)', bgImage: '/assets/games/territory/mountain.jpg' },
   sea: { name: 'Biển', icon: '🌊', defaultDef: 1, bgClass: 'bg-cyan-950/80 border-cyan-600', textClass: 'text-cyan-300', desc: 'Dễ chiếm (DEF 1), mở rộng nhanh', bgImage: '/assets/games/territory/sea.jpg' },
-  plains: { name: 'Đồng bằng', icon: '🏞️', defaultDef: 1, bgClass: 'bg-amber-950/80 border-amber-600', textClass: 'text-amber-300', desc: 'Cân bằng (DEF 1), tích lũy phát triển', bgImage: '/assets/games/territory/plains.jpg' },
+  plains: { name: 'Đồng bằng', icon: '🏞️', defaultDef: 1, bgClass: 'bg-amber-950/80 border-amber-600', textClass: 'text-amber-600', desc: 'Cân bằng (DEF 1), tích lũy phát triển', bgImage: '/assets/games/territory/plains.jpg' },
 };
 
 // Helper: Generate 6x6 organic map with connected contiguous biomes (Coast, Mountain ridge, Deep forest, Plains)
@@ -445,19 +445,19 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
   const currentTeamHand = teamHands[currentTurnTeamIdx] || [];
 
   return (
-    <div className={`flex-1 min-h-0 w-full p-4 sm:p-6 bg-gradient-to-b ${themeInfo.bgClass} text-white rounded-2xl shadow-2xl flex flex-col justify-between`}>
+    <div className={`flex-1 min-h-0 w-full p-4 sm:p-6 bg-gradient-to-b ${themeInfo.bgClass} text-w-text-main rounded-2xl shadow-2xl flex flex-col justify-between`}>
       {/* Game Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-950/80 border border-amber-500/30 p-4 rounded-xl">
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-w-bg-card border border-amber-500/30 p-4 rounded-xl">
         <div className="flex items-center gap-3">
           <span className="text-3xl">🗺️</span>
           <div>
-            <h2 className="text-xl font-extrabold text-amber-400 flex items-center gap-2">
+            <h2 className="text-xl font-extrabold text-amber-600 flex items-center gap-2">
               <span>Đấu Trường Chiếm Lãnh Thổ 6x6</span>
-              <span className="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-normal">
+              <span className="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-600 font-normal">
                 36 Ô Lãnh Thổ
               </span>
             </h2>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs text-w-primary-dark">
               Mở rộng ➔ Tấn công đối thủ ➔ Sử dụng 15 Thẻ Bonus ➔ Tạo chuỗi 5 ô (Liên Thành) hoặc 12 ô (Thống Lĩnh)!
             </p>
           </div>
@@ -474,14 +474,14 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
                 key={team.id}
                 className={`px-3 py-1.5 rounded-xl border flex items-center gap-2 transition ${
                   isTurn
-                    ? 'bg-amber-500/20 border-amber-400 text-amber-300 ring-2 ring-amber-400/50 scale-105'
-                    : 'bg-slate-900/60 border-slate-800 text-slate-400'
+                    ? 'bg-amber-500/20 border-amber-400 text-amber-600 ring-2 ring-amber-400/50 scale-105'
+                    : 'bg-w-bg-alt border-w-border text-w-text-muted'
                 }`}
               >
                 <span className="text-lg">{team.avatar}</span>
                 <div className="text-xs">
                   <div className="font-bold leading-none">{team.name}</div>
-                  <div className="font-mono text-amber-400 font-extrabold mt-0.5">
+                  <div className="font-mono text-amber-600 font-extrabold mt-0.5">
                     {capturedCount} ô ({(capturedCount / 36 * 100).toFixed(0)}%)
                   </div>
                 </div>
@@ -500,7 +500,7 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
               answerLogs
             )
           }
-          className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition shadow"
+          className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-w-text-main font-bold text-xs rounded-xl transition shadow"
         >
           Tổng Kết Game
         </button>
@@ -509,13 +509,13 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
       {/* Main Map & Hand Display */}
       <div className="my-4 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Side: Hand & Cards */}
-        <div className="lg:col-span-4 bg-slate-950/90 border border-amber-500/30 p-4 rounded-2xl shadow-xl space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-            <span className="text-xs font-black text-amber-400 font-mono uppercase flex items-center gap-1.5">
-              <Zap className="w-4 h-4 text-amber-300" />
+        <div className="lg:col-span-4 bg-w-bg-card border border-amber-500/30 p-4 rounded-2xl shadow-xl space-y-4">
+          <div className="flex items-center justify-between border-b border-w-border pb-2">
+            <span className="text-xs font-black text-amber-600 font-mono uppercase flex items-center gap-1.5">
+              <Zap className="w-4 h-4 text-amber-600" />
               <span>THẺ BONUS CỦA {currentTeam.avatar} {currentTeam.name}</span>
             </span>
-            <span className="text-[10px] text-slate-400 font-mono">
+            <span className="text-[10px] text-w-text-muted font-mono">
               ({currentTeamHand.length}/4 Thẻ)
             </span>
           </div>
@@ -529,10 +529,10 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
               {currentTeamHand.map((card, cIdx) => (
                 <div
                   key={`${card.id}_${cIdx}`}
-                  className="p-3 bg-slate-900 border border-amber-500/40 rounded-xl space-y-1 hover:border-amber-400 transition"
+                  className="p-3 bg-w-bg-alt border border-amber-500/40 rounded-xl space-y-1 hover:border-amber-400 transition"
                 >
                   <div className="flex items-center justify-between text-xs font-extrabold">
-                    <span className="text-amber-300 flex items-center gap-1">
+                    <span className="text-amber-600 flex items-center gap-1">
                       <span>{card.icon}</span>
                       <span>[{card.code}] {card.name}</span>
                     </span>
@@ -543,8 +543,8 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
                       Dùng Thẻ
                     </button>
                   </div>
-                  <p className="text-[11px] text-slate-300 italic">{card.quote}</p>
-                  <p className="text-[10px] text-slate-400">{card.desc}</p>
+                  <p className="text-[11px] text-w-primary-dark italic">{card.quote}</p>
+                  <p className="text-[10px] text-w-text-muted">{card.desc}</p>
                 </div>
               ))}
             </div>
@@ -552,16 +552,16 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
         </div>
 
         {/* Right Side: 6x6 Map Grid with Seamless Biome Connections */}
-        <div className="lg:col-span-8 bg-slate-950 border-4 border-amber-600/60 p-4 rounded-2xl shadow-2xl space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2 text-xs font-mono">
+        <div className="lg:col-span-8 bg-w-bg-card border-4 border-amber-600/60 p-4 rounded-2xl shadow-2xl space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-w-border pb-2 text-xs font-mono">
             <div className="flex items-center gap-2">
-              <span className="font-extrabold text-amber-400">🗺️ BẢN ĐỒ CHIẾM ĐẤT TỰ NHIÊN:</span>
-              <span className="text-slate-300">{statusMessage}</span>
+              <span className="font-extrabold text-amber-600">🗺️ BẢN ĐỒ CHIẾM ĐẤT TỰ NHIÊN:</span>
+              <span className="text-w-primary-dark">{statusMessage}</span>
             </div>
             
             <button
               onClick={handleRegenerateMap}
-              className="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/40 text-amber-300 border border-amber-500/40 rounded-lg text-[11px] font-bold transition flex items-center gap-1"
+              className="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/40 text-amber-600 border border-amber-500/40 rounded-lg text-[11px] font-bold transition flex items-center gap-1"
               title="Tạo lại phân bố địa hình dạng sinh thái tự nhiên"
             >
               <RefreshCw className="w-3.5 h-3.5" />
@@ -570,11 +570,11 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
           </div>
 
           {/* Map Terrain Legend */}
-          <div className="flex flex-wrap items-center justify-around gap-2 bg-slate-900/80 p-2 rounded-xl border border-slate-800 text-[11px] font-mono">
+          <div className="flex flex-wrap items-center justify-around gap-2 bg-w-bg-alt p-2 rounded-xl border border-w-border text-[11px] font-mono">
             <div className="flex items-center gap-1.5 text-cyan-300">
               <span>🌊</span> <span>Biển (DEF 1)</span>
             </div>
-            <div className="flex items-center gap-1.5 text-amber-300">
+            <div className="flex items-center gap-1.5 text-amber-600">
               <span>🏞️</span> <span>Đồng Bằng (DEF 1)</span>
             </div>
             <div className="flex items-center gap-1.5 text-emerald-300">
@@ -586,14 +586,14 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
           </div>
 
           {/* Tactical Map Grid with Coordinates */}
-          <div className="relative max-w-2xl mx-auto p-3 bg-slate-900/90 rounded-2xl border border-amber-500/30 shadow-inner">
+          <div className="relative max-w-2xl mx-auto p-3 bg-w-bg-alt rounded-2xl border border-amber-500/30 shadow-inner">
             {/* Column Coordinate Labels (A - F) */}
-            <div className="grid grid-cols-6 text-center text-[10px] font-mono font-bold text-amber-400 mb-1.5">
+            <div className="grid grid-cols-6 text-center text-[10px] font-mono font-bold text-amber-600 mb-1.5">
               <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
             </div>
 
             {/* 6x6 Grid */}
-            <div className="grid grid-cols-6 gap-1 aspect-square bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+            <div className="grid grid-cols-6 gap-1 aspect-square bg-w-bg-card p-1.5 rounded-xl border border-w-border">
               {grid.map(cell => {
                 const cfg = TERRAIN_CONFIG[cell.terrain];
                 const owner = cell.ownerTeamIdx !== null ? teams[cell.ownerTeamIdx] : null;
@@ -660,7 +660,7 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
                     {/* Top row: Terrain Icon + DEF badge */}
                     <div className="w-full flex items-center justify-between text-[10px] font-mono font-bold leading-none z-10">
                       <span className="drop-shadow">{cfg.icon}</span>
-                      <span className="px-1 py-0.2 rounded bg-slate-950/85 text-amber-300 border border-amber-500/40 text-[9px]">
+                      <span className="px-1 py-0.2 rounded bg-w-bg-card text-amber-600 border border-amber-500/40 text-[9px]">
                         DEF {cell.baseDef + cell.bonusDef}
                       </span>
                     </div>
@@ -672,7 +672,7 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
                           <span className="text-xl drop-shadow-md animate-pulse">{owner.avatar}</span>
                         </div>
                       ) : (
-                        <span className="text-[11px] font-mono font-black text-amber-200 bg-slate-950/70 px-1.5 py-0.5 rounded border border-amber-500/30">
+                        <span className="text-[11px] font-mono font-black text-amber-200 bg-w-bg-card px-1.5 py-0.5 rounded border border-amber-500/30">
                           #{cell.questionNum}
                         </span>
                       )}
@@ -687,7 +687,7 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
                     </div>
 
                     {/* Bottom row: Terrain Name or Owner Name */}
-                    <div className="text-[8.5px] font-extrabold truncate max-w-full text-slate-100 uppercase z-10 bg-slate-950/60 px-1 rounded w-full text-center">
+                    <div className="text-[8.5px] font-extrabold truncate max-w-full text-slate-100 uppercase z-10 bg-w-bg-card px-1 rounded w-full text-center">
                       {owner ? owner.name : cfg.name}
                     </div>
                   </button>
@@ -700,16 +700,16 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
 
       {/* Winner Victory Celebration Overlay */}
       {winnerTeamIdx !== null && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border-2 border-amber-400 p-6 sm:p-8 rounded-3xl max-w-md w-full text-center shadow-2xl space-y-4 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 bg-white/70 backdrop-blur-sm backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-w-bg-alt border-2 border-amber-400 p-6 sm:p-8 rounded-3xl max-w-md w-full text-center shadow-2xl space-y-4 animate-in zoom-in-95 duration-200">
             <div className="text-5xl animate-bounce">👑</div>
-            <h3 className="text-2xl font-black text-amber-300">
+            <h3 className="text-2xl font-black text-amber-600">
               {teams[winnerTeamIdx]?.name} THẮNG TRẬN!
             </h3>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs text-w-primary-dark">
               Đội {teams[winnerTeamIdx]?.name} đã hoàn thành điều kiện chiếm lĩnh lãnh thổ xuất sắc (+50đ thưởng chiến thắng)!
             </p>
-            <div className="bg-slate-950/80 p-3 rounded-xl border border-amber-500/30 text-amber-300 font-mono font-bold text-sm">
+            <div className="bg-w-bg-card p-3 rounded-xl border border-amber-500/30 text-amber-600 font-mono font-bold text-sm">
               Lãnh thổ chiếm: {grid.filter(c => c.ownerTeamIdx === winnerTeamIdx).length} ô
             </div>
             <button
@@ -750,7 +750,7 @@ export const TerritoryGame: React.FC<TerritoryGameProps> = ({ config, questions,
         }}
       />
 
-      <div className="text-center text-xs text-slate-400 font-medium">
+      <div className="text-center text-xs text-w-text-muted font-medium">
         Đội nào nối đủ 5 ô thẳng hàng (Liên Thành) hoặc chiếm giữ 12 ô (Thống Lĩnh) sẽ lập tức thắng trận!
       </div>
     </div>

@@ -38,7 +38,7 @@ export const UnauthorizedDomainModal: React.FC<UnauthorizedDomainModalProps> = (
 
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#FFFDF5] border-2 border-[#DED5B8] w-full max-w-lg rounded-[28px] shadow-2xl overflow-hidden flex flex-col relative animate-scale-up">
+      <div className="bg-w-bg-card border-2 border-w-border w-full max-w-lg rounded-[28px] shadow-2xl overflow-hidden flex flex-col relative animate-scale-up">
         {/* Header */}
         <div className="p-5 bg-gradient-to-r from-amber-600 via-rose-600 to-red-600 text-white flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -59,7 +59,7 @@ export const UnauthorizedDomainModal: React.FC<UnauthorizedDomainModalProps> = (
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-5 text-[#35452E] max-h-[80vh] overflow-y-auto">
+        <div className="p-6 space-y-5 text-w-text-main max-h-[80vh] overflow-y-auto">
           {/* Explanation */}
           <div className="p-4 bg-amber-50/80 border border-amber-200 rounded-2xl text-xs space-y-2">
             <div className="flex items-center gap-2 font-black text-amber-900 text-sm">
@@ -73,7 +73,7 @@ export const UnauthorizedDomainModal: React.FC<UnauthorizedDomainModalProps> = (
 
           {/* Current Domain Box with Copy */}
           <div className="space-y-2">
-            <label className="text-xs font-black text-[#4F683C] uppercase tracking-wide flex items-center justify-between">
+            <label className="text-xs font-black text-w-primary-dark uppercase tracking-wide flex items-center justify-between">
               <span>Tên miền cần thêm vào Firebase:</span>
               {copied && <span className="text-emerald-600 text-[11px] font-bold">Đã sao chép!</span>}
             </label>
@@ -90,11 +90,11 @@ export const UnauthorizedDomainModal: React.FC<UnauthorizedDomainModalProps> = (
           </div>
 
           {/* Step by step guide */}
-          <div className="space-y-2.5 bg-white p-4 rounded-2xl border border-[#DED5B8]">
-            <h4 className="text-xs font-black text-[#4F683C] uppercase tracking-wide">
+          <div className="space-y-2.5 bg-white p-4 rounded-2xl border border-w-border">
+            <h4 className="text-xs font-black text-w-primary-dark uppercase tracking-wide">
               Cách khắc phục trên Firebase Console (chỉ mất 30 giây):
             </h4>
-            <ol className="space-y-2 text-xs text-[#4F683C] list-decimal list-inside font-semibold leading-relaxed">
+            <ol className="space-y-2 text-xs text-w-primary-dark list-decimal list-inside font-semibold leading-relaxed">
               <li>
                 Truy cập{' '}
                 <a
@@ -134,7 +134,7 @@ export const UnauthorizedDomainModal: React.FC<UnauthorizedDomainModalProps> = (
               </select>
               <button
                 onClick={handleQuickAdminLogin}
-                className="px-4 py-2 bg-[#4F683C] hover:bg-[#3D522E] text-[#E9D58F] font-black text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 transition active:scale-95 shrink-0"
+                className="px-4 py-2 bg-w-primary-dark hover:bg-[#3D522E] text-[#E9D58F] font-black text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 transition active:scale-95 shrink-0"
               >
                 <UserCheck className="w-4 h-4 text-[#E9D58F]" />
                 <span>Vào Ngay (Admin)</span>
@@ -146,7 +146,7 @@ export const UnauthorizedDomainModal: React.FC<UnauthorizedDomainModalProps> = (
           <div className="pt-2">
             <button
               onClick={onClose}
-              className="w-full py-3 bg-[#E2EED3] hover:bg-[#D4E4C1] text-[#3D522B] font-black text-xs rounded-[16px] transition border border-[#B9CDA0]"
+              className="w-full py-3 bg-[#E2EED3] hover:bg-[#D4E4C1] text-w-primary-hover font-black text-xs rounded-[16px] transition border border-w-accent-border"
             >
               Đã hiểu, đóng cửa sổ
             </button>

@@ -20,29 +20,29 @@ export const GameStatisticsPanel: React.FC<Props> = ({ playCounts, totalQuestion
     .slice(0, 5);
 
   const getColorHex = (index: number) => {
-    const colors = ['#6F8F55', '#E4B363', '#E05D5D', '#4A90E2', '#9B59B6'];
+    const colors = ['#F1948A', '#E4B363', '#E05D5D', '#4A90E2', '#9B59B6'];
     return colors[index % colors.length];
   };
 
   const totalPlays = Object.values(playCounts).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="bg-[#FFFDFB] border border-[#DED5B8] p-5 sm:p-6 rounded-[22px] shadow-sm mb-8">
-      <h3 className="text-xl font-[800] text-[#35452E] flex items-center gap-2.5 mb-6">
-        <Target className="w-6 h-6 text-[#6F8F55]" />
+    <div className="bg-[#FFFDFB] border border-w-border p-5 sm:p-6 rounded-[22px] shadow-sm mb-8">
+      <h3 className="text-xl font-[800] text-w-text-main flex items-center gap-2.5 mb-6">
+        <Target className="w-6 h-6 text-w-primary" />
         <span>Thống Kê Hoạt Động</span>
       </h3>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         {/* Stats Cards */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="bg-[#E9F0D9] p-5 rounded-2xl border border-[#B9CDA0] flex items-center gap-4">
+          <div className="bg-w-accent-light p-5 rounded-2xl border border-w-accent-border flex items-center gap-4">
             <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center flex-shrink-0">
-              <Gamepad2 className="w-6 h-6 text-[#6F8F55]" />
+              <Gamepad2 className="w-6 h-6 text-w-primary" />
             </div>
             <div>
-              <p className="text-sm font-[700] text-[#74806B]">Tổng số lượt chơi</p>
-              <p className="text-3xl font-[900] text-[#4F683C]">{totalPlays}</p>
+              <p className="text-sm font-[700] text-w-text-muted">Tổng số lượt chơi</p>
+              <p className="text-3xl font-[900] text-w-primary-dark">{totalPlays}</p>
             </div>
           </div>
 
@@ -59,7 +59,7 @@ export const GameStatisticsPanel: React.FC<Props> = ({ playCounts, totalQuestion
 
         {/* Chart */}
         <div className="lg:col-span-2 bg-white border border-[#F0EBE1] rounded-2xl p-4 sm:p-5">
-          <h4 className="text-sm font-[800] text-[#74806B] mb-4 uppercase tracking-wider">Top Trò Chơi Yêu Thích</h4>
+          <h4 className="text-sm font-[800] text-w-text-muted mb-4 uppercase tracking-wider">Top Trò Chơi Yêu Thích</h4>
           {data.length > 0 ? (
             <div className="h-[200px] w-full">
               <ResponsiveContainer width="100%" height="100%">
@@ -67,19 +67,19 @@ export const GameStatisticsPanel: React.FC<Props> = ({ playCounts, totalQuestion
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
                   <XAxis 
                     dataKey="name" 
-                    tick={{ fill: '#74806B', fontSize: 11, fontWeight: 600 }}
+                    tick={{ fill: '#7F8C8D', fontSize: 11, fontWeight: 600 }}
                     tickLine={false}
                     axisLine={{ stroke: '#E5E7EB' }}
                   />
                   <YAxis 
-                    tick={{ fill: '#74806B', fontSize: 12, fontWeight: 600 }}
+                    tick={{ fill: '#7F8C8D', fontSize: 12, fontWeight: 600 }}
                     tickLine={false}
                     axisLine={false}
                     allowDecimals={false}
                   />
                   <Tooltip 
                     cursor={{ fill: '#F9FAFB' }}
-                    contentStyle={{ borderRadius: '12px', border: '1px solid #DED5B8', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', fontWeight: 'bold' }}
+                    contentStyle={{ borderRadius: '12px', border: '1px solid #FADBD8', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', fontWeight: 'bold' }}
                   />
                   <Bar dataKey="plays" radius={[6, 6, 0, 0]} maxBarSize={50}>
                     {data.map((entry, index) => (

@@ -62,17 +62,17 @@ export const CaseEvidenceBoard: React.FC<CaseEvidenceBoardProps> = ({
       {activeTab === 'overview' && (
         <div className="relative z-10 max-w-7xl mx-auto mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[#1e140e]/80 p-3.5 rounded-2xl border-2 border-[#5c4028] shadow-2xl backdrop-blur-xs">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-600 to-amber-900 border border-amber-400/50 flex items-center justify-center text-xl shadow-inner">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-600 to-amber-900 border border-amber-400 flex items-center justify-center text-xl shadow-inner">
               📌
             </div>
             <div>
               <h1 className="text-base sm:text-lg font-black text-amber-200 uppercase tracking-wider flex items-center gap-2">
                 <span>BẢNG SUY LUẬN VỤ ÁN</span>
-                <span className="text-xs font-normal lowercase bg-amber-950 px-2 py-0.5 rounded-md text-amber-300 border border-amber-600/40">
+                <span className="text-xs font-normal lowercase bg-amber-950 px-2 py-0.5 rounded-md text-amber-600 border border-amber-600/40">
                   (Evidence Board)
                 </span>
               </h1>
-              <p className="text-xs text-amber-300/70 font-medium">
+              <p className="text-xs text-amber-600 font-medium">
                 Khám phá các manh mối, giải mã lời khai và nối dây đỏ tìm ra sự thật vụ án.
               </p>
             </div>
@@ -160,11 +160,11 @@ export const CaseEvidenceBoard: React.FC<CaseEvidenceBoardProps> = ({
         {(activeTab === 'overview' || activeTab === 'suspects') && (
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-black text-amber-300 uppercase tracking-wider flex items-center gap-2">
-                <Users className="w-4 h-4 text-amber-400" />
+              <h3 className="text-sm font-black text-amber-600 uppercase tracking-wider flex items-center gap-2">
+                <Users className="w-4 h-4 text-amber-600" />
                 <span>Danh Sách Đối Tượng Tình Nghi ({currentCase.suspects.length})</span>
               </h3>
-              <span className="text-[11px] text-amber-400/80 font-medium">
+              <span className="text-[11px] text-amber-600 font-medium">
                 Bấm vào hồ sơ để thẩm vấn & soi xét lời khai
               </span>
             </div>
@@ -189,7 +189,7 @@ export const CaseEvidenceBoard: React.FC<CaseEvidenceBoardProps> = ({
                       <div className="relative w-full aspect-square max-h-36 rounded-xl bg-amber-100/90 border border-amber-300 flex items-center justify-center text-5xl shadow-inner group-hover:bg-amber-200/90 transition">
                         <span>{suspect.avatar || '👤'}</span>
                         {isInterrogated && (
-                          <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[10px] font-black uppercase shadow-xs">
+                          <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-emerald-600 text-w-text-main text-[10px] font-black uppercase shadow-xs">
                             Đã Thẩm Vấn
                           </div>
                         )}
@@ -223,7 +223,7 @@ export const CaseEvidenceBoard: React.FC<CaseEvidenceBoardProps> = ({
                           e.stopPropagation();
                           onAccuseSuspect(suspect);
                         }}
-                        className="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase transition cursor-pointer shadow-xs"
+                        className="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-w-text-main text-[10px] font-black uppercase transition cursor-pointer shadow-xs"
                       >
                         Chỉ Điểm
                       </button>
@@ -239,11 +239,11 @@ export const CaseEvidenceBoard: React.FC<CaseEvidenceBoardProps> = ({
         {(activeTab === 'overview' || activeTab === 'clues') && (
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-black text-amber-300 uppercase tracking-wider flex items-center gap-2">
-                <Fingerprint className="w-4 h-4 text-amber-400" />
+              <h3 className="text-sm font-black text-amber-600 uppercase tracking-wider flex items-center gap-2">
+                <Fingerprint className="w-4 h-4 text-amber-600" />
                 <span>Vật Chứng & Dấu Vết Hiện Trường ({currentCase.clues.length})</span>
               </h3>
-              <span className="text-[11px] text-amber-400/80 font-medium">
+              <span className="text-[11px] text-amber-600 font-medium">
                 Bấm vào vật chứng để xem báo cáo giám định hoặc mở khóa
               </span>
             </div>
@@ -304,7 +304,7 @@ export const CaseEvidenceBoard: React.FC<CaseEvidenceBoardProps> = ({
                         </div>
 
                         {clue.isKeyDecisiveEvidence && unlocked && (
-                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-red-600 text-white shadow-xs animate-pulse">
+                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-red-600 text-w-text-main shadow-xs animate-pulse">
                             CỐT LÕI
                           </span>
                         )}
@@ -351,7 +351,7 @@ export const CaseEvidenceBoard: React.FC<CaseEvidenceBoardProps> = ({
                             e.stopPropagation();
                             onUnlockClue(clue.id);
                           }}
-                          className="w-full py-1.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white text-xs font-black uppercase tracking-wider transition cursor-pointer shadow-md flex items-center justify-center gap-1.5"
+                          className="w-full py-1.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-w-text-main text-xs font-black uppercase tracking-wider transition cursor-pointer shadow-md flex items-center justify-center gap-1.5"
                         >
                           <Unlock className="w-3.5 h-3.5" />
                           <span>Mở Khóa ({clue.pointsToUnlock || 30} AP)</span>
@@ -369,7 +369,7 @@ export const CaseEvidenceBoard: React.FC<CaseEvidenceBoardProps> = ({
       {/* Clue Detailed Magnifying Glass Inspection Modal */}
       <AnimatePresence>
         {selectedClueModal && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 bg-white/70 backdrop-blur-sm backdrop-blur-sm flex items-center justify-center p-4">
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -430,7 +430,7 @@ export const CaseEvidenceBoard: React.FC<CaseEvidenceBoardProps> = ({
                 <button
                   type="button"
                   onClick={() => setSelectedClueModal(null)}
-                  className="px-5 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-xs font-extrabold transition cursor-pointer shadow-md"
+                  className="px-5 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-w-text-main text-xs font-extrabold transition cursor-pointer shadow-md"
                 >
                   Đóng Báo Cáo
                 </button>

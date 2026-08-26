@@ -48,7 +48,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
     ? config.teams
     : [
         { id: 'team_1', name: 'Đội Sóc Nâu 🐿️', color: '#8D5B4C', avatar: '🐿️', score: 0 },
-        { id: 'team_2', name: 'Đội Thỏ Trắng 🐇', color: '#4F683C', avatar: '🐇', score: 0 },
+        { id: 'team_2', name: 'Đội Thỏ Trắng 🐇', color: '#E08283', avatar: '🐇', score: 0 },
         { id: 'team_3', name: 'Đội Gấu Nhỏ 🐻', color: '#D88A35', avatar: '🐻', score: 0 },
       ];
 
@@ -57,7 +57,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
     initialTeams.map(t => ({
       id: t.id,
       name: t.name,
-      color: t.color || '#4F683C',
+      color: t.color || '#E08283',
       avatar: t.avatar || '🍎',
       position: 1,
       apples: 0,
@@ -378,7 +378,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
     setTeams(initialTeams.map(t => ({
       id: t.id,
       name: t.name,
-      color: t.color || '#4F683C',
+      color: t.color || '#E08283',
       avatar: t.avatar || '🍎',
       position: 1,
       apples: 0,
@@ -410,23 +410,23 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
   const winningTeam = teams.find(t => t.isWinner);
 
   return (
-    <div className="w-full max-w-7xl mx-auto flex flex-col min-h-screen bg-[#FAF7EE] text-slate-800 select-none pb-12">
+    <div className="w-full max-w-7xl mx-auto flex flex-col min-h-screen bg-w-bg-alt text-slate-800 select-none pb-12">
       
       {/* HEADER BAR */}
       <header className="bg-white border-b-2 border-[#E3DCBA] px-4 py-3 sm:px-6 shadow-xs sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#4F683C] text-white flex items-center justify-center text-xl shadow-xs">
+          <div className="w-10 h-10 rounded-2xl bg-w-primary-dark text-w-text-main flex items-center justify-center text-xl shadow-xs">
             🍎
           </div>
           <div>
-            <h1 className="text-lg sm:text-xl font-black text-[#35452E] flex items-center gap-2">
+            <h1 className="text-lg sm:text-xl font-black text-w-text-main flex items-center gap-2">
               <span>HÁI TÁO</span>
               <span className="text-xs px-2.5 py-0.5 bg-[#E9D58F] text-[#5C4D15] rounded-full font-extrabold uppercase tracking-wide">
                 Boardgame Giáo Dục
               </span>
             </h1>
-            <p className="text-xs text-[#74806B] font-semibold">
-              Mục tiêu: Đội nào hái đủ <strong className="text-[#35452E] font-black">{targetApples} 🍎</strong> trước sẽ chiến thắng!
+            <p className="text-xs text-w-text-muted font-semibold">
+              Mục tiêu: Đội nào hái đủ <strong className="text-w-text-main font-black">{targetApples} 🍎</strong> trước sẽ chiến thắng!
             </p>
           </div>
         </div>
@@ -434,7 +434,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
         {/* Teacher Controls & Smith Master Board */}
         <div className="flex items-center gap-2 flex-wrap">
           {/* Mr. Smith Secret Indicator */}
-          <div className="flex items-center gap-2 bg-[#35452E] text-[#FFFDF5] px-3.5 py-1.5 rounded-2xl border-2 border-[#E9D58F] shadow-xs">
+          <div className="flex items-center gap-2 bg-w-text-main text-w-bg-card px-3.5 py-1.5 rounded-2xl border-2 border-[#E9D58F] shadow-xs">
             <div className="text-base">👨‍🌾</div>
             <div className="text-left">
               <div className="text-[10px] uppercase font-extrabold text-[#E9D58F]">Số bí mật Ông Smith:</div>
@@ -443,7 +443,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowSmithSecret(!showSmithSecret)}
-                  className="text-[#E9D58F] hover:text-white p-0.5 rounded cursor-pointer"
+                  className="text-[#E9D58F] hover:text-w-text-main p-0.5 rounded cursor-pointer"
                   title={showSmithSecret ? "Ẩn số bí mật" : "Xem số bí mật (Dành cho GV)"}
                 >
                   {showSmithSecret ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
@@ -455,10 +455,10 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
           <button
             type="button"
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className="p-2 rounded-xl bg-white border border-[#DCEBCB] hover:bg-slate-50 text-slate-600 transition cursor-pointer"
+            className="p-2 rounded-xl bg-white border border-w-accent-muted hover:bg-slate-50 text-slate-600 transition cursor-pointer"
             title="Bật/Tắt âm thanh"
           >
-            {soundEnabled ? <Volume2 className="w-4 h-4 text-[#4F683C]" /> : <VolumeX className="w-4 h-4 text-slate-400" />}
+            {soundEnabled ? <Volume2 className="w-4 h-4 text-w-primary-dark" /> : <VolumeX className="w-4 h-4 text-w-text-muted" />}
           </button>
 
           <button
@@ -473,7 +473,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
           <button
             type="button"
             onClick={handleEndGame}
-            className="px-3.5 py-1.5 bg-[#4F683C] hover:bg-[#3D522B] text-white text-xs font-black rounded-xl shadow-xs transition cursor-pointer"
+            className="px-3.5 py-1.5 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main text-xs font-black rounded-xl shadow-xs transition cursor-pointer"
           >
             Tổng Kết
           </button>
@@ -481,7 +481,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
       </header>
 
       {/* TEAM SCORE & STATUS CARDS BAR */}
-      <div className="px-4 py-3 sm:px-6 bg-[#FAF7EE] border-b border-[#E3DCBA]">
+      <div className="px-4 py-3 sm:px-6 bg-w-bg-alt border-b border-[#E3DCBA]">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5">
           {teams.map((t, idx) => {
             const isTurn = idx === currentTeamIndex && turnStage !== 'gameover';
@@ -494,13 +494,13 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                     : t.isCaught
                     ? 'bg-rose-50 border-rose-300 opacity-80'
                     : isTurn
-                    ? 'bg-white border-[#4F683C] shadow-lg ring-2 ring-[#4F683C]/30 scale-[1.02]'
+                    ? 'bg-white border-w-primary-dark shadow-lg ring-2 ring-w-primary-dark/30 scale-[1.02]'
                     : 'bg-white border-[#E3DCBA] shadow-2xs'
                 }`}
               >
                 {/* Active turn indicator pill */}
                 {isTurn && (
-                  <div className="absolute top-1.5 right-2 px-2 py-0.2 bg-[#4F683C] text-white text-[9px] font-black rounded-full uppercase tracking-wider animate-pulse">
+                  <div className="absolute top-1.5 right-2 px-2 py-0.2 bg-w-primary-dark text-w-text-main text-[9px] font-black rounded-full uppercase tracking-wider animate-pulse">
                     Đến Lượt
                   </div>
                 )}
@@ -513,8 +513,8 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                     {t.avatar}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="text-xs font-extrabold text-[#35452E] truncate">{t.name}</div>
-                    <div className="text-[11px] font-bold text-[#74806B] flex items-center gap-1">
+                    <div className="text-xs font-extrabold text-w-text-main truncate">{t.name}</div>
+                    <div className="text-[11px] font-bold text-w-text-muted flex items-center gap-1">
                       <span>Ô số: <strong className="text-slate-900">{t.position}</strong></span>
                     </div>
                   </div>
@@ -573,10 +573,10 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
             <div className="flex items-center gap-2">
               <span className="text-xl">🌳</span>
               <div>
-                <h3 className="text-sm font-black text-[#35452E] uppercase tracking-wide">
+                <h3 className="text-sm font-black text-w-text-main uppercase tracking-wide">
                   Đường Đi Vườn Táo ({totalTiles} Ô Bàn Cờ)
                 </h3>
-                <p className="text-[11px] text-[#74806B] font-semibold">
+                <p className="text-[11px] text-w-text-muted font-semibold">
                   Cẩn thận: Ô chia hết cho số bí mật của Ông Smith sẽ bị bắt!
                 </p>
               </div>
@@ -602,7 +602,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                     <div 
                       key={num}
                       className={`w-10 h-10 sm:w-12 sm:h-12 flex flex-col items-center justify-center rounded-xl shadow-xs border-2 transition-all duration-300
-                        ${isActive ? 'bg-[#4F683C] border-[#3D522B] text-white scale-105 shadow-md' : 'bg-white border-[#E3DCBA] text-[#74806B] opacity-70'}
+                        ${isActive ? 'bg-w-primary-dark border-w-primary-hover text-w-text-main scale-105 shadow-md' : 'bg-white border-[#E3DCBA] text-w-text-muted opacity-70'}
                       `}
                     >
                       <span className="text-[8px] font-black uppercase">Smith</span>
@@ -618,7 +618,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                 const pawnsOnTile = teams.filter(t => t.position === tile.number && !t.isCaught);
                 const caughtOnTile = teams.filter(t => t.position === tile.number && t.isCaught);
 
-                let tileBg = 'bg-[#FAF7EE] border-[#E3DCBA] text-slate-700';
+                let tileBg = 'bg-w-bg-alt border-[#E3DCBA] text-slate-700';
                 if (tile.type === 'golden') {
                   tileBg = 'bg-amber-50 border-amber-300 text-amber-900';
                 } else if (tile.type === 'spring') {
@@ -640,7 +640,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                   >
                     {/* Top Tile Info */}
                     <div className="flex items-center justify-between text-[10px] font-black">
-                      <span className="w-4 h-4 rounded bg-black/5 flex items-center justify-center text-[9px]">
+                      <span className="w-4 h-4 rounded bg-white/70 backdrop-blur-sm flex items-center justify-center text-[9px]">
                         {tile.number}
                       </span>
                       {tile.type === 'golden' && (
@@ -671,7 +671,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                       {caughtOnTile.map(cp => (
                         <div
                           key={cp.id}
-                          className="w-4 h-4 rounded-full bg-rose-600 text-white flex items-center justify-center text-[8px] shadow-xs border border-white"
+                          className="w-4 h-4 rounded-full bg-rose-600 text-w-text-main flex items-center justify-center text-[8px] shadow-xs border border-white"
                           title={`${cp.name} (Bị bắt)`}
                         >
                           ⛓️
@@ -692,9 +692,9 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
           </div>
 
           {/* Board Legend */}
-          <div className="mt-3 pt-3 border-t border-[#E3DCBA] flex flex-wrap gap-4 text-xs font-semibold text-[#74806B]">
+          <div className="mt-3 pt-3 border-t border-[#E3DCBA] flex flex-wrap gap-4 text-xs font-semibold text-w-text-muted">
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-md bg-[#FAF7EE] border border-[#E3DCBA]" />
+              <span className="w-3 h-3 rounded-md bg-w-bg-alt border border-[#E3DCBA]" />
               <span>Ô Thường (+1 🍏 nếu an toàn)</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -721,7 +721,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                 ? 'bg-rose-50 border-rose-300 text-rose-900'
                 : lastActionStatus === 'bonus'
                 ? 'bg-amber-50 border-amber-300 text-amber-900'
-                : 'bg-white border-[#E3DCBA] text-[#35452E]'
+                : 'bg-white border-[#E3DCBA] text-w-text-main'
             }`}
           >
             <div className="flex items-start gap-3">
@@ -739,11 +739,11 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-3xl p-5 sm:p-6 border-2 border-[#DCEBCB] shadow-sm space-y-4 flex-1 flex flex-col justify-between"
+              className="bg-white rounded-3xl p-5 sm:p-6 border-2 border-w-accent-muted shadow-sm space-y-4 flex-1 flex flex-col justify-between"
             >
               <div>
                 {/* Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-[#DCEBCB]">
+                <div className="flex items-center justify-between pb-3 border-b border-w-accent-muted">
                   <div className="flex items-center gap-2">
                     <div 
                       className="w-8 h-8 rounded-xl flex items-center justify-center text-base"
@@ -752,14 +752,14 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                       {currentTeam.avatar}
                     </div>
                     <div>
-                      <div className="text-[10px] font-extrabold uppercase text-[#74806B]">Lượt Trả Lời:</div>
-                      <div className="text-sm font-black text-[#35452E]">{currentTeam.name}</div>
+                      <div className="text-[10px] font-extrabold uppercase text-w-text-muted">Lượt Trả Lời:</div>
+                      <div className="text-sm font-black text-w-text-main">{currentTeam.name}</div>
                     </div>
                   </div>
 
                   {config.timerEnabled !== false && (
                     <div className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-black border-2 ${
-                      timeLeft <= 5 ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse' : 'bg-[#E9F0D9] border-[#B9CDA0] text-[#4F683C]'
+                      timeLeft <= 5 ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse' : 'bg-w-accent-light border-w-accent-border text-w-primary-dark'
                     }`}>
                       <Clock className="w-3.5 h-3.5" />
                       <span>{timeLeft}s</span>
@@ -769,10 +769,10 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
 
                 {/* Question Content */}
                 <div className="mt-4 space-y-2">
-                  <div className="text-[11px] font-extrabold text-[#74806B] uppercase tracking-wider">
+                  <div className="text-[11px] font-extrabold text-w-text-muted uppercase tracking-wider">
                     Câu hỏi số #{questionNumber}
                   </div>
-                  <p className="text-sm sm:text-base font-black text-[#35452E] leading-relaxed">
+                  <p className="text-sm sm:text-base font-black text-w-text-main leading-relaxed">
                     {currentQuestion.content}
                   </p>
                 </div>
@@ -788,12 +788,12 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                       let optStyle = 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100';
                       if (showAnswer) {
                         if (isCorrect) {
-                          optStyle = 'bg-emerald-500 text-white border-emerald-600 font-black';
+                          optStyle = 'bg-emerald-500 text-w-text-main border-emerald-600 font-black';
                         } else if (isSelected) {
-                          optStyle = 'bg-rose-500 text-white border-rose-600';
+                          optStyle = 'bg-rose-500 text-w-text-main border-rose-600';
                         }
                       } else if (isSelected) {
-                        optStyle = 'bg-[#4F683C] text-white border-[#3D522B]';
+                        optStyle = 'bg-w-primary-dark text-w-text-main border-w-primary-hover';
                       }
 
                       return (
@@ -803,7 +803,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                           onClick={() => !showAnswer && setSelectedOption(idx)}
                           className={`w-full p-2.5 rounded-xl border-2 text-left font-bold text-xs sm:text-sm transition flex items-center gap-2.5 cursor-pointer ${optStyle}`}
                         >
-                          <span className="w-5 h-5 rounded-md bg-black/10 flex items-center justify-center text-[10px] font-black shrink-0">
+                          <span className="w-5 h-5 rounded-md bg-white/70 backdrop-blur-sm flex items-center justify-center text-[10px] font-black shrink-0">
                             {['A','B','C','D'][idx]}
                           </span>
                           <span className="flex-1">{opt}</span>
@@ -815,12 +815,12 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
               </div>
 
               {/* Grading Buttons */}
-              <div className="pt-3 border-t border-[#DCEBCB] flex flex-wrap items-center justify-between gap-2">
+              <div className="pt-3 border-t border-w-accent-muted flex flex-wrap items-center justify-between gap-2">
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => handleAnswerSubmit(true)}
-                    className="px-4 py-2.5 bg-[#4F683C] hover:bg-[#3D522B] text-white font-black text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+                    className="px-4 py-2.5 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main font-black text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
                   >
                     <CheckCircle className="w-4 h-4 text-[#E9D58F]" />
                     <span>Trả Lời Đúng</span>
@@ -829,7 +829,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                   <button
                     type="button"
                     onClick={() => handleAnswerSubmit(false)}
-                    className="px-4 py-2.5 bg-[#D86C70] hover:bg-[#C55A5E] text-white font-black text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+                    className="px-4 py-2.5 bg-[#D86C70] hover:bg-[#C55A5E] text-w-text-main font-black text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
                   >
                     <XCircle className="w-4 h-4" />
                     <span>Chưa Đúng</span>
@@ -859,7 +859,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                 <span>Xúc Xắc Thần Kỳ</span>
               </div>
 
-              <h4 className="text-base sm:text-lg font-black text-[#35452E]">
+              <h4 className="text-base sm:text-lg font-black text-w-text-main">
                 {currentTeam.name} Hãy Tung Xúc Xắc Để Di Chuyển!
               </h4>
 
@@ -868,7 +868,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                 <motion.div
                   animate={isRollingDice ? { rotate: [0, 90, 180, 270, 360], scale: [1, 1.2, 1] } : {}}
                   transition={isRollingDice ? { repeat: Infinity, duration: 0.25 } : {}}
-                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-[#4F683C] to-[#2B3B1E] border-4 border-[#E9D58F] text-white flex items-center justify-center text-4xl sm:text-5xl font-black shadow-xl mx-auto"
+                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-w-primary-dark to-[#2B3B1E] border-4 border-[#E9D58F] text-w-text-main flex items-center justify-center text-4xl sm:text-5xl font-black shadow-xl mx-auto"
                 >
                   {diceValue !== null ? diceValue : '🎲'}
                 </motion.div>
@@ -878,7 +878,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                 type="button"
                 onClick={handleRollDice}
                 disabled={isRollingDice}
-                className="px-8 py-4 bg-gradient-to-r from-[#4F683C] to-[#3D522B] hover:from-[#3D522B] hover:to-[#2B3B1E] text-white font-black text-base sm:text-lg rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50 flex items-center gap-2 uppercase tracking-wide"
+                className="px-8 py-4 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-base sm:text-lg rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50 flex items-center gap-2 uppercase tracking-wide"
               >
                 <Dices className="w-5 h-5 text-[#E9D58F]" />
                 <span>{isRollingDice ? 'Đang Tung...' : 'TUNG XÚC XẮC'}</span>
@@ -888,12 +888,12 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
 
           {/* STAGE 3: MOVING & EVALUATION ANIMATION */}
           {turnStage === 'moving' && (
-            <div className="bg-white rounded-3xl p-8 border-2 border-[#DCEBCB] text-center space-y-4 flex-1 flex flex-col items-center justify-center">
+            <div className="bg-white rounded-3xl p-8 border-2 border-w-accent-muted text-center space-y-4 flex-1 flex flex-col items-center justify-center">
               <div className="text-5xl animate-bounce">🏃💨</div>
-              <h4 className="text-base font-black text-[#35452E]">
+              <h4 className="text-base font-black text-w-text-main">
                 {currentTeam.name} Đang Tiến Thêm {diceValue} Bước...
               </h4>
-              <p className="text-xs text-[#74806B] font-semibold">
+              <p className="text-xs text-w-text-muted font-semibold">
                 Đang kiểm tra xem ô đến có bị Ông Smith bắt không...
               </p>
             </div>
@@ -904,25 +904,25 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-3xl p-6 border-2 border-[#DCEBCB] shadow-sm text-center space-y-5 flex-1 flex flex-col justify-between"
+              className="bg-white rounded-3xl p-6 border-2 border-w-accent-muted shadow-sm text-center space-y-5 flex-1 flex flex-col justify-between"
             >
               <div className="space-y-3 pt-4">
                 <div className="text-6xl">
                   {lastActionStatus === 'caught' ? '⛓️' : '🍏'}
                 </div>
-                <h4 className="text-lg font-black text-[#35452E]">
+                <h4 className="text-lg font-black text-w-text-main">
                   {lastActionStatus === 'caught' ? 'Đã Bị Bắt!' : 'Hoàn Thành Lượt!'}
                 </h4>
-                <p className="text-xs text-[#74806B] font-semibold max-w-sm mx-auto">
+                <p className="text-xs text-w-text-muted font-semibold max-w-sm mx-auto">
                   {actionMessage}
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-[#DCEBCB]">
+              <div className="pt-4 border-t border-w-accent-muted">
                 <button
                   type="button"
                   onClick={handleNextTurn}
-                  className="w-full py-3.5 bg-gradient-to-r from-[#4F683C] to-[#3D522B] hover:from-[#3D522B] hover:to-[#2B3B1E] text-white font-black text-sm sm:text-base rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-sm sm:text-base rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2"
                 >
                   <span>Chuyển Lượt Đội Tiếp Theo</span>
                   <ChevronRight className="w-5 h-5" />
@@ -943,10 +943,10 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
               </div>
 
               <div>
-                <h3 className="text-xl sm:text-2xl font-black text-[#35452E]">
+                <h3 className="text-xl sm:text-2xl font-black text-w-text-main">
                   {winningTeam ? `🎉 ${winningTeam.name} CHIẾN THẮNG!` : 'ÔNG SMITH ĐÃ BẮT HẾT TẤT CẢ!'}
                 </h3>
-                <p className="text-xs sm:text-sm text-[#74806B] font-semibold mt-1">
+                <p className="text-xs sm:text-sm text-w-text-muted font-semibold mt-1">
                   {winningTeam 
                     ? `Xuất sắc hái đủ ${targetApples} quả táo và bảo vệ giỏ táo thành công!`
                     : `Số bí mật của Ông Smith là ${smithSecretNumber}. Hãy thử lại lần sau nhé!`}
@@ -954,15 +954,15 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
               </div>
 
               {/* Leaderboard */}
-              <div className="w-full bg-[#FAF7EE] p-3 rounded-2xl border border-[#E3DCBA] space-y-2">
-                <div className="text-xs font-black text-[#74806B] uppercase">Bảng Tổng Điểm Thu Hoạch:</div>
+              <div className="w-full bg-w-bg-alt p-3 rounded-2xl border border-[#E3DCBA] space-y-2">
+                <div className="text-xs font-black text-w-text-muted uppercase">Bảng Tổng Điểm Thu Hoạch:</div>
                 {teams.map(t => (
                   <div key={t.id} className="flex items-center justify-between text-xs py-1 px-2 bg-white rounded-lg font-bold">
                     <span className="flex items-center gap-1.5">
                       <span>{t.avatar}</span>
                       <span>{t.name}</span>
                     </span>
-                    <span className="text-[#4F683C] font-black">{t.apples} 🍎 ({t.apples * 10}đ)</span>
+                    <span className="text-w-primary-dark font-black">{t.apples} 🍎 ({t.apples * 10}đ)</span>
                   </div>
                 ))}
               </div>
@@ -971,7 +971,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                 <button
                   type="button"
                   onClick={handleRestart}
-                  className="px-6 py-3 bg-[#4F683C] hover:bg-[#3D522B] text-white font-black text-xs sm:text-sm rounded-xl shadow-md transition cursor-pointer"
+                  className="px-6 py-3 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-md transition cursor-pointer"
                 >
                   Chơi Ván Mới
                 </button>

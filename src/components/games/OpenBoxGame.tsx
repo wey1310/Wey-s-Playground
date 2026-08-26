@@ -204,19 +204,19 @@ export const OpenBoxGame: React.FC<OpenBoxGameProps> = ({ config, questions, onG
   return (
     <div className="flex-1 w-full p-3 sm:p-5 rounded-2xl shadow-xl flex flex-col justify-between border-2 border-amber-900/20 relative overflow-hidden max-w-full" style={getThemeBgStyle(config.theme)}>
       {/* Background elements */}
-      <div className="absolute inset-0 pointer-events-none opacity-20 bg-black/20"></div>
+      <div className="absolute inset-0 pointer-events-none opacity-20 bg-white/70 backdrop-blur-sm"></div>
       {/* Game Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-950/80 backdrop-blur border border-white/20 p-3 sm:p-3.5 rounded-xl shadow-xl z-10">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-w-bg-card backdrop-blur border border-white/20 p-3 sm:p-3.5 rounded-xl shadow-xl z-10">
         <div className="flex items-center gap-2.5">
           <span className="text-2xl sm:text-3xl filter drop-shadow">🎁</span>
           <div>
-            <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2 font-mono">
+            <h2 className="text-base sm:text-lg font-black text-w-text-main flex items-center gap-2 font-mono">
               <span>TRÒ CHƠI MỞ HỘP BÍ MẬT</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/30 text-amber-300 font-sans border border-amber-400/50">
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/30 text-amber-600 font-sans border border-amber-400">
                 {themeInfo.icon} {themeInfo.name}
               </span>
             </h2>
-            <p className="text-[11px] text-slate-300 font-medium mt-0.5">
+            <p className="text-[11px] text-w-primary-dark font-medium mt-0.5">
               {config.mode === 'bank' ? 'Chế độ Ngân hàng câu hỏi' : 'Chế độ Số'} • Đã mở {openedBoxes.filter(Boolean).length}/{totalCount} hộp
             </p>
           </div>
@@ -233,13 +233,13 @@ export const OpenBoxGame: React.FC<OpenBoxGameProps> = ({ config, questions, onG
                   className={`px-3 py-1.5 rounded-xl border flex items-center gap-2 transition transform ${
                     isCurrentTurn
                       ? 'bg-amber-500/30 border-amber-400 text-amber-200 ring-2 ring-amber-400/40 scale-105 shadow-md'
-                      : 'bg-slate-900/70 border-slate-700 text-slate-300'
+                      : 'bg-w-bg-alt border-w-accent-border text-w-primary-dark'
                   }`}
                 >
                   <span className="text-xl">{team.avatar}</span>
                   <div className="text-xs">
                     <div className="font-bold leading-none">{team.name}</div>
-                    <div className="font-mono text-amber-300 font-extrabold mt-0.5">{team.score}đ</div>
+                    <div className="font-mono text-amber-600 font-extrabold mt-0.5">{team.score}đ</div>
                   </div>
                 </div>
               );
@@ -249,7 +249,7 @@ export const OpenBoxGame: React.FC<OpenBoxGameProps> = ({ config, questions, onG
 
         <button
           onClick={() => onGameEnd(teams, answerLogs)}
-          className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition shadow-md active:scale-95 cursor-pointer"
+          className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-500 text-w-text-main font-bold text-xs rounded-xl transition shadow-md active:scale-95 cursor-pointer"
         >
           Kết Thúc Game
         </button>
@@ -295,7 +295,7 @@ export const OpenBoxGame: React.FC<OpenBoxGameProps> = ({ config, questions, onG
       />
 
       {/* Footer Instructions */}
-      <div className="text-center text-xs font-extrabold tracking-wide text-slate-400 bg-slate-950/70 py-2 px-4 rounded-full border border-white/10 mx-auto z-10 shadow-lg">
+      <div className="text-center text-xs font-extrabold tracking-wide text-w-text-muted bg-w-bg-card py-2 px-4 rounded-full border border-white/10 mx-auto z-10 shadow-lg">
         Mỗi đội chọn 1 hộp ➔ Trả lời câu hỏi ➔ Đúng nhận +10đ & mở hộp!
       </div>
     </div>

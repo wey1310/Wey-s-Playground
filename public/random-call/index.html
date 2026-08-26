@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gọi Tên Ngẫu Nhiên - Wey's Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #FFFDF5;
+      color: #35452E;
+    }
+    .wey-card {
+      background: #FFFFFF;
+      border: 2px solid #DED5B8;
+      box-shadow: 0 8px 24px rgba(79, 104, 60, 0.08);
+      border-radius: 24px;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(111, 143, 85, 0.4); }
+      50% { transform: scale(1.03); box-shadow: 0 0 40px rgba(111, 143, 85, 0.7); }
+    }
+    @keyframes slideUpFadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(24px) scale(0.92);
+      }
+      55% {
+        transform: translateY(-8px) scale(1.05);
+      }
+      72% {
+        transform: translateY(4px) scale(0.98);
+      }
+      86% {
+        transform: translateY(-2px) scale(1.01);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    #displayName {
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #displayName[data-state="rolling"] {
+      border-color: #8CA674;
+      background: rgba(233, 240, 217, 0.6);
+      transform: scale(0.98);
+      color: #4F683C;
+    }
+    #displayName[data-state="selected"] {
+      animation: slideUpFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards, pulse-glow 2s infinite ease-in-out;
+      border-color: #4F683C;
+      background: #FFFFFF;
+      box-shadow: 0 16px 36px rgba(79, 104, 60, 0.18), 0 0 0 4px rgba(185, 205, 160, 0.4);
+      color: #2D3D25;
+    }
+    #displayName[data-state="idle"] {
+      border-color: #DED5B8;
+      background: rgba(255, 255, 255, 0.9);
+      color: #74806B;
+    }
+    .pulse-animation {
+      animation: pulse-glow 1.5s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-3 sm:p-6">
+  <!-- Header -->
+  <header class="w-full max-w-5xl flex items-center justify-between py-3 border-b border-[#DED5B8]">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-2xl bg-[#E9F0D9] border border-[#B9CDA0] flex items-center justify-center text-xl">
+        🤚
+      </div>
+      <div>
+        <h1 class="text-xl font-[900] text-[#4F683C] leading-none">Gọi Tên Ngẫu Nhiên</h1>
+        <p class="text-xs font-bold text-[#74806B]">Lưu tự động vào LocalStorage • Không bao giờ mất dữ liệu</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="btnToggleList" class="px-3.5 py-1.5 bg-[#FFFDF5] hover:bg-[#E9F0D9] text-[#4F683C] border border-[#B9CDA0] text-xs font-black rounded-xl transition">
+        📝 Danh Sách (<span id="studentCountBadge">0</span>)
+      </button>
+      <button id="btnResetCalled" class="px-3.5 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-black rounded-xl transition">
+        🔄 Reset Lượt Gọi
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="w-full max-w-5xl flex-1 flex flex-col md:flex-row gap-6 my-6 items-stretch">
+    <!-- Left: Roll Stage -->
+    <div class="flex-1 wey-card p-6 sm:p-8 flex flex-col items-center justify-between min-h-[420px] relative overflow-hidden bg-gradient-to-b from-[#FFFDF5] to-[#F8F4E6]">
+      <div class="w-full flex items-center justify-between text-xs font-bold text-[#74806B]">
+        <span id="remainingBadge">Còn lại: 0 học sinh</span>
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="checkbox" id="chkNoRepeat" checked class="rounded accent-[#4F683C]" />
+          <span>Không gọi trùng</span>
+        </label>
+      </div>
+
+      <!-- Display Name Box -->
+      <div class="my-auto py-8 text-center flex flex-col items-center justify-center">
+        <div id="statusLabel" class="text-xs font-extrabold uppercase tracking-widest text-[#74806B] mb-2">
+          SẴN SÀNG QUAY
+        </div>
+        <div id="displayName" data-state="idle" class="text-3xl sm:text-5xl font-[900] text-[#35452E] transition-all transform tracking-tight p-4 bg-white/90 rounded-3xl border-2 border-[#DED5B8] shadow-sm min-w-[280px] sm:min-w-[380px] max-w-xl break-words">
+          ---
+        </div>
+      </div>
+
+      <!-- Action Roll Button -->
+      <div class="w-full flex flex-col sm:flex-row items-center justify-center gap-3">
+        <button id="btnRoll" class="w-full sm:w-auto px-10 py-4 bg-[#6F8F55] hover:bg-[#5F7E4B] text-white text-lg font-[900] rounded-2xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-3 cursor-pointer">
+          <span>🎲 BẮT ĐẦU GỌI TÊN</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right: Student List Drawer / Panel -->
+    <div id="listDrawer" class="w-full md:w-80 wey-card p-5 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-sm font-[900] text-[#35452E]">Danh Sách Học Sinh</h3>
+          <span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
+            Đã Lưu LocalStorage ✓
+          </span>
+        </div>
+        <p class="text-[11px] text-[#74806B] font-bold mb-2">
+          Nhập mỗi học sinh trên một dòng. Dữ liệu sẽ tự động lưu và giữ nguyên khi tải lại trang.
+        </p>
+        <textarea id="txtStudents" rows="12" class="w-full p-3 text-xs font-bold text-[#35452E] bg-[#F8F4E6] border border-[#DED5B8] rounded-xl focus:outline-none focus:border-[#4F683C] leading-relaxed resize-none"></textarea>
+      </div>
+
+      <div class="mt-3 pt-3 border-t border-[#DED5B8] flex items-center justify-between text-xs">
+        <button id="btnSample" class="text-[#4F683C] font-black underline hover:text-[#384c2a]">
+          Nạp danh sách mẫu
+        </button>
+        <span id="saveIndicator" class="text-[10px] text-emerald-600 font-bold opacity-0 transition-opacity">
+          Đã lưu!
+        </span>
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-center text-xs font-bold text-[#74806B] py-2">
+    Wey's Playground • Gọi Tên Ngẫu Nhiên Thông Minh
+  </footer>
+
+  <script>
+    const STORAGE_KEY = 'wey_saved_students_list';
+    const DEFAULT_STUDENTS = [
+      'Nguyễn Văn An', 'Trần Thị Bình', 'Lê Hoàng Cường', 'Phạm Minh Dũng', 'Hoàng Gia Em',
+      'Vũ Thùy Linh', 'Đỗ Quang Minh', 'Bùi Hải Nam', 'Đặng Phương Nga', 'Trương Quốc Phong',
+      'Ngô Gia Bảo', 'Đinh Khánh Huyền', 'Lâm Tuấn Kiệt', 'Võ Mai Phương', 'Hồ Đức Trí'
+    ];
+
+    const txtStudents = document.getElementById('txtStudents');
+    const btnRoll = document.getElementById('btnRoll');
+    const displayName = document.getElementById('displayName');
+    const statusLabel = document.getElementById('statusLabel');
+    const chkNoRepeat = document.getElementById('chkNoRepeat');
+    const studentCountBadge = document.getElementById('studentCountBadge');
+    const remainingBadge = document.getElementById('remainingBadge');
+    const btnResetCalled = document.getElementById('btnResetCalled');
+    const btnSample = document.getElementById('btnSample');
+    const saveIndicator = document.getElementById('saveIndicator');
+
+    let students = [];
+    let calledStudents = [];
+    let isRolling = false;
+    let rollInterval = null;
+
+    // Load from LocalStorage
+    function loadStudents() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            students = parsed;
+            txtStudents.value = students.join('\n');
+            updateBadges();
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Error loading localStorage:', e);
+      }
+      // Fallback
+      students = [...DEFAULT_STUDENTS];
+      txtStudents.value = students.join('\n');
+      saveStudents();
+      updateBadges();
+    }
+
+    // Save to LocalStorage
+    function saveStudents() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
+        saveIndicator.style.opacity = '1';
+        setTimeout(() => { saveIndicator.style.opacity = '0'; }, 1200);
+      } catch (e) {
+        console.warn('Error saving to localStorage:', e);
+      }
+    }
+
+    function updateBadges() {
+      studentCountBadge.textContent = students.length;
+      const remaining = chkNoRepeat.checked 
+        ? students.filter(s => !calledStudents.includes(s))
+        : students;
+      remainingBadge.textContent = `Còn lại: ${remaining.length}/${students.length} học sinh`;
+    }
+
+    // Sound Synthesizer Fallback
+    function playBeep(freq = 600, duration = 0.08) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playWinSound() {
+      [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+        setTimeout(() => playBeep(freq, 0.2), idx * 100);
+      });
+    }
+
+    // Textarea sync
+    txtStudents.addEventListener('input', () => {
+      students = txtStudents.value.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+      saveStudents();
+      updateBadges();
+    });
+
+    btnSample.addEventListener('click', () => {
+      students = [...DEFAULT_STUDENTS];
+      txtStudents.value = students.join('\n');
+      saveStudents();
+      updateBadges();
+    });
+
+    btnResetCalled.addEventListener('click', () => {
+      calledStudents = [];
+      updateBadges();
+      displayName.textContent = '---';
+      displayName.setAttribute('data-state', 'idle');
+      displayName.classList.remove('pulse-animation');
+      statusLabel.textContent = 'ĐÃ RESET LƯỢT GỌI';
+    });
+
+    chkNoRepeat.addEventListener('change', updateBadges);
+
+    // Confetti explosion trigger on element
+    function triggerConfettiExplosion(targetElement) {
+      const el = targetElement || document.querySelector('#displayName');
+      let originX = 0.5;
+      let originY = 0.5;
+
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        originX = (rect.left + rect.width / 2) / window.innerWidth;
+        originY = (rect.top + rect.height / 2) / window.innerHeight;
+      }
+
+      // First burst - wide spray
+      if (window.confetti) {
+        window.confetti({
+          particleCount: 90,
+          spread: 80,
+          origin: { x: originX, y: originY },
+          colors: ['#4F683C', '#E9D58F', '#F59E0B', '#3B82F6', '#EC4899', '#10B981']
+        });
+
+        // Second follow-up burst for fireworks effect
+        setTimeout(() => {
+          window.confetti({
+            particleCount: 50,
+            angle: 60,
+            spread: 60,
+            origin: { x: Math.max(0.1, originX - 0.1), y: originY },
+            colors: ['#E9D58F', '#6F8F55', '#F59E0B']
+          });
+          window.confetti({
+            particleCount: 50,
+            angle: 120,
+            spread: 60,
+            origin: { x: Math.min(0.9, originX + 0.1), y: originY },
+            colors: ['#4F683C', '#3B82F6', '#EC4899']
+          });
+        }, 180);
+      }
+    }
+
+    // Observe #displayName data-state attribute changes to ensure confetti always fires on selection
+    if (displayName) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'data-state') {
+            const state = displayName.getAttribute('data-state');
+            if (state === 'selected') {
+              triggerConfettiExplosion(displayName);
+            }
+          }
+        });
+      });
+      observer.observe(displayName, { attributes: true });
+    }
+
+    // Roll Execution
+    btnRoll.addEventListener('click', () => {
+      if (isRolling) return;
+      if (students.length === 0) {
+        alert('Vui lòng nhập danh sách học sinh!');
+        return;
+      }
+
+      let candidatePool = chkNoRepeat.checked 
+        ? students.filter(s => !calledStudents.includes(s))
+        : students;
+
+      if (candidatePool.length === 0) {
+        if (confirm('Đã gọi hết tất cả học sinh! Bạn có muốn reset để gọi lượt mới?')) {
+          calledStudents = [];
+          candidatePool = [...students];
+          updateBadges();
+        } else {
+          return;
+        }
+      }
+
+      isRolling = true;
+      btnRoll.disabled = true;
+      btnRoll.classList.add('opacity-50');
+      statusLabel.textContent = 'ĐANG QUAY NGẪU NHIÊN...';
+      displayName.setAttribute('data-state', 'rolling');
+      displayName.classList.remove('pulse-animation');
+
+      let rollCount = 0;
+      const maxRolls = 28;
+      const intervalSpeed = 70;
+
+      rollInterval = setInterval(() => {
+        const randIdx = Math.floor(Math.random() * candidatePool.length);
+        displayName.textContent = candidatePool[randIdx];
+        playBeep(450 + (rollCount * 15), 0.05);
+        rollCount++;
+
+        if (rollCount >= maxRolls) {
+          clearInterval(rollInterval);
+          // Pick final student
+          const finalIndex = Math.floor(Math.random() * candidatePool.length);
+          const winner = candidatePool[finalIndex];
+          displayName.textContent = winner;
+          displayName.setAttribute('data-state', 'selected');
+          displayName.classList.add('pulse-animation');
+          statusLabel.textContent = '🎉 HỌC SINH ĐÃ ĐƯỢC CHỌN!';
+          
+          if (chkNoRepeat.checked) {
+            calledStudents.push(winner);
+          }
+          
+          updateBadges();
+          isRolling = false;
+          btnRoll.disabled = false;
+          btnRoll.classList.remove('opacity-50');
+          playWinSound();
+
+          // Trigger confetti explosion on #displayName selection
+          triggerConfettiExplosion(displayName);
+        }
+      }, intervalSpeed);
+    });
+
+    // Init
+    loadStudents();
+  </script>
+</body>
+</html>

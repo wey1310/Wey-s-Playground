@@ -360,7 +360,7 @@ export function MagicWheelGame({ config, questions, onGameEnd }: MagicWheelGameP
         </div>
 
         {/* Puzzle Tiles - Word separated cleanly */}
-        <div className="p-6 sm:p-10 bg-slate-900 border-4 border-slate-700 rounded-3xl shadow-2xl w-full max-w-5xl flex flex-col items-center justify-center min-h-[300px]">
+        <div className="p-6 sm:p-10 bg-w-bg-alt border-4 border-w-accent-border rounded-3xl shadow-2xl w-full max-w-5xl flex flex-col items-center justify-center min-h-[300px]">
           <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-6">
             {words.map((word, wIdx) => (
               <div key={wIdx} className="flex gap-1.5 sm:gap-2">
@@ -398,9 +398,9 @@ export function MagicWheelGame({ config, questions, onGameEnd }: MagicWheelGameP
               let keyStyle = 'bg-indigo-100 hover:bg-indigo-200 border-indigo-300 text-indigo-900 active:border-b-0 active:translate-y-1 hover:-translate-y-1';
               if (isUsed) {
                 if (isCorrect) {
-                  keyStyle = 'bg-emerald-500 border-emerald-600 text-white font-black shadow-emerald-200/50 shadow-md scale-105 ring-2 ring-emerald-400';
+                  keyStyle = 'bg-emerald-500 border-emerald-600 text-w-text-main font-black shadow-emerald-200/50 shadow-md scale-105 ring-2 ring-emerald-400';
                 } else {
-                  keyStyle = 'bg-rose-500 border-rose-600 text-white font-black opacity-80 cursor-not-allowed scale-95 shadow-inner';
+                  keyStyle = 'bg-rose-500 border-rose-600 text-w-text-main font-black opacity-80 cursor-not-allowed scale-95 shadow-inner';
                 }
               }
 
@@ -452,7 +452,7 @@ export function MagicWheelGame({ config, questions, onGameEnd }: MagicWheelGameP
               </span>
               <button
                 onClick={() => setCurrentPhraseIndex((prev) => (prev + 1) % customPhrasesList.length)}
-                className="px-3 py-1.5 bg-indigo-600 text-white font-bold text-xs rounded-lg shadow hover:bg-indigo-700 flex items-center gap-1"
+                className="px-3 py-1.5 bg-indigo-600 text-w-text-main font-bold text-xs rounded-lg shadow hover:bg-indigo-700 flex items-center gap-1"
               >
                 <span>Câu Tiếp</span>
                 <ChevronRight className="w-4 h-4" />
@@ -464,7 +464,7 @@ export function MagicWheelGame({ config, questions, onGameEnd }: MagicWheelGameP
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsGuessingFullPhrase(true)}
-            className="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-black text-xs rounded-xl shadow-lg transition flex items-center gap-1.5"
+            className="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-w-text-main font-black text-xs rounded-xl shadow-lg transition flex items-center gap-1.5"
           >
             <Sparkles className="w-4 h-4 text-amber-200" />
             <span>ĐOÁN CẢ CÂU</span>
@@ -472,7 +472,7 @@ export function MagicWheelGame({ config, questions, onGameEnd }: MagicWheelGameP
           
           <button
             onClick={() => onGameEnd(teamsState, logs)}
-            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-lg transition flex items-center gap-2"
+            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-w-text-main font-black text-xs rounded-xl shadow-lg transition flex items-center gap-2"
           >
             <Trophy className="w-4 h-4" />
             <span>KẾT THÚC GAME</span>
@@ -486,7 +486,7 @@ export function MagicWheelGame({ config, questions, onGameEnd }: MagicWheelGameP
         const calcPoints = currentUnrevealed * pointsPerLetter;
 
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-w-bg-alt backdrop-blur-sm animate-fade-in">
             <div className="bg-white border-4 border-rose-200 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden text-center p-6 space-y-5">
               <HelpCircle className="w-16 h-16 text-rose-500 mx-auto animate-bounce" />
               <div>
@@ -511,7 +511,7 @@ export function MagicWheelGame({ config, questions, onGameEnd }: MagicWheelGameP
               <div className="flex gap-4">
                 <button
                   onClick={() => handleConfirmFullPhraseGuess(true)}
-                  className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm rounded-xl transition flex flex-col items-center justify-center gap-0.5 shadow-lg hover:shadow-xl"
+                  className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-w-text-main font-black text-sm rounded-xl transition flex flex-col items-center justify-center gap-0.5 shadow-lg hover:shadow-xl"
                 >
                   <div className="flex items-center gap-1.5">
                     <Check className="w-5 h-5" />
@@ -521,7 +521,7 @@ export function MagicWheelGame({ config, questions, onGameEnd }: MagicWheelGameP
                 </button>
                 <button
                   onClick={() => handleConfirmFullPhraseGuess(false)}
-                  className="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white font-black text-sm rounded-xl transition flex flex-col items-center justify-center gap-0.5 shadow-lg hover:shadow-xl"
+                  className="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-w-text-main font-black text-sm rounded-xl transition flex flex-col items-center justify-center gap-0.5 shadow-lg hover:shadow-xl"
                 >
                   <div className="flex items-center gap-1.5">
                     <X className="w-5 h-5" />

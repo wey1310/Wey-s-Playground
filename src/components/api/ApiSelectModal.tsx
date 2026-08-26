@@ -57,19 +57,19 @@ export const ApiSelectModal: React.FC<ApiSelectModalProps> = ({
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          className="relative w-full max-w-lg bg-[#FFFDF5] rounded-3xl shadow-2xl border-2 border-[#DCEBCB] overflow-hidden flex flex-col max-h-[85vh]"
+          className="relative w-full max-w-lg bg-w-bg-card rounded-3xl shadow-2xl border-2 border-w-accent-muted overflow-hidden flex flex-col max-h-[85vh]"
         >
           {/* Header */}
-          <div className="bg-[#4F683C] px-5 py-4 text-white flex items-center justify-between shadow-xs">
+          <div className="bg-w-primary-dark px-5 py-4 text-white flex items-center justify-between shadow-xs">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-gradient-to-br from-[#E9D58F] to-[#d6c175] text-[#4F683C] rounded-2xl shadow-sm">
+              <div className="p-2.5 bg-gradient-to-br from-[#E9D58F] to-[#d6c175] text-w-primary-dark rounded-2xl shadow-sm">
                 <Sparkles className="w-5 h-5 fill-current" />
               </div>
               <div>
                 <h2 className="text-base font-black text-white leading-tight">
                   Mạng Lưới Gemini Key Pool
                 </h2>
-                <p className="text-xs text-[#DCEBCB] font-medium mt-0.5">
+                <p className="text-xs text-w-accent-muted font-medium mt-0.5">
                   Tự động xoay vòng cho: {featureTitle}
                 </p>
               </div>
@@ -85,9 +85,9 @@ export const ApiSelectModal: React.FC<ApiSelectModalProps> = ({
 
           {/* Body */}
           <div className="p-5 space-y-4">
-            <div className="bg-[#FAF7EE] p-4 rounded-2xl border border-[#DED5B8] space-y-2">
+            <div className="bg-w-bg-alt p-4 rounded-2xl border border-w-border space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black text-[#35452E] uppercase tracking-wider">Trạng Thái Hệ Thống</span>
+                <span className="text-xs font-black text-w-text-main uppercase tracking-wider">Trạng Thái Hệ Thống</span>
                 <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
                   {totalKeys} Key Sẵn Sàng
                 </span>
@@ -98,11 +98,11 @@ export const ApiSelectModal: React.FC<ApiSelectModalProps> = ({
             </div>
 
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="p-3 bg-white rounded-xl border border-[#DED5B8]">
+              <div className="p-3 bg-white rounded-xl border border-w-border">
                 <span className="text-[10px] text-slate-400 block font-bold uppercase">Cấp Model Mặc Định</span>
                 <span className="font-black text-purple-800 text-xs mt-0.5 block">Cấp 1: Gemini 3.7 Flash</span>
               </div>
-              <div className="p-3 bg-white rounded-xl border border-[#DED5B8]">
+              <div className="p-3 bg-white rounded-xl border border-w-border">
                 <span className="text-[10px] text-slate-400 block font-bold uppercase">Cơ Chế Dự Phòng</span>
                 <span className="font-black text-emerald-700 text-xs mt-0.5 block">Cách ly 429 & Xoay Key</span>
               </div>
@@ -111,7 +111,7 @@ export const ApiSelectModal: React.FC<ApiSelectModalProps> = ({
             <div className="pt-2 flex flex-col sm:flex-row items-center gap-2">
               <button
                 onClick={handleProceed}
-                className="w-full sm:flex-1 py-3 bg-[#6F8F55] hover:bg-[#5F7E4B] text-white rounded-xl font-black text-xs transition flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+                className="w-full sm:flex-1 py-3 bg-w-primary hover:bg-w-primary-hover text-white rounded-xl font-black text-xs transition flex items-center justify-center gap-2 shadow-sm cursor-pointer"
               >
                 <Zap className="w-4 h-4" />
                 <span>Tiếp Tục Sử Dụng {featureTitle}</span>

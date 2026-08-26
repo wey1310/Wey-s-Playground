@@ -45,17 +45,17 @@ export const TeaCupGrid: React.FC<TeaCupGridProps> = ({
                 </span>
               </h3>
               <p className="text-xs text-amber-100/70">
-                Lượt thi đấu của <span className="font-bold text-amber-300">{activeTeam.name}</span> — Hãy chọn 1 cốc trà!
+                Lượt thi đấu của <span className="font-bold text-amber-600">{activeTeam.name}</span> — Hãy chọn 1 cốc trà!
               </p>
             </div>
           </div>
 
           {/* Tanjiro & Kanao mini emblem */}
-          <div className="flex items-center gap-2 text-xs font-bold text-amber-200/90 bg-black/40 px-3 py-1.5 rounded-2xl border border-amber-500/30">
+          <div className="flex items-center gap-2 text-xs font-bold text-amber-200/90 bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-2xl border border-amber-500/30">
             <span className="flex items-center gap-1">
               <span className="text-base">🎴</span> Tanjiro (Đội bạn)
             </span>
-            <span className="text-amber-400 font-black">VS</span>
+            <span className="text-amber-600 font-black">VS</span>
             <span className="flex items-center gap-1">
               <span className="text-base">🦋</span> Kanao (Đối thủ)
             </span>
@@ -94,10 +94,10 @@ export const TeaCupGrid: React.FC<TeaCupGridProps> = ({
                   <span
                     className={`rounded-full px-1.5 py-0.2 ${
                       isWon
-                        ? 'bg-emerald-500 text-white'
+                        ? 'bg-emerald-500 text-w-text-main'
                         : isLost
-                        ? 'bg-rose-500 text-white'
-                        : 'bg-black/50 text-amber-200'
+                        ? 'bg-rose-500 text-w-text-main'
+                        : 'bg-white/70 backdrop-blur-sm text-amber-200'
                     }`}
                   >
                     #{cup.id}
@@ -105,7 +105,7 @@ export const TeaCupGrid: React.FC<TeaCupGridProps> = ({
                   {isWon && <Check className="w-3.5 h-3.5 text-emerald-300 font-bold" />}
                   {isLost && <X className="w-3.5 h-3.5 text-rose-300 font-bold" />}
                   {isUnopened && (
-                    <span className="text-[9px] text-amber-300/80 font-bold">
+                    <span className="text-[9px] text-amber-600 font-bold">
                       +{cup.points}đ
                     </span>
                   )}
@@ -142,7 +142,7 @@ export const TeaCupGrid: React.FC<TeaCupGridProps> = ({
                     {/* Number Overlay for unopened cups */}
                     {isUnopened && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span className="text-sm sm:text-base font-black text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+                        <span className="text-sm sm:text-base font-black text-w-text-main drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
                           {cup.id}
                         </span>
                       </div>

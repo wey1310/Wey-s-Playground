@@ -64,7 +64,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
   const initialTeams: Team[] = config.teams && config.teams.length >= 2
     ? config.teams
     : [
-        { id: 'team_st', name: 'Sơn Tinh (Thần Núi) 🏔️', color: '#4F683C', avatar: '🏔️', score: 0 },
+        { id: 'team_st', name: 'Sơn Tinh (Thần Núi) 🏔️', color: '#E08283', avatar: '🏔️', score: 0 },
         { id: 'team_tt', name: 'Thủy Tinh (Thần Nước) 🌊', color: '#2563EB', avatar: '🌊', score: 0 },
       ];
 
@@ -101,7 +101,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
     initialTeams.map((t, idx) => ({
       id: t.id,
       name: t.name,
-      color: t.color || (idx % 2 === 0 ? '#4F683C' : '#2563EB'),
+      color: t.color || (idx % 2 === 0 ? '#E08283' : '#2563EB'),
       avatar: t.avatar || (idx % 2 === 0 ? '🏔️' : '🌊'),
       faction: idx % 2 === 0 ? 'sontinh' : 'thuytinh',
       position: idx % 2 === 0 ? 1 : 13,
@@ -307,7 +307,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
 
     if (currentTeam.faction === 'sontinh') {
       // Sơn Tinh Skill: DÂNG NÚI / ĐẮP LŨY ĐÁ
-      confetti({ particleCount: 40, colors: ['#4F683C', '#8D5B4C', '#E9D58F'] });
+      confetti({ particleCount: 40, colors: ['#E08283', '#8D5B4C', '#E9D58F'] });
       // Clear floods on current or adjacent tile and build stone wall
       const targetPos = currentTeam.position;
       setMapTiles(prev => prev.map(tile => {
@@ -400,7 +400,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
     setTeams(initialTeams.map((t, idx) => ({
       id: t.id,
       name: t.name,
-      color: t.color || (idx % 2 === 0 ? '#4F683C' : '#2563EB'),
+      color: t.color || (idx % 2 === 0 ? '#E08283' : '#2563EB'),
       avatar: t.avatar || (idx % 2 === 0 ? '🏔️' : '🌊'),
       faction: idx % 2 === 0 ? 'sontinh' : 'thuytinh',
       position: idx % 2 === 0 ? 1 : 13,
@@ -439,20 +439,20 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
     <div className="w-full max-w-7xl mx-auto flex flex-col min-h-screen bg-[#F4F8F1] text-slate-800 select-none pb-12">
       
       {/* HEADER BAR */}
-      <header className="bg-white border-b-2 border-[#DCEBCB] px-4 py-3 sm:px-6 shadow-xs sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3">
+      <header className="bg-white border-b-2 border-w-accent-muted px-4 py-3 sm:px-6 shadow-xs sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#4F683C] to-[#2563EB] text-white flex items-center justify-center text-xl shadow-xs">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-w-primary-dark to-[#2563EB] text-w-text-main flex items-center justify-center text-xl shadow-xs">
             ⚔️
           </div>
           <div>
-            <h1 className="text-lg sm:text-xl font-black text-[#35452E] flex items-center gap-2">
+            <h1 className="text-lg sm:text-xl font-black text-w-text-main flex items-center gap-2">
               <span>SƠN TINH – THỦY TINH</span>
-              <span className="text-xs px-2.5 py-0.5 bg-[#E9F0D9] text-[#4F683C] rounded-full font-extrabold uppercase tracking-wide border border-[#B9CDA0]">
+              <span className="text-xs px-2.5 py-0.5 bg-w-accent-light text-w-primary-dark rounded-full font-extrabold uppercase tracking-wide border border-w-accent-border">
                 Boardgame Chiến Thuật
               </span>
             </h1>
-            <p className="text-xs text-[#74806B] font-semibold">
-              Hiệp đấu: <strong className="text-[#35452E] font-black">{currentRound}/{maxRounds}</strong> | Mực Nước Lũ: <strong className="text-blue-600 font-black">Cấp {waterLevel} 🌊</strong>
+            <p className="text-xs text-w-text-muted font-semibold">
+              Hiệp đấu: <strong className="text-w-text-main font-black">{currentRound}/{maxRounds}</strong> | Mực Nước Lũ: <strong className="text-blue-600 font-black">Cấp {waterLevel} 🌊</strong>
             </p>
           </div>
         </div>
@@ -462,10 +462,10 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
           <button
             type="button"
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className="p-2 rounded-xl bg-white border border-[#DCEBCB] hover:bg-slate-50 text-slate-600 transition cursor-pointer"
+            className="p-2 rounded-xl bg-white border border-w-accent-muted hover:bg-slate-50 text-slate-600 transition cursor-pointer"
             title="Bật/Tắt âm thanh"
           >
-            {soundEnabled ? <Volume2 className="w-4 h-4 text-[#4F683C]" /> : <VolumeX className="w-4 h-4 text-slate-400" />}
+            {soundEnabled ? <Volume2 className="w-4 h-4 text-w-primary-dark" /> : <VolumeX className="w-4 h-4 text-w-text-muted" />}
           </button>
 
           <button
@@ -480,7 +480,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
           <button
             type="button"
             onClick={handleEndGame}
-            className="px-3.5 py-1.5 bg-[#4F683C] hover:bg-[#3D522B] text-white text-xs font-black rounded-xl shadow-xs transition cursor-pointer"
+            className="px-3.5 py-1.5 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main text-xs font-black rounded-xl shadow-xs transition cursor-pointer"
           >
             Tổng Kết
           </button>
@@ -488,8 +488,8 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
       </header>
 
       {/* SACRED SINH LE TRACKER BAR */}
-      <div className="px-4 py-2.5 sm:px-6 bg-[#FAF7EE] border-b border-[#E3DCBA] flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-xs font-extrabold text-[#74806B]">
+      <div className="px-4 py-2.5 sm:px-6 bg-w-bg-alt border-b border-[#E3DCBA] flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-xs font-extrabold text-w-text-muted">
           <Crown className="w-4 h-4 text-amber-500" />
           <span>SÍNH LỄ HÙNG VƯƠNG:</span>
         </div>
@@ -508,7 +508,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
             >
               <span className="text-base">{item.icon}</span>
               <span>{item.name}</span>
-              <span className="text-[10px] font-black uppercase px-1.5 py-0.2 rounded-md bg-black/5">
+              <span className="text-[10px] font-black uppercase px-1.5 py-0.2 rounded-md bg-white/70 backdrop-blur-sm">
                 {item.isOfferedToKing ? 'Đã Cống Nạp 👑' : item.isCollected ? 'Đang Giữ 🎒' : `Ô #${item.tilePosition}`}
               </span>
             </div>
@@ -517,7 +517,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
       </div>
 
       {/* TEAMS STATUS BAR */}
-      <div className="px-4 py-3 sm:px-6 bg-[#F4F8F1] border-b border-[#DCEBCB]">
+      <div className="px-4 py-3 sm:px-6 bg-[#F4F8F1] border-b border-w-accent-muted">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           {teams.map((t, idx) => {
             const isTurn = idx === currentTeamIndex && turnStage !== 'gameover';
@@ -528,12 +528,12 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                 key={t.id}
                 className={`p-3 rounded-2xl border-2 transition-all relative overflow-hidden ${
                   isTurn
-                    ? 'bg-white border-[#4F683C] shadow-lg ring-2 ring-[#4F683C]/30 scale-[1.02]'
-                    : 'bg-white border-[#DCEBCB] shadow-2xs'
+                    ? 'bg-white border-w-primary-dark shadow-lg ring-2 ring-w-primary-dark/30 scale-[1.02]'
+                    : 'bg-white border-w-accent-muted shadow-2xs'
                 }`}
               >
                 {isTurn && (
-                  <div className="absolute top-1.5 right-2 px-2 py-0.2 bg-[#4F683C] text-white text-[9px] font-black rounded-full uppercase tracking-wider animate-pulse">
+                  <div className="absolute top-1.5 right-2 px-2 py-0.2 bg-w-primary-dark text-w-text-main text-[9px] font-black rounded-full uppercase tracking-wider animate-pulse">
                     Đến Lượt
                   </div>
                 )}
@@ -546,11 +546,11 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                     {t.avatar}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="text-xs font-extrabold text-[#35452E] truncate">{t.name}</div>
-                    <div className="text-[11px] font-bold text-[#74806B] flex items-center gap-2">
+                    <div className="text-xs font-extrabold text-w-text-main truncate">{t.name}</div>
+                    <div className="text-[11px] font-bold text-w-text-muted flex items-center gap-2">
                       <span>Ô: <strong>#{t.position}</strong></span>
                       <span>•</span>
-                      <span className="text-[#4F683C] font-black">AP: {t.actionPoints} ⚡</span>
+                      <span className="text-w-primary-dark font-black">AP: {t.actionPoints} ⚡</span>
                     </div>
                   </div>
                 </div>
@@ -559,7 +559,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                   <div className="text-amber-700">
                     👑 Cống nạp: <strong>{t.offeredCount}/3</strong>
                   </div>
-                  <div className="text-[#4F683C] font-black">
+                  <div className="text-w-primary-dark font-black">
                     {t.score}đ
                   </div>
                 </div>
@@ -573,20 +573,20 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
       <div className="flex-1 px-4 sm:px-6 py-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* LEFT COLUMN: THE PHONG CHAU STRATEGIC MAP (7 Cols) */}
-        <div className="lg:col-span-7 bg-white rounded-3xl p-5 border-2 border-[#DCEBCB] shadow-sm flex flex-col">
-          <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#DCEBCB]">
+        <div className="lg:col-span-7 bg-white rounded-3xl p-5 border-2 border-w-accent-muted shadow-sm flex flex-col">
+          <div className="flex items-center justify-between pb-3 mb-3 border-b border-w-accent-muted">
             <div className="flex items-center gap-2">
               <span className="text-xl">🗺️</span>
               <div>
-                <h3 className="text-sm font-black text-[#35452E] uppercase tracking-wide">
+                <h3 className="text-sm font-black text-w-text-main uppercase tracking-wide">
                   Bản Đồ Phong Châu – Núi Tản & Biển Đông
                 </h3>
-                <p className="text-[11px] text-[#74806B] font-semibold">
+                <p className="text-[11px] text-w-text-muted font-semibold">
                   Di chuyển để tìm Sính Lễ và cống nạp tại Cung Điện Hùng Vương (Ô #1 hoặc #13)
                 </p>
               </div>
             </div>
-            <div className="text-xs font-bold px-2.5 py-1 bg-[#E9F0D9] text-[#4F683C] rounded-xl border border-[#B9CDA0]">
+            <div className="text-xs font-bold px-2.5 py-1 bg-w-accent-light text-w-primary-dark rounded-xl border border-w-accent-border">
               24 Ô Chiến Lược
             </div>
           </div>
@@ -603,7 +603,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
           </div>
 
           {/* Map Legend */}
-          <div className="mt-3 pt-3 border-t border-[#DCEBCB] flex flex-wrap gap-4 text-xs font-semibold text-[#74806B]">
+          <div className="mt-3 pt-3 border-t border-w-accent-muted flex flex-wrap gap-4 text-xs font-semibold text-w-text-muted">
             <div className="flex items-center gap-1.5">
               <span>👑 Ô Cung Điện (Cống Nạp)</span>
             </div>
@@ -627,11 +627,11 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
             key={actionLogText}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-4 rounded-3xl border-2 border-[#DCEBCB] bg-white shadow-sm"
+            className="p-4 rounded-3xl border-2 border-w-accent-muted bg-white shadow-sm"
           >
             <div className="flex items-start gap-3">
               <div className="text-2xl mt-0.5">📜</div>
-              <div className="text-xs sm:text-sm font-bold text-[#35452E] leading-relaxed">
+              <div className="text-xs sm:text-sm font-bold text-w-text-main leading-relaxed">
                 {actionLogText}
               </div>
             </div>
@@ -642,10 +642,10 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-3xl p-5 sm:p-6 border-2 border-[#DCEBCB] shadow-sm space-y-4 flex-1 flex flex-col justify-between"
+              className="bg-white rounded-3xl p-5 sm:p-6 border-2 border-w-accent-muted shadow-sm space-y-4 flex-1 flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between pb-3 border-b border-[#DCEBCB]">
+                <div className="flex items-center justify-between pb-3 border-b border-w-accent-muted">
                   <div className="flex items-center gap-2">
                     <div 
                       className="w-8 h-8 rounded-xl flex items-center justify-center text-base"
@@ -654,14 +654,14 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                       {currentTeam.avatar}
                     </div>
                     <div>
-                      <div className="text-[10px] font-extrabold uppercase text-[#74806B]">Thử Thách Lượt:</div>
-                      <div className="text-sm font-black text-[#35452E]">{currentTeam.name}</div>
+                      <div className="text-[10px] font-extrabold uppercase text-w-text-muted">Thử Thách Lượt:</div>
+                      <div className="text-sm font-black text-w-text-main">{currentTeam.name}</div>
                     </div>
                   </div>
 
                   {config.timerEnabled !== false && (
                     <div className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-black border-2 ${
-                      timeLeft <= 5 ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse' : 'bg-[#E9F0D9] border-[#B9CDA0] text-[#4F683C]'
+                      timeLeft <= 5 ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse' : 'bg-w-accent-light border-w-accent-border text-w-primary-dark'
                     }`}>
                       <Clock className="w-3.5 h-3.5" />
                       <span>{timeLeft}s</span>
@@ -670,10 +670,10 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                 </div>
 
                 <div className="mt-4 space-y-2">
-                  <div className="text-[11px] font-extrabold text-[#74806B] uppercase tracking-wider">
+                  <div className="text-[11px] font-extrabold text-w-text-muted uppercase tracking-wider">
                     Câu hỏi #{questionNumber} (Nhận +3 Điểm Thần Lực AP nếu đúng)
                   </div>
-                  <p className="text-sm sm:text-base font-black text-[#35452E] leading-relaxed">
+                  <p className="text-sm sm:text-base font-black text-w-text-main leading-relaxed">
                     {currentQuestion.content}
                   </p>
                 </div>
@@ -688,12 +688,12 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                       let optStyle = 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100';
                       if (showAnswer) {
                         if (isCorrect) {
-                          optStyle = 'bg-emerald-500 text-white border-emerald-600 font-black';
+                          optStyle = 'bg-emerald-500 text-w-text-main border-emerald-600 font-black';
                         } else if (isSelected) {
-                          optStyle = 'bg-rose-500 text-white border-rose-600';
+                          optStyle = 'bg-rose-500 text-w-text-main border-rose-600';
                         }
                       } else if (isSelected) {
-                        optStyle = 'bg-[#4F683C] text-white border-[#3D522B]';
+                        optStyle = 'bg-w-primary-dark text-w-text-main border-w-primary-hover';
                       }
 
                       return (
@@ -703,7 +703,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                           onClick={() => !showAnswer && setSelectedOption(idx)}
                           className={`w-full p-2.5 rounded-xl border-2 text-left font-bold text-xs sm:text-sm transition flex items-center gap-2.5 cursor-pointer ${optStyle}`}
                         >
-                          <span className="w-5 h-5 rounded-md bg-black/10 flex items-center justify-center text-[10px] font-black shrink-0">
+                          <span className="w-5 h-5 rounded-md bg-white/70 backdrop-blur-sm flex items-center justify-center text-[10px] font-black shrink-0">
                             {['A','B','C','D'][idx]}
                           </span>
                           <span className="flex-1">{opt}</span>
@@ -714,12 +714,12 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                 )}
               </div>
 
-              <div className="pt-3 border-t border-[#DCEBCB] flex flex-wrap items-center justify-between gap-2">
+              <div className="pt-3 border-t border-w-accent-muted flex flex-wrap items-center justify-between gap-2">
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => handleAnswerSubmit(true)}
-                    className="px-4 py-2.5 bg-[#4F683C] hover:bg-[#3D522B] text-white font-black text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+                    className="px-4 py-2.5 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main font-black text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
                   >
                     <CheckCircle className="w-4 h-4 text-[#E9D58F]" />
                     <span>Trả Lời Đúng (+3 AP)</span>
@@ -728,7 +728,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                   <button
                     type="button"
                     onClick={() => handleAnswerSubmit(false)}
-                    className="px-4 py-2.5 bg-[#D86C70] hover:bg-[#C55A5E] text-white font-black text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+                    className="px-4 py-2.5 bg-[#D86C70] hover:bg-[#C55A5E] text-w-text-main font-black text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
                   >
                     <XCircle className="w-4 h-4" />
                     <span>Chưa Đúng</span>
@@ -751,15 +751,15 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-3xl p-5 sm:p-6 border-2 border-[#DCEBCB] shadow-sm space-y-4 flex-1 flex flex-col justify-between"
+              className="bg-white rounded-3xl p-5 sm:p-6 border-2 border-w-accent-muted shadow-sm space-y-4 flex-1 flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between pb-3 border-b border-[#DCEBCB]">
+                <div className="flex items-center justify-between pb-3 border-b border-w-accent-muted">
                   <div className="flex items-center gap-2">
                     <span className="text-xl">{currentTeam.avatar}</span>
                     <div>
-                      <div className="text-[10px] font-extrabold uppercase text-[#74806B]">Lựa Chọn Chiến Lược:</div>
-                      <div className="text-sm font-black text-[#35452E]">{currentTeam.name}</div>
+                      <div className="text-[10px] font-extrabold uppercase text-w-text-muted">Lựa Chọn Chiến Lược:</div>
+                      <div className="text-sm font-black text-w-text-main">{currentTeam.name}</div>
                     </div>
                   </div>
                   <div className="px-3 py-1 bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-black flex items-center gap-1">
@@ -775,22 +775,22 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                     type="button"
                     onClick={handleMoveAction}
                     disabled={currentTeam.actionPoints < 1 || isRollingDice}
-                    className="w-full p-3 bg-gradient-to-r from-[#FAF7EE] to-white hover:bg-slate-50 border-2 border-[#E3DCBA] hover:border-[#4F683C] rounded-2xl text-left transition flex items-center justify-between gap-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group shadow-2xs"
+                    className="w-full p-3 bg-gradient-to-r from-w-bg-alt to-white hover:bg-slate-50 border-2 border-[#E3DCBA] hover:border-w-primary-dark rounded-2xl text-left transition flex items-center justify-between gap-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group shadow-2xs"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-[#4F683C] text-white flex items-center justify-center text-lg font-black shadow-xs">
+                      <div className="w-9 h-9 rounded-xl bg-w-primary-dark text-w-text-main flex items-center justify-center text-lg font-black shadow-xs">
                         🎲
                       </div>
                       <div>
-                        <div className="text-xs sm:text-sm font-black text-[#35452E] group-hover:text-[#4F683C]">
+                        <div className="text-xs sm:text-sm font-black text-w-text-main group-hover:text-w-primary-dark">
                           Tung Xúc Xắc & Di Chuyển Tìm Sính Lễ
                         </div>
-                        <div className="text-[11px] text-[#74806B] font-semibold">
+                        <div className="text-[11px] text-w-text-muted font-semibold">
                           Tung 1-6 bước để tiến đến ô chứa Sính Lễ
                         </div>
                       </div>
                     </div>
-                    <span className="text-xs font-black px-2.5 py-1 bg-[#E9F0D9] text-[#4F683C] rounded-xl border border-[#B9CDA0]">
+                    <span className="text-xs font-black px-2.5 py-1 bg-w-accent-light text-w-primary-dark rounded-xl border border-w-accent-border">
                       Tốn 1 AP
                     </span>
                   </button>
@@ -800,17 +800,17 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                     type="button"
                     onClick={handleCastMagic}
                     disabled={currentTeam.actionPoints < 2}
-                    className="w-full p-3 bg-gradient-to-r from-[#FAF7EE] to-white hover:bg-slate-50 border-2 border-[#E3DCBA] hover:border-blue-500 rounded-2xl text-left transition flex items-center justify-between gap-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group shadow-2xs"
+                    className="w-full p-3 bg-gradient-to-r from-w-bg-alt to-white hover:bg-slate-50 border-2 border-[#E3DCBA] hover:border-blue-500 rounded-2xl text-left transition flex items-center justify-between gap-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group shadow-2xs"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#4F683C] to-[#2563EB] text-white flex items-center justify-center text-lg font-black shadow-xs">
+                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-w-primary-dark to-[#2563EB] text-w-text-main flex items-center justify-center text-lg font-black shadow-xs">
                         ⚡
                       </div>
                       <div>
-                        <div className="text-xs sm:text-sm font-black text-[#35452E]">
+                        <div className="text-xs sm:text-sm font-black text-w-text-main">
                           {currentTeam.faction === 'sontinh' ? 'Dâng Núi & Đắp Lũy Đá (+15đ)' : 'Dâng Nước Lũ & Cuồng Phong (+15đ)'}
                         </div>
-                        <div className="text-[11px] text-[#74806B] font-semibold">
+                        <div className="text-[11px] text-w-text-muted font-semibold">
                           {currentTeam.faction === 'sontinh' ? 'Xây lũy đá ngăn nước lũ dâng' : 'Dâng ngập nước tại ô chiến lược'}
                         </div>
                       </div>
@@ -832,7 +832,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                     className="w-full p-3 bg-gradient-to-r from-amber-50 to-white border-2 border-amber-300 rounded-2xl text-left transition flex items-center justify-between gap-3 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center text-lg font-black shadow-xs">
+                      <div className="w-9 h-9 rounded-xl bg-amber-500 text-w-text-main flex items-center justify-center text-lg font-black shadow-xs">
                         👑
                       </div>
                       <div>
@@ -854,11 +854,11 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
               </div>
 
               {/* Bottom Actions */}
-              <div className="pt-3 border-t border-[#DCEBCB] flex justify-end">
+              <div className="pt-3 border-t border-w-accent-muted flex justify-end">
                 <button
                   type="button"
                   onClick={handleEndTurn}
-                  className="px-6 py-3 bg-gradient-to-r from-[#4F683C] to-[#3D522B] hover:from-[#3D522B] hover:to-[#2B3B1E] text-white font-black text-xs sm:text-sm rounded-2xl shadow-md transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
+                  className="px-6 py-3 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-xs sm:text-sm rounded-2xl shadow-md transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
                 >
                   <span>Hoàn Tất Lượt & Chuyển Đội Tiếp</span>
                   <ChevronRight className="w-4 h-4" />
@@ -877,24 +877,24 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
               <div className="text-6xl sm:text-7xl">🏆</div>
 
               <div>
-                <h3 className="text-xl sm:text-2xl font-black text-[#35452E]">
+                <h3 className="text-xl sm:text-2xl font-black text-w-text-main">
                   🎉 {winningTeam.name} ĐẠI THẮNG RƯỚC CÔNG CHÚA MỴ NƯƠNG!
                 </h3>
-                <p className="text-xs sm:text-sm text-[#74806B] font-semibold mt-1">
+                <p className="text-xs sm:text-sm text-w-text-muted font-semibold mt-1">
                   Đã hoàn thành xuất sắc các sính lễ và đạt vinh quang cao nhất trước Vua Hùng!
                 </p>
               </div>
 
               {/* Final Scores */}
-              <div className="w-full bg-[#FAF7EE] p-3 rounded-2xl border border-[#E3DCBA] space-y-2">
-                <div className="text-xs font-black text-[#74806B] uppercase">Bảng Vinh Dự Phong Châu:</div>
+              <div className="w-full bg-w-bg-alt p-3 rounded-2xl border border-[#E3DCBA] space-y-2">
+                <div className="text-xs font-black text-w-text-muted uppercase">Bảng Vinh Dự Phong Châu:</div>
                 {teams.map(t => (
                   <div key={t.id} className="flex items-center justify-between text-xs py-1.5 px-3 bg-white rounded-lg font-bold">
                     <span className="flex items-center gap-2">
                       <span>{t.avatar}</span>
                       <span>{t.name}</span>
                     </span>
-                    <span className="text-[#4F683C] font-black">
+                    <span className="text-w-primary-dark font-black">
                       {t.score}đ ({t.offeredCount} Sính Lễ)
                     </span>
                   </div>
@@ -905,7 +905,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                 <button
                   type="button"
                   onClick={handleRestart}
-                  className="px-6 py-3 bg-[#4F683C] hover:bg-[#3D522B] text-white font-black text-xs sm:text-sm rounded-xl shadow-md transition cursor-pointer"
+                  className="px-6 py-3 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-md transition cursor-pointer"
                 >
                   Chơi Trận Mới
                 </button>

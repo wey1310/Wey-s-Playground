@@ -57,20 +57,20 @@ export const MonopolyActionModal: React.FC<MonopolyActionModalProps> = ({
   const canAffordRent = currentTeam.money >= rentAmount;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-white/70 backdrop-blur-sm backdrop-blur-xs animate-fade-in">
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-[#FFFDF5] border-2 border-[#DED5B8] w-full max-w-md rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col"
+        className="bg-w-bg-card border-2 border-w-border w-full max-w-md rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col"
       >
         {/* BUY PROPERTY ACTION */}
         {type === 'buy' && tile && (
           <div className="p-5 sm:p-6 text-center space-y-4">
             {/* Group Banner */}
             <div
-              className="py-2.5 px-4 rounded-2xl text-white font-black text-sm uppercase shadow-sm flex items-center justify-between"
-              style={{ backgroundColor: tile.groupColor || '#4F683C' }}
+              className="py-2.5 px-4 rounded-2xl text-w-text-main font-black text-sm uppercase shadow-sm flex items-center justify-between"
+              style={{ backgroundColor: tile.groupColor || '#E08283' }}
             >
               <span>{tile.groupName || 'Khu Đất'}</span>
               <span>Ô #{tile.index}</span>
@@ -79,28 +79,28 @@ export const MonopolyActionModal: React.FC<MonopolyActionModalProps> = ({
             {/* Land Info */}
             <div className="space-y-1">
               <div className="text-4xl drop-shadow-sm">{tile.icon}</div>
-              <h3 className="text-xl font-black text-[#35452E]">{tile.name}</h3>
+              <h3 className="text-xl font-black text-w-text-main">{tile.name}</h3>
               {tile.subtitle && (
-                <p className="text-xs text-[#74806B] font-semibold">{tile.subtitle}</p>
+                <p className="text-xs text-w-text-muted font-semibold">{tile.subtitle}</p>
               )}
             </div>
 
             {/* Price & Rent Details Card */}
-            <div className="bg-[#FAF7EE] border border-[#E3DCBA] rounded-2xl p-3.5 space-y-2 text-left text-xs">
+            <div className="bg-w-bg-alt border border-[#E3DCBA] rounded-2xl p-3.5 space-y-2 text-left text-xs">
               <div className="flex items-center justify-between font-bold">
-                <span className="text-[#74806B]">Giá mua khu đất:</span>
+                <span className="text-w-text-muted">Giá mua khu đất:</span>
                 <span className="text-sm font-black text-emerald-700">${tile.price}</span>
               </div>
               <div className="flex items-center justify-between font-bold">
-                <span className="text-[#74806B]">Tiền thuê cơ bản (Cấp 0):</span>
+                <span className="text-w-text-muted">Tiền thuê cơ bản (Cấp 0):</span>
                 <span className="font-extrabold text-rose-700">${tile.rentLevels[0]}</span>
               </div>
               <div className="flex items-center justify-between font-bold">
-                <span className="text-[#74806B]">Tiền thuê khi có Nhà / Khách sạn:</span>
+                <span className="text-w-text-muted">Tiền thuê khi có Nhà / Khách sạn:</span>
                 <span className="font-extrabold text-rose-700">${tile.rentLevels[1]} / ${tile.rentLevels[2]} / ${tile.rentLevels[3]}</span>
               </div>
-              <div className="pt-2 border-t border-[#DED5B8] flex items-center justify-between">
-                <span className="text-[#74806B]">Số dư của {currentTeam.name}:</span>
+              <div className="pt-2 border-t border-w-border flex items-center justify-between">
+                <span className="text-w-text-muted">Số dư của {currentTeam.name}:</span>
                 <span className={`font-black ${canAffordBuy ? 'text-emerald-700' : 'text-rose-600'}`}>
                   ${currentTeam.money.toLocaleString()}
                 </span>
@@ -128,9 +128,9 @@ export const MonopolyActionModal: React.FC<MonopolyActionModalProps> = ({
                 type="button"
                 disabled={!canAffordBuy}
                 onClick={onConfirmBuy}
-                className={`flex-1 py-3 px-4 text-white text-xs sm:text-sm font-black rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer ${
+                className={`flex-1 py-3 px-4 text-w-text-main text-xs sm:text-sm font-black rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer ${
                   canAffordBuy
-                    ? 'bg-[#4F683C] hover:bg-[#3D522B] hover:scale-102 active:scale-98'
+                    ? 'bg-w-primary-dark hover:bg-w-primary-hover hover:scale-102 active:scale-98'
                     : 'bg-slate-300 cursor-not-allowed opacity-50'
                 }`}
               >
@@ -145,8 +145,8 @@ export const MonopolyActionModal: React.FC<MonopolyActionModalProps> = ({
         {type === 'upgrade' && tile && (
           <div className="p-5 sm:p-6 text-center space-y-4">
             <div
-              className="py-2 px-4 rounded-2xl text-white font-black text-xs uppercase shadow-sm flex items-center justify-between"
-              style={{ backgroundColor: tile.groupColor || '#4F683C' }}
+              className="py-2 px-4 rounded-2xl text-w-text-main font-black text-xs uppercase shadow-sm flex items-center justify-between"
+              style={{ backgroundColor: tile.groupColor || '#E08283' }}
             >
               <span>{tile.groupName || 'Khu Đất Của Bạn'}</span>
               <span>Cấp Hiện Tại: {tile.level === 0 ? 'Đất Trống' : `Nhà Cấp ${tile.level}`}</span>
@@ -154,25 +154,25 @@ export const MonopolyActionModal: React.FC<MonopolyActionModalProps> = ({
 
             <div className="space-y-1">
               <div className="text-4xl drop-shadow-sm">{tile.icon}</div>
-              <h3 className="text-xl font-black text-[#35452E]">{tile.name}</h3>
-              <p className="text-xs text-[#74806B] font-semibold">
+              <h3 className="text-xl font-black text-w-text-main">{tile.name}</h3>
+              <p className="text-xs text-w-text-muted font-semibold">
                 Bạn đã đến khu đất do chính đội mình làm chủ sở hữu!
               </p>
             </div>
 
-            <div className="bg-[#FAF7EE] border border-[#E3DCBA] rounded-2xl p-3.5 space-y-2 text-left text-xs">
+            <div className="bg-w-bg-alt border border-[#E3DCBA] rounded-2xl p-3.5 space-y-2 text-left text-xs">
               <div className="flex items-center justify-between font-bold">
-                <span className="text-[#74806B]">Chi phí xây nâng cấp:</span>
+                <span className="text-w-text-muted">Chi phí xây nâng cấp:</span>
                 <span className="text-sm font-black text-emerald-700">${tile.upgradeCost}</span>
               </div>
               <div className="flex items-center justify-between font-bold">
-                <span className="text-[#74806B]">Tiền thuê tăng từ:</span>
+                <span className="text-w-text-muted">Tiền thuê tăng từ:</span>
                 <span className="font-extrabold text-rose-700">
                   ${tile.rentLevels[tile.level]} ➔ ${tile.rentLevels[Math.min(tile.level + 1, 3)]}
                 </span>
               </div>
-              <div className="pt-2 border-t border-[#DED5B8] flex items-center justify-between">
-                <span className="text-[#74806B]">Số dư của bạn:</span>
+              <div className="pt-2 border-t border-w-border flex items-center justify-between">
+                <span className="text-w-text-muted">Số dư của bạn:</span>
                 <span className={`font-black ${canAffordUpgrade ? 'text-emerald-700' : 'text-rose-600'}`}>
                   ${currentTeam.money.toLocaleString()}
                 </span>
@@ -192,9 +192,9 @@ export const MonopolyActionModal: React.FC<MonopolyActionModalProps> = ({
                 type="button"
                 disabled={!canAffordUpgrade || tile.level >= 3}
                 onClick={onConfirmUpgrade}
-                className={`flex-1 py-3 px-4 text-white text-xs sm:text-sm font-black rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer ${
+                className={`flex-1 py-3 px-4 text-w-text-main text-xs sm:text-sm font-black rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer ${
                   canAffordUpgrade && tile.level < 3
-                    ? 'bg-[#4F683C] hover:bg-[#3D522B] hover:scale-102 active:scale-98'
+                    ? 'bg-w-primary-dark hover:bg-w-primary-hover hover:scale-102 active:scale-98'
                     : 'bg-slate-300 cursor-not-allowed opacity-50'
                 }`}
               >
@@ -214,21 +214,21 @@ export const MonopolyActionModal: React.FC<MonopolyActionModalProps> = ({
 
             <div className="space-y-1">
               <h3 className="text-xl font-black text-rose-700">ĐÁP VÀO ĐẤT ĐỐI THỦ!</h3>
-              <p className="text-xs text-[#74806B] font-semibold">
-                Khu đất <strong className="text-[#35452E]">{tile.name}</strong> thuộc sở hữu của{' '}
+              <p className="text-xs text-w-text-muted font-semibold">
+                Khu đất <strong className="text-w-text-main">{tile.name}</strong> thuộc sở hữu của{' '}
                 <strong style={{ color: ownerTeam.color }}>{ownerTeam.name}</strong>
               </p>
             </div>
 
             {/* Rent Breakdown */}
-            <div className="bg-[#FAF7EE] border border-[#E3DCBA] rounded-2xl p-4 space-y-2 text-xs">
+            <div className="bg-w-bg-alt border border-[#E3DCBA] rounded-2xl p-4 space-y-2 text-xs">
               <div className="flex items-center justify-between font-bold">
-                <span className="text-[#74806B]">Tiền thuê đất cần nộp:</span>
+                <span className="text-w-text-muted">Tiền thuê đất cần nộp:</span>
                 <span className="text-base font-black text-rose-700">${rentAmount}</span>
               </div>
               <div className="flex items-center justify-between font-bold">
-                <span className="text-[#74806B]">Số dư của {currentTeam.name}:</span>
-                <span className="font-extrabold text-[#35452E]">${currentTeam.money}</span>
+                <span className="text-w-text-muted">Số dư của {currentTeam.name}:</span>
+                <span className="font-extrabold text-w-text-main">${currentTeam.money}</span>
               </div>
             </div>
 
@@ -237,7 +237,7 @@ export const MonopolyActionModal: React.FC<MonopolyActionModalProps> = ({
               <button
                 type="button"
                 onClick={onUseFreeRentShield}
-                className="w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 text-white text-xs sm:text-sm font-black rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer animate-pulse"
+                className="w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 text-w-text-main text-xs sm:text-sm font-black rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer animate-pulse"
               >
                 <ShieldCheck className="w-4 h-4" />
                 <span>Dùng Thẻ Miễn Phí Thuê Đất (Còn {currentTeam.freeRentTokens} thẻ)</span>
@@ -247,7 +247,7 @@ export const MonopolyActionModal: React.FC<MonopolyActionModalProps> = ({
             <button
               type="button"
               onClick={onPayRent}
-              className="w-full py-3 px-4 bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-black rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3 px-4 bg-rose-600 hover:bg-rose-700 text-w-text-main text-xs sm:text-sm font-black rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
             >
               <Coins className="w-4 h-4" />
               <span>{canAffordRent ? `Trả Tiền Thuê ($${rentAmount})` : `Phá Sản & Trả Toàn Bộ ($${currentTeam.money})`}</span>
@@ -258,7 +258,7 @@ export const MonopolyActionModal: React.FC<MonopolyActionModalProps> = ({
         {/* EVENT / LUCK CARD DISPLAY */}
         {type === 'card' && card && (
           <div className="p-5 sm:p-6 text-center space-y-4">
-            <div className={`py-1.5 px-4 rounded-xl text-white font-black text-xs uppercase shadow-xs mx-auto inline-block ${
+            <div className={`py-1.5 px-4 rounded-xl text-w-text-main font-black text-xs uppercase shadow-xs mx-auto inline-block ${
               card.badge === 'May Mắn' ? 'bg-teal-600' :
               card.badge === 'Cơ Hội' ? 'bg-purple-600' :
               card.badge === 'Thử Thách' ? 'bg-amber-600' : 'bg-rose-600'
@@ -271,8 +271,8 @@ export const MonopolyActionModal: React.FC<MonopolyActionModalProps> = ({
             </div>
 
             <div className="space-y-2">
-              <h3 className="text-xl font-black text-[#35452E]">{card.title}</h3>
-              <p className="text-xs sm:text-sm text-[#55644E] font-bold leading-relaxed px-2 bg-[#FAF7EE] p-3 rounded-2xl border border-[#E3DCBA]">
+              <h3 className="text-xl font-black text-w-text-main">{card.title}</h3>
+              <p className="text-xs sm:text-sm text-w-text-muted font-bold leading-relaxed px-2 bg-w-bg-alt p-3 rounded-2xl border border-[#E3DCBA]">
                 {card.description}
               </p>
             </div>
@@ -280,7 +280,7 @@ export const MonopolyActionModal: React.FC<MonopolyActionModalProps> = ({
             <button
               type="button"
               onClick={onAcceptCard}
-              className="w-full py-3 px-4 bg-[#4F683C] hover:bg-[#3D522B] text-white text-xs sm:text-sm font-black rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3 px-4 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main text-xs sm:text-sm font-black rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
             >
               <Check className="w-4 h-4" />
               <span>Áp Dụng Thẻ Ngay</span>

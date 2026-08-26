@@ -45,7 +45,7 @@ export const ChaseScoreboard: React.FC<ChaseScoreboardProps> = ({
               {/* Team Info Header */}
               <div className="flex items-center gap-2 mb-2">
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center text-lg font-black text-white shadow-inner"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-lg font-black text-w-text-main shadow-inner"
                   style={{ backgroundColor: team.color || '#3b82f6' }}
                 >
                   {team.avatar || '🐱'}
@@ -89,7 +89,7 @@ export const ChaseScoreboard: React.FC<ChaseScoreboardProps> = ({
                       e.stopPropagation();
                       onAdjustScore(team.id, -5);
                     }}
-                    className="w-5 h-5 rounded bg-zinc-800 hover:bg-rose-600 text-zinc-300 hover:text-white text-xs font-black flex items-center justify-center transition-colors"
+                    className="w-5 h-5 rounded bg-zinc-800 hover:bg-rose-600 text-zinc-300 hover:text-w-text-main text-xs font-black flex items-center justify-center transition-colors"
                   >
                     -5
                   </button>
@@ -100,7 +100,7 @@ export const ChaseScoreboard: React.FC<ChaseScoreboardProps> = ({
                       e.stopPropagation();
                       onAdjustScore(team.id, 10);
                     }}
-                    className="w-5 h-5 rounded bg-zinc-800 hover:bg-emerald-600 text-zinc-300 hover:text-white text-xs font-black flex items-center justify-center transition-colors"
+                    className="w-5 h-5 rounded bg-zinc-800 hover:bg-emerald-600 text-zinc-300 hover:text-w-text-main text-xs font-black flex items-center justify-center transition-colors"
                   >
                     +10
                   </button>

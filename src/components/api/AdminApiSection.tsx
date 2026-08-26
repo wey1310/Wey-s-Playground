@@ -102,7 +102,7 @@ export const AdminApiSection: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 1. Header Banner */}
-      <div className="bg-gradient-to-r from-[#24351E] via-[#35452E] to-[#465C38] text-white p-6 rounded-3xl shadow-sm border border-[#526B43]">
+      <div className="bg-gradient-to-r from-[#24351E] via-w-text-main to-[#465C38] text-white p-6 rounded-3xl shadow-sm border border-[#526B43]">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1.5">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold uppercase tracking-wider">
@@ -140,12 +140,12 @@ export const AdminApiSection: React.FC = () => {
 
       {/* 2. 3 Nguyên lý hoạt động */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-[#DED5B8] shadow-xs flex flex-col gap-2.5">
-          <div className="w-10 h-10 rounded-xl bg-[#E9F0D9] text-[#35452E] flex items-center justify-center font-bold">
-            <RefreshCw className="w-5 h-5 text-[#6F8F55]" />
+        <div className="bg-white p-5 rounded-2xl border border-w-border shadow-xs flex flex-col gap-2.5">
+          <div className="w-10 h-10 rounded-xl bg-w-accent-light text-w-text-main flex items-center justify-center font-bold">
+            <RefreshCw className="w-5 h-5 text-w-primary" />
           </div>
           <div>
-            <h3 className="font-extrabold text-[#35452E] text-sm flex items-center gap-1.5">
+            <h3 className="font-extrabold text-w-text-main text-sm flex items-center gap-1.5">
               <span>🔄 Round-Robin Key</span>
             </h3>
             <p className="text-xs text-slate-600 mt-1 leading-relaxed">
@@ -154,7 +154,7 @@ export const AdminApiSection: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-[#DED5B8] shadow-xs flex flex-col gap-2.5">
+        <div className="bg-white p-5 rounded-2xl border border-w-border shadow-xs flex flex-col gap-2.5">
           <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold">
             <Clock className="w-5 h-5 text-amber-600" />
           </div>
@@ -168,7 +168,7 @@ export const AdminApiSection: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-[#DED5B8] shadow-xs flex flex-col gap-2.5">
+        <div className="bg-white p-5 rounded-2xl border border-w-border shadow-xs flex flex-col gap-2.5">
           <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center font-bold">
             <Layers className="w-5 h-5 text-purple-600" />
           </div>
@@ -184,11 +184,11 @@ export const AdminApiSection: React.FC = () => {
       </div>
 
       {/* 3. Thứ tự ưu tiên model */}
-      <div className="bg-[#FAF7EE] border border-[#DED5B8] p-5 rounded-3xl space-y-4">
+      <div className="bg-w-bg-alt border border-w-border p-5 rounded-3xl space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Layers className="w-5 h-5 text-[#6F8F55]" />
-            <h3 className="font-extrabold text-[#35452E] text-base">Thứ Tự Ưu Tiên Model</h3>
+            <Layers className="w-5 h-5 text-w-primary" />
+            <h3 className="font-extrabold text-w-text-main text-base">Thứ Tự Ưu Tiên Model</h3>
           </div>
           <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
             Khởi đầu luôn từ Cấp 1
@@ -203,7 +203,7 @@ export const AdminApiSection: React.FC = () => {
                 <div className={`p-3.5 rounded-2xl border transition flex items-center justify-between gap-3 ${
                   isLastUsed 
                     ? 'bg-emerald-50/90 border-emerald-300 shadow-xs' 
-                    : 'bg-white border-[#DED5B8]'
+                    : 'bg-white border-w-border'
                 }`}>
                   <div className="flex items-center gap-3">
                     <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black ${
@@ -233,7 +233,7 @@ export const AdminApiSection: React.FC = () => {
 
                 {idx < modelPriorityList.length - 1 && (
                   <div className="flex items-center justify-center py-0.5 text-slate-400 gap-1.5 text-[11px] font-bold">
-                    <ArrowDown className="w-3 h-3 text-[#6F8F55]" />
+                    <ArrowDown className="w-3 h-3 text-w-primary" />
                     <span className="text-slate-500 text-[10px]">Hạ xuống khi mọi key đều cạn khả năng phục vụ ở cấp trên</span>
                   </div>
                 )}
@@ -244,14 +244,14 @@ export const AdminApiSection: React.FC = () => {
       </div>
 
       {/* 4. Trạng thái Key Pool & Thống kê vận hành */}
-      <div className="bg-white border border-[#DED5B8] p-5 rounded-3xl space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#DED5B8] pb-4">
+      <div className="bg-white border border-w-border p-5 rounded-3xl space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-w-border pb-4">
           <div className="flex items-center gap-2">
-            <Server className="w-5 h-5 text-[#6F8F55]" />
-            <h3 className="font-extrabold text-[#35452E] text-base">Trạng Thái Key Pool & Thống Kê Vận Hành</h3>
+            <Server className="w-5 h-5 text-w-primary" />
+            <h3 className="font-extrabold text-w-text-main text-base">Trạng Thái Key Pool & Thống Kê Vận Hành</h3>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black px-3 py-1 rounded-full bg-[#E9F0D9] text-[#35452E] border border-[#B9CDA0]">
+            <span className="text-xs font-black px-3 py-1 rounded-full bg-w-accent-light text-w-text-main border border-w-accent-border">
               {totalKeys} API Key đang cấu hình
             </span>
           </div>
@@ -259,7 +259,7 @@ export const AdminApiSection: React.FC = () => {
 
         {/* 4 Thẻ Thống Kê */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="bg-[#FAF7EE] p-3.5 rounded-2xl border border-[#DED5B8]">
+          <div className="bg-w-bg-alt p-3.5 rounded-2xl border border-w-border">
             <div className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Tổng Request</div>
             <div className="text-xl font-black text-slate-800 mt-1">{poolState.stats?.totalRequests || 0}</div>
           </div>
@@ -296,11 +296,11 @@ export const AdminApiSection: React.FC = () => {
                       ? 'bg-rose-50/60 border-rose-200'
                       : isCooldown
                       ? 'bg-amber-50/60 border-amber-200'
-                      : 'bg-[#FAF7EE]/60 border-[#DED5B8] hover:border-[#B9CDA0]'
+                      : 'bg-w-bg-alt/60 border-w-border hover:border-w-accent-border'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-white border border-[#DED5B8] flex items-center justify-center text-xs font-black text-slate-700">
+                    <div className="w-8 h-8 rounded-xl bg-white border border-w-border flex items-center justify-center text-xs font-black text-slate-700">
                       #{keyItem.number}
                     </div>
                     <div>
@@ -341,7 +341,7 @@ export const AdminApiSection: React.FC = () => {
         </div>
 
         {/* Danh sách Cooldown / Tạm nghỉ */}
-        <div className="bg-[#FAF7EE] p-4 rounded-2xl border border-[#DED5B8] space-y-2">
+        <div className="bg-w-bg-alt p-4 rounded-2xl border border-w-border space-y-2">
           <div className="flex items-center justify-between text-xs font-black text-slate-800">
             <div className="flex items-center gap-1.5 text-amber-900">
               <Clock className="w-4 h-4 text-amber-600" />
@@ -438,9 +438,9 @@ export const AdminApiSection: React.FC = () => {
         </div>
 
         {/* 6. Hướng dẫn thêm API Key */}
-        <div className="p-4 bg-[#E9F0D9]/80 rounded-2xl border border-[#B9CDA0] space-y-2">
-          <div className="flex items-center gap-2 text-xs font-black text-[#35452E]">
-            <Sparkles className="w-4 h-4 text-[#6F8F55]" />
+        <div className="p-4 bg-w-accent-light/80 rounded-2xl border border-w-accent-border space-y-2">
+          <div className="flex items-center gap-2 text-xs font-black text-w-text-main">
+            <Sparkles className="w-4 h-4 text-w-primary" />
             <span>Hướng Dẫn Thêm API Key Mới Qua Vercel</span>
           </div>
           <ol className="list-decimal pl-5 text-xs text-slate-700 space-y-1 leading-relaxed">

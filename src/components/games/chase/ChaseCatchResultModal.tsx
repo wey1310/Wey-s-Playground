@@ -37,7 +37,7 @@ export const ChaseCatchResultModal: React.FC<ChaseCatchResultModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/70 backdrop-blur-sm backdrop-blur-md">
         <motion.div
           initial={{ scale: 0.85, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -68,12 +68,12 @@ export const ChaseCatchResultModal: React.FC<ChaseCatchResultModalProps> = ({
 
             <p className="text-sm sm:text-base font-bold text-zinc-200 mt-1">
               Đội <span className="text-yellow-300">{team.name}</span> đã kiểm tra:{' '}
-              <span className="text-white font-extrabold">{location.name}</span>
+              <span className="text-w-text-main font-extrabold">{location.name}</span>
             </p>
           </div>
 
           {/* Action Scene Animation Box */}
-          <div className="relative w-full max-h-[260px] aspect-video rounded-2xl overflow-hidden border-2 border-zinc-700/80 bg-black/60 mx-auto mb-6 flex flex-col items-center justify-center p-6 shadow-inner">
+          <div className="relative w-full max-h-[260px] aspect-video rounded-2xl overflow-hidden border-2 border-zinc-700/80 bg-white/70 backdrop-blur-sm mx-auto mb-6 flex flex-col items-center justify-center p-6 shadow-inner">
             {isCaught ? (
               <div className="flex flex-col items-center">
                 <motion.div

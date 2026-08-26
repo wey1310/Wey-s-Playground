@@ -61,7 +61,7 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
       return config.teams.map(t => ({ ...t, score: t.score || 0 }));
     }
     return [
-      { id: 'team-1', name: 'Đội 1', avatar: '🦁', color: '#4F683C', score: 0 },
+      { id: 'team-1', name: 'Đội 1', avatar: '🦁', color: '#E08283', score: 0 },
       { id: 'team-2', name: 'Đội 2', avatar: '🐯', color: '#3B82F6', score: 0 },
     ];
   });
@@ -448,19 +448,19 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col items-center justify-between p-3 sm:p-5 max-w-6xl mx-auto select-none">
       {/* Scoreboard Header */}
-      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/90 backdrop-blur-sm p-4 rounded-3xl border-2 border-[#DED5B8] shadow-sm mb-4">
+      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/90 backdrop-blur-sm p-4 rounded-3xl border-2 border-w-border shadow-sm mb-4">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-2xl shadow-xs">
             ⛏️
           </div>
           <div>
-            <h1 className="text-xl font-[900] text-[#35452E] flex items-center gap-2">
+            <h1 className="text-xl font-[900] text-w-text-main flex items-center gap-2">
               Đào Vàng Tri Thức
               <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
                 Mỏ Vàng Hoàng Kim
               </span>
             </h1>
-            <p className="text-xs font-bold text-[#74806B]">
+            <p className="text-xs font-bold text-w-text-muted">
               Trả lời đúng để kích hoạt Móc Neo • Canh chuẩn thời điểm bấm KÉO để giật vàng
             </p>
           </div>
@@ -473,21 +473,21 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
               key={t.id}
               className={`px-4 py-2 rounded-2xl border-2 transition-all flex items-center gap-2.5 ${
                 idx === currentTeamIndex
-                  ? 'bg-[#E9F0D9] border-[#4F683C] shadow-md scale-105 ring-2 ring-[#4F683C]/20'
-                  : 'bg-[#FFFDF5] border-[#DED5B8]'
+                  ? 'bg-w-accent-light border-w-primary-dark shadow-md scale-105 ring-2 ring-w-primary-dark/20'
+                  : 'bg-w-bg-card border-w-border'
               }`}
             >
               <span className="text-xl">{t.avatar}</span>
               <div>
-                <span className="text-xs font-black text-[#35452E] block">{t.name}</span>
-                <span className="text-sm font-[900] text-[#4F683C]">{t.score} điểm</span>
+                <span className="text-xs font-black text-w-text-main block">{t.name}</span>
+                <span className="text-sm font-[900] text-w-primary-dark">{t.score} điểm</span>
               </div>
             </div>
           ))}
 
           <button
             onClick={handleFinishGame}
-            className="px-3.5 py-2 bg-[#4F683C] hover:bg-[#3D522F] text-white text-xs font-black rounded-xl shadow-xs transition"
+            className="px-3.5 py-2 bg-w-primary-dark hover:bg-[#3D522F] text-w-text-main text-xs font-black rounded-xl shadow-xs transition"
           >
             Tổng Kết
           </button>
@@ -497,15 +497,15 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
       {/* Main Grid: Left Question, Right Mine Stage */}
       <div className="w-full flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
         {/* Left: Question Box */}
-        <div className="lg:col-span-5 flex flex-col justify-between bg-white rounded-3xl p-5 border-2 border-[#DED5B8] shadow-sm min-h-[380px]">
+        <div className="lg:col-span-5 flex flex-col justify-between bg-white rounded-3xl p-5 border-2 border-w-border shadow-sm min-h-[380px]">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-[#DED5B8] mb-3">
+            <div className="flex items-center justify-between pb-3 border-b border-w-border mb-3">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-black px-2.5 py-1 rounded-xl bg-[#E9F0D9] text-[#4F683C] border border-[#B9CDA0]">
+                <span className="text-xs font-black px-2.5 py-1 rounded-xl bg-w-accent-light text-w-primary-dark border border-w-accent-border">
                   Câu {questionIndex + 1}
                 </span>
-                <span className="text-xs font-bold text-[#74806B]">
-                  Lượt của: <strong className="text-[#4F683C]">{activeTeam.name}</strong>
+                <span className="text-xs font-bold text-w-text-muted">
+                  Lượt của: <strong className="text-w-primary-dark">{activeTeam.name}</strong>
                 </span>
               </div>
               <div className="flex items-center gap-1.5 text-xs font-black text-amber-800 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200">
@@ -514,7 +514,7 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
               </div>
             </div>
 
-            <h3 className="text-base sm:text-lg font-[800] text-[#35452E] leading-snug mb-4">
+            <h3 className="text-base sm:text-lg font-[800] text-w-text-main leading-snug mb-4">
               {currentQuestion.content}
             </h3>
           </div>
@@ -524,7 +524,7 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
             {currentQuestion.options?.map((opt, idx) => {
               const isSelected = selectedOption === idx;
               const isCorrect = idx === Number(currentQuestion.correct);
-              let btnClass = 'bg-[#FFFDF5] hover:bg-[#F8F4E6] text-[#35452E] border-[#DED5B8]';
+              let btnClass = 'bg-w-bg-card hover:bg-[#F8F4E6] text-w-text-main border-w-border';
 
               if (isAnswerChecked) {
                 if (isCorrect) {
@@ -532,7 +532,7 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
                 } else if (isSelected && !isCorrect) {
                   btnClass = 'bg-red-100 border-red-400 text-red-950 font-bold';
                 } else {
-                  btnClass = 'bg-slate-50 border-slate-200 text-slate-400 opacity-60';
+                  btnClass = 'bg-slate-50 border-slate-200 text-w-text-muted opacity-60';
                 }
               }
 
@@ -544,7 +544,7 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
                   className={`w-full p-3 text-left text-sm rounded-2xl border-2 transition-all flex items-center justify-between cursor-pointer ${btnClass}`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-7 h-7 rounded-xl bg-white border border-[#DED5B8] flex items-center justify-center text-xs font-black text-[#4F683C]">
+                    <span className="w-7 h-7 rounded-xl bg-white border border-w-border flex items-center justify-center text-xs font-black text-w-primary-dark">
                       {String.fromCharCode(65 + idx)}
                     </span>
                     <span className="font-bold">{opt}</span>
@@ -557,7 +557,7 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
           </div>
 
           {/* Bottom Prompt / Hook Button */}
-          <div className="mt-4 pt-3 border-t border-[#DED5B8] text-center">
+          <div className="mt-4 pt-3 border-t border-w-border text-center">
             {clawPhase === 'aiming' ? (
               <button
                 onClick={handleLaunchHook}
@@ -575,7 +575,7 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
                 Chưa chính xác! Mất lượt đào vàng, chuyển đội kế tiếp...
               </div>
             ) : (
-              <p className="text-[11px] font-bold text-[#74806B]">
+              <p className="text-[11px] font-bold text-w-text-muted">
                 Chọn đáp án đúng để nhận quyền thả móc đào vàng!
               </p>
             )}
@@ -603,7 +603,7 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
           {/* Hook Crane System at Center Top */}
           <div className="absolute top-12 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none">
             {/* Crane Base */}
-            <div className="w-12 h-6 bg-slate-800 border-2 border-slate-500 rounded-t-lg flex items-center justify-center text-xs text-amber-400 font-black shadow-md">
+            <div className="w-12 h-6 bg-w-accent-light border-2 border-slate-500 rounded-t-lg flex items-center justify-center text-xs text-amber-600 font-black shadow-md">
               ⚙️
             </div>
 
@@ -666,7 +666,7 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
                         ? 'bg-gradient-to-br from-yellow-300 via-amber-400 to-amber-500 border-amber-200 text-amber-950'
                         : item.type.includes('rock')
                         ? 'bg-gradient-to-br from-slate-500 to-stone-700 border-stone-400 text-stone-100'
-                        : 'bg-gradient-to-br from-purple-400 to-indigo-600 border-purple-200 text-white'
+                        : 'bg-gradient-to-br from-purple-400 to-indigo-600 border-purple-200 text-w-text-main'
                     }`}
                     style={{
                       width: `${item.radius * 2}px`,
@@ -675,7 +675,7 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
                   >
                     <span className="text-base sm:text-xl drop-shadow-xs">{item.icon}</span>
                   </div>
-                  <span className="text-[10px] font-black text-amber-200 mt-0.5 bg-black/60 px-1.5 rounded">
+                  <span className="text-[10px] font-black text-amber-200 mt-0.5 bg-white/70 backdrop-blur-sm px-1.5 rounded">
                     {item.label}
                   </span>
                 </div>

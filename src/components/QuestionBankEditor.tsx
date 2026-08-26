@@ -415,21 +415,21 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
 
   return (
     <>
-    <div className="bg-[#FFFDF5] border border-[#DED5B8] w-full rounded-[26px] shadow-[0_12px_36px_rgba(79,104,60,0.18)] overflow-hidden flex flex-col wey-paper-card">
+    <div className="bg-w-bg-card border border-w-border w-full rounded-[26px] shadow-[0_12px_36px_rgba(79,104,60,0.18)] overflow-hidden flex flex-col wey-paper-card">
       {/* Header */}
-      <div className="p-4 sm:p-5 bg-[#F8F3E5] border-b border-[#DED5B8] flex items-center justify-between gap-3 shrink-0">
+      <div className="p-4 sm:p-5 bg-w-bg-main border-b border-w-border flex items-center justify-between gap-3 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-[#E9F0D9] text-[#4F683C] rounded-[14px] border border-[#B9CDA0]">
+          <div className="p-2.5 bg-w-accent-light text-w-primary-dark rounded-[14px] border border-w-accent-border">
             <FileText className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-lg sm:text-xl font-[800] text-[#35452E]">Quản Lý Bộ Câu Hỏi</h2>
-            <p className="text-xs font-[600] text-[#74806B]">Chỉnh sửa câu hỏi trong bộ: {currentBank?.name}</p>
+            <h2 className="text-lg sm:text-xl font-[800] text-w-text-main">Quản Lý Bộ Câu Hỏi</h2>
+            <p className="text-xs font-[600] text-w-text-muted">Chỉnh sửa câu hỏi trong bộ: {currentBank?.name}</p>
           </div>
         </div>
         <button
           onClick={onClose}
-          className="px-4 py-2 bg-white border border-[#DED5B8] rounded-[14px] text-[#74806B] font-[700] text-xs hover:text-[#35452E] hover:bg-[#F8F3E5] transition shadow-sm cursor-pointer"
+          className="px-4 py-2 bg-white border border-w-border rounded-[14px] text-w-text-muted font-[700] text-xs hover:text-w-text-main hover:bg-w-bg-main transition shadow-sm cursor-pointer"
         >
           Trở về
         </button>
@@ -457,7 +457,7 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
                 <button
                   type="button"
                   onClick={handleRestoreDraft}
-                  className="px-3 py-1.5 bg-[#4F683C] hover:bg-[#3E522F] text-[#E9D58F] font-bold text-xs rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-w-primary-dark hover:bg-[#3E522F] text-[#E9D58F] font-bold text-xs rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Khôi phục bản nháp</span>
@@ -477,7 +477,7 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
           <div className="bg-indigo-50/40 border border-indigo-100 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4">
             <div className="flex-1 min-w-[240px]">
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-semibold text-[#74806B]">
+                <label className="block text-xs font-semibold text-w-text-muted">
                   Chọn Bộ Câu Hỏi Đang Sử Dụng:
                 </label>
                 {/* Auto-save live indicator */}
@@ -518,7 +518,7 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
             <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={() => setShowCreateBankForm(!showCreateBankForm)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#E2EED3] hover:bg-[#D4E4C1] text-[#3D522B] border border-[#B9CDA0] font-bold text-xs shadow-sm transition"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#E2EED3] hover:bg-[#D4E4C1] text-w-primary-hover border border-w-accent-border font-bold text-xs shadow-sm transition"
               >
                 <Plus className="w-4 h-4" />
                 <span>Bộ Mới</span>
@@ -534,7 +534,7 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
 
               <button
                 onClick={() => setShowImportModal(true)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#F8F3E5] hover:bg-[#E9D58F]/30 text-[#7A6218] border border-[#E9D58F] font-bold text-xs shadow-sm transition"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-w-bg-main hover:bg-[#E9D58F]/30 text-[#7A6218] border border-[#E9D58F] font-bold text-xs shadow-sm transition"
               >
                 <Upload className="w-4 h-4" />
                 <span>Nhập Câu Hỏi</span>
@@ -542,7 +542,7 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
 
               <button
                 onClick={handleExportBank}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#FFFDF5] hover:bg-[#F8F3E5] text-[#74806B] border border-[#DED5B8] font-bold text-xs border border-slate-200 transition"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-w-bg-card hover:bg-w-bg-main text-w-text-muted border border-w-border font-bold text-xs border border-slate-200 transition"
                 title="Tải về file JSON"
               >
                 <Download className="w-4 h-4" />
@@ -641,7 +641,7 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
                   className={`py-2 text-xs font-bold rounded-xl border transition ${
                     qType === 'mcq'
                       ? 'bg-amber-400 border-amber-500 text-slate-900 shadow-sm'
-                      : 'bg-white border-slate-200 text-[#74806B] hover:bg-slate-50'
+                      : 'bg-white border-slate-200 text-w-text-muted hover:bg-slate-50'
                   }`}
                 >
                   Trắc Nghiệm (MCQ)
@@ -652,7 +652,7 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
                   className={`py-2 text-xs font-bold rounded-xl border transition ${
                     qType === 'tf'
                       ? 'bg-amber-400 border-amber-500 text-slate-900 shadow-sm'
-                      : 'bg-white border-slate-200 text-[#74806B] hover:bg-slate-50'
+                      : 'bg-white border-slate-200 text-w-text-muted hover:bg-slate-50'
                   }`}
                 >
                   Đúng / Sai
@@ -663,7 +663,7 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
                   className={`py-2 text-xs font-bold rounded-xl border transition ${
                     qType === 'text'
                       ? 'bg-amber-400 border-amber-500 text-slate-900 shadow-sm'
-                      : 'bg-white border-slate-200 text-[#74806B] hover:bg-slate-50'
+                      : 'bg-white border-slate-200 text-w-text-muted hover:bg-slate-50'
                   }`}
                 >
                   Trả Lời Ngắn
@@ -854,7 +854,7 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
 
               {/* Explanation */}
               <div>
-                <label className="block text-xs font-semibold text-[#74806B] mb-1">
+                <label className="block text-xs font-semibold text-w-text-muted mb-1">
                   Lời giải thích (Không bắt buộc):
                 </label>
                 <input
@@ -888,7 +888,7 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
           {(currentBank.questions || []).length === 0 ? (
             <div className="text-center py-12 bg-indigo-50/30 border border-dashed border-indigo-200 rounded-2xl">
               <HelpCircle className="w-12 h-12 text-indigo-300 mx-auto mb-3" />
-              <p className="text-[#74806B] text-sm font-bold">Bộ câu hỏi này đang trống!</p>
+              <p className="text-w-text-muted text-sm font-bold">Bộ câu hỏi này đang trống!</p>
               <p className="text-xs text-slate-500 mt-1">
                 Hãy bấm "Tạo Bằng AI", "Thêm Câu Hỏi" hoặc "Nạp File" để bổ sung câu hỏi.
               </p>
@@ -905,7 +905,7 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
                       <span className="text-xs font-bold font-mono px-2 py-0.5 rounded-lg bg-indigo-100 text-indigo-700 border border-indigo-200">
                         #{idx + 1}
                       </span>
-                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-lg bg-slate-200 text-[#74806B]">
+                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-lg bg-slate-200 text-w-text-muted">
                         {q.type === 'mcq' ? 'Trắc nghiệm' : q.type === 'tf' ? 'Đúng/Sai' : 'Trả lời ngắn'}
                       </span>
                       {q.cognitiveLevel && (
@@ -931,8 +931,8 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
                     <p className="text-sm font-bold text-slate-800"><MathChemRenderer text={q.content} /></p>
 
                     {q.learningOutcome && (
-                      <div className="text-[11px] font-[600] text-[#4F683C] bg-[#E9F0D9]/80 border border-[#B9CDA0] px-2.5 py-1 rounded-[10px] inline-flex items-center gap-1">
-                        <Award className="w-3 h-3 text-[#4F683C] shrink-0" />
+                      <div className="text-[11px] font-[600] text-w-primary-dark bg-w-accent-light/80 border border-w-accent-border px-2.5 py-1 rounded-[10px] inline-flex items-center gap-1">
+                        <Award className="w-3 h-3 text-w-primary-dark shrink-0" />
                         <span>YCCĐ: {q.learningOutcome}</span>
                       </div>
                     )}
@@ -954,7 +954,7 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
                               className={`text-xs px-2.5 py-1 rounded-xl border flex items-center gap-1.5 ${
                                 isCorrect
                                   ? 'bg-emerald-50 border-emerald-300 text-emerald-800 font-bold'
-                                  : 'bg-white border-slate-200 text-[#74806B]'
+                                  : 'bg-white border-slate-200 text-w-text-muted'
                               }`}
                             >
                               <span className="font-mono text-[11px] text-slate-400">
@@ -991,7 +991,7 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
                   <div className="relative self-end sm:self-start">
                     <button
                       onClick={() => setActiveDropdown(activeDropdown === q.id ? null : q.id)}
-                      className="p-2 rounded-xl text-[#74806B] hover:bg-[#E9F0D9] transition-colors border border-transparent hover:border-[#B9CDA0]"
+                      className="p-2 rounded-xl text-w-text-muted hover:bg-w-accent-light transition-colors border border-transparent hover:border-w-accent-border"
                     >
                       <MoreVertical className="w-4 h-4" />
                     </button>
@@ -1002,12 +1002,12 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
                           className="fixed inset-0 z-40"
                           onClick={() => setActiveDropdown(null)}
                         />
-                        <div className="absolute right-0 top-10 mt-1 w-48 bg-[#FFFDF5] border border-[#DED5B8] rounded-[16px] shadow-[0_8px_24px_rgba(79,104,60,0.15)] z-50 overflow-hidden py-1">
+                        <div className="absolute right-0 top-10 mt-1 w-48 bg-w-bg-card border border-w-border rounded-[16px] shadow-[0_8px_24px_rgba(79,104,60,0.15)] z-50 overflow-hidden py-1">
                           <button
                             onClick={() => { handleStartEditQuestion(q); setActiveDropdown(null); }}
-                            className="w-full text-left px-4 py-2.5 text-xs font-[700] text-[#35452E] hover:bg-[#E9F0D9] flex items-center gap-2 transition-colors"
+                            className="w-full text-left px-4 py-2.5 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 transition-colors"
                           >
-                            <Edit3 className="w-4 h-4 text-[#6F8F55]" /> Chỉnh sửa
+                            <Edit3 className="w-4 h-4 text-w-primary" /> Chỉnh sửa
                           </button>
                           <button
                             onClick={() => {
@@ -1015,9 +1015,9 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
                               handleUpdate({ ...currentBank, questions: [...currentBank.questions, duplicatedQ] });
                               setActiveDropdown(null);
                             }}
-                            className="w-full text-left px-4 py-2.5 text-xs font-[700] text-[#35452E] hover:bg-[#E9F0D9] flex items-center gap-2 transition-colors"
+                            className="w-full text-left px-4 py-2.5 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 transition-colors"
                           >
-                            <Copy className="w-4 h-4 text-[#6F8F55]" /> Sao chép câu hỏi
+                            <Copy className="w-4 h-4 text-w-primary" /> Sao chép câu hỏi
                           </button>
                           <button
                             onClick={() => {
@@ -1025,9 +1025,9 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
                               safeAlert('Chức năng đang được phát triển');
                               setActiveDropdown(null);
                             }}
-                            className="w-full text-left px-4 py-2.5 text-xs font-[700] text-[#35452E] hover:bg-[#E9F0D9] flex items-center gap-2 transition-colors"
+                            className="w-full text-left px-4 py-2.5 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 transition-colors"
                           >
-                            <FolderOutput className="w-4 h-4 text-[#6F8F55]" /> Di chuyển sang bộ khác
+                            <FolderOutput className="w-4 h-4 text-w-primary" /> Di chuyển sang bộ khác
                           </button>
                           <button
                             onClick={() => {
@@ -1038,11 +1038,11 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
                               });
                               setActiveDropdown(null);
                             }}
-                            className="w-full text-left px-4 py-2.5 text-xs font-[700] text-[#35452E] hover:bg-[#E9F0D9] flex items-center gap-2 transition-colors"
+                            className="w-full text-left px-4 py-2.5 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 transition-colors"
                           >
-                            <Star className={`w-4 h-4 ${q.isFavorite ? 'fill-amber-400 text-amber-400' : 'text-[#6F8F55]'}`} /> Đánh dấu câu hỏi hay
+                            <Star className={`w-4 h-4 ${q.isFavorite ? 'fill-amber-400 text-amber-400' : 'text-w-primary'}`} /> Đánh dấu câu hỏi hay
                           </button>
-                          <div className="h-px bg-[#DED5B8]/60 my-1"></div>
+                          <div className="h-px bg-w-border/60 my-1"></div>
                           <button
                             onClick={() => { handleDeleteQuestion(q.id); setActiveDropdown(null); }}
                             className="w-full text-left px-4 py-2.5 text-xs font-[700] text-[#8C3A50] hover:bg-[#FCE8EE] flex items-center gap-2 transition-colors"
@@ -1060,13 +1060,13 @@ export const QuestionBankEditor: React.FC<QuestionBankModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="p-3 sm:p-4 bg-[#F8F3E5] border-t border-[#DED5B8] flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-          <p className="text-xs text-[#74806B] font-[600] text-center sm:text-left">
-            Tổng số: <strong className="text-[#35452E] font-[800]">{(currentBank.questions || []).length}</strong> câu hỏi sẵn sàng cho trò chơi
+        <div className="p-3 sm:p-4 bg-w-bg-main border-t border-w-border flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+          <p className="text-xs text-w-text-muted font-[600] text-center sm:text-left">
+            Tổng số: <strong className="text-w-text-main font-[800]">{(currentBank.questions || []).length}</strong> câu hỏi sẵn sàng cho trò chơi
           </p>
           <button
             onClick={onClose}
-            className="w-full sm:w-auto px-5 py-2.5 bg-[#6F8F55] hover:bg-[#5F7E4B] text-white font-[800] text-xs sm:text-sm rounded-[15px] shadow-md transition cursor-pointer border border-[#5F7E4B] min-h-[44px]"
+            className="w-full sm:w-auto px-5 py-2.5 bg-w-primary hover:bg-w-primary-hover text-white font-[800] text-xs sm:text-sm rounded-[15px] shadow-md transition cursor-pointer border border-w-primary-hover min-h-[44px]"
           >
             Đóng & Áp Dụng
           </button>

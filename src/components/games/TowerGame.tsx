@@ -123,7 +123,7 @@ export const TowerGame: React.FC<GameProps> = ({ config, questions, onGameEnd })
 
        {/* Question Area */}
        {showQuestion ? (
-         <div className="absolute inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+         <div className="absolute inset-0 bg-white/70 backdrop-blur-sm backdrop-blur-sm z-50 flex items-center justify-center p-4">
            <div className="bg-[#FDFBF7] p-8 rounded-3xl max-w-xl w-full shadow-2xl transform scale-100 animate-in zoom-in-95 duration-200 border-2 border-[#E9E4D4]">
              <h3 className="text-xl font-bold text-slate-800 mb-6 text-center leading-relaxed">{question?.content || 'Câu hỏi thủ công (đọc cho học sinh)'}</h3>
              <div className="flex flex-col gap-4">
@@ -134,7 +134,7 @@ export const TowerGame: React.FC<GameProps> = ({ config, questions, onGameEnd })
          </div>
        ) : (
          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
-           <button onClick={() => setShowQuestion(true)} className="px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:scale-105 text-white font-black rounded-full shadow-xl transition-all border-4 border-white">Lượt của {activeTeam.name}</button>
+           <button onClick={() => setShowQuestion(true)} className="px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:scale-105 text-w-text-main font-black rounded-full shadow-xl transition-all border-4 border-white">Lượt của {activeTeam.name}</button>
          </div>
        )}
     </div>

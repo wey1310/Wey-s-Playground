@@ -46,7 +46,7 @@ export const TeaBattleScoreboard: React.FC<TeaBattleScoreboardProps> = ({
               {/* Team Info Header */}
               <div className="flex items-center gap-2 mb-2">
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center text-lg font-black text-white shadow-inner"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-lg font-black text-w-text-main shadow-inner"
                   style={{ backgroundColor: team.color || '#10b981' }}
                 >
                   {team.avatar || '🎴'}
@@ -58,7 +58,7 @@ export const TeaBattleScoreboard: React.FC<TeaBattleScoreboardProps> = ({
                   <div className="flex items-center gap-1.5 text-[11px] text-zinc-400 font-bold">
                     <span>Hạng #{rank}</span>
                     {team.streak > 1 && (
-                      <span className="text-amber-400 flex items-center gap-0.5">
+                      <span className="text-amber-600 flex items-center gap-0.5">
                         <Flame className="w-3 h-3 fill-amber-400" /> {team.streak}
                       </span>
                     )}
@@ -70,7 +70,7 @@ export const TeaBattleScoreboard: React.FC<TeaBattleScoreboardProps> = ({
               <div className="flex items-end justify-between pt-1 border-t border-zinc-800/80">
                 <div>
                   <span className="text-[10px] text-zinc-400 block font-bold">ĐIỂM SỐ</span>
-                  <span className="text-lg sm:text-2xl font-black text-amber-300">
+                  <span className="text-lg sm:text-2xl font-black text-amber-600">
                     {team.score}
                   </span>
                 </div>
@@ -92,7 +92,7 @@ export const TeaBattleScoreboard: React.FC<TeaBattleScoreboardProps> = ({
                       e.stopPropagation();
                       onAdjustScore(team.id, -5);
                     }}
-                    className="w-5 h-5 rounded bg-zinc-800 hover:bg-rose-600 text-zinc-300 hover:text-white text-xs font-black flex items-center justify-center transition-colors"
+                    className="w-5 h-5 rounded bg-zinc-800 hover:bg-rose-600 text-zinc-300 hover:text-w-text-main text-xs font-black flex items-center justify-center transition-colors"
                   >
                     -5
                   </button>
@@ -103,7 +103,7 @@ export const TeaBattleScoreboard: React.FC<TeaBattleScoreboardProps> = ({
                       e.stopPropagation();
                       onAdjustScore(team.id, 10);
                     }}
-                    className="w-5 h-5 rounded bg-zinc-800 hover:bg-emerald-600 text-zinc-300 hover:text-white text-xs font-black flex items-center justify-center transition-colors"
+                    className="w-5 h-5 rounded bg-zinc-800 hover:bg-emerald-600 text-zinc-300 hover:text-w-text-main text-xs font-black flex items-center justify-center transition-colors"
                   >
                     +10
                   </button>

@@ -70,10 +70,10 @@ export const StudentImportButton: React.FC<StudentImportButtonProps> = ({
 
   const getButtonStyles = () => {
     if (variant === 'primary') {
-      return "bg-[#4F683C] hover:bg-[#3D522B] text-white border-[#3D522B] shadow-sm";
+      return "bg-w-primary-dark hover:bg-w-primary-hover text-white border-w-primary-hover shadow-sm";
     }
     if (variant === 'compact') {
-      return "px-2.5 py-1 bg-[#E9F0D9] hover:bg-[#D4E4C1] text-[#3D522B] text-xs font-bold rounded-lg border border-[#B9CDA0] shadow-2xs";
+      return "px-2.5 py-1 bg-w-accent-light hover:bg-[#D4E4C1] text-w-primary-hover text-xs font-bold rounded-lg border border-w-accent-border shadow-2xs";
     }
     return "bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300 shadow-2xs";
   };

@@ -71,19 +71,19 @@ export const RefillQuestionsModal: React.FC<RefillQuestionsModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fade-in overflow-y-auto">
-      <div className="bg-[#FFFDF5] border-2 border-[#DED5B8] rounded-[26px] shadow-2xl w-full max-w-lg overflow-hidden relative z-10 flex flex-col max-h-[90vh] my-auto wey-paper-card">
+      <div className="bg-w-bg-card border-2 border-w-border rounded-[26px] shadow-2xl w-full max-w-lg overflow-hidden relative z-10 flex flex-col max-h-[90vh] my-auto wey-paper-card">
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[#DED5B8] flex items-center justify-between bg-[#F8F3E5]">
+        <div className="px-5 py-4 border-b border-w-border flex items-center justify-between bg-w-bg-main">
           <div className="flex items-center gap-2.5">
             <span className="text-2xl">⚠️</span>
             <div>
-              <h2 className="text-base sm:text-lg font-[800] text-[#35452E] flex items-center gap-2">
+              <h2 className="text-base sm:text-lg font-[800] text-w-text-main flex items-center gap-2">
                 <span>Đã Hết Câu Hỏi!</span>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
                   Lựa chọn tiếp tục
                 </span>
               </h2>
-              <p className="text-[11px] font-semibold text-[#74806B]">
+              <p className="text-[11px] font-semibold text-w-text-muted">
                 Trò chơi đã sử dụng hết câu hỏi trong bộ nạp hiện tại
               </p>
             </div>
@@ -250,7 +250,7 @@ export const RefillQuestionsModal: React.FC<RefillQuestionsModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-3.5 bg-[#F8F3E5] border-t border-[#DED5B8] flex justify-end">
+        <div className="p-3.5 bg-w-bg-main border-t border-w-border flex justify-end">
           <button
             type="button"
             onClick={onClose}

@@ -627,28 +627,28 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
   };
 
   return (
-    <div id="ai-question-modal-container" className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-[#35452E]/40 backdrop-blur-sm animate-fade-in overflow-y-auto">
-      <div className="bg-[#FFFDF5] border border-[#DED5B8] w-full max-w-4xl rounded-[24px] shadow-[0_16px_40px_rgba(79,104,60,0.2)] flex flex-col max-h-[94vh] overflow-hidden my-auto wey-paper-card">
+    <div id="ai-question-modal-container" className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-w-text-main/40 backdrop-blur-sm animate-fade-in overflow-y-auto">
+      <div className="bg-w-bg-card border border-w-border w-full max-w-4xl rounded-[24px] shadow-[0_16px_40px_rgba(79,104,60,0.2)] flex flex-col max-h-[94vh] overflow-hidden my-auto wey-paper-card">
         
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 bg-[#F8F3E5] border-b border-[#DED5B8] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 bg-w-bg-main border-b border-w-border flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-[#E9F0D9] text-[#4F683C] rounded-[14px] shadow-sm border border-[#B9CDA0]">
-              <Sparkles className="w-5 h-5 animate-pulse text-[#4F683C]" />
+            <div className="p-2.5 bg-w-accent-light text-w-primary-dark rounded-[14px] shadow-sm border border-w-accent-border">
+              <Sparkles className="w-5 h-5 animate-pulse text-w-primary-dark" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-[800] text-[#35452E]">Soạn Câu Hỏi Tự Động Với AI</h2>
-              <p className="text-xs text-[#74806B] font-[600]">Hỗ trợ SGK Kết nối tri thức, Quét văn bản A,B,C,D & Chuẩn JSON</p>
+              <h2 className="text-base sm:text-lg font-[800] text-w-text-main">Soạn Câu Hỏi Tự Động Với AI</h2>
+              <p className="text-xs text-w-text-muted font-[600]">Hỗ trợ SGK Kết nối tri thức, Quét văn bản A,B,C,D & Chuẩn JSON</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setIsApiSelectOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#E9F0D9] hover:bg-[#D4E4C1] text-xs font-[700] text-[#3D522B] rounded-[12px] border border-[#B9CDA0] transition shadow-xs cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-w-accent-light hover:bg-[#D4E4C1] text-xs font-[700] text-w-primary-hover rounded-[12px] border border-w-accent-border transition shadow-xs cursor-pointer"
               title="Chọn và kiểm tra cấu hình Gemini API"
             >
-              <Key className="w-3.5 h-3.5 text-[#4F683C]" />
+              <Key className="w-3.5 h-3.5 text-w-primary-dark" />
               <span className="max-w-[130px] sm:max-w-[180px] truncate">
                 {activeApi ? `API: ${activeApi.name}` : '⚙️ Chọn API'}
               </span>
@@ -660,7 +660,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
             <button
               id="close-ai-modal-btn"
               onClick={onClose}
-              className="p-1.5 rounded-[12px] text-[#74806B] hover:text-[#35452E] hover:bg-[#E9F0D9] transition cursor-pointer"
+              className="p-1.5 rounded-[12px] text-w-text-muted hover:text-w-text-main hover:bg-w-accent-light transition cursor-pointer"
               title="Đóng cửa sổ"
             >
               <X className="w-5 h-5" />
@@ -669,12 +669,12 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
         </div>
 
         {/* AI Mode Selector */}
-        <div className="px-4 sm:px-6 pt-3 pb-1 shrink-0 bg-[#FFFDF5]">
+        <div className="px-4 sm:px-6 pt-3 pb-1 shrink-0 bg-w-bg-card">
           <AiUsagePanel onModeChange={setAiMode} selectedMode={aiMode} disabled={loading || fileImporting} />
         </div>
 
         {/* Tab Toggle: SGK vs Quét File/Văn bản */}
-        <div className="px-4 sm:px-6 pt-2 pb-2 shrink-0 flex gap-2 border-b border-[#DED5B8]/60 bg-[#FFFDF5]">
+        <div className="px-4 sm:px-6 pt-2 pb-2 shrink-0 flex gap-2 border-b border-w-border/60 bg-w-bg-card">
           <button
             id="tab-curriculum-btn"
             type="button"
@@ -686,8 +686,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
             }}
             className={`flex-1 py-2 px-3 rounded-[14px] text-xs font-[700] flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               activeTab === 'curriculum'
-                ? 'bg-[#6F8F55] text-white shadow-sm'
-                : 'bg-[#F8F3E5] text-[#74806B] hover:text-[#35452E] border border-[#DED5B8]'
+                ? 'bg-w-primary text-white shadow-sm'
+                : 'bg-w-bg-main text-w-text-muted hover:text-w-text-main border border-w-border'
             }`}
           >
             <BookOpen className="w-4 h-4" />
@@ -704,8 +704,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
             }}
             className={`flex-1 py-2 px-3 rounded-[14px] text-xs font-[700] flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               activeTab === 'file'
-                ? 'bg-[#6F8F55] text-white shadow-sm'
-                : 'bg-[#F8F3E5] text-[#74806B] hover:text-[#35452E] border border-[#DED5B8]'
+                ? 'bg-w-primary text-white shadow-sm'
+                : 'bg-w-bg-main text-w-text-muted hover:text-w-text-main border border-w-border'
             }`}
           >
             <Upload className="w-4 h-4" />
@@ -835,7 +835,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                           </span>
                         </div>
                         {iss.suggestion && (
-                          <div className="text-[#415433] mt-1.5 text-[11px] font-[600] bg-[#E9F0D9]/40 p-1.5 rounded-[8px] border border-[#B9CDA0]/50 flex items-start gap-1.5">
+                          <div className="text-[#415433] mt-1.5 text-[11px] font-[600] bg-w-accent-light/40 p-1.5 rounded-[8px] border border-w-accent-border/50 flex items-start gap-1.5">
                             <span className="shrink-0">👉</span>
                             <span><b>Cách sửa:</b> {iss.suggestion}</span>
                           </div>
@@ -864,15 +864,15 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                     <button
                       type="button"
                       onClick={() => insertSampleTextToInput('plaintext_mcq')}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-white border border-[#B9CDA0] text-[#35452E] hover:bg-[#E9F0D9] rounded-[10px] font-[700] text-[11px] transition cursor-pointer shadow-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-white border border-w-accent-border text-w-text-main hover:bg-w-accent-light rounded-[10px] font-[700] text-[11px] transition cursor-pointer shadow-xs"
                     >
-                      <ListOrdered className="w-3.5 h-3.5 text-[#4F683C]" />
+                      <ListOrdered className="w-3.5 h-3.5 text-w-primary-dark" />
                       <span>Dán mẫu trắc nghiệm (A,B,C,D)</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => insertSampleTextToInput('json_format')}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#4F683C] text-white hover:bg-[#35452E] rounded-[10px] font-[700] text-[11px] transition cursor-pointer shadow-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-w-primary-dark text-white hover:bg-w-text-main rounded-[10px] font-[700] text-[11px] transition cursor-pointer shadow-xs"
                     >
                       <Code2 className="w-3.5 h-3.5 text-amber-300" />
                       <span>Dán mẫu JSON</span>
@@ -886,20 +886,20 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
           {activeTab === 'curriculum' ? (
             <form onSubmit={handleGenerate} className="space-y-4">
               {/* CT GDPT 2018 & SGK KNTT Banner */}
-              <div className="p-3 bg-gradient-to-r from-[#4F683C]/10 via-[#6F8F55]/10 to-[#DED5B8]/30 border border-[#B9CDA0] rounded-[16px] flex items-start gap-2.5">
-                <div className="p-1.5 bg-[#4F683C] text-white rounded-[10px] shrink-0 mt-0.5 shadow-xs">
+              <div className="p-3 bg-gradient-to-r from-w-primary-dark/10 via-w-primary/10 to-w-border/30 border border-w-accent-border rounded-[16px] flex items-start gap-2.5">
+                <div className="p-1.5 bg-w-primary-dark text-white rounded-[10px] shrink-0 mt-0.5 shadow-xs">
                   <GraduationCap className="w-4 h-4" />
                 </div>
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-xs font-[800] text-[#35452E]">
+                    <span className="text-xs font-[800] text-w-text-main">
                       Chuẩn Chương Trình GDPT 2018
                     </span>
-                    <span className="text-[10px] font-[700] px-2 py-0.5 bg-[#4F683C] text-white rounded-full">
+                    <span className="text-[10px] font-[700] px-2 py-0.5 bg-w-primary-dark text-white rounded-full">
                       SGK Kết Nối Tri Thức
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#4F683C] font-[500] mt-0.5 leading-relaxed">
+                  <p className="text-[11px] text-w-primary-dark font-[500] mt-0.5 leading-relaxed">
                     AI tự động liên kết Yêu cầu cần đạt (YCCĐ), phân hóa 4 mức độ nhận thức và áp dụng thuật ngữ khoa học/danh pháp IUPAC mới.
                   </p>
                 </div>
@@ -908,14 +908,14 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
               {/* Grade & Subject Selectors */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-[700] text-[#74806B] mb-1">
+                  <label className="block text-xs font-[700] text-w-text-muted mb-1">
                     Khối / Lớp:
                   </label>
                   <select
                     id="grade-select"
                     value={grade}
                     onChange={(e) => handleGradeChange(e.target.value)}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-[14px] px-3 py-2 text-xs font-[700] focus:outline-none focus:border-[#6F8F55] cursor-pointer"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-[14px] px-3 py-2 text-xs font-[700] focus:outline-none focus:border-w-primary cursor-pointer"
                   >
                     {GRADES.map((g) => (
                       <option key={g} value={g}>{g}</option>
@@ -924,7 +924,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-[700] text-[#74806B] mb-1">
+                  <label className="block text-xs font-[700] text-w-text-muted mb-1">
                     Môn Học (GDPT 2018):
                   </label>
                   <select
@@ -935,7 +935,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                       setTopic('');
                       setLearningOutcome('');
                     }}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-[14px] px-3 py-2 text-xs font-[700] focus:outline-none focus:border-[#6F8F55] cursor-pointer"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-[14px] px-3 py-2 text-xs font-[700] focus:outline-none focus:border-w-primary cursor-pointer"
                   >
                     {availableSubjects.map((s) => (
                       <option key={s} value={s}>{s}</option>
@@ -946,7 +946,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
 
               {/* Topic Input with Datalist Suggestions */}
               <div>
-                <label className="block text-xs font-[700] text-[#74806B] mb-1">
+                <label className="block text-xs font-[700] text-w-text-muted mb-1">
                   Chủ Đề / Tên Bài Học SGK Kết Nối Tri Thức <span className="text-rose-500">*</span>:
                 </label>
                 <input
@@ -956,7 +956,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   placeholder="Chọn từ gợi ý hoặc nhập tên bài học..."
-                  className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-[14px] px-3 py-2.5 text-xs sm:text-sm font-[600] focus:outline-none focus:border-[#6F8F55] focus:ring-2 focus:ring-[#6F8F55]/20 shadow-sm"
+                  className="w-full bg-white border border-w-border text-w-text-main rounded-[14px] px-3 py-2.5 text-xs sm:text-sm font-[600] focus:outline-none focus:border-w-primary focus:ring-2 focus:ring-w-primary/20 shadow-sm"
                   required
                 />
                 <datalist id="curriculum-lessons">
@@ -969,11 +969,11 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
               {/* Quick Select suggested chips from SGK */}
               {suggestedLessons.length > 0 && (
                 <div>
-                  <label className="block text-[11px] font-[700] text-[#74806B] mb-1.5 flex items-center gap-1">
-                    <BookOpen className="w-3.5 h-3.5 text-[#6F8F55]" />
+                  <label className="block text-[11px] font-[700] text-w-text-muted mb-1.5 flex items-center gap-1">
+                    <BookOpen className="w-3.5 h-3.5 text-w-primary" />
                     <span>Bài học tiêu biểu trong SGK Kết nối tri thức (nhấp để chọn nhanh):</span>
                   </label>
-                  <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-1.5 bg-[#F8F3E5]/60 rounded-[14px] border border-[#DED5B8]/60">
+                  <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-1.5 bg-w-bg-main/60 rounded-[14px] border border-w-border/60">
                     {suggestedLessons.slice(0, 8).map((lesson, idx) => (
                       <button
                         key={idx}
@@ -981,8 +981,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                         onClick={() => setTopic(lesson)}
                         className={`text-[11px] px-2.5 py-1 rounded-[10px] text-left transition cursor-pointer font-[600] border ${
                           topic === lesson
-                            ? 'bg-[#6F8F55] text-white border-[#6F8F55]'
-                            : 'bg-white text-[#35452E] border-[#DED5B8] hover:bg-[#E9F0D9]'
+                            ? 'bg-w-primary text-white border-w-primary'
+                            : 'bg-white text-w-text-main border-w-border hover:bg-w-accent-light'
                         }`}
                       >
                         {lesson}
@@ -993,35 +993,35 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
               )}
 
               {/* Pedagogical Settings (YCCĐ & Mức độ nhận thức) */}
-              <div className="border border-[#DED5B8] rounded-[16px] bg-[#FFFDF5] overflow-hidden">
+              <div className="border border-w-border rounded-[16px] bg-w-bg-card overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setShowPedagogySettings(!showPedagogySettings)}
-                  className="w-full px-3.5 py-2.5 bg-[#F8F3E5] flex items-center justify-between text-left hover:bg-[#E9F0D9] transition cursor-pointer"
+                  className="w-full px-3.5 py-2.5 bg-w-bg-main flex items-center justify-between text-left hover:bg-w-accent-light transition cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
-                    <Target className="w-4 h-4 text-[#4F683C]" />
-                    <span className="text-xs font-[800] text-[#35452E]">
+                    <Target className="w-4 h-4 text-w-primary-dark" />
+                    <span className="text-xs font-[800] text-w-text-main">
                       Thiết Lập Sư Phạm: YCCĐ & Mức Độ Nhận Thức
                     </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#4F683C]/15 text-[#4F683C] font-[700]">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-w-primary-dark/15 text-w-primary-dark font-[700]">
                       Chuẩn GDPT 2018
                     </span>
                   </div>
                   {showPedagogySettings ? (
-                    <ChevronUp className="w-4 h-4 text-[#74806B]" />
+                    <ChevronUp className="w-4 h-4 text-w-text-muted" />
                   ) : (
-                    <ChevronDown className="w-4 h-4 text-[#74806B]" />
+                    <ChevronDown className="w-4 h-4 text-w-text-muted" />
                   )}
                 </button>
 
                 {showPedagogySettings && (
-                  <div className="p-3.5 space-y-3.5 border-t border-[#DED5B8]/80 text-xs">
+                  <div className="p-3.5 space-y-3.5 border-t border-w-border/80 text-xs">
                     {/* Ma trận nhận thức */}
                     <div>
-                      <label className="block text-xs font-[700] text-[#35452E] mb-1.5 flex items-center justify-between">
+                      <label className="block text-xs font-[700] text-w-text-main mb-1.5 flex items-center justify-between">
                         <span>Ma trận phân bổ nhận thức:</span>
-                        <span className="text-[11px] font-[500] text-[#74806B]">
+                        <span className="text-[11px] font-[500] text-w-text-muted">
                           {STANDARD_ASSESSMENT_MATRICES.find(m => m.id === selectedMatrix)?.description}
                         </span>
                       </label>
@@ -1033,12 +1033,12 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                             onClick={() => setSelectedMatrix(mat.id)}
                             className={`p-2 rounded-[12px] border text-left transition cursor-pointer ${
                               selectedMatrix === mat.id
-                                ? 'bg-[#E9F0D9] border-[#4F683C] text-[#35452E] font-[700] ring-1 ring-[#4F683C]'
-                                : 'bg-white border-[#DED5B8] text-[#74806B] hover:bg-[#F8F3E5]'
+                                ? 'bg-w-accent-light border-w-primary-dark text-w-text-main font-[700] ring-1 ring-w-primary-dark'
+                                : 'bg-white border-w-border text-w-text-muted hover:bg-w-bg-main'
                             }`}
                           >
                             <div className="text-[11px] font-[800] leading-tight mb-0.5">{mat.name.split('(')[0]}</div>
-                            <div className="text-[10px] text-[#74806B] font-mono">
+                            <div className="text-[10px] text-w-text-muted font-mono">
                               {mat.distribution.nhan_biet}%NB - {mat.distribution.thong_hieu}%TH - {mat.distribution.van_dung}%VD
                             </div>
                           </button>
@@ -1048,7 +1048,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
 
                     {/* Mức độ nhận thức chi tiết */}
                     <div>
-                      <label className="block text-xs font-[700] text-[#35452E] mb-1.5">
+                      <label className="block text-xs font-[700] text-w-text-main mb-1.5">
                         Lọc theo mức độ nhận thức:
                       </label>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
@@ -1061,15 +1061,15 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                               onClick={() => handleCognitiveLevelToggle(level.name)}
                               className={`p-2 rounded-[12px] border text-left transition cursor-pointer flex flex-col justify-between ${
                                 isSelected
-                                  ? 'bg-[#E9F0D9] border-[#4F683C] text-[#35452E]'
-                                  : 'bg-white border-[#DED5B8] text-slate-400 opacity-60'
+                                  ? 'bg-w-accent-light border-w-primary-dark text-w-text-main'
+                                  : 'bg-white border-w-border text-slate-400 opacity-60'
                               }`}
                             >
                               <div className="flex items-center justify-between">
                                 <span className="font-[800] text-[11px]">{level.name}</span>
-                                {isSelected && <Check className="w-3.5 h-3.5 text-[#4F683C]" />}
+                                {isSelected && <Check className="w-3.5 h-3.5 text-w-primary-dark" />}
                               </div>
-                              <p className="text-[10px] text-[#74806B] line-clamp-2 mt-1 leading-snug">
+                              <p className="text-[10px] text-w-text-muted line-clamp-2 mt-1 leading-snug">
                                 {level.desc}
                               </p>
                             </button>
@@ -1081,8 +1081,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                     {/* Yêu cầu cần đạt (YCCĐ) */}
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="text-xs font-[700] text-[#35452E] flex items-center gap-1">
-                          <Award className="w-3.5 h-3.5 text-[#4F683C]" />
+                        <label className="text-xs font-[700] text-w-text-main flex items-center gap-1">
+                          <Award className="w-3.5 h-3.5 text-w-primary-dark" />
                           <span>Yêu cầu cần đạt (YCCĐ) mục tiêu (tùy chọn):</span>
                         </label>
                       </div>
@@ -1091,7 +1091,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                         value={learningOutcome}
                         onChange={(e) => setLearningOutcome(e.target.value)}
                         placeholder="Chọn từ gợi ý bên dưới hoặc nhập YCCĐ của bài học..."
-                        className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-[12px] px-3 py-2 text-xs font-[600] focus:outline-none focus:border-[#6F8F55]"
+                        className="w-full bg-white border border-w-border text-w-text-main rounded-[12px] px-3 py-2 text-xs font-[600] focus:outline-none focus:border-w-primary"
                       />
                       {suggestedOutcomes.length > 0 && (
                         <div className="mt-1.5 flex flex-wrap gap-1">
@@ -1102,8 +1102,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                               onClick={() => setLearningOutcome(outcome)}
                               className={`text-[10px] px-2 py-1 rounded-[8px] border text-left transition cursor-pointer leading-tight ${
                                 learningOutcome === outcome
-                                  ? 'bg-[#4F683C] text-white border-[#4F683C] font-[700]'
-                                  : 'bg-white text-[#4F683C] border-[#B9CDA0] hover:bg-[#E9F0D9]'
+                                  ? 'bg-w-primary-dark text-white border-w-primary-dark font-[700]'
+                                  : 'bg-white text-w-primary-dark border-w-accent-border hover:bg-w-accent-light'
                               }`}
                             >
                               💡 {outcome.length > 70 ? outcome.slice(0, 70) + '...' : outcome}
@@ -1116,8 +1116,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                     {/* Năng lực đặc thù */}
                     {subjectCompetencies.length > 0 && (
                       <div>
-                        <label className="block text-xs font-[700] text-[#35452E] mb-1 flex items-center gap-1">
-                          <BookMarked className="w-3.5 h-3.5 text-[#4F683C]" />
+                        <label className="block text-xs font-[700] text-w-text-main mb-1 flex items-center gap-1">
+                          <BookMarked className="w-3.5 h-3.5 text-w-primary-dark" />
                           <span>Năng lực đặc thù môn {subject}:</span>
                         </label>
                         <div className="flex flex-wrap gap-1">
@@ -1128,8 +1128,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                               onClick={() => setCompetencyFocus(competencyFocus === comp ? '' : comp)}
                               className={`text-[10px] px-2 py-1 rounded-[8px] border transition cursor-pointer font-[600] ${
                                 competencyFocus === comp
-                                  ? 'bg-[#4F683C] text-white border-[#4F683C]'
-                                  : 'bg-white text-[#35452E] border-[#DED5B8] hover:bg-[#E9F0D9]'
+                                  ? 'bg-w-primary-dark text-white border-w-primary-dark'
+                                  : 'bg-white text-w-text-main border-w-border hover:bg-w-accent-light'
                               }`}
                             >
                               {comp}
@@ -1144,7 +1144,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
 
               {/* Question Types */}
               <div>
-                <label className="block text-xs font-[700] text-[#74806B] mb-1.5">
+                <label className="block text-xs font-[700] text-w-text-muted mb-1.5">
                   Dạng Câu Hỏi Muốn Tạo:
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -1153,11 +1153,11 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                     onClick={() => handleTypeToggle('mcq')}
                     className={`py-2 px-2 text-xs font-[700] rounded-[12px] border transition flex items-center justify-center gap-1.5 cursor-pointer ${
                       currentTypes.includes('mcq')
-                        ? 'bg-[#E9F0D9] border-[#B9CDA0] text-[#35452E]'
-                        : 'bg-white border-[#DED5B8] text-[#74806B] hover:bg-[#F8F3E5]'
+                        ? 'bg-w-accent-light border-w-accent-border text-w-text-main'
+                        : 'bg-white border-w-border text-w-text-muted hover:bg-w-bg-main'
                     }`}
                   >
-                    {currentTypes.includes('mcq') && <CheckCircle2 className="w-3.5 h-3.5 text-[#6F8F55] shrink-0" />}
+                    {currentTypes.includes('mcq') && <CheckCircle2 className="w-3.5 h-3.5 text-w-primary shrink-0" />}
                     <span>Trắc nghiệm (4 opt)</span>
                   </button>
                   <button
@@ -1165,11 +1165,11 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                     onClick={() => handleTypeToggle('tf')}
                     className={`py-2 px-2 text-xs font-[700] rounded-[12px] border transition flex items-center justify-center gap-1.5 cursor-pointer ${
                       currentTypes.includes('tf')
-                        ? 'bg-[#E9F0D9] border-[#B9CDA0] text-[#35452E]'
-                        : 'bg-white border-[#DED5B8] text-[#74806B] hover:bg-[#F8F3E5]'
+                        ? 'bg-w-accent-light border-w-accent-border text-w-text-main'
+                        : 'bg-white border-w-border text-w-text-muted hover:bg-w-bg-main'
                     }`}
                   >
-                    {currentTypes.includes('tf') && <CheckCircle2 className="w-3.5 h-3.5 text-[#6F8F55] shrink-0" />}
+                    {currentTypes.includes('tf') && <CheckCircle2 className="w-3.5 h-3.5 text-w-primary shrink-0" />}
                     <span>Đúng / Sai</span>
                   </button>
                   <button
@@ -1177,11 +1177,11 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                     onClick={() => handleTypeToggle('text')}
                     className={`py-2 px-2 text-xs font-[700] rounded-[12px] border transition flex items-center justify-center gap-1.5 cursor-pointer ${
                       currentTypes.includes('text')
-                        ? 'bg-[#E9F0D9] border-[#B9CDA0] text-[#35452E]'
-                        : 'bg-white border-[#DED5B8] text-[#74806B] hover:bg-[#F8F3E5]'
+                        ? 'bg-w-accent-light border-w-accent-border text-w-text-main'
+                        : 'bg-white border-w-border text-w-text-muted hover:bg-w-bg-main'
                     }`}
                   >
-                    {currentTypes.includes('text') && <CheckCircle2 className="w-3.5 h-3.5 text-[#6F8F55] shrink-0" />}
+                    {currentTypes.includes('text') && <CheckCircle2 className="w-3.5 h-3.5 text-w-primary shrink-0" />}
                     <span>Trả lời ngắn</span>
                   </button>
                 </div>
@@ -1190,13 +1190,13 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
               {/* Quantity & Target Bank */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-[700] text-[#74806B] mb-1">
+                  <label className="block text-xs font-[700] text-w-text-muted mb-1">
                     Số Lượng Câu Hỏi:
                   </label>
                   <select
                     value={count}
                     onChange={(e) => setCount(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-[14px] px-3 py-2 text-xs font-[700] focus:outline-none focus:border-[#6F8F55] cursor-pointer"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-[14px] px-3 py-2 text-xs font-[700] focus:outline-none focus:border-w-primary cursor-pointer"
                   >
                     <option value={5}>5 câu hỏi</option>
                     <option value={10}>10 câu hỏi</option>
@@ -1206,13 +1206,13 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-[700] text-[#74806B] mb-1">
+                  <label className="block text-xs font-[700] text-w-text-muted mb-1">
                     Lưu Vào Bộ Câu Hỏi:
                   </label>
                   <select
                     value={targetBankId}
                     onChange={(e) => setTargetBankId(e.target.value)}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-[14px] px-3 py-2 text-xs font-[700] focus:outline-none focus:border-[#6F8F55] cursor-pointer"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-[14px] px-3 py-2 text-xs font-[700] focus:outline-none focus:border-w-primary cursor-pointer"
                   >
                     <option value="NEW_BANK">➕ Tạo Bộ Mới</option>
                     {(banks || []).map((b) => (
@@ -1229,7 +1229,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2.5 bg-white border border-[#DED5B8] hover:bg-[#F8F3E5] text-[#74806B] font-[700] text-xs rounded-[14px] transition cursor-pointer"
+                  className="px-4 py-2.5 bg-white border border-w-border hover:bg-w-bg-main text-w-text-muted font-[700] text-xs rounded-[14px] transition cursor-pointer"
                 >
                   Hủy
                 </button>
@@ -1237,7 +1237,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                   id="submit-ai-generate-btn"
                   type="submit"
                   disabled={loading}
-                  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#6F8F55] hover:bg-[#5F7E4B] text-white font-[800] text-xs sm:text-sm rounded-[14px] shadow-sm transition disabled:opacity-50 cursor-pointer"
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-w-primary hover:bg-w-primary-hover text-white font-[800] text-xs sm:text-sm rounded-[14px] shadow-sm transition disabled:opacity-50 cursor-pointer"
                 >
                   {loading ? (
                     <>
@@ -1246,7 +1246,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-4 h-4 text-[#FFFDF5]" />
+                      <Sparkles className="w-4 h-4 text-w-bg-card" />
                       <span>Bắt Đầu Tạo Với AI</span>
                     </>
                   )}
@@ -1258,20 +1258,20 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
             <div className="space-y-4">
               
               {/* Prominent Format Guide Section Directly on UI */}
-              <div id="format-guide-card" className="bg-[#F8F3E5] border-2 border-[#DED5B8] rounded-[22px] p-3.5 sm:p-4 shadow-sm">
+              <div id="format-guide-card" className="bg-w-bg-main border-2 border-w-border rounded-[22px] p-3.5 sm:p-4 shadow-sm">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-[#E9F0D9] text-[#4F683C] rounded-[12px] border border-[#B9CDA0] shadow-xs">
-                      <FileCode className="w-4 h-4 text-[#4F683C]" />
+                    <div className="p-2 bg-w-accent-light text-w-primary-dark rounded-[12px] border border-w-accent-border shadow-xs">
+                      <FileCode className="w-4 h-4 text-w-primary-dark" />
                     </div>
                     <div>
-                      <h3 className="text-xs sm:text-sm font-[800] text-[#35452E] flex items-center gap-2 flex-wrap">
+                      <h3 className="text-xs sm:text-sm font-[800] text-w-text-main flex items-center gap-2 flex-wrap">
                         <span>Ví Dụ Format Nhập Liệu Chuẩn</span>
-                        <span className="bg-[#4F683C] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-xs">
+                        <span className="bg-w-primary-dark text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-xs">
                           JSON & Plain Text (A,B,C,D)
                         </span>
                       </h3>
-                      <p className="text-[11px] text-[#74806B] font-[600] mt-0.5">
+                      <p className="text-[11px] text-w-text-muted font-[600] mt-0.5">
                         Chọn định dạng bên dưới để xem mẫu, sao chép hoặc nhấn chèn trực tiếp vào ô nhập
                       </p>
                     </div>
@@ -1280,7 +1280,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                     id="toggle-format-guide-btn"
                     type="button"
                     onClick={() => setShowFormatGuide(!showFormatGuide)}
-                    className="text-[11px] font-[700] text-[#4F683C] hover:text-[#35452E] flex items-center gap-1 cursor-pointer bg-white px-3 py-1.5 rounded-[12px] border border-[#DED5B8] shadow-xs"
+                    className="text-[11px] font-[700] text-w-primary-dark hover:text-w-text-main flex items-center gap-1 cursor-pointer bg-white px-3 py-1.5 rounded-[12px] border border-w-border shadow-xs"
                   >
                     <span>{showFormatGuide ? 'Thu gọn' : 'Xem mẫu'}</span>
                     {showFormatGuide ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -1289,7 +1289,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
 
                 {/* Interactive Format Guide with Tabs */}
                 {showFormatGuide && (
-                  <div className="mt-3.5 pt-3 border-t border-[#DED5B8] space-y-3 animate-fade-in">
+                  <div className="mt-3.5 pt-3 border-t border-w-border space-y-3 animate-fade-in">
                     
                     {/* Format Tabs Selection */}
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
@@ -1298,8 +1298,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                         onClick={() => setSelectedGuideTab('plaintext_mcq')}
                         className={`text-[11px] px-2.5 py-2 rounded-[12px] font-[700] transition flex flex-col items-center justify-center gap-1 text-center cursor-pointer border ${
                           selectedGuideTab === 'plaintext_mcq'
-                            ? 'bg-[#4F683C] text-white border-[#35452E] shadow-xs'
-                            : 'bg-white text-[#35452E] border-[#DED5B8] hover:bg-[#E9F0D9]'
+                            ? 'bg-w-primary-dark text-white border-w-text-main shadow-xs'
+                            : 'bg-white text-w-text-main border-w-border hover:bg-w-accent-light'
                         }`}
                       >
                         <ListOrdered className="w-4 h-4" />
@@ -1311,8 +1311,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                         onClick={() => setSelectedGuideTab('json_format')}
                         className={`text-[11px] px-2.5 py-2 rounded-[12px] font-[700] transition flex flex-col items-center justify-center gap-1 text-center cursor-pointer border ${
                           selectedGuideTab === 'json_format'
-                            ? 'bg-[#4F683C] text-white border-[#35452E] shadow-xs'
-                            : 'bg-white text-[#35452E] border-[#DED5B8] hover:bg-[#E9F0D9]'
+                            ? 'bg-w-primary-dark text-white border-w-text-main shadow-xs'
+                            : 'bg-white text-w-text-main border-w-border hover:bg-w-accent-light'
                         }`}
                       >
                         <Code2 className="w-4 h-4 text-amber-500" />
@@ -1324,8 +1324,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                         onClick={() => setSelectedGuideTab('plaintext_all')}
                         className={`text-[11px] px-2.5 py-2 rounded-[12px] font-[700] transition flex flex-col items-center justify-center gap-1 text-center cursor-pointer border ${
                           selectedGuideTab === 'plaintext_all'
-                            ? 'bg-[#4F683C] text-white border-[#35452E] shadow-xs'
-                            : 'bg-white text-[#35452E] border-[#DED5B8] hover:bg-[#E9F0D9]'
+                            ? 'bg-w-primary-dark text-white border-w-text-main shadow-xs'
+                            : 'bg-white text-w-text-main border-w-border hover:bg-w-accent-light'
                         }`}
                       >
                         <Layers className="w-4 h-4" />
@@ -1337,8 +1337,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                         onClick={() => setSelectedGuideTab('plaintext_tf')}
                         className={`text-[11px] px-2.5 py-2 rounded-[12px] font-[700] transition flex flex-col items-center justify-center gap-1 text-center cursor-pointer border ${
                           selectedGuideTab === 'plaintext_tf'
-                            ? 'bg-[#4F683C] text-white border-[#35452E] shadow-xs'
-                            : 'bg-white text-[#35452E] border-[#DED5B8] hover:bg-[#E9F0D9]'
+                            ? 'bg-w-primary-dark text-white border-w-text-main shadow-xs'
+                            : 'bg-white text-w-text-main border-w-border hover:bg-w-accent-light'
                         }`}
                       >
                         <CheckSquare className="w-4 h-4" />
@@ -1350,8 +1350,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                         onClick={() => setSelectedGuideTab('plaintext_text')}
                         className={`text-[11px] px-2.5 py-2 rounded-[12px] font-[700] transition flex flex-col items-center justify-center gap-1 text-center cursor-pointer border ${
                           selectedGuideTab === 'plaintext_text'
-                            ? 'bg-[#4F683C] text-white border-[#35452E] shadow-xs'
-                            : 'bg-white text-[#35452E] border-[#DED5B8] hover:bg-[#E9F0D9]'
+                            ? 'bg-w-primary-dark text-white border-w-text-main shadow-xs'
+                            : 'bg-white text-w-text-main border-w-border hover:bg-w-accent-light'
                         }`}
                       >
                         <Edit3 className="w-4 h-4" />
@@ -1360,16 +1360,16 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                     </div>
 
                     {/* Active Template Explanation Box */}
-                    <div className="bg-white/90 border border-[#DED5B8] rounded-[14px] p-3 text-xs space-y-1.5">
+                    <div className="bg-white/90 border border-w-border rounded-[14px] p-3 text-xs space-y-1.5">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-[800] text-[#35452E] text-xs sm:text-sm">
+                        <span className="font-[800] text-w-text-main text-xs sm:text-sm">
                           📌 {TEMPLATE_DESCRIPTIONS[selectedGuideTab].title}
                         </span>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E9F0D9] text-[#4F683C] border border-[#B9CDA0]">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-w-accent-light text-w-primary-dark border border-w-accent-border">
                           {TEMPLATE_DESCRIPTIONS[selectedGuideTab].badge}
                         </span>
                       </div>
-                      <p className="text-[#74806B] font-[600] text-[11px]">
+                      <p className="text-w-text-muted font-[600] text-[11px]">
                         {TEMPLATE_DESCRIPTIONS[selectedGuideTab].subtitle}
                       </p>
                       
@@ -1377,7 +1377,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                       <div className="pt-1.5 grid grid-cols-1 sm:grid-cols-2 gap-1 text-[11px] text-[#415433]">
                         {TEMPLATE_DESCRIPTIONS[selectedGuideTab].rules.map((rule, idx) => (
                           <div key={idx} className="flex items-start gap-1 font-[600]">
-                            <span className="text-[#6F8F55] shrink-0">✔</span>
+                            <span className="text-w-primary shrink-0">✔</span>
                             <span>{rule}</span>
                           </div>
                         ))}
@@ -1400,8 +1400,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
 
                     {/* Quick Action Buttons */}
                     <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-                      <div className="text-[11px] text-[#74806B] font-[600] flex items-center gap-1">
-                        <Info className="w-3.5 h-3.5 text-[#4F683C] shrink-0" />
+                      <div className="text-[11px] text-w-text-muted font-[600] flex items-center gap-1">
+                        <Info className="w-3.5 h-3.5 text-w-primary-dark shrink-0" />
                         <span>Nhấn <b>"Chèn vào ô nhập"</b> để kiểm tra hoặc chỉnh sửa trực tiếp nội dung đề.</span>
                       </div>
 
@@ -1410,7 +1410,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                           id="copy-template-btn"
                           type="button"
                           onClick={() => copyTemplateToClipboard(selectedGuideTab)}
-                          className="px-3 py-1.5 bg-white border border-[#DED5B8] text-[#35452E] hover:bg-[#E9F0D9] rounded-[10px] text-[11px] font-[700] flex items-center gap-1.5 cursor-pointer shadow-xs transition"
+                          className="px-3 py-1.5 bg-white border border-w-border text-w-text-main hover:bg-w-accent-light rounded-[10px] text-[11px] font-[700] flex items-center gap-1.5 cursor-pointer shadow-xs transition"
                         >
                           {copiedType === selectedGuideTab ? (
                             <>
@@ -1419,7 +1419,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                             </>
                           ) : (
                             <>
-                              <Copy className="w-3.5 h-3.5 text-[#4F683C]" />
+                              <Copy className="w-3.5 h-3.5 text-w-primary-dark" />
                               <span>Sao chép mẫu</span>
                             </>
                           )}
@@ -1429,9 +1429,9 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                           id="insert-template-btn"
                           type="button"
                           onClick={() => insertSampleTextToInput(selectedGuideTab)}
-                          className="px-3 py-1.5 bg-[#4F683C] text-white hover:bg-[#35452E] rounded-[10px] text-[11px] font-[700] flex items-center gap-1.5 cursor-pointer shadow-xs transition"
+                          className="px-3 py-1.5 bg-w-primary-dark text-white hover:bg-w-text-main rounded-[10px] text-[11px] font-[700] flex items-center gap-1.5 cursor-pointer shadow-xs transition"
                         >
-                          <Sparkles className="w-3.5 h-3.5 text-[#E9F0D9]" />
+                          <Sparkles className="w-3.5 h-3.5 text-w-accent-light" />
                           <span>Chèn vào ô nhập</span>
                         </button>
                       </div>
@@ -1445,7 +1445,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                 <div 
                   id="file-upload-dropzone"
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-[#B9CDA0] bg-[#E9F0D9]/30 hover:bg-[#E9F0D9]/60 p-4 rounded-[18px] text-center cursor-pointer transition flex flex-col items-center justify-center gap-1.5"
+                  className="border-2 border-dashed border-w-accent-border bg-w-accent-light/30 hover:bg-w-accent-light/60 p-4 rounded-[18px] text-center cursor-pointer transition flex flex-col items-center justify-center gap-1.5"
                 >
                   <input 
                     type="file" 
@@ -1457,22 +1457,22 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                     accept=".docx,.doc,.txt,.json,.csv,.md,.tsv"
                     className="hidden" 
                   />
-                  <div className="p-2.5 bg-white rounded-full shadow-sm text-[#4F683C] border border-[#B9CDA0]">
+                  <div className="p-2.5 bg-white rounded-full shadow-sm text-w-primary-dark border border-w-accent-border">
                     {fileImporting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
                   </div>
                   <div>
-                    <p className="text-xs sm:text-sm font-[700] text-[#35452E]">
+                    <p className="text-xs sm:text-sm font-[700] text-w-text-main">
                       {fileImporting ? 'AI Đang đọc & phân tích đề...' : 'Tải file đề thi: Word (.docx), TXT, JSON, CSV'}
                     </p>
-                    <p className="text-[11px] text-[#74806B] font-[600]">
+                    <p className="text-[11px] text-w-text-muted font-[600]">
                       Hệ thống sẽ tự động quét và kiểm tra cấu trúc câu hỏi theo các chuẩn ở trên
                     </p>
                   </div>
                 </div>
                 
-                <div className="mt-2.5 p-3 bg-white border border-[#DED5B8] rounded-[14px]">
+                <div className="mt-2.5 p-3 bg-white border border-w-border rounded-[14px]">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                    <p className="text-[11px] font-[700] text-[#35452E] flex items-center gap-1.5">
+                    <p className="text-[11px] font-[700] text-w-text-main flex items-center gap-1.5">
                       <FileText className="w-3.5 h-3.5 text-blue-600" />
                       Cấu trúc file CSV chuẩn:
                     </p>
@@ -1496,14 +1496,14 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                       Download Template CSV
                     </button>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] text-[#74806B] font-[600]">
-                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">1. <span className="text-[#35452E] font-[800]">Question</span> (Bắt buộc)</div>
-                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">2. <span className="text-[#35452E] font-[800]">CorrectAnswer</span> (Bắt buộc)</div>
-                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">3. <span className="text-[#35452E] font-[800]">Explanation</span> (Tùy chọn)</div>
-                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">4. <span className="text-[#35452E] font-[800]">OptionA</span> (Cho MCQ)</div>
-                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">5. <span className="text-[#35452E] font-[800]">OptionB</span> (Cho MCQ)</div>
-                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">6. <span className="text-[#35452E] font-[800]">OptionC</span> (Cho MCQ)</div>
-                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">7. <span className="text-[#35452E] font-[800]">OptionD</span> (Cho MCQ)</div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] text-w-text-muted font-[600]">
+                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">1. <span className="text-w-text-main font-[800]">Question</span> (Bắt buộc)</div>
+                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">2. <span className="text-w-text-main font-[800]">CorrectAnswer</span> (Bắt buộc)</div>
+                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">3. <span className="text-w-text-main font-[800]">Explanation</span> (Tùy chọn)</div>
+                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">4. <span className="text-w-text-main font-[800]">OptionA</span> (Cho MCQ)</div>
+                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">5. <span className="text-w-text-main font-[800]">OptionB</span> (Cho MCQ)</div>
+                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">6. <span className="text-w-text-main font-[800]">OptionC</span> (Cho MCQ)</div>
+                    <div className="bg-slate-50 p-1.5 rounded-md border border-slate-100">7. <span className="text-w-text-main font-[800]">OptionD</span> (Cho MCQ)</div>
                   </div>
                 </div>
               </div>
@@ -1511,8 +1511,8 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
               {/* Paste Raw Text Box */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-[700] text-[#74806B] flex items-center gap-1.5">
-                    <FileText className="w-4 h-4 text-[#6F8F55]" />
+                  <label className="text-xs font-[700] text-w-text-muted flex items-center gap-1.5">
+                    <FileText className="w-4 h-4 text-w-primary" />
                     <span>Dán nội dung câu hỏi hoặc cấu trúc JSON vào đây:</span>
                   </label>
                   
@@ -1521,7 +1521,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                       id="validate-syntax-btn"
                       type="button"
                       onClick={handleValidateInputSyntax}
-                      className="text-[11px] px-2.5 py-1 bg-white border border-[#B9CDA0] hover:bg-[#E9F0D9] text-[#4F683C] font-[700] rounded-[8px] flex items-center gap-1 cursor-pointer transition shadow-2xs"
+                      className="text-[11px] px-2.5 py-1 bg-white border border-w-accent-border hover:bg-w-accent-light text-w-primary-dark font-[700] rounded-[8px] flex items-center gap-1 cursor-pointer transition shadow-2xs"
                       title="Kiểm tra xem nội dung đã đúng format chuẩn chưa trước khi quét"
                     >
                       <SearchCode className="w-3.5 h-3.5" />
@@ -1539,20 +1539,20 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                     if (validationSuccessMsg) setValidationSuccessMsg(null);
                   }}
                   placeholder="Dán nội dung câu hỏi dạng văn bản hoặc JSON tại đây...&#10;&#10;Ví dụ Trắc nghiệm chuẩn:&#10;Câu 1: Thủ đô của Việt Nam là gì?&#10;A. Hà Nội&#10;B. Đà Nẵng&#10;C. TP.HCM&#10;D. Cần Thơ&#10;Đáp án: A&#10;Giải thích: Hà Nội là thủ đô của Việt Nam."
-                  className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-[16px] p-3 text-xs sm:text-sm font-mono min-h-[160px] focus:outline-none focus:border-[#6F8F55] focus:ring-2 focus:ring-[#6F8F55]/20 shadow-sm"
+                  className="w-full bg-white border border-w-border text-w-text-main rounded-[16px] p-3 text-xs sm:text-sm font-mono min-h-[160px] focus:outline-none focus:border-w-primary focus:ring-2 focus:ring-w-primary/20 shadow-sm"
                 />
               </div>
 
               {/* Target Bank Selection */}
               <div>
-                <label className="block text-xs font-[700] text-[#74806B] mb-1">
+                <label className="block text-xs font-[700] text-w-text-muted mb-1">
                   Lưu Vào Bộ Câu Hỏi:
                 </label>
                 <select
                   id="target-bank-select"
                   value={targetBankId}
                   onChange={(e) => setTargetBankId(e.target.value)}
-                  className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-[14px] px-3 py-2 text-xs font-[700] focus:outline-none focus:border-[#6F8F55] cursor-pointer"
+                  className="w-full bg-white border border-w-border text-w-text-main rounded-[14px] px-3 py-2 text-xs font-[700] focus:outline-none focus:border-w-primary cursor-pointer"
                 >
                   <option value="NEW_BANK">➕ Tạo Bộ Mới Từ Nội Dung Này</option>
                   {(banks || []).map((b) => (
@@ -1568,9 +1568,9 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                 <button
                   type="button"
                   onClick={handleValidateInputSyntax}
-                  className="px-3.5 py-2 bg-white border border-[#DED5B8] hover:bg-[#E9F0D9] text-[#35452E] font-[700] text-xs rounded-[14px] transition flex items-center gap-1.5 cursor-pointer"
+                  className="px-3.5 py-2 bg-white border border-w-border hover:bg-w-accent-light text-w-text-main font-[700] text-xs rounded-[14px] transition flex items-center gap-1.5 cursor-pointer"
                 >
-                  <SearchCode className="w-3.5 h-3.5 text-[#4F683C]" />
+                  <SearchCode className="w-3.5 h-3.5 text-w-primary-dark" />
                   <span>Kiểm tra lỗi logic trước</span>
                 </button>
 
@@ -1578,7 +1578,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="px-4 py-2.5 bg-white border border-[#DED5B8] hover:bg-[#F8F3E5] text-[#74806B] font-[700] text-xs rounded-[14px] transition cursor-pointer"
+                    className="px-4 py-2.5 bg-white border border-w-border hover:bg-w-bg-main text-w-text-muted font-[700] text-xs rounded-[14px] transition cursor-pointer"
                   >
                     Hủy
                   </button>
@@ -1587,7 +1587,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                     type="button"
                     onClick={handleScanFromRawText}
                     disabled={loading || !pastedRawText.trim()}
-                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#6F8F55] hover:bg-[#5F7E4B] text-white font-[800] text-xs sm:text-sm rounded-[14px] shadow-sm transition disabled:opacity-50 cursor-pointer"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-w-primary hover:bg-w-primary-hover text-white font-[800] text-xs sm:text-sm rounded-[14px] shadow-sm transition disabled:opacity-50 cursor-pointer"
                   >
                     {loading ? (
                       <>
@@ -1596,7 +1596,7 @@ export const AiQuestionModal: React.FC<AiQuestionModalProps> = ({
                       </>
                     ) : (
                       <>
-                        <Sparkles className="w-4 h-4 text-[#FFFDF5]" />
+                        <Sparkles className="w-4 h-4 text-w-bg-card" />
                         <span>Quét & Nạp Câu Hỏi</span>
                       </>
                     )}

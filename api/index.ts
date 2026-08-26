@@ -1,4 +1,6 @@
 import express, { Router, Request, Response, NextFunction } from "express";
+import dotenv from "dotenv";
+dotenv.config();
 import { GoogleGenAI, Type } from "@google/genai";
 import { geminiPool } from "./geminiPool.js";
 import { listVercelEnvs, addVercelEnv, removeVercelEnv, triggerVercelDeployment } from "./vercelSync.js";
@@ -15,6 +17,17 @@ import geminiRouter from "./gemini.js";
 
 const app = express();
 app.use(express.json({ limit: "10mb" }));
+
+// Enable CORS and OPTIONS preflight for robust cross-origin and Vercel routing
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-gemini-api-key, x-gemini-model, x-gemini-api-id");
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  next();
+});
 
 // Hàm khởi tạo client Gemini (sử dụng API Key được truyền vào hoặc fallback sang GEMINI_API_KEY từ biến môi trường)
 function getGeminiClient(apiKey?: string) {
@@ -1113,6 +1126,28 @@ apiRouter.get("/gemini-keys/debug-env", (req, res) => {
       length: k.length
     }))
   });
+});
+
+apiRouter.get("/gemini/pool-debug", (req, res) => {
+  try {
+    const keys = geminiPool.getKeys();
+    res.json({
+      success: true,
+      totalKeys: keys.length,
+      keys: keys.map(k => ({
+        id: k.id,
+        envName: k.envName,
+        number: k.number,
+        masked: k.masked,
+        length: k.length
+      }))
+    });
+  } catch (err: any) {
+    res.status(200).json({
+      success: false,
+      error: err?.message || "Lỗi nạp debug pool"
+    });
+  }
 });
 
 app.use("/api", apiRouter);

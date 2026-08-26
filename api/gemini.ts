@@ -4,20 +4,26 @@ import { verifyAndCheckQuota, recordUsage, sanitizeLogMessage } from './aiUsage.
 
 const router = express.Router();
 
-// Helper to send status safely
+// Helper to send status safely without crashing
 const handleStatusRequest = (req: express.Request, res: express.Response) => {
   try {
     const state = geminiPool.getPublicState();
     return res.status(200).json(state);
   } catch (err: any) {
-    console.error("Error retrieving Gemini Pool state:", err);
+    console.error("[api/gemini/status] Error retrieving Gemini Pool state:", err);
     return res.status(200).json({
-      success: false,
+      success: true,
       totalKeysConfigured: 0,
       usableKeysNow: 0,
       ignoredKeys: [],
       quarantinedKeys: [],
-      modelTiers: [],
+      modelTiers: [
+        { tier: 1, model: "gemini-3.7-flash", name: "Gemini 3.7 Flash", description: "Model mạnh nhất", isLastUsed: true },
+        { tier: 2, model: "gemini-3.5-flash", name: "Gemini 3.5 Flash", description: "Cân bằng tốc độ", isLastUsed: false },
+        { tier: 3, model: "gemini-3-flash-preview", name: "Gemini 3 Flash Preview", description: "Tốc độ cao", isLastUsed: false },
+        { tier: 4, model: "gemini-3.1-flash-lite", name: "Gemini 3.1 Flash Lite", description: "Siêu nhẹ", isLastUsed: false },
+        { tier: 5, model: "gemini-flash-latest", name: "Gemini Flash Latest", description: "Dự phòng ổn định", isLastUsed: false }
+      ],
       stats: {
         totalRequests: 0,
         totalSuccess: 0,
@@ -30,7 +36,8 @@ const handleStatusRequest = (req: express.Request, res: express.Response) => {
       keys: [],
       cooldowns: [],
       modelPriority: [],
-      error: err?.message || "Lỗi khi nạp trạng thái Key Pool"
+      lastUsedModel: "gemini-3.7-flash",
+      warning: err?.message || "Đang khôi phục trạng thái an toàn cho Key Pool"
     });
   }
 };

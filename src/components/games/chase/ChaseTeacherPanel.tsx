@@ -32,7 +32,7 @@ export const ChaseTeacherPanel: React.FC<ChaseTeacherPanelProps> = ({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="px-4 py-1.5 rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs font-bold border border-zinc-700 flex items-center gap-1.5 transition-colors shadow"
+          className="px-4 py-1.5 rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-w-text-main text-xs font-bold border border-zinc-700 flex items-center gap-1.5 transition-colors shadow"
         >
           <Settings className="w-3.5 h-3.5 text-yellow-400" />
           <span>{isOpen ? 'ĐÓNG BẢNG ĐIỀU KHIỂN GIÁO VIÊN' : 'BẢNG ĐIỀU KHIỂN CỦA GIÁO VIÊN'}</span>
@@ -81,14 +81,14 @@ export const ChaseTeacherPanel: React.FC<ChaseTeacherPanelProps> = ({
                         <button
                           type="button"
                           onClick={() => onAdjustScore(team.id, -10)}
-                          className="px-2 py-0.5 rounded-lg bg-rose-950 border border-rose-600/40 text-rose-300 hover:bg-rose-600 hover:text-white text-xs font-black"
+                          className="px-2 py-0.5 rounded-lg bg-rose-950 border border-rose-600/40 text-rose-300 hover:bg-rose-600 hover:text-w-text-main text-xs font-black"
                         >
                           -10
                         </button>
                         <button
                           type="button"
                           onClick={() => onAdjustScore(team.id, 10)}
-                          className="px-2 py-0.5 rounded-lg bg-emerald-950 border border-emerald-600/40 text-emerald-300 hover:bg-emerald-600 hover:text-white text-xs font-black"
+                          className="px-2 py-0.5 rounded-lg bg-emerald-950 border border-emerald-600/40 text-emerald-300 hover:bg-emerald-600 hover:text-w-text-main text-xs font-black"
                         >
                           +10
                         </button>
@@ -101,21 +101,21 @@ export const ChaseTeacherPanel: React.FC<ChaseTeacherPanelProps> = ({
                       <button
                         type="button"
                         onClick={() => onGrantPowerUp(team.id, 'peekScan')}
-                        className="px-2 py-0.5 rounded-md bg-cyan-950/70 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-700 hover:text-white font-bold"
+                        className="px-2 py-0.5 rounded-md bg-cyan-950/70 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-700 hover:text-w-text-main font-bold"
                       >
                         +1 Soi
                       </button>
                       <button
                         type="button"
                         onClick={() => onGrantPowerUp(team.id, 'narrow3')}
-                        className="px-2 py-0.5 rounded-md bg-amber-950/70 border border-amber-500/40 text-amber-300 hover:bg-amber-700 hover:text-white font-bold"
+                        className="px-2 py-0.5 rounded-md bg-amber-950/70 border border-amber-500/40 text-amber-600 hover:bg-amber-700 hover:text-w-text-main font-bold"
                       >
                         +1 Còn 3
                       </button>
                       <button
                         type="button"
                         onClick={() => onGrantPowerUp(team.id, 'cheeseBait')}
-                        className="px-2 py-0.5 rounded-md bg-yellow-950/70 border border-yellow-500/40 text-yellow-300 hover:bg-yellow-700 hover:text-white font-bold"
+                        className="px-2 py-0.5 rounded-md bg-yellow-950/70 border border-yellow-500/40 text-yellow-300 hover:bg-yellow-700 hover:text-w-text-main font-bold"
                       >
                         +1 Mồi
                       </button>

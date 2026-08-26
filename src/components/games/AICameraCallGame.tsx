@@ -492,7 +492,7 @@ export const AICameraCallGame: React.FC<GameProps> = ({ config, questions = [], 
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-black z-[100] text-white overflow-hidden font-sans">
+    <div className="fixed inset-0 bg-black z-[100] text-w-text-main overflow-hidden font-sans">
       <video ref={videoRef} className="hidden" playsInline />
       <canvas ref={canvasRef} className="absolute inset-0 z-10" />
       
@@ -510,13 +510,13 @@ export const AICameraCallGame: React.FC<GameProps> = ({ config, questions = [], 
             <div className="flex gap-4 mt-4">
               <button
                 onClick={() => setMode('rollcall')}
-                className={`px-6 py-2 rounded-full font-bold transition-all ${mode === 'rollcall' ? 'bg-cyan-500 text-black shadow-[0_0_15px_#00e5ff]' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                className={`px-6 py-2 rounded-full font-bold transition-all ${mode === 'rollcall' ? 'bg-cyan-500 text-black shadow-[0_0_15px_#00e5ff]' : 'bg-white/10 text-w-text-main hover:bg-white/20'}`}
               >
                 🔮 Gọi Tên
               </button>
               <button
                 onClick={() => setMode('quiz')}
-                className={`px-6 py-2 rounded-full font-bold transition-all ${mode === 'quiz' ? 'bg-cyan-500 text-black shadow-[0_0_15px_#00e5ff]' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                className={`px-6 py-2 rounded-full font-bold transition-all ${mode === 'quiz' ? 'bg-cyan-500 text-black shadow-[0_0_15px_#00e5ff]' : 'bg-white/10 text-w-text-main hover:bg-white/20'}`}
               >
                 🧠 Câu Hỏi
               </button>
@@ -537,7 +537,7 @@ export const AICameraCallGame: React.FC<GameProps> = ({ config, questions = [], 
               }}
               variant="compact"
               buttonText="Nạp Danh Sách (Excel/Txt)"
-              className="bg-green-600/80 hover:bg-green-600 text-white border-none !px-4 !py-2 !rounded-xl"
+              className="bg-green-600/80 hover:bg-green-600 text-w-text-main border-none !px-4 !py-2 !rounded-xl"
             />
             
             <button
@@ -546,7 +546,7 @@ export const AICameraCallGame: React.FC<GameProps> = ({ config, questions = [], 
             >
               <FileSpreadsheet className="w-4 h-4" /> Sửa Danh Sách
             </button>
-            <div className="text-xs text-white/50 bg-black/50 px-3 py-1 rounded-lg">
+            <div className="text-xs text-w-text-main/50 bg-white/70 backdrop-blur-sm px-3 py-1 rounded-lg">
               {students.length} Học sinh
             </div>
           </div>
@@ -554,21 +554,21 @@ export const AICameraCallGame: React.FC<GameProps> = ({ config, questions = [], 
 
 <AnimatePresence>
           {isEditingList && (
-            <div className="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm pointer-events-auto">
+            <div className="fixed inset-0 z-[200] bg-white/70 backdrop-blur-sm flex items-center justify-center p-4 backdrop-blur-sm pointer-events-auto">
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="bg-slate-900 border-2 border-cyan-500/50 p-6 rounded-2xl w-full max-w-md shadow-2xl"
+                className="bg-w-bg-alt border-2 border-cyan-500/50 p-6 rounded-2xl w-full max-w-md shadow-2xl"
               >
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-xl font-bold text-cyan-400">Chỉnh sửa danh sách học sinh</h3>
-                  <button onClick={() => setIsEditingList(false)} className="text-slate-400 hover:text-white">
+                  <button onClick={() => setIsEditingList(false)} className="text-w-text-muted hover:text-w-text-main">
                     <XCircle className="w-6 h-6" />
                   </button>
                 </div>
                 <textarea
-                  className="w-full h-64 bg-slate-800 text-white p-3 rounded-xl border border-slate-700 focus:border-cyan-400 outline-none resize-none"
+                  className="w-full h-64 bg-w-accent-light text-w-text-main p-3 rounded-xl border border-w-accent-border focus:border-cyan-400 outline-none resize-none"
                   value={studentsText}
                   onChange={(e) => setStudentsText(e.target.value)}
                   placeholder="Mỗi dòng một tên học sinh..."
@@ -584,7 +584,7 @@ export const AICameraCallGame: React.FC<GameProps> = ({ config, questions = [], 
           )}
         </AnimatePresence>
         {/* Instructions */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-6 py-3 rounded-full text-cyan-300 font-medium border border-cyan-500/30">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/70 backdrop-blur-sm backdrop-blur-md px-6 py-3 rounded-full text-cyan-300 font-medium border border-cyan-500/30">
           {cameraStatus === 'Camera AI Đã Sẵn Sàng!' ? (
             mode === 'rollcall' ? 'Giơ 1, 2, 3, 4 ngón tay để gọi tương ứng số lượng HS. Nắm tay hoặc xòe 5 ngón để reset.' : 'Nắm tay để qua câu hỏi. Giơ 1, 2, 3 ngón tay để chọn đáp án A, B, C.'
           ) : cameraStatus}
@@ -605,7 +605,7 @@ export const AICameraCallGame: React.FC<GameProps> = ({ config, questions = [], 
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0, opacity: 0 }}
                 transition={{ type: 'spring', damping: 12, delay: idx * 0.1 }}
-                className="bg-gradient-to-br from-blue-600/90 to-purple-600/90 border-2 border-white/50 backdrop-blur-md text-white font-black text-4xl md:text-5xl px-8 py-6 rounded-3xl shadow-[0_0_50px_rgba(59,130,246,0.6)]"
+                className="bg-gradient-to-br from-blue-600/90 to-purple-600/90 border-2 border-white/50 backdrop-blur-md text-w-text-main font-black text-4xl md:text-5xl px-8 py-6 rounded-3xl shadow-[0_0_50px_rgba(59,130,246,0.6)]"
               >
                 {name}
               </motion.div>
@@ -619,17 +619,17 @@ export const AICameraCallGame: React.FC<GameProps> = ({ config, questions = [], 
             {currentQIndex === -1 ? (
               <div className="bg-white/10 backdrop-blur-md p-10 rounded-3xl text-center border border-white/20">
                 <h2 className="text-3xl font-bold mb-4">Sẵn sàng phần thi kiến thức!</h2>
-                <p className="text-xl text-white/70">Nắm bàn tay lại (0 ngón) để bắt đầu câu hỏi đầu tiên.</p>
+                <p className="text-xl text-w-text-main/70">Nắm bàn tay lại (0 ngón) để bắt đầu câu hỏi đầu tiên.</p>
               </div>
             ) : currentQIndex >= questions.length ? (
               <div className="bg-white/10 backdrop-blur-md p-10 rounded-3xl text-center border border-white/20">
                 <Trophy className="w-20 h-20 mx-auto text-yellow-400 mb-6" />
                 <h2 className="text-4xl font-bold mb-4 text-yellow-400">Đã Hoàn Thành!</h2>
-                <p className="text-xl text-white/70">Tất cả câu hỏi đã được giải quyết.</p>
+                <p className="text-xl text-w-text-main/70">Tất cả câu hỏi đã được giải quyết.</p>
               </div>
             ) : (
               <div className="bg-white/95 text-slate-900 p-8 rounded-3xl shadow-2xl border-4 border-slate-900/10">
-                <div className="inline-block bg-rose-500 text-white px-4 py-1 rounded-full text-sm font-bold mb-4 shadow-sm">
+                <div className="inline-block bg-rose-500 text-w-text-main px-4 py-1 rounded-full text-sm font-bold mb-4 shadow-sm">
                   CÂU HỎI {currentQIndex + 1} / {questions.length}
                 </div>
                 <h2 className="text-3xl md:text-4xl font-black mb-8 leading-tight">
@@ -646,13 +646,13 @@ export const AICameraCallGame: React.FC<GameProps> = ({ config, questions = [], 
                         key={idx}
                         className={`p-6 rounded-2xl text-xl font-bold text-center border-4 transition-all ${
                           !isAnswering && idx === correctIdx
-                            ? 'bg-emerald-500 border-emerald-600 text-white shadow-[0_0_30px_rgba(16,185,129,0.5)] scale-105'
+                            ? 'bg-emerald-500 border-emerald-600 text-w-text-main shadow-[0_0_30px_rgba(16,185,129,0.5)] scale-105'
                             : !isAnswering && idx !== correctIdx
-                            ? 'bg-rose-500 border-rose-600 text-white opacity-50'
+                            ? 'bg-rose-500 border-rose-600 text-w-text-main opacity-50'
                             : 'bg-slate-100 border-slate-300 text-slate-700 shadow-inner'
                         }`}
                       >
-                        <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center mb-3 mx-auto text-sm">
+                        <div className="w-8 h-8 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center mb-3 mx-auto text-sm">
                           {idx === 0 ? 'A (1)' : idx === 1 ? 'B (2)' : idx === 2 ? 'C (3)' : 'D (4)'}
                         </div>
                         {opt}

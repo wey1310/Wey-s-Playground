@@ -163,7 +163,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
           particleCount: 120 + effectiveCount * 25,
           spread: 80 + effectiveCount * 10,
           origin: { y: 0.6 },
-          colors: ['#4F683C', '#E9D58F', '#F59E0B', '#3B82F6', '#EC4899']
+          colors: ['#E08283', '#E9D58F', '#F59E0B', '#3B82F6', '#EC4899']
         });
       }
     }, speed);
@@ -334,48 +334,48 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
       id: `student_${idx + 1}`,
       name,
       avatar: '🎓',
-      color: '#4F683C',
+      color: '#E08283',
       score: studentScores[name] || 0
     }));
     onGameEnd(finalTeams, answerLogs);
   };
 
   return (
-    <div className="w-full h-full min-h-[640px] flex flex-col md:flex-row bg-[#FFFDF5] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#DCEBCB]">
+    <div className="w-full h-full min-h-[640px] flex flex-col md:flex-row bg-w-bg-card rounded-3xl overflow-hidden shadow-2xl border-4 border-w-accent-muted">
       
       {/* CỘT TRÁI: QUẢN LÝ DANH SÁCH HỌC SINH & CẤU HÌNH ĐỢT GỌI */}
-      <div className="w-full md:w-80 lg:w-96 bg-[#F8F4E8] border-r-2 border-[#DCEBCB] p-4 sm:p-5 flex flex-col justify-between shrink-0">
+      <div className="w-full md:w-80 lg:w-96 bg-w-bg-tag border-r-2 border-w-accent-muted p-4 sm:p-5 flex flex-col justify-between shrink-0">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-black text-[#35452E] flex items-center gap-2">
-              <Users className="w-5 h-5 text-[#4F683C]" />
+            <h3 className="text-base font-black text-w-text-main flex items-center gap-2">
+              <Users className="w-5 h-5 text-w-primary-dark" />
               <span>Danh Sách Học Sinh</span>
             </h3>
-            <span className="px-2.5 py-1 bg-[#4F683C] text-white text-xs font-black rounded-lg shadow-xs">
+            <span className="px-2.5 py-1 bg-w-primary-dark text-w-text-main text-xs font-black rounded-lg shadow-xs">
               {students.length} HS
             </span>
           </div>
 
           {/* Statistics Bar */}
-          <div className="grid grid-cols-2 gap-2 bg-[#E9F0D9] p-2.5 rounded-xl border border-[#B9CDA0]">
+          <div className="grid grid-cols-2 gap-2 bg-w-accent-light p-2.5 rounded-xl border border-w-accent-border">
             <div className="text-center">
-              <span className="block text-[11px] font-bold text-[#74806B]">Còn lại</span>
-              <span className="text-lg font-black text-[#4F683C]">{remainingStudents.length}</span>
+              <span className="block text-[11px] font-bold text-w-text-muted">Còn lại</span>
+              <span className="text-lg font-black text-w-primary-dark">{remainingStudents.length}</span>
             </div>
-            <div className="text-center border-l border-[#B9CDA0]">
-              <span className="block text-[11px] font-bold text-[#74806B]">Đã gọi</span>
+            <div className="text-center border-l border-w-accent-border">
+              <span className="block text-[11px] font-bold text-w-text-muted">Đã gọi</span>
               <span className="text-lg font-black text-[#D86C70]">{calledStudents.length}</span>
             </div>
           </div>
 
           {/* Batch Count Selection UI Component */}
-          <div className="space-y-2 bg-white p-3 rounded-2xl border-2 border-[#DCEBCB] shadow-xs">
+          <div className="space-y-2 bg-white p-3 rounded-2xl border-2 border-w-accent-muted shadow-xs">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-black text-[#35452E] flex items-center gap-1.5">
-                <Layers className="w-4 h-4 text-[#4F683C]" />
+              <label className="text-xs font-black text-w-text-main flex items-center gap-1.5">
+                <Layers className="w-4 h-4 text-w-primary-dark" />
                 <span>Số lượng gọi 1 lượt:</span>
               </label>
-              <span className="px-2 py-0.5 bg-[#E9F0D9] text-[#4F683C] text-xs font-black rounded-md border border-[#B9CDA0]">
+              <span className="px-2 py-0.5 bg-w-accent-light text-w-primary-dark text-xs font-black rounded-md border border-w-accent-border">
                 {batchCount} HS
               </span>
             </div>
@@ -390,8 +390,8 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                   disabled={isRolling}
                   className={`flex-1 min-w-[42px] py-1 text-xs font-black rounded-lg transition border cursor-pointer ${
                     batchCount === num
-                      ? 'bg-[#4F683C] text-white border-[#3D522B] shadow-xs'
-                      : 'bg-[#F8F4E8] text-[#74806B] hover:bg-[#E9F0D9] border-[#DCEBCB]'
+                      ? 'bg-w-primary-dark text-w-text-main border-w-primary-hover shadow-xs'
+                      : 'bg-w-bg-tag text-w-text-muted hover:bg-w-accent-light border-w-accent-muted'
                   } disabled:opacity-50`}
                 >
                   {num} HS
@@ -401,12 +401,12 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
 
             {/* Dropdown / Stepper for Custom Batch Size */}
             <div className="flex items-center gap-2 pt-1">
-              <span className="text-[11px] font-bold text-[#74806B] shrink-0">Tùy chọn:</span>
+              <span className="text-[11px] font-bold text-w-text-muted shrink-0">Tùy chọn:</span>
               <select
                 value={batchCount}
                 onChange={(e) => setBatchCount(Math.max(1, parseInt(e.target.value) || 1))}
                 disabled={isRolling}
-                className="w-full bg-[#F8F4E8] border border-[#DCEBCB] text-[#35452E] rounded-xl px-2.5 py-1 text-xs font-black focus:outline-none focus:border-[#4F683C] shadow-2xs cursor-pointer disabled:opacity-50"
+                className="w-full bg-w-bg-tag border border-w-accent-muted text-w-text-main rounded-xl px-2.5 py-1 text-xs font-black focus:outline-none focus:border-w-primary-dark shadow-2xs cursor-pointer disabled:opacity-50"
               >
                 {Array.from({ length: Math.min(Math.max(students.length, 10), 30) }, (_, i) => i + 1).map(n => (
                   <option key={n} value={n}>
@@ -418,13 +418,13 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
           </div>
 
           {/* Toggle No-Repeat Mode */}
-          <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-[#DCEBCB] shadow-xs">
-            <span className="text-xs font-bold text-[#35452E]">Chế độ không lặp lại:</span>
+          <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-w-accent-muted shadow-xs">
+            <span className="text-xs font-bold text-w-text-main">Chế độ không lặp lại:</span>
             <button
               type="button"
               onClick={() => setNoRepeat(!noRepeat)}
               className={`w-11 h-6 rounded-full transition p-1 relative cursor-pointer ${
-                noRepeat ? 'bg-[#4F683C]' : 'bg-slate-300'
+                noRepeat ? 'bg-w-primary-dark' : 'bg-slate-300'
               }`}
             >
               <div
@@ -438,7 +438,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
           {/* Scrollable Editable Textarea */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between flex-wrap gap-1">
-              <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#74806B]">
+              <label className="block text-[11px] font-extrabold uppercase tracking-wider text-w-text-muted">
                 Danh sách học sinh:
               </label>
               <StudentImportButton
@@ -453,7 +453,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
             </div>
             <textarea 
               rows={5}
-              className="w-full h-36 p-3 rounded-xl border-2 border-[#DCEBCB] focus:border-[#4F683C] focus:ring-2 focus:ring-[#4F683C]/20 bg-white font-bold text-xs text-[#35452E] resize-none outline-none custom-scrollbar shadow-inner"
+              className="w-full h-36 p-3 rounded-xl border-2 border-w-accent-muted focus:border-w-primary-dark focus:ring-2 focus:ring-w-primary-dark/20 bg-white font-bold text-xs text-w-text-main resize-none outline-none custom-scrollbar shadow-inner"
               value={studentsText}
               onChange={(e) => setStudentsText(e.target.value)}
               placeholder="Nhập tên học sinh..."
@@ -464,7 +464,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
           {noRepeat && calledStudents.length > 0 && (
             <div className="space-y-1">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#74806B]">Học sinh đã gọi ({calledStudents.length}):</span>
+                <span className="text-[11px] font-bold text-w-text-muted">Học sinh đã gọi ({calledStudents.length}):</span>
                 <button
                   type="button"
                   onClick={handleResetCalled}
@@ -473,11 +473,11 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                   <RotateCcw className="w-3 h-3" /> Đặt lại
                 </button>
               </div>
-              <div className="max-h-24 overflow-y-auto bg-white p-2 rounded-xl border border-[#DCEBCB] space-y-1 custom-scrollbar">
+              <div className="max-h-24 overflow-y-auto bg-white p-2 rounded-xl border border-w-accent-muted space-y-1 custom-scrollbar">
                 {calledStudents.map((name, i) => (
                   <div key={i} className="flex items-center justify-between text-xs py-0.5 px-1.5 bg-slate-50 rounded text-slate-600 font-semibold">
                     <span>{name}</span>
-                    <span className="text-[10px] text-[#4F683C] font-bold">
+                    <span className="text-[10px] text-w-primary-dark font-bold">
                       {studentScores[name] ? `+${studentScores[name]}đ` : '✓'}
                     </span>
                   </div>
@@ -488,7 +488,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
         </div>
 
         {/* Footer Actions */}
-        <div className="pt-3 border-t border-[#DCEBCB] flex gap-2">
+        <div className="pt-3 border-t border-w-accent-muted flex gap-2">
           <button
             type="button"
             onClick={handleEnd}
@@ -503,18 +503,18 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
       <div className="flex-1 relative overflow-y-auto p-4 sm:p-8 flex flex-col items-center justify-center custom-scrollbar">
         
         {/* Background gradient decorative glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#FEF9E7] via-[#FFFDF5] to-white pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#FEF9E7] via-w-bg-card to-white pointer-events-none" />
 
         {/* TOP HEADER & BATCH BADGE */}
         <div className="relative z-10 text-center mb-6">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#E9F0D9] text-[#4F683C] text-xs font-black rounded-full border border-[#B9CDA0] mb-2 shadow-2xs">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-w-accent-light text-w-primary-dark text-xs font-black rounded-full border border-w-accent-border mb-2 shadow-2xs">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Chế độ gọi: {batchCount > 1 ? `Đợt ${batchCount} Học Sinh Cùng Lúc` : '1 Học Sinh / Lượt'}</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-[#35452E] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-w-text-main tracking-tight">
             🎯 GỌI TÊN NGẪU NHIÊN
           </h2>
-          <p className="text-xs sm:text-sm font-semibold text-[#74806B] mt-1">
+          <p className="text-xs sm:text-sm font-semibold text-w-text-muted mt-1">
             {pickedStudents.length > 0
               ? (isQuestionActive 
                   ? `Đang trả lời câu hỏi (${pickedStudents.length > 1 ? `Đang chọn: ${currentActiveStudent}` : currentActiveStudent})` 
@@ -528,7 +528,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
           <div className="relative z-10 flex flex-col items-center max-w-2xl w-full">
             
             {/* Roulette Multi-Slot Board */}
-            <div className="w-full bg-[#35452E] p-6 sm:p-8 rounded-3xl border-4 border-[#E9D58F] shadow-[0_15px_40px_rgba(53,69,46,0.35)] text-center relative overflow-hidden">
+            <div className="w-full bg-w-text-main p-6 sm:p-8 rounded-3xl border-4 border-[#E9D58F] shadow-[0_15px_40px_rgba(53,69,46,0.35)] text-center relative overflow-hidden">
               <div className="absolute top-3 left-4 text-xs font-black text-[#E9D58F] uppercase tracking-wider flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Bảng Quay Gọi Tên ({isRolling ? `Đang quay ${displayRollNames.length} bạn...` : `${displayRollNames.length} Học Sinh`})</span>
@@ -557,7 +557,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                         : { duration: 0.12 }
                     }
                     className={`text-3xl sm:text-5xl font-black tracking-tight ${
-                      isRolling ? 'text-[#E9D58F]' : (pickedStudents.length > 0 ? 'text-[#FFFDF5] drop-shadow-[0_4px_12px_rgba(233,213,143,0.5)]' : 'text-slate-400')
+                      isRolling ? 'text-[#E9D58F]' : (pickedStudents.length > 0 ? 'text-w-bg-card drop-shadow-[0_4px_12px_rgba(233,213,143,0.5)]' : 'text-w-text-muted')
                     }`}
                   >
                     {displayRollNames[0] || '---'}
@@ -573,15 +573,15 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                       transition={{ delay: idx * 0.08, duration: 0.3 }}
                       className={`p-3.5 rounded-2xl border-2 flex items-center gap-2.5 text-left transition ${
                         pickedStudents.length > 0
-                          ? 'bg-[#43573A] border-[#E9D58F] text-[#FFFDF5] shadow-md'
-                          : 'bg-[#2E3C27] border-[#4F683C] text-[#E9D58F]'
+                          ? 'bg-[#43573A] border-[#E9D58F] text-w-bg-card shadow-md'
+                          : 'bg-[#2E3C27] border-w-primary-dark text-[#E9D58F]'
                       }`}
                     >
-                      <div className="w-8 h-8 rounded-xl bg-[#E9D58F] text-[#35452E] font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
+                      <div className="w-8 h-8 rounded-xl bg-[#E9D58F] text-w-text-main font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
                         #{idx + 1}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="text-[10px] text-[#DCEBCB] font-extrabold uppercase">Học sinh {idx + 1}</div>
+                        <div className="text-[10px] text-w-accent-muted font-extrabold uppercase">Học sinh {idx + 1}</div>
                         <div className="text-base sm:text-lg font-black truncate">{name}</div>
                       </div>
                     </motion.div>
@@ -610,8 +610,8 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                 >
                   {/* Single Student Assessment Bar */}
                   {pickedStudents.length === 1 ? (
-                    <div className="bg-[#FFFDF5] p-3 rounded-2xl border-2 border-[#DCEBCB] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 max-w-lg mx-auto">
-                      <div className="text-xs font-bold text-[#74806B] flex items-center gap-1.5">
+                    <div className="bg-w-bg-card p-3 rounded-2xl border-2 border-w-accent-muted shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 max-w-lg mx-auto">
+                      <div className="text-xs font-bold text-w-text-muted flex items-center gap-1.5">
                         <span>Đánh giá {pickedStudents[0]}:</span>
                         {studentStatus[pickedStudents[0]] && (
                           <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase ${
@@ -629,7 +629,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                         <button
                           type="button"
                           onClick={() => handleQuickAction('correct', pickedStudents[0])}
-                          className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer"
+                          className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-w-text-main font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer"
                           title="Ghi nhận trả lời đúng (+10 điểm)"
                         >
                           <CheckCircle className="w-3.5 h-3.5" />
@@ -638,7 +638,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                         <button
                           type="button"
                           onClick={() => handleQuickAction('help', pickedStudents[0])}
-                          className="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer"
+                          className="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-w-text-main font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer"
                           title="Ghi nhận cần hỗ trợ (+5 điểm)"
                         >
                           <span>🤝 Cần hỗ trợ</span>
@@ -646,7 +646,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                         <button
                           type="button"
                           onClick={() => handleQuickAction('incorrect', pickedStudents[0])}
-                          className="px-2.5 py-1.5 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer"
+                          className="px-2.5 py-1.5 bg-rose-500 hover:bg-rose-600 text-w-text-main font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer"
                           title="Ghi nhận chưa đúng"
                         >
                           <XCircle className="w-3.5 h-3.5" />
@@ -658,8 +658,8 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                     /* Multi-Student Individual Assessment & Focus Cards Grid */
                     <div className="space-y-3">
                       <div className="flex items-center justify-between flex-wrap gap-2 px-1">
-                        <span className="text-xs font-black text-[#35452E] flex items-center gap-1.5">
-                          <UserCheck className="w-4 h-4 text-[#4F683C]" />
+                        <span className="text-xs font-black text-w-text-main flex items-center gap-1.5">
+                          <UserCheck className="w-4 h-4 text-w-primary-dark" />
                           <span>Danh sách {pickedStudents.length} học sinh được gọi đợt này:</span>
                         </span>
                         
@@ -668,14 +668,14 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                           <button
                             type="button"
                             onClick={() => handleBatchQuickAction('correct')}
-                            className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] rounded-lg shadow-2xs transition cursor-pointer"
+                            className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-w-text-main font-bold text-[11px] rounded-lg shadow-2xs transition cursor-pointer"
                           >
                             ✓ Đúng Cả Đợt (+10đ)
                           </button>
                           <button
                             type="button"
                             onClick={() => handleBatchQuickAction('help')}
-                            className="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-bold text-[11px] rounded-lg shadow-2xs transition cursor-pointer"
+                            className="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-w-text-main font-bold text-[11px] rounded-lg shadow-2xs transition cursor-pointer"
                           >
                             🤝 Hỗ Trợ Cả Đợt (+5đ)
                           </button>
@@ -692,19 +692,19 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                               key={stName}
                               className={`p-3 rounded-2xl border-2 transition flex flex-col justify-between gap-2 shadow-sm ${
                                 isCurrentActive
-                                  ? 'bg-[#F4F8F0] border-[#4F683C] ring-2 ring-[#4F683C]/30'
-                                  : 'bg-white border-[#DCEBCB] hover:border-[#B9CDA0]'
+                                  ? 'bg-[#F4F8F0] border-w-primary-dark ring-2 ring-w-primary-dark/30'
+                                  : 'bg-white border-w-accent-muted hover:border-w-accent-border'
                               }`}
                             >
                               <div className="flex items-center justify-between gap-2">
                                 <div className="flex items-center gap-2 min-w-0">
-                                  <div className="w-7 h-7 rounded-lg bg-[#E9F0D9] text-[#4F683C] font-black text-xs flex items-center justify-center shrink-0">
+                                  <div className="w-7 h-7 rounded-lg bg-w-accent-light text-w-primary-dark font-black text-xs flex items-center justify-center shrink-0">
                                     #{idx + 1}
                                   </div>
                                   <div className="min-w-0">
-                                    <div className="text-xs font-black text-[#35452E] truncate">{stName}</div>
-                                    <div className="text-[10px] text-[#74806B] font-semibold">
-                                      Điểm: <span className="font-bold text-[#4F683C]">{studentScores[stName] || 0}đ</span>
+                                    <div className="text-xs font-black text-w-text-main truncate">{stName}</div>
+                                    <div className="text-[10px] text-w-text-muted font-semibold">
+                                      Điểm: <span className="font-bold text-w-primary-dark">{studentScores[stName] || 0}đ</span>
                                     </div>
                                   </div>
                                 </div>
@@ -728,7 +728,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                                   <button
                                     type="button"
                                     onClick={() => handleQuickAction('correct', stName)}
-                                    className="px-2 py-1 bg-emerald-50 hover:bg-emerald-500 text-emerald-700 hover:text-white rounded-lg text-[11px] font-bold border border-emerald-200 transition cursor-pointer"
+                                    className="px-2 py-1 bg-emerald-50 hover:bg-emerald-500 text-emerald-700 hover:text-w-text-main rounded-lg text-[11px] font-bold border border-emerald-200 transition cursor-pointer"
                                     title="Chấm đúng (+10đ)"
                                   >
                                     ✓ Đúng
@@ -736,7 +736,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                                   <button
                                     type="button"
                                     onClick={() => handleQuickAction('help', stName)}
-                                    className="px-2 py-1 bg-amber-50 hover:bg-amber-500 text-amber-800 hover:text-white rounded-lg text-[11px] font-bold border border-amber-200 transition cursor-pointer"
+                                    className="px-2 py-1 bg-amber-50 hover:bg-amber-500 text-amber-800 hover:text-w-text-main rounded-lg text-[11px] font-bold border border-amber-200 transition cursor-pointer"
                                     title="Cần hỗ trợ (+5đ)"
                                   >
                                     🤝 Hỗ trợ
@@ -744,7 +744,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                                   <button
                                     type="button"
                                     onClick={() => handleQuickAction('incorrect', stName)}
-                                    className="px-1.5 py-1 bg-rose-50 hover:bg-rose-500 text-rose-700 hover:text-white rounded-lg text-[11px] font-bold border border-rose-200 transition cursor-pointer"
+                                    className="px-1.5 py-1 bg-rose-50 hover:bg-rose-500 text-rose-700 hover:text-w-text-main rounded-lg text-[11px] font-bold border border-rose-200 transition cursor-pointer"
                                     title="Chưa đúng"
                                   >
                                     ✗ Sai
@@ -754,7 +754,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                                 <button
                                   type="button"
                                   onClick={() => handlePickRandomQuestion(idx)}
-                                  className="px-2.5 py-1 bg-[#4F683C] hover:bg-[#3D522B] text-white rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0"
+                                  className="px-2.5 py-1 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0"
                                 >
                                   <span>Bốc câu hỏi</span>
                                   <ChevronRight className="w-3 h-3" />
@@ -772,7 +772,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                     <button
                       type="button"
                       onClick={() => handlePickRandomQuestion(activeStudentIndex)}
-                      className="px-8 py-3.5 bg-gradient-to-r from-[#4F683C] to-[#3D522B] hover:from-[#3D522B] hover:to-[#2B3B1E] text-white font-black text-base sm:text-lg rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
+                      className="px-8 py-3.5 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-base sm:text-lg rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
                     >
                       <Sparkles className="w-5 h-5 text-[#E9D58F] fill-current" />
                       <span>
@@ -802,7 +802,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                   type="button"
                   onClick={handleRollName}
                   disabled={isRolling || remainingStudents.length === 0}
-                  className="px-10 py-4 bg-gradient-to-r from-[#4F683C] to-[#3D522B] hover:from-[#3D522B] hover:to-[#2B3B1E] text-white font-black text-xl sm:text-2xl rounded-2xl shadow-xl transition transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer uppercase tracking-wider flex items-center gap-3"
+                  className="px-10 py-4 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-xl sm:text-2xl rounded-2xl shadow-xl transition transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer uppercase tracking-wider flex items-center gap-3"
                 >
                   <Shuffle className="w-6 h-6 text-[#E9D58F]" />
                   <span>
@@ -813,7 +813,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                 </button>
 
                 {/* Inline batch size hint & quick picker */}
-                <div className="flex items-center gap-2 bg-[#F8F4E8] px-3.5 py-1.5 rounded-full border border-[#DCEBCB] text-xs font-bold text-[#74806B]">
+                <div className="flex items-center gap-2 bg-w-bg-tag px-3.5 py-1.5 rounded-full border border-w-accent-muted text-xs font-bold text-w-text-muted">
                   <span>Chọn số lượng:</span>
                   {[1, 2, 3, 4, 5].map(n => (
                     <button
@@ -822,18 +822,18 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                       onClick={() => setBatchCount(n)}
                       className={`px-2 py-0.5 rounded-md text-xs font-black transition ${
                         batchCount === n 
-                          ? 'bg-[#4F683C] text-white shadow-2xs' 
-                          : 'text-[#35452E] hover:bg-[#E9F0D9]'
+                          ? 'bg-w-primary-dark text-w-text-main shadow-2xs' 
+                          : 'text-w-text-main hover:bg-w-accent-light'
                       }`}
                     >
                       {n}
                     </button>
                   ))}
-                  <span className="text-slate-300">|</span>
+                  <span className="text-w-primary-dark">|</span>
                   <select
                     value={batchCount}
                     onChange={(e) => setBatchCount(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="bg-transparent text-xs font-black text-[#4F683C] focus:outline-none cursor-pointer"
+                    className="bg-transparent text-xs font-black text-w-primary-dark focus:outline-none cursor-pointer"
                   >
                     {Array.from({ length: 15 }, (_, i) => i + 1).map(n => (
                       <option key={n} value={n}>{n} HS</option>
@@ -850,21 +850,21 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="relative z-10 w-full max-w-2xl bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-[#DCEBCB] space-y-6"
+            className="relative z-10 w-full max-w-2xl bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-w-accent-muted space-y-6"
           >
             {/* Header: Student Info / Batch Selector & Timer */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#DCEBCB]">
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-w-accent-muted">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-[#E9F0D9] text-[#4F683C] flex items-center justify-center text-xl font-black shadow-xs shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-w-accent-light text-w-primary-dark flex items-center justify-center text-xl font-black shadow-xs shrink-0">
                   🎓
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-[#74806B] uppercase tracking-wider">
+                  <div className="text-xs font-bold text-w-text-muted uppercase tracking-wider">
                     {pickedStudents.length > 1 ? `Đợt gọi (${pickedStudents.length} học sinh)` : 'Học sinh trả lời'}
                   </div>
                   <div className="flex items-center gap-2 flex-wrap mt-0.5">
                     {pickedStudents.length <= 1 ? (
-                      <span className="text-lg sm:text-xl font-black text-[#35452E]">{currentActiveStudent}</span>
+                      <span className="text-lg sm:text-xl font-black text-w-text-main">{currentActiveStudent}</span>
                     ) : (
                       /* Clickable Tabs for Batch Members */
                       <div className="flex items-center gap-1.5 flex-wrap">
@@ -875,8 +875,8 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                             onClick={() => setActiveStudentIndex(idx)}
                             className={`px-2.5 py-1 rounded-xl text-xs font-black transition flex items-center gap-1 cursor-pointer ${
                               activeStudentIndex === idx
-                                ? 'bg-[#4F683C] text-white shadow-xs'
-                                : 'bg-[#F8F4E8] text-[#35452E] hover:bg-[#E9F0D9] border border-[#DCEBCB]'
+                                ? 'bg-w-primary-dark text-w-text-main shadow-xs'
+                                : 'bg-w-bg-tag text-w-text-main hover:bg-w-accent-light border border-w-accent-muted'
                             }`}
                           >
                             <span>{st}</span>
@@ -907,11 +907,11 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
 
               <div className="flex items-center gap-2">
                 {/* Quick Action Badges for active student */}
-                <div className="hidden sm:flex items-center gap-1 bg-[#F8F4E8] p-1 rounded-xl border border-[#DCEBCB]">
+                <div className="hidden sm:flex items-center gap-1 bg-w-bg-tag p-1 rounded-xl border border-w-accent-muted">
                   <button
                     type="button"
                     onClick={() => handleQuickAction('correct', currentActiveStudent || undefined)}
-                    className="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[11px] rounded-lg transition cursor-pointer"
+                    className="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-600 text-w-text-main font-bold text-[11px] rounded-lg transition cursor-pointer"
                     title="Chấm Đúng (+10đ)"
                   >
                     ✓ Đúng
@@ -919,7 +919,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                   <button
                     type="button"
                     onClick={() => handleQuickAction('help', currentActiveStudent || undefined)}
-                    className="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px] rounded-lg transition cursor-pointer"
+                    className="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-w-text-main font-bold text-[11px] rounded-lg transition cursor-pointer"
                     title="Cần hỗ trợ (+5đ)"
                   >
                     🤝 Hỗ trợ
@@ -927,7 +927,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                   <button
                     type="button"
                     onClick={() => handleQuickAction('incorrect', currentActiveStudent || undefined)}
-                    className="px-2 py-1 bg-rose-500 hover:bg-rose-600 text-white font-bold text-[11px] rounded-lg transition cursor-pointer"
+                    className="px-2 py-1 bg-rose-500 hover:bg-rose-600 text-w-text-main font-bold text-[11px] rounded-lg transition cursor-pointer"
                     title="Chưa đúng (0đ)"
                   >
                     ✗ Sai
@@ -939,7 +939,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                   <div className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl font-black text-sm border-2 ${
                     timeLeft <= 5 
                       ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse'
-                      : 'bg-[#E9F0D9] border-[#B9CDA0] text-[#4F683C]'
+                      : 'bg-w-accent-light border-w-accent-border text-w-primary-dark'
                   }`}>
                     <Clock className="w-4 h-4" />
                     <span>{timeLeft}s</span>
@@ -950,10 +950,10 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
 
             {/* Question Box */}
             <div className="space-y-4">
-              <div className="text-xs font-extrabold text-[#74806B] uppercase tracking-wider">
+              <div className="text-xs font-extrabold text-w-text-muted uppercase tracking-wider">
                 Câu hỏi #{questionIndex}
               </div>
-              <p className="text-base sm:text-xl font-black text-[#35452E] leading-relaxed">
+              <p className="text-base sm:text-xl font-black text-w-text-main leading-relaxed">
                 {currentQuestion.content}
               </p>
             </div>
@@ -969,12 +969,12 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                   let optStyle = "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100";
                   if (showAnswer) {
                     if (isCorrectAnswer) {
-                      optStyle = "bg-emerald-500 text-white border-emerald-600 shadow-md font-black";
+                      optStyle = "bg-emerald-500 text-w-text-main border-emerald-600 shadow-md font-black";
                     } else if (isSelected) {
-                      optStyle = "bg-rose-500 text-white border-rose-600";
+                      optStyle = "bg-rose-500 text-w-text-main border-rose-600";
                     }
                   } else if (isSelected) {
-                    optStyle = "bg-[#4F683C] text-white border-[#3D522B]";
+                    optStyle = "bg-w-primary-dark text-w-text-main border-w-primary-hover";
                   }
 
                   return (
@@ -984,7 +984,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                       onClick={() => !showAnswer && setSelectedOption(idx)}
                       className={`p-3.5 rounded-2xl border-2 text-left font-bold text-xs sm:text-sm transition flex items-center gap-3 cursor-pointer ${optStyle}`}
                     >
-                      <span className="w-6 h-6 rounded-lg bg-black/10 flex items-center justify-center text-xs font-black shrink-0">
+                      <span className="w-6 h-6 rounded-lg bg-white/70 backdrop-blur-sm flex items-center justify-center text-xs font-black shrink-0">
                         {['A', 'B', 'C', 'D'][idx]}
                       </span>
                       <span className="flex-1">{opt}</span>
@@ -1003,7 +1003,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
             )}
 
             {/* Bottom Grading & Next Turn Actions */}
-            <div className="pt-4 border-t border-[#DCEBCB] flex flex-wrap items-center justify-between gap-3">
+            <div className="pt-4 border-t border-w-accent-muted flex flex-wrap items-center justify-between gap-3">
               {!showAnswer ? (
                 <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                   <button
@@ -1018,7 +1018,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                   <button
                     type="button"
                     onClick={() => handleGrade(true)}
-                    className="px-5 py-2.5 bg-[#4F683C] hover:bg-[#3D522B] text-white font-black text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
+                    className="px-5 py-2.5 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
                   >
                     <CheckCircle className="w-4 h-4 text-[#E9D58F]" />
                     <span>Chấm Đúng (+10đ)</span>
@@ -1027,7 +1027,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                   <button
                     type="button"
                     onClick={() => handleGrade(false)}
-                    className="px-5 py-2.5 bg-[#D86C70] hover:bg-[#C55A5E] text-white font-black text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
+                    className="px-5 py-2.5 bg-[#D86C70] hover:bg-[#C55A5E] text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
                   >
                     <XCircle className="w-4 h-4" />
                     <span>Chưa Đúng</span>
@@ -1038,7 +1038,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                   <button
                     type="button"
                     onClick={handleNextTurn}
-                    className="px-8 py-3 bg-gradient-to-r from-[#4F683C] to-[#3D522B] hover:from-[#3D522B] hover:to-[#2B3B1E] text-white font-black text-sm sm:text-base rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
+                    className="px-8 py-3 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-sm sm:text-base rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
                   >
                     <span>Gọi Đợt Học Sinh Tiếp Theo</span>
                     <ChevronRight className="w-5 h-5" />

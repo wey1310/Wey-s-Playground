@@ -141,10 +141,10 @@ export const TeaBattleGame: React.FC<TeaBattleGameProps> = ({
 
   return (
     <div 
-      className="relative min-h-screen text-white p-3 sm:p-6 flex flex-col justify-between select-none"
+      className="relative min-h-screen text-w-text-main p-3 sm:p-6 flex flex-col justify-between select-none"
       style={{ backgroundImage: 'url(/assets/games/tea_battle/background.webp)', backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
-      <div className="absolute inset-0 bg-black/40 z-0"></div>
+      <div className="absolute inset-0 bg-white/70 backdrop-blur-sm z-0"></div>
       
       {/* Container wrapper so children render above background */}
       <div className="relative z-10 flex flex-col h-full justify-between flex-1">
@@ -161,9 +161,9 @@ export const TeaBattleGame: React.FC<TeaBattleGameProps> = ({
         </button>
 
         {/* Center Title Badge */}
-        <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-400/30 px-4 py-1.5 rounded-full shadow-inner">
+        <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-400 px-4 py-1.5 rounded-full shadow-inner">
           <span className="text-xl">🍵</span>
-          <h1 className="text-sm sm:text-base font-black text-amber-300 uppercase tracking-wide">
+          <h1 className="text-sm sm:text-base font-black text-amber-600 uppercase tracking-wide">
             CUỘC CHIẾN TRÀ VỚI KANAO
           </h1>
         </div>
@@ -240,7 +240,7 @@ export const TeaBattleGame: React.FC<TeaBattleGameProps> = ({
                     CỐC TRÀ SỐ {gameState.selectedCup.id}
                   </h3>
                   <p className="text-xs text-amber-100/70">
-                    Đội đang khiêu chiến: <span className="font-bold text-amber-300">{activeTeam.name}</span> (+{gameState.selectedCup.points} điểm)
+                    Đội đang khiêu chiến: <span className="font-bold text-amber-600">{activeTeam.name}</span> (+{gameState.selectedCup.points} điểm)
                   </p>
                 </div>
               </div>
@@ -250,7 +250,7 @@ export const TeaBattleGame: React.FC<TeaBattleGameProps> = ({
                 <button
                   type="button"
                   onClick={() => resolveQuestionOutcome(true)}
-                  className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1 shadow"
+                  className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-w-text-main text-xs font-black flex items-center gap-1 shadow"
                 >
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>XÁC NHẬN ĐÚNG</span>
@@ -258,7 +258,7 @@ export const TeaBattleGame: React.FC<TeaBattleGameProps> = ({
                 <button
                   type="button"
                   onClick={() => resolveQuestionOutcome(false)}
-                  className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black flex items-center gap-1 shadow"
+                  className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-w-text-main text-xs font-black flex items-center gap-1 shadow"
                 >
                   <XCircle className="w-3.5 h-3.5" />
                   <span>XÁC NHẬN SAI</span>
@@ -267,8 +267,8 @@ export const TeaBattleGame: React.FC<TeaBattleGameProps> = ({
             </div>
 
             {/* Question Text */}
-            <div className="bg-black/40 border border-amber-500/30 rounded-2xl p-5 mb-6 text-center">
-              <h2 className="text-lg sm:text-2xl font-black text-white leading-relaxed">
+            <div className="bg-white/70 backdrop-blur-sm border border-amber-500/30 rounded-2xl p-5 mb-6 text-center">
+              <h2 className="text-lg sm:text-2xl font-black text-w-text-main leading-relaxed">
                 {currentQuestion.content}
               </h2>
             </div>
@@ -305,7 +305,7 @@ export const TeaBattleGame: React.FC<TeaBattleGameProps> = ({
             className="w-full max-w-2xl bg-gradient-to-b from-[#2e1c4e] to-[#10071c] border-4 border-amber-400 rounded-3xl p-8 text-center shadow-2xl"
           >
             <span className="text-6xl mb-3 block">👑🏆🎉</span>
-            <h2 className="text-3xl sm:text-4xl font-black text-amber-300 uppercase tracking-wide mb-2">
+            <h2 className="text-3xl sm:text-4xl font-black text-amber-600 uppercase tracking-wide mb-2">
               QUÁN QUÂN ĐẠI CHIẾN TRÀ ĐẠO!
             </h2>
             <p className="text-lg text-emerald-300 font-black mb-6">

@@ -95,11 +95,11 @@ export const BowlingLane: React.FC<BowlingLaneProps> = ({
         <div className="flex items-center gap-2">
           <span className="text-2xl">🎳</span>
           <div>
-            <h3 className="text-sm sm:text-base font-black text-amber-300">
+            <h3 className="text-sm sm:text-base font-black text-amber-600">
               ĐƯỜNG NÉM BOWLING
             </h3>
             <p className="text-[11px] text-zinc-400">
-              Lượt ném của: <strong className="text-white">{activeTeam.name}</strong> (Lần {activeTeam.currentRoll}/2)
+              Lượt ném của: <strong className="text-w-text-main">{activeTeam.name}</strong> (Lần {activeTeam.currentRoll}/2)
             </p>
           </div>
         </div>
@@ -111,7 +111,7 @@ export const BowlingLane: React.FC<BowlingLaneProps> = ({
               ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300'
               : difficulty === 'hard'
               ? 'bg-rose-950/60 border-rose-500/40 text-rose-300'
-              : 'bg-amber-950/60 border-amber-500/40 text-amber-300'
+              : 'bg-amber-950/60 border-amber-500/40 text-amber-600'
           }`}>
             <Gauge className="w-3.5 h-3.5" />
             <span>Ma sát sàn:</span>
@@ -130,12 +130,12 @@ export const BowlingLane: React.FC<BowlingLaneProps> = ({
                 exit={{ scale: 0.5, opacity: 0 }}
                 className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-1 shadow-lg ${
                   lastOutcome === 'STRIKE'
-                    ? 'bg-gradient-to-r from-amber-500 to-red-500 text-white shadow-amber-500/40 animate-bounce'
+                    ? 'bg-gradient-to-r from-amber-500 to-red-500 text-w-text-main shadow-amber-500/40 animate-bounce'
                     : lastOutcome === 'SPARE'
-                    ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-blue-500/40'
+                    ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-w-text-main shadow-blue-500/40'
                     : lastOutcome === 'GUTTER'
                     ? 'bg-zinc-800 text-zinc-400'
-                    : 'bg-emerald-600 text-white'
+                    : 'bg-emerald-600 text-w-text-main'
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5" />
@@ -159,7 +159,7 @@ export const BowlingLane: React.FC<BowlingLaneProps> = ({
           <div className="flex-1 h-full relative">
             {/* Oil pattern boundary indicator (skid to hook transition based on friction breakpoint) */}
             <div 
-              className="absolute inset-x-0 h-px bg-amber-400/20 border-b border-dashed border-amber-400/30 transition-all duration-300"
+              className="absolute inset-x-0 h-px bg-amber-400/20 border-b border-dashed border-amber-400 transition-all duration-300"
               style={{ top: `${Math.round((1 - frictionInfo.oilBreakpoint) * 70)}%` }}
             />
             <div 
@@ -226,9 +226,9 @@ export const BowlingLane: React.FC<BowlingLaneProps> = ({
                       pin.specialType === 'GOLD'
                         ? 'bg-gradient-to-b from-yellow-300 to-amber-500 text-zinc-950 border-amber-300 ring-2 ring-yellow-400'
                         : pin.specialType === 'FIRE'
-                        ? 'bg-gradient-to-b from-orange-400 to-red-600 text-white border-red-400 ring-2 ring-orange-400'
+                        ? 'bg-gradient-to-b from-orange-400 to-red-600 text-w-text-main border-red-400 ring-2 ring-orange-400'
                         : pin.specialType === 'BONUS'
-                        ? 'bg-gradient-to-b from-cyan-300 to-blue-500 text-white border-cyan-300 ring-2 ring-cyan-400'
+                        ? 'bg-gradient-to-b from-cyan-300 to-blue-500 text-w-text-main border-cyan-300 ring-2 ring-cyan-400'
                         : 'bg-gradient-to-b from-zinc-100 to-zinc-300 text-red-600 border-zinc-400'
                     }`}
                   >
@@ -254,18 +254,18 @@ export const BowlingLane: React.FC<BowlingLaneProps> = ({
                 rotate: spin < 0 ? [-720, -1440] : [720, 1440],
               }}
               transition={{ duration: 1.15, ease: 'easeIn' }}
-              className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-700 via-purple-600 to-blue-500 shadow-2xl flex items-center justify-center text-white border-2 border-white/40"
+              className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-700 via-purple-600 to-blue-500 shadow-2xl flex items-center justify-center text-w-text-main border-2 border-white/40"
             >
-              <div className="w-2.5 h-2.5 rounded-full bg-black/60" />
+              <div className="w-2.5 h-2.5 rounded-full bg-white/70 backdrop-blur-sm" />
             </motion.div>
           ) : (
             <motion.div
               animate={{ x: aimX * 1.6 }}
-              className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-600 to-blue-500 shadow-2xl flex items-center justify-center text-white border-2 border-white/40 cursor-grab active:cursor-grabbing"
+              className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-600 to-blue-500 shadow-2xl flex items-center justify-center text-w-text-main border-2 border-white/40 cursor-grab active:cursor-grabbing"
             >
               <div className="flex gap-1">
-                <div className="w-1.5 h-1.5 rounded-full bg-black/60" />
-                <div className="w-1.5 h-1.5 rounded-full bg-black/60" />
+                <div className="w-1.5 h-1.5 rounded-full bg-white/70 backdrop-blur-sm" />
+                <div className="w-1.5 h-1.5 rounded-full bg-white/70 backdrop-blur-sm" />
               </div>
             </motion.div>
           )}
@@ -279,9 +279,9 @@ export const BowlingLane: React.FC<BowlingLaneProps> = ({
           <div className="flex flex-col gap-1">
             <div className="flex justify-between text-xs font-bold text-zinc-300">
               <span className="flex items-center gap-1">
-                <Target className="w-3.5 h-3.5 text-amber-400" /> Hướng Ném
+                <Target className="w-3.5 h-3.5 text-amber-600" /> Hướng Ném
               </span>
-              <span className="text-amber-300 text-[11px]">
+              <span className="text-amber-600 text-[11px]">
                 {aimX === 0 ? 'Chính diện' : aimX < 0 ? `Trái ${Math.abs(aimX)}` : `Phải ${aimX}`}
               </span>
             </div>
@@ -357,7 +357,7 @@ export const BowlingLane: React.FC<BowlingLaneProps> = ({
                 onClick={() => setSpin(item.val)}
                 className={`px-2.5 py-1 rounded-lg border text-[11px] font-black transition-all ${
                   spin === item.val
-                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-indigo-400 shadow-md shadow-indigo-500/30'
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-w-text-main border-indigo-400 shadow-md shadow-indigo-500/30'
                     : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-zinc-200 hover:border-zinc-700'
                 }`}
               >

@@ -57,16 +57,16 @@ export const MonopolyScoreboard: React.FC<MonopolyScoreboardProps> = ({
   return (
     <div className="flex flex-col gap-3 w-full">
       {/* Top Banner: Win Condition & Timer */}
-      <div className="bg-[#FFFDF5] border border-[#DED5B8] rounded-2xl p-3 shadow-xs flex items-center justify-between flex-wrap gap-2">
+      <div className="bg-w-bg-card border border-w-border rounded-2xl p-3 shadow-xs flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-[#E9F0D9] text-[#4F683C] flex items-center justify-center font-bold text-sm">
+          <div className="w-8 h-8 rounded-xl bg-w-accent-light text-w-primary-dark flex items-center justify-center font-bold text-sm">
             🎲
           </div>
           <div>
-            <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#74806B]">
+            <div className="text-[10px] font-extrabold uppercase tracking-wider text-w-text-muted">
               Chế Độ Thắng
             </div>
-            <div className="text-xs font-black text-[#35452E] flex items-center gap-1.5">
+            <div className="text-xs font-black text-w-text-main flex items-center gap-1.5">
               {winCondition === 'bankruptcy' && 'Độc Tôn Thị Trường (Phá Sản)'}
               {winCondition === 'time_limit' && 'Chạy Đua Thời Gian'}
               {winCondition === 'target_wealth' && `Chạm Mốc $${targetWealth.toLocaleString()}`}
@@ -98,8 +98,8 @@ export const MonopolyScoreboard: React.FC<MonopolyScoreboardProps> = ({
                 team.isBankrupt
                   ? 'bg-slate-100/70 border-slate-300 opacity-60 grayscale'
                   : isCurrentTurn
-                  ? 'bg-white border-[#4F683C] shadow-md ring-2 ring-[#4F683C]/20'
-                  : 'bg-[#FFFDF5] border-[#DED5B8] hover:border-[#B9CDA0] hover:bg-white shadow-xs'
+                  ? 'bg-white border-w-primary-dark shadow-md ring-2 ring-w-primary-dark/20'
+                  : 'bg-w-bg-card border-w-border hover:border-w-accent-border hover:bg-white shadow-xs'
               }`}
             >
               {/* Header: Avatar, Name & Turn Pill */}
@@ -113,7 +113,7 @@ export const MonopolyScoreboard: React.FC<MonopolyScoreboardProps> = ({
                   </div>
 
                   <div className="min-w-0">
-                    <div className="text-xs sm:text-sm font-extrabold text-[#35452E] truncate flex items-center gap-1.5">
+                    <div className="text-xs sm:text-sm font-extrabold text-w-text-main truncate flex items-center gap-1.5">
                       <span>{team.name}</span>
                       {isCurrentTurn && !team.isBankrupt && (
                         <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 animate-pulse shrink-0">
@@ -122,7 +122,7 @@ export const MonopolyScoreboard: React.FC<MonopolyScoreboardProps> = ({
                       )}
                     </div>
 
-                    <div className="flex items-center gap-2 text-[10px] text-[#74806B] font-bold">
+                    <div className="flex items-center gap-2 text-[10px] text-w-text-muted font-bold">
                       <span>Đúng: {team.correctAnswersCount}/{team.totalQuestionsAnswered} câu</span>
                       {team.freeRentTokens > 0 && (
                         <span className="text-purple-700 bg-purple-50 px-1.5 py-0.2 rounded border border-purple-200">
@@ -147,31 +147,31 @@ export const MonopolyScoreboard: React.FC<MonopolyScoreboardProps> = ({
               </div>
 
               {/* Financial Stats Bar */}
-              <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-[#DED5B8]/60 text-center">
-                <div className="bg-[#FAF7EE] p-1.5 rounded-xl border border-[#E3DCBA]/60">
-                  <div className="text-[9px] font-bold text-[#74806B] uppercase">Tiền Mặt</div>
+              <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-w-border/60 text-center">
+                <div className="bg-w-bg-alt p-1.5 rounded-xl border border-[#E3DCBA]/60">
+                  <div className="text-[9px] font-bold text-w-text-muted uppercase">Tiền Mặt</div>
                   <div className="text-xs sm:text-sm font-black text-emerald-700">
                     ${team.money.toLocaleString()}
                   </div>
                 </div>
 
-                <div className="bg-[#FAF7EE] p-1.5 rounded-xl border border-[#E3DCBA]/60">
-                  <div className="text-[9px] font-bold text-[#74806B] uppercase">Khu Đất</div>
-                  <div className="text-xs sm:text-sm font-black text-[#35452E] flex items-center justify-center gap-1">
-                    <Home className="w-3 h-3 text-[#4F683C]" />
+                <div className="bg-w-bg-alt p-1.5 rounded-xl border border-[#E3DCBA]/60">
+                  <div className="text-[9px] font-bold text-w-text-muted uppercase">Khu Đất</div>
+                  <div className="text-xs sm:text-sm font-black text-w-text-main flex items-center justify-center gap-1">
+                    <Home className="w-3 h-3 text-w-primary-dark" />
                     <span>{ownedTiles.length}</span>
                   </div>
                 </div>
 
-                <div className="bg-[#FAF7EE] p-1.5 rounded-xl border border-[#E3DCBA]/60">
-                  <div className="text-[9px] font-bold text-[#74806B] uppercase">Tổng Tài Sản</div>
-                  <div className="text-xs sm:text-sm font-black text-[#4F683C]">
+                <div className="bg-w-bg-alt p-1.5 rounded-xl border border-[#E3DCBA]/60">
+                  <div className="text-[9px] font-bold text-w-text-muted uppercase">Tổng Tài Sản</div>
+                  <div className="text-xs sm:text-sm font-black text-w-primary-dark">
                     ${netWorth.toLocaleString()}
                   </div>
                 </div>
               </div>
 
-              <div className="mt-1.5 text-[9px] font-bold text-[#74806B] flex items-center justify-end gap-1 hover:text-[#4F683C]">
+              <div className="mt-1.5 text-[9px] font-bold text-w-text-muted flex items-center justify-end gap-1 hover:text-w-primary-dark">
                 <span>Xem chi tiết tài sản</span>
                 <ChevronRight className="w-3 h-3" />
               </div>
@@ -181,14 +181,14 @@ export const MonopolyScoreboard: React.FC<MonopolyScoreboardProps> = ({
       </div>
 
       {/* Transaction & Activity Log Feed */}
-      <div className="bg-[#FFFDF5] border border-[#DED5B8] rounded-2xl p-3 shadow-xs flex-1 max-h-48 overflow-y-auto custom-scrollbar">
-        <div className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-[#74806B] mb-2 pb-1 border-b border-[#DED5B8]/60 sticky top-0 bg-[#FFFDF5]">
-          <History className="w-3.5 h-3.5 text-[#4F683C]" />
+      <div className="bg-w-bg-card border border-w-border rounded-2xl p-3 shadow-xs flex-1 max-h-48 overflow-y-auto custom-scrollbar">
+        <div className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-w-text-muted mb-2 pb-1 border-b border-w-border/60 sticky top-0 bg-w-bg-card">
+          <History className="w-3.5 h-3.5 text-w-primary-dark" />
           <span>Nhật Ký Giao Dịch</span>
         </div>
 
         {logs.length === 0 ? (
-          <div className="text-xs text-[#74806B] italic text-center py-4">
+          <div className="text-xs text-w-text-muted italic text-center py-4">
             Chưa có giao dịch nào diễn ra...
           </div>
         ) : (
@@ -196,11 +196,11 @@ export const MonopolyScoreboard: React.FC<MonopolyScoreboardProps> = ({
             {logs.slice(0, 15).map((log) => (
               <div
                 key={log.id}
-                className="text-[11px] font-medium text-[#35452E] flex items-start gap-1.5 p-1 rounded-lg hover:bg-[#FAF7EE]"
+                className="text-[11px] font-medium text-w-text-main flex items-start gap-1.5 p-1 rounded-lg hover:bg-w-bg-alt"
               >
                 <span className="shrink-0">{log.teamAvatar}</span>
                 <div className="flex-1 leading-tight">
-                  <strong className="font-extrabold text-[#35452E]">{log.teamName}</strong>: {log.description}
+                  <strong className="font-extrabold text-w-text-main">{log.teamName}</strong>: {log.description}
                 </div>
                 {log.amount && (
                   <span className={`text-[10px] font-black shrink-0 ${

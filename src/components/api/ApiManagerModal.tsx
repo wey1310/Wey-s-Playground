@@ -28,16 +28,16 @@ export const ApiManagerModal: React.FC<ApiManagerModalProps> = ({ isOpen, onClos
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          className="relative bg-[#FAF7EE] w-full max-w-4xl max-h-[92vh] flex flex-col rounded-3xl shadow-2xl border border-[#DED5B8] overflow-hidden"
+          className="relative bg-w-bg-alt w-full max-w-4xl max-h-[92vh] flex flex-col rounded-3xl shadow-2xl border border-w-border overflow-hidden"
         >
           {/* Header */}
-          <div className="px-6 py-4 bg-white/90 backdrop-blur-md border-b border-[#DED5B8] flex items-center justify-between shrink-0">
+          <div className="px-6 py-4 bg-white/90 backdrop-blur-md border-b border-w-border flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#E9F0D9] flex items-center justify-center text-[#35452E]">
-                <Sparkles className="w-4 h-4 text-[#6F8F55]" />
+              <div className="w-8 h-8 rounded-xl bg-w-accent-light flex items-center justify-center text-w-text-main">
+                <Sparkles className="w-4 h-4 text-w-primary" />
               </div>
               <div>
-                <h2 className="text-base font-black text-[#35452E] leading-tight">
+                <h2 className="text-base font-black text-w-text-main leading-tight">
                   Quản Lý Gemini Key Pool
                 </h2>
                 <p className="text-[11px] text-slate-500 font-medium">Hệ thống Round-Robin Key & Tự Động Hạ Model</p>

@@ -114,7 +114,7 @@ export const WerewolfGame: React.FC<WerewolfGameProps> = ({
     return rawTeams.map(t => ({
       id: t.id,
       name: t.name,
-      color: t.color || '#4F683C',
+      color: t.color || '#E08283',
       avatar: t.avatar || '🛡️',
       score: 0,
       correctAnswersCount: 0,
@@ -416,7 +416,7 @@ export const WerewolfGame: React.FC<WerewolfGameProps> = ({
                 ? 'bg-emerald-950/95 border-emerald-400 text-emerald-100 shadow-emerald-950/50'
                 : feedbackBanner.type === 'danger'
                 ? 'bg-red-950/95 border-red-500 text-red-100 shadow-red-950/50'
-                : 'bg-indigo-950/95 border-indigo-400 text-indigo-100 shadow-indigo-950/50'
+                : 'bg-w-bg-alt border-indigo-400 text-indigo-100 shadow-indigo-950/50'
             }`}>
               {feedbackBanner.type === 'success' ? (
                 <CheckCircle2 className="w-8 h-8 text-emerald-400 shrink-0 animate-bounce" />
@@ -456,7 +456,7 @@ export const WerewolfGame: React.FC<WerewolfGameProps> = ({
           </div>
 
           {/* Night Event Log */}
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 flex flex-col h-full max-h-[60vh] lg:max-h-none overflow-hidden">
+          <div className="bg-w-bg-alt border border-w-border rounded-2xl p-4 flex flex-col h-full max-h-[60vh] lg:max-h-none overflow-hidden">
             <h3 className="text-sm font-black text-indigo-400 uppercase flex items-center gap-2 mb-3 shrink-0">
               <ScrollText className="w-4 h-4" />
               <span>Bản Tin Ngôi Làng</span>
@@ -464,12 +464,12 @@ export const WerewolfGame: React.FC<WerewolfGameProps> = ({
             <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
               {nightHistory.map((history) => (
                 <div key={history.night} className="space-y-2">
-                  <h4 className="text-xs font-bold text-slate-400 border-b border-slate-700/50 pb-1">
+                  <h4 className="text-xs font-bold text-w-text-muted border-b border-w-accent-border pb-1">
                     🌙 Đêm {history.night}
                   </h4>
                   <div className="space-y-1.5">
                     {history.clues.map((clue, idx) => (
-                      <div key={idx} className="text-[11px] text-slate-300 bg-slate-800/50 p-2 rounded-lg leading-relaxed border border-slate-700/50 shadow-sm">
+                      <div key={idx} className="text-[11px] text-w-primary-dark bg-w-accent-light p-2 rounded-lg leading-relaxed border border-w-accent-border shadow-sm">
                         • {clue}
                       </div>
                     ))}
@@ -489,11 +489,11 @@ export const WerewolfGame: React.FC<WerewolfGameProps> = ({
         </div>
 
         {/* Bottom Quick Status Bar */}
-        <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
+        <div className="p-3 rounded-2xl bg-w-bg-alt border border-w-border flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-slate-400">Đang thực hiện lượt:</span>
+            <span className="text-w-text-muted">Đang thực hiện lượt:</span>
             <span 
-              className="px-2.5 py-0.5 rounded-lg text-white font-black flex items-center gap-1 shadow-xs"
+              className="px-2.5 py-0.5 rounded-lg text-w-text-main font-black flex items-center gap-1 shadow-xs"
               style={{ backgroundColor: activeTeam.color }}
             >
               <span>{activeTeam.avatar}</span>
@@ -501,12 +501,12 @@ export const WerewolfGame: React.FC<WerewolfGameProps> = ({
             </span>
           </div>
 
-          <div className="flex items-center gap-4 text-slate-400">
+          <div className="flex items-center gap-4 text-w-text-muted">
             <span>Tiến độ đêm: <strong className="text-indigo-300">Đêm {currentNight}</strong></span>
             <span>•</span>
             <span>Cư dân sống: <strong className="text-emerald-400">{getAliveNPCs(npcs).length}/12</strong></span>
             <span>•</span>
-            <span>Ma Sói đã phát hiện: <strong className="text-amber-400">{npcs.filter(n => n.role === 'werewolf' && n.isRevealed).length}/{npcs.filter(n => n.role === 'werewolf').length}</strong></span>
+            <span>Ma Sói đã phát hiện: <strong className="text-amber-600">{npcs.filter(n => n.role === 'werewolf' && n.isRevealed).length}/{npcs.filter(n => n.role === 'werewolf').length}</strong></span>
           </div>
         </div>
       </main>

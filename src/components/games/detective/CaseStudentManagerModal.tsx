@@ -89,7 +89,7 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
   );
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-white/70 backdrop-blur-sm backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
       <motion.div
         initial={{ scale: 0.92, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -103,13 +103,13 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
               <Users className="w-5 h-5 text-zinc-950" />
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-black text-amber-300 flex items-center gap-2">
+              <h2 className="text-sm sm:text-base font-black text-amber-600 flex items-center gap-2">
                 <span>DANH SÁCH THÁM TỬ HỌC SINH</span>
-                <span className="px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 text-xs border border-amber-600">
+                <span className="px-2 py-0.5 rounded-full bg-amber-950 text-amber-600 text-xs border border-amber-600">
                   {students.length} HS
                 </span>
               </h2>
-              <p className="text-xs text-amber-400/70">
+              <p className="text-xs text-amber-600">
                 Quản lý học sinh tham gia phá án và chọn ngẫu nhiên thám tử đại diện
               </p>
             </div>
@@ -118,7 +118,7 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition cursor-pointer"
+            className="p-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-w-text-main transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -157,7 +157,7 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
                 onClick={() => setIsBulkMode(!isBulkMode)}
                 className="px-3 py-2.5 bg-[#382619] hover:bg-[#4a3424] text-amber-200 rounded-xl border border-amber-600/50 font-bold transition flex items-center gap-1.5 cursor-pointer"
               >
-                <FileSpreadsheet className="w-4 h-4 text-amber-400" />
+                <FileSpreadsheet className="w-4 h-4 text-amber-600" />
                 <span>{isBulkMode ? 'Ẩn Dán' : 'Dán Nhiều'}</span>
               </button>
             </div>
@@ -171,7 +171,7 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
                   🕵️‍♂️
                 </div>
                 <div>
-                  <span className="text-[10px] uppercase font-black text-amber-400 tracking-wider block">
+                  <span className="text-[10px] uppercase font-black text-amber-600 tracking-wider block">
                     Thám Tử Đang Được Chọn Lượt Này:
                   </span>
                   <span className="text-sm sm:text-base font-black text-amber-100">
@@ -184,7 +184,7 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
                 <button
                   type="button"
                   onClick={() => onSelectActiveStudent(null)}
-                  className="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-lg text-[11px] font-bold transition cursor-pointer"
+                  className="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-w-text-main rounded-lg text-[11px] font-bold transition cursor-pointer"
                 >
                   Bỏ chọn
                 </button>
@@ -206,7 +206,7 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
           {/* Bulk Paste Area */}
           {isBulkMode && (
             <div className="bg-[#24170f] p-3.5 rounded-2xl border border-amber-700/60 space-y-2">
-              <label className="block text-xs font-bold text-amber-300">
+              <label className="block text-xs font-bold text-amber-600">
                 📋 Dán danh sách học sinh (Mỗi dòng một tên):
               </label>
               <textarea
@@ -214,7 +214,7 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
                 value={bulkText}
                 onChange={(e) => setBulkText(e.target.value)}
                 placeholder={"Nguyễn Văn An\nTrần Thị Bình\nLê Hoàng Cường"}
-                className="w-full p-2.5 bg-black/50 border border-amber-800 rounded-xl text-amber-100 font-mono text-xs focus:outline-none focus:border-amber-400 resize-none"
+                className="w-full p-2.5 bg-white/70 backdrop-blur-sm border border-amber-800 rounded-xl text-amber-100 font-mono text-xs focus:outline-none focus:border-amber-400 resize-none"
               />
               <div className="flex justify-end gap-2">
                 <button
@@ -244,7 +244,7 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
                 onChange={(e) => setNewStudentName(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAddSingleStudent()}
                 placeholder="Thêm tên 1 học sinh..."
-                className="flex-1 px-3 py-2 bg-black/40 border border-amber-800/80 rounded-xl text-amber-100 text-xs focus:outline-none focus:border-amber-400"
+                className="flex-1 px-3 py-2 bg-white/70 backdrop-blur-sm border border-amber-800/80 rounded-xl text-amber-100 text-xs focus:outline-none focus:border-amber-400"
               />
               <button
                 type="button"
@@ -263,20 +263,20 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm tên..."
-                className="w-full pl-8 pr-3 py-2 bg-black/40 border border-amber-800/80 rounded-xl text-amber-100 text-xs focus:outline-none focus:border-amber-400"
+                className="w-full pl-8 pr-3 py-2 bg-white/70 backdrop-blur-sm border border-amber-800/80 rounded-xl text-amber-100 text-xs focus:outline-none focus:border-amber-400"
               />
             </div>
           </div>
 
           {/* Student Grid / List */}
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-[11px] text-amber-400/80 font-bold px-1">
+            <div className="flex items-center justify-between text-[11px] text-amber-600 font-bold px-1">
               <span>Học sinh trong lớp ({filteredStudents.length}/{students.length})</span>
               {calledStudents.length > 0 && (
                 <button
                   type="button"
                   onClick={onResetCalled}
-                  className="text-amber-400 hover:text-amber-200 flex items-center gap-1"
+                  className="text-amber-600 hover:text-amber-200 flex items-center gap-1"
                 >
                   <RotateCcw className="w-3 h-3" />
                   <span>Đặt lại lượt gọi ({calledStudents.length} đã gọi)</span>
@@ -284,7 +284,7 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
               )}
             </div>
 
-            <div className="max-h-60 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-2 bg-black/30 p-2.5 rounded-2xl border border-amber-900/60 custom-scrollbar">
+            <div className="max-h-60 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-2 bg-white/70 backdrop-blur-sm p-2.5 rounded-2xl border border-amber-900/60 custom-scrollbar">
               {filteredStudents.length === 0 ? (
                 <div className="col-span-full py-8 text-center text-amber-500/50">
                   Chưa có học sinh nào. Hãy thêm hoặc nạp danh sách từ file!
@@ -306,7 +306,7 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
                       }`}
                     >
                       <div className="flex items-center gap-2 min-w-0">
-                        <span className="w-5 h-5 rounded bg-amber-950 text-amber-400 text-[10px] font-mono flex items-center justify-center shrink-0 border border-amber-800">
+                        <span className="w-5 h-5 rounded bg-amber-950 text-amber-600 text-[10px] font-mono flex items-center justify-center shrink-0 border border-amber-800">
                           {idx + 1}
                         </span>
                         <span className="truncate text-xs">{st}</span>
@@ -324,7 +324,7 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
                           className={`p-1.5 rounded-lg transition text-[10px] font-bold cursor-pointer ${
                             isSelected
                               ? 'bg-amber-500 text-zinc-950'
-                              : 'bg-zinc-800 hover:bg-zinc-700 text-amber-300'
+                              : 'bg-zinc-800 hover:bg-zinc-700 text-amber-600'
                           }`}
                           title={isSelected ? 'Đang chọn' : 'Chọn học sinh này'}
                         >
@@ -350,7 +350,7 @@ export const CaseStudentManagerModal: React.FC<CaseStudentManagerModalProps> = (
 
         {/* Footer */}
         <div className="bg-[#24170f] px-5 py-3 border-t border-amber-800/50 flex items-center justify-between">
-          <span className="text-[11px] text-amber-400/60">
+          <span className="text-[11px] text-amber-600">
             Danh sách tự động lưu vào bộ nhớ trình duyệt
           </span>
           <button

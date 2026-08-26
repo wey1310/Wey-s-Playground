@@ -81,7 +81,7 @@ export const CaseRandomStudentModal: React.FC<CaseRandomStudentModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+    <div className="fixed inset-0 z-50 bg-white/70 backdrop-blur-sm backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
       <motion.div
         initial={{ scale: 0.85, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -92,26 +92,26 @@ export const CaseRandomStudentModal: React.FC<CaseRandomStudentModalProps> = ({
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition cursor-pointer"
+          className="absolute top-4 right-4 p-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-w-text-main transition cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Title */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-950/80 text-amber-300 text-xs font-black rounded-full border border-amber-600/50 mb-3 shadow-inner">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-950/80 text-amber-600 text-xs font-black rounded-full border border-amber-600/50 mb-3 shadow-inner">
           <Sparkles className="w-3.5 h-3.5" />
           <span>VÒNG QUAY CHỈ ĐỊNH THÁM TỬ</span>
         </div>
 
-        <h2 className="text-xl sm:text-2xl font-black text-amber-300 tracking-wide mb-1">
+        <h2 className="text-xl sm:text-2xl font-black text-amber-600 tracking-wide mb-1">
           🕵️ AI SẼ LÀ NGƯỜI PHÁ ÁN TIẾP THEO?
         </h2>
-        <p className="text-xs text-amber-400/70 mb-6">
+        <p className="text-xs text-amber-600 mb-6">
           Hệ thống đang ngẫu nhiên chỉ định một thám tử từ danh sách lớp học
         </p>
 
         {/* Roulette Display Card */}
-        <div className="bg-gradient-to-b from-[#2e1d11] to-[#1a100a] p-6 sm:p-8 rounded-3xl border-3 border-amber-400/80 shadow-[0_0_30px_rgba(245,158,11,0.25)] relative overflow-hidden mb-6 min-h-[140px] flex flex-col items-center justify-center">
+        <div className="bg-gradient-to-b from-[#2e1d11] to-[#1a100a] p-6 sm:p-8 rounded-3xl border-3 border-amber-400 shadow-[0_0_30px_rgba(245,158,11,0.25)] relative overflow-hidden mb-6 min-h-[140px] flex flex-col items-center justify-center">
           <div className="text-4xl mb-2 animate-bounce">
             {winner ? '🌟' : '🎲'}
           </div>
@@ -122,7 +122,7 @@ export const CaseRandomStudentModal: React.FC<CaseRandomStudentModalProps> = ({
             animate={{ scale: 1, y: 0 }}
             className={`text-2xl sm:text-4xl font-black tracking-tight ${
               winner 
-                ? 'text-amber-300 drop-shadow-[0_0_15px_rgba(251,191,36,0.8)]' 
+                ? 'text-amber-600 drop-shadow-[0_0_15px_rgba(251,191,36,0.8)]' 
                 : 'text-zinc-300 animate-pulse'
             }`}
           >

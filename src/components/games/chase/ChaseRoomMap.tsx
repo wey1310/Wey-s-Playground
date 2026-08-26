@@ -137,7 +137,7 @@ export const ChaseRoomMap: React.FC<ChaseRoomMapProps> = ({
                 <motion.div
                   initial={{ scale: 0.8 }}
                   animate={{ scale: [1, 1.2, 1] }}
-                  className="absolute -top-6 left-1/2 -translate-x-1/2 bg-rose-600/90 text-white text-[11px] font-black px-2 py-0.5 rounded-full border border-rose-300 shadow-lg z-30 whitespace-nowrap"
+                  className="absolute -top-6 left-1/2 -translate-x-1/2 bg-rose-600/90 text-w-text-main text-[11px] font-black px-2 py-0.5 rounded-full border border-rose-300 shadow-lg z-30 whitespace-nowrap"
                 >
                   🐶 Chó Spike thức giấc!
                 </motion.div>
@@ -172,7 +172,7 @@ export const ChaseRoomMap: React.FC<ChaseRoomMapProps> = ({
                     ? 'bg-zinc-800/80 text-zinc-400 border-zinc-600 opacity-60'
                     : isTargeted
                     ? 'bg-gradient-to-tr from-amber-500 to-yellow-300 text-black border-yellow-100 ring-4 ring-yellow-400/50 shadow-yellow-500/50'
-                    : 'bg-gradient-to-tr from-purple-600 via-pink-500 to-amber-400 text-white border-white/80 group-hover:scale-115 group-hover:shadow-pink-500/50'
+                    : 'bg-gradient-to-tr from-purple-600 via-pink-500 to-amber-400 text-w-text-main border-white/80 group-hover:scale-115 group-hover:shadow-pink-500/50'
                 }`}
               >
                 <span className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{loc.id}</span>
@@ -278,7 +278,7 @@ export const ChaseRoomMap: React.FC<ChaseRoomMapProps> = ({
               initial={{ scale: 0.5, opacity: 0, y: 30 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              className="absolute inset-0 flex items-center justify-center bg-black/60 z-50 p-4 backdrop-blur-xs"
+              className="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-sm z-50 p-4 backdrop-blur-xs"
             >
               <div className="bg-gradient-to-b from-zinc-900 via-zinc-950 to-black border-4 border-yellow-400 p-6 sm:p-8 rounded-3xl text-center shadow-[0_0_50px_rgba(234,179,8,0.4)] max-w-md">
                 <div className="text-5xl mb-2">🐭💨</div>

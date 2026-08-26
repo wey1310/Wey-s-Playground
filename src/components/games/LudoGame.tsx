@@ -557,7 +557,7 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
           <div>
             <h2 className="text-xl font-extrabold text-amber-950 flex items-center gap-2">
               <span>Cờ Cá Ngựa Tri Thức</span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-600 text-white font-bold">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-600 text-w-text-main font-bold">
                 {numTeams} Đội Đua
               </span>
             </h2>
@@ -573,13 +573,13 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
             <span>Xúc xắc:</span>
             <button
               onClick={() => setDiceCount(1)}
-              className={`px-2 py-0.5 rounded-lg transition ${diceCount === 1 ? 'bg-amber-700 text-white shadow' : 'hover:bg-amber-400'}`}
+              className={`px-2 py-0.5 rounded-lg transition ${diceCount === 1 ? 'bg-amber-700 text-w-text-main shadow' : 'hover:bg-amber-400'}`}
             >
               1
             </button>
             <button
               onClick={() => setDiceCount(2)}
-              className={`px-2 py-0.5 rounded-lg transition ${diceCount === 2 ? 'bg-amber-700 text-white shadow' : 'hover:bg-amber-400'}`}
+              className={`px-2 py-0.5 rounded-lg transition ${diceCount === 2 ? 'bg-amber-700 text-w-text-main shadow' : 'hover:bg-amber-400'}`}
             >
               2
             </button>
@@ -615,7 +615,7 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
                 answerLogs
               )
             }
-            className="px-4 py-2 bg-rose-700 hover:bg-rose-600 text-white font-bold text-xs rounded-xl transition shadow-md"
+            className="px-4 py-2 bg-rose-700 hover:bg-rose-600 text-w-text-main font-bold text-xs rounded-xl transition shadow-md"
           >
             Tổng Kết Game
           </button>
@@ -644,7 +644,7 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
                       onClick={() => setSelectedSkinIdxs(prev => ({ ...prev, [team.id]: sIdx }))}
                       className={`px-2 py-0.5 rounded-lg font-bold text-[10px] transition border ${
                         activeIdx === sIdx
-                          ? 'bg-amber-800 text-white border-amber-950 shadow scale-105'
+                          ? 'bg-amber-800 text-w-text-main border-amber-950 shadow scale-105'
                           : 'bg-white text-stone-700 border-amber-300 hover:bg-amber-200'
                       }`}
                       title={skin.name}
@@ -697,7 +697,7 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
                 <button
                   onClick={handleRollDice}
                   disabled={isRollingDice}
-                  className="w-full py-3 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-black text-xs rounded-xl shadow-lg transition animate-bounce"
+                  className="w-full py-3 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-w-text-main font-black text-xs rounded-xl shadow-lg transition animate-bounce"
                 >
                   {isRollingDice ? '🎲 Đang Lắc...' : '🎲 Đổ Xí Ngầu'}
                 </button>
@@ -787,7 +787,7 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
                 <button
                   onClick={() => buySkill('hint', 1)}
                   disabled={scores[currentTurnTeamIdx] < 1 || boughtSkills['hint']}
-                  className="px-2.5 py-1 bg-amber-600 hover:bg-amber-500 disabled:bg-stone-300 text-white font-bold rounded-lg text-[11px]"
+                  className="px-2.5 py-1 bg-amber-600 hover:bg-amber-500 disabled:bg-stone-300 text-w-text-main font-bold rounded-lg text-[11px]"
                 >
                   Mua
                 </button>
@@ -798,7 +798,7 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
                 <button
                   onClick={() => buySkill('speed', 2)}
                   disabled={scores[currentTurnTeamIdx] < 2 || boughtSkills['speed']}
-                  className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 disabled:bg-stone-300 text-white font-bold rounded-lg text-[11px]"
+                  className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 disabled:bg-stone-300 text-w-text-main font-bold rounded-lg text-[11px]"
                 >
                   Mua
                 </button>
@@ -809,7 +809,7 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
                 <button
                   onClick={() => buySkill('luck', 4)}
                   disabled={scores[currentTurnTeamIdx] < 4 || boughtSkills['luck']}
-                  className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 disabled:bg-stone-300 text-white font-bold rounded-lg text-[11px]"
+                  className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 disabled:bg-stone-300 text-w-text-main font-bold rounded-lg text-[11px]"
                 >
                   Mua
                 </button>
@@ -923,13 +923,13 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
                 let isStart = idx === 0 || idx === 13 || idx === 26 || idx === 39;
                 let startBg =
                   idx === 0
-                    ? 'bg-rose-500 text-white'
+                    ? 'bg-rose-500 text-w-text-main'
                     : idx === 13
-                    ? 'bg-blue-500 text-white'
+                    ? 'bg-blue-500 text-w-text-main'
                     : idx === 26
-                    ? 'bg-amber-500 text-white'
+                    ? 'bg-amber-500 text-w-text-main'
                     : idx === 39
-                    ? 'bg-emerald-500 text-white'
+                    ? 'bg-emerald-500 text-w-text-main'
                     : 'bg-white/80 border-amber-300';
 
                 return (
@@ -958,7 +958,7 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
                   <div
                     key={`home-${teamKey}-${idx}`}
                     style={{ gridRowStart: pos.r, gridColumnStart: pos.c }}
-                    className={`rounded-lg border border-amber-800/60 ${bg} text-white flex items-center justify-center text-[9px] font-extrabold shadow-inner`}
+                    className={`rounded-lg border border-amber-800/60 ${bg} text-w-text-main flex items-center justify-center text-[9px] font-extrabold shadow-inner`}
                   >
                     {idx + 1}
                   </div>
@@ -1003,7 +1003,7 @@ export const LudoGame: React.FC<LudoGameProps> = ({ config, questions, onGameEnd
                     <div
                       key={`horse-${tIdx}-${hIdx}`}
                       style={{ gridRowStart: gridR, gridColumnStart: gridC }}
-                      className={`z-40 rounded-full ${ludoTeam.bgClass} border-2 border-white shadow-lg flex items-center justify-center text-white text-[10px] font-black transform hover:scale-125 transition cursor-pointer p-0.5`}
+                      className={`z-40 rounded-full ${ludoTeam.bgClass} border-2 border-white shadow-lg flex items-center justify-center text-w-text-main text-[10px] font-black transform hover:scale-125 transition cursor-pointer p-0.5`}
                       title={`${ludoTeam.name} - Ngựa #${hIdx + 1}`}
                     >
                       {getHorseAvatar(ludoTeam.id, hIdx)}

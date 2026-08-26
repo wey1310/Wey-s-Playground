@@ -19,7 +19,7 @@ export const ClassificationGame: React.FC<ClassificationGameProps> = ({
       return config.classificationCategories;
     }
     return [
-      { id: 'cat_1', name: 'Động Vật Có Xương Sống', color: '#4F683C', icon: '🦁' },
+      { id: 'cat_1', name: 'Động Vật Có Xương Sống', color: '#E08283', icon: '🦁' },
       { id: 'cat_2', name: 'Động Vật Không Xương Sống', color: '#3B82F6', icon: '🐙' },
     ];
   }, [config.classificationCategories]);
@@ -204,7 +204,7 @@ export const ClassificationGame: React.FC<ClassificationGameProps> = ({
   return (
     <div className="flex-1 flex flex-col items-center w-full max-w-6xl mx-auto select-none px-2 sm:px-4 py-2">
       {/* Top Header Controls: Scores, Progress, Timer */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 items-center bg-[#FFFDF5] border border-[#DED5B8] p-3 sm:p-4 rounded-2xl shadow-xs wey-paper-card mb-3">
+      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 items-center bg-w-bg-card border border-w-border p-3 sm:p-4 rounded-2xl shadow-xs wey-paper-card mb-3">
         {/* Teams Scoreboard */}
         <div className="flex items-center gap-2 overflow-x-auto py-1">
           {teams.map((t, idx) => {
@@ -214,17 +214,17 @@ export const ClassificationGame: React.FC<ClassificationGameProps> = ({
                 key={t.id}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all ${
                   isTurn
-                    ? 'bg-[#E9F0D9] border-[#4F683C] shadow-sm scale-105 ring-2 ring-[#4F683C]/30'
+                    ? 'bg-w-accent-light border-w-primary-dark shadow-sm scale-105 ring-2 ring-w-primary-dark/30'
                     : 'bg-white border-slate-200 opacity-80'
                 }`}
               >
                 <span className="text-xl">{t.avatar || '🐉'}</span>
                 <div>
-                  <div className="text-[11px] font-bold text-[#35452E] flex items-center gap-1">
+                  <div className="text-[11px] font-bold text-w-text-main flex items-center gap-1">
                     {t.name}
-                    {isTurn && <span className="w-2 h-2 rounded-full bg-[#4F683C] animate-ping" />}
+                    {isTurn && <span className="w-2 h-2 rounded-full bg-w-primary-dark animate-ping" />}
                   </div>
-                  <div className="text-xs font-extrabold text-[#4F683C]">{t.score} đ</div>
+                  <div className="text-xs font-extrabold text-w-primary-dark">{t.score} đ</div>
                 </div>
               </div>
             );
@@ -233,7 +233,7 @@ export const ClassificationGame: React.FC<ClassificationGameProps> = ({
 
         {/* Remaining Items Progress */}
         <div className="text-center">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#E9F0D9] text-[#4F683C] border border-[#B9CDA0] rounded-full text-xs font-bold shadow-2xs">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-w-accent-light text-w-primary-dark border border-w-accent-border rounded-full text-xs font-bold shadow-2xs">
             <Layers className="w-4 h-4" />
             Đã phân loại: {allItems.length - remainingItems.length} / {allItems.length}
           </span>
@@ -255,7 +255,7 @@ export const ClassificationGame: React.FC<ClassificationGameProps> = ({
       </div>
 
       {/* Guide Banner */}
-      <div className="w-full bg-[#E9F0D9] border border-[#B9CDA0] rounded-2xl px-4 py-2.5 mb-3 flex items-center justify-between gap-2 shadow-2xs text-xs font-bold text-[#35452E]">
+      <div className="w-full bg-w-accent-light border border-w-accent-border rounded-2xl px-4 py-2.5 mb-3 flex items-center justify-between gap-2 shadow-2xs text-xs font-bold text-w-text-main">
         <div className="flex items-center gap-2">
           <span className="text-base">💡</span>
           <span>
@@ -264,15 +264,15 @@ export const ClassificationGame: React.FC<ClassificationGameProps> = ({
               : '👉 Bước 1: Nhấp chọn một ĐỐI TƯỢNG ở ô trung tâm trước.'}
           </span>
         </div>
-        <span className="text-[11px] font-extrabold text-[#4F683C] uppercase px-2 py-0.5 bg-white rounded-lg border border-[#B9CDA0]">
+        <span className="text-[11px] font-extrabold text-w-primary-dark uppercase px-2 py-0.5 bg-white rounded-lg border border-w-accent-border">
           Lượt: {activeTeam.name}
         </span>
       </div>
 
       {/* Center Carousel: Items to Classify */}
-      <div className="w-full bg-[#FFFDF5] border-2 border-[#4F683C]/20 rounded-3xl p-4 sm:p-5 shadow-sm mb-4 wey-paper-card text-center">
-        <h3 className="text-xs font-[800] uppercase tracking-wider text-[#74806B] mb-3 flex items-center justify-center gap-1.5">
-          <Folder className="w-4 h-4 text-[#4F683C]" />
+      <div className="w-full bg-w-bg-card border-2 border-w-primary-dark/20 rounded-3xl p-4 sm:p-5 shadow-sm mb-4 wey-paper-card text-center">
+        <h3 className="text-xs font-[800] uppercase tracking-wider text-w-text-muted mb-3 flex items-center justify-center gap-1.5">
+          <Folder className="w-4 h-4 text-w-primary-dark" />
           Kho Đối Tượng Cần Phân Loại ({remainingItems.length} đối tượng còn lại)
         </h3>
 
@@ -286,8 +286,8 @@ export const ClassificationGame: React.FC<ClassificationGameProps> = ({
                   onClick={() => handleSelectItem(item)}
                   className={`px-4 py-2.5 rounded-2xl font-[800] text-xs sm:text-sm border-2 transition-all transform cursor-pointer flex items-center gap-2 shadow-xs ${
                     isSelected
-                      ? 'bg-[#4F683C] text-white border-[#384C2A] scale-110 ring-4 ring-[#4F683C]/20 shadow-md animate-bounce'
-                      : 'bg-white hover:bg-[#F8F4E8] text-[#35452E] border-[#DED5B8] hover:scale-105 active:scale-95'
+                      ? 'bg-w-primary-dark text-w-text-main border-[#384C2A] scale-110 ring-4 ring-w-primary-dark/20 shadow-md animate-bounce'
+                      : 'bg-white hover:bg-w-bg-tag text-w-text-main border-w-border hover:scale-105 active:scale-95'
                   }`}
                 >
                   {item.image && (
@@ -300,7 +300,7 @@ export const ClassificationGame: React.FC<ClassificationGameProps> = ({
             })}
           </div>
         ) : (
-          <div className="py-6 text-center text-[#4F683C] font-extrabold text-base flex flex-col items-center gap-2">
+          <div className="py-6 text-center text-w-primary-dark font-extrabold text-base flex flex-col items-center gap-2">
             <Trophy className="w-10 h-10 text-amber-500 animate-bounce" />
             <span>Chúc mừng! Toàn bộ đối tượng đã được phân loại chính xác!</span>
           </div>
@@ -324,20 +324,20 @@ export const ClassificationGame: React.FC<ClassificationGameProps> = ({
               onClick={() => handlePlaceIntoCategory(category.id)}
               className={`flex flex-col rounded-3xl p-4 border-3 transition-all cursor-pointer relative overflow-hidden min-h-[220px] ${
                 selectedItemId
-                  ? 'border-[#4F683C] bg-[#FFFDF5] hover:bg-[#F4F9EC] hover:scale-102 ring-4 ring-[#4F683C]/10 shadow-lg animate-pulse'
-                  : 'border-[#DED5B8] bg-[#FFFDF5] shadow-xs'
+                  ? 'border-w-primary-dark bg-w-bg-card hover:bg-[#F4F9EC] hover:scale-102 ring-4 ring-w-primary-dark/10 shadow-lg animate-pulse'
+                  : 'border-w-border bg-w-bg-card shadow-xs'
               } ${isFeedbackTarget && activeFeedback?.type === 'wrong' ? 'animate-shake border-rose-500 bg-rose-50' : ''}`}
             >
               {/* Category Header */}
               <div 
-                className="flex items-center justify-between gap-2 p-3 rounded-2xl text-white font-[900] shadow-xs mb-3"
-                style={{ backgroundColor: category.color || '#4F683C' }}
+                className="flex items-center justify-between gap-2 p-3 rounded-2xl text-w-text-main font-[900] shadow-xs mb-3"
+                style={{ backgroundColor: category.color || '#E08283' }}
               >
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="text-xl shrink-0">{category.icon || '📁'}</span>
                   <span className="text-xs sm:text-sm truncate">{category.name}</span>
                 </div>
-                <span className="text-[11px] font-extrabold px-2 py-0.5 bg-black/20 rounded-full shrink-0">
+                <span className="text-[11px] font-extrabold px-2 py-0.5 bg-white/70 backdrop-blur-sm rounded-full shrink-0">
                   {itemsInside.length} mục
                 </span>
               </div>
@@ -352,7 +352,7 @@ export const ClassificationGame: React.FC<ClassificationGameProps> = ({
                   itemsInside.map((item) => (
                     <span
                       key={item.id}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-[#DED5B8] rounded-xl text-xs font-bold text-[#35452E] shadow-2xs animate-fade-in"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-w-border rounded-xl text-xs font-bold text-w-text-main shadow-2xs animate-fade-in"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                       {item.content}
@@ -363,7 +363,7 @@ export const ClassificationGame: React.FC<ClassificationGameProps> = ({
 
               {/* Click prompt overlay when an item is ready to be dropped */}
               {selectedItemId && (
-                <div className="mt-2 text-center text-xs font-[800] text-[#4F683C] bg-[#E9F0D9] py-1.5 rounded-xl border border-[#B9CDA0]">
+                <div className="mt-2 text-center text-xs font-[800] text-w-primary-dark bg-w-accent-light py-1.5 rounded-xl border border-w-accent-border">
                   ➕ Nhấp để xếp vào nhóm này
                 </div>
               )}
@@ -377,11 +377,11 @@ export const ClassificationGame: React.FC<ClassificationGameProps> = ({
         <div className="fixed bottom-6 z-50 animate-bounce">
           <div className={`flex items-center gap-2 px-5 py-3 rounded-2xl shadow-xl border-2 font-[800] text-sm ${
             activeFeedback.type === 'correct'
-              ? 'bg-[#E9F0D9] text-[#2F4422] border-[#4F683C]'
+              ? 'bg-w-accent-light text-[#2F4422] border-w-primary-dark'
               : 'bg-rose-100 text-rose-900 border-rose-400'
           }`}>
             {activeFeedback.type === 'correct' ? (
-              <CheckCircle2 className="w-5 h-5 text-[#4F683C]" />
+              <CheckCircle2 className="w-5 h-5 text-w-primary-dark" />
             ) : (
               <XCircle className="w-5 h-5 text-rose-600" />
             )}

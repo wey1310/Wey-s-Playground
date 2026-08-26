@@ -15,7 +15,7 @@ export const CaseTimelineView: React.FC<CaseTimelineViewProps> = ({
   onClose
 }) => {
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 bg-white/70 backdrop-blur-sm backdrop-blur-sm flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -25,7 +25,7 @@ export const CaseTimelineView: React.FC<CaseTimelineViewProps> = ({
         {/* Header */}
         <div className="bg-[#e8d8b9] px-6 py-4 border-b-2 border-[#b58b4c] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-700 text-white flex items-center justify-center text-xl shadow-md">
+            <div className="w-10 h-10 rounded-xl bg-amber-700 text-w-text-main flex items-center justify-center text-xl shadow-md">
               <Clock className="w-5 h-5" />
             </div>
             <div>
@@ -49,7 +49,7 @@ export const CaseTimelineView: React.FC<CaseTimelineViewProps> = ({
 
         {/* Timeline Events Scroll Area */}
         <div className="p-6 overflow-y-auto space-y-4 custom-scrollbar flex-1">
-          <div className="relative border-l-2 border-amber-400/80 ml-4 space-y-6">
+          <div className="relative border-l-2 border-amber-400 ml-4 space-y-6">
             {currentCase.timeline.map((event, idx) => {
               const involvedSuspects = currentCase.suspects.filter(s => 
                 event.involvedSuspectIds.includes(s.id)
@@ -59,7 +59,7 @@ export const CaseTimelineView: React.FC<CaseTimelineViewProps> = ({
                 <div key={event.id} className="relative pl-6">
                   {/* Timeline dot */}
                   <div className={`absolute -left-2.5 top-1.5 w-5 h-5 rounded-full border-2 border-white shadow flex items-center justify-center text-[10px] font-black ${
-                    event.isConfirmed ? 'bg-amber-600 text-white' : 'bg-red-600 text-white'
+                    event.isConfirmed ? 'bg-amber-600 text-w-text-main' : 'bg-red-600 text-w-text-main'
                   }`}>
                     {idx + 1}
                   </div>
@@ -115,7 +115,7 @@ export const CaseTimelineView: React.FC<CaseTimelineViewProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold transition cursor-pointer shadow-md"
+            className="px-5 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-w-text-main text-xs font-bold transition cursor-pointer shadow-md"
           >
             Đóng Timeline
           </button>

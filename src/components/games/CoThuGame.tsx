@@ -418,21 +418,21 @@ export const CoThuGame: React.FC<CoThuGameProps> = ({
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col min-h-screen bg-[#F4F8F1] text-slate-800 select-none pb-12">
       {/* HEADER */}
-      <header className="bg-white border-b-2 border-[#DCEBCB] px-4 py-3 shadow-xs sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3">
+      <header className="bg-white border-b-2 border-w-accent-muted px-4 py-3 shadow-xs sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#16a34a] to-[#047857] text-white flex items-center justify-center text-xl shadow-xs">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#16a34a] to-[#047857] text-w-text-main flex items-center justify-center text-xl shadow-xs">
             🐾
           </div>
           <div>
-            <h1 className="text-lg font-black text-[#35452E] flex items-center gap-2">
+            <h1 className="text-lg font-black text-w-text-main flex items-center gap-2">
               <span>CỜ THÚ (JUNGLE CHESS)</span>
               <span className="text-[10px] px-2 py-0.5 bg-green-100 text-green-800 rounded-full font-bold uppercase border border-green-300">
                 Boardgame
               </span>
             </h1>
-            <div className="text-xs text-[#74806B] font-semibold flex items-center gap-2">
+            <div className="text-xs text-w-text-muted font-semibold flex items-center gap-2">
               <span>Đang tới lượt: </span>
-              <span className="font-black px-2 py-0.5 rounded-md text-white" style={{ backgroundColor: currentTeam.color }}>
+              <span className="font-black px-2 py-0.5 rounded-md text-w-text-main" style={{ backgroundColor: currentTeam.color }}>
                 {currentTeam.name}
               </span>
             </div>
@@ -444,25 +444,25 @@ export const CoThuGame: React.FC<CoThuGameProps> = ({
             <RotateCcw className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Chơi Lại</span>
           </button>
-          <button onClick={handleFinish} className="px-3.5 py-1.5 bg-[#4F683C] hover:bg-[#3D522B] text-white text-xs font-black rounded-xl shadow-xs transition">
+          <button onClick={handleFinish} className="px-3.5 py-1.5 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main text-xs font-black rounded-xl shadow-xs transition">
             Tổng Kết
           </button>
         </div>
       </header>
 
       {/* TEAMS BAR */}
-      <div className="px-4 py-3 bg-[#F4F8F1] border-b border-[#DCEBCB] grid grid-cols-2 gap-4">
+      <div className="px-4 py-3 bg-[#F4F8F1] border-b border-w-accent-muted grid grid-cols-2 gap-4">
         {teams.map((t, idx) => {
           const isTurn = idx === currentTeamIndex && turnStage !== 'gameover';
           return (
-            <div key={t.id} className={`p-3 rounded-2xl border-2 transition-all ${isTurn ? 'bg-white border-[#4F683C] shadow-lg ring-2 ring-[#4F683C]/20 scale-[1.02]' : 'bg-white border-[#DCEBCB]'}`}>
+            <div key={t.id} className={`p-3 rounded-2xl border-2 transition-all ${isTurn ? 'bg-white border-w-primary-dark shadow-lg ring-2 ring-w-primary-dark/20 scale-[1.02]' : 'bg-white border-w-accent-muted'}`}>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center text-2xl" style={{ backgroundColor: `${t.color}20` }}>
                   {t.avatar}
                 </div>
                 <div>
                   <div className="text-sm font-black" style={{ color: t.color }}>{t.name}</div>
-                  <div className="text-xs font-bold text-slate-500">Điểm: <span className="text-[#35452E] text-base">{t.score}</span></div>
+                  <div className="text-xs font-bold text-slate-500">Điểm: <span className="text-w-text-main text-base">{t.score}</span></div>
                 </div>
               </div>
             </div>
@@ -474,7 +474,7 @@ export const CoThuGame: React.FC<CoThuGameProps> = ({
         
         {/* LEFT COLUMN: GAME BOARD */}
         <div className="lg:col-span-7 flex flex-col gap-4">
-          <div className="bg-white p-4 rounded-3xl border-2 border-[#DCEBCB] shadow-sm flex flex-col items-center">
+          <div className="bg-white p-4 rounded-3xl border-2 border-w-accent-muted shadow-sm flex flex-col items-center">
             
             {/* The 7x9 Grid */}
             <div className="grid grid-cols-7 gap-1 bg-[#E4C8A0] p-2 rounded-xl border-4 border-[#8B5A2B] shadow-inner max-w-full overflow-x-auto">
@@ -551,27 +551,27 @@ export const CoThuGame: React.FC<CoThuGameProps> = ({
             key={actionLogText}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-4 rounded-3xl border-2 border-[#DCEBCB] bg-white shadow-sm flex items-start gap-3"
+            className="p-4 rounded-3xl border-2 border-w-accent-muted bg-white shadow-sm flex items-start gap-3"
           >
             <div className="text-2xl mt-0.5">📜</div>
-            <div className="text-sm font-bold text-[#35452E] leading-relaxed">
+            <div className="text-sm font-bold text-w-text-main leading-relaxed">
               {actionLogText}
             </div>
           </motion.div>
 
           {/* QUESTION PHASE */}
           {turnStage === 'question' && currentQuestion && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-3xl p-5 border-2 border-[#DCEBCB] shadow-sm flex-1 flex flex-col">
-              <div className="flex items-center justify-between pb-3 border-b border-[#DCEBCB]">
-                <div className="text-xs font-extrabold uppercase text-[#74806B]">Lượt trả lời: <span style={{ color: currentTeam.color }}>{currentTeam.name}</span></div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-3xl p-5 border-2 border-w-accent-muted shadow-sm flex-1 flex flex-col">
+              <div className="flex items-center justify-between pb-3 border-b border-w-accent-muted">
+                <div className="text-xs font-extrabold uppercase text-w-text-muted">Lượt trả lời: <span style={{ color: currentTeam.color }}>{currentTeam.name}</span></div>
                 {config.timerEnabled !== false && (
-                  <div className={`px-2 py-1 rounded-lg text-xs font-black border-2 ${timeLeft <= 5 ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse' : 'bg-[#E9F0D9] border-[#B9CDA0] text-[#4F683C]'}`}>
+                  <div className={`px-2 py-1 rounded-lg text-xs font-black border-2 ${timeLeft <= 5 ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse' : 'bg-w-accent-light border-w-accent-border text-w-primary-dark'}`}>
                     ⏱️ {timeLeft}s
                   </div>
                 )}
               </div>
               <div className="mt-4 flex-1">
-                <p className="text-sm font-black text-[#35452E] leading-relaxed mb-4">{currentQuestion.content}</p>
+                <p className="text-sm font-black text-w-text-main leading-relaxed mb-4">{currentQuestion.content}</p>
                 <div className="space-y-2">
                   {currentQuestion.options?.map((opt, idx) => {
                     const isSelected = selectedOption === idx;
@@ -580,9 +580,9 @@ export const CoThuGame: React.FC<CoThuGameProps> = ({
                     
                     let optStyle = 'bg-slate-50 border-slate-200 text-slate-700';
                     if (showAnswer) {
-                      optStyle = isCorrect ? 'bg-emerald-500 text-white border-emerald-600' : (isSelected ? 'bg-rose-500 text-white border-rose-600' : optStyle);
+                      optStyle = isCorrect ? 'bg-emerald-500 text-w-text-main border-emerald-600' : (isSelected ? 'bg-rose-500 text-w-text-main border-rose-600' : optStyle);
                     } else if (isSelected) {
-                      optStyle = 'bg-[#4F683C] text-white border-[#3D522B]';
+                      optStyle = 'bg-w-primary-dark text-w-text-main border-w-primary-hover';
                     }
 
                     return (
@@ -593,22 +593,22 @@ export const CoThuGame: React.FC<CoThuGameProps> = ({
                   })}
                 </div>
               </div>
-              <div className="pt-3 mt-4 border-t border-[#DCEBCB] flex gap-2">
-                <button onClick={() => handleAnswerSubmit(true)} className="flex-1 py-2 bg-[#4F683C] text-white rounded-xl font-black text-xs">ĐÚNG</button>
-                <button onClick={() => handleAnswerSubmit(false)} className="flex-1 py-2 bg-rose-500 text-white rounded-xl font-black text-xs">SAI</button>
+              <div className="pt-3 mt-4 border-t border-w-accent-muted flex gap-2">
+                <button onClick={() => handleAnswerSubmit(true)} className="flex-1 py-2 bg-w-primary-dark text-w-text-main rounded-xl font-black text-xs">ĐÚNG</button>
+                <button onClick={() => handleAnswerSubmit(false)} className="flex-1 py-2 bg-rose-500 text-w-text-main rounded-xl font-black text-xs">SAI</button>
               </div>
             </motion.div>
           )}
 
           {/* MOVE PHASE */}
           {turnStage === 'move' && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-3xl p-5 border-2 border-[#DCEBCB] shadow-sm flex-1 flex flex-col justify-center items-center text-center space-y-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-3xl p-5 border-2 border-w-accent-muted shadow-sm flex-1 flex flex-col justify-center items-center text-center space-y-4">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl shadow-inner border border-blue-200">
                 ♟️
               </div>
               <div>
-                <h3 className="text-lg font-black text-[#35452E]">Lượt Đi Cờ: <span style={{ color: currentTeam.color }}>{currentTeam.name}</span></h3>
-                <p className="text-sm text-[#74806B] font-semibold mt-1">Hãy nhấp vào quân cờ của bạn để xem đường đi hợp lệ.</p>
+                <h3 className="text-lg font-black text-w-text-main">Lượt Đi Cờ: <span style={{ color: currentTeam.color }}>{currentTeam.name}</span></h3>
+                <p className="text-sm text-w-text-muted font-semibold mt-1">Hãy nhấp vào quân cờ của bạn để xem đường đi hợp lệ.</p>
               </div>
               <button onClick={handleEndTurn} className="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold border border-slate-300 mt-4 transition">
                 Bỏ Qua Lượt Đi
@@ -620,7 +620,7 @@ export const CoThuGame: React.FC<CoThuGameProps> = ({
           {turnStage === 'gameover' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-3xl p-6 border-4 border-amber-300 shadow-xl flex-1 flex flex-col justify-center items-center text-center space-y-4">
               <Trophy className="w-16 h-16 text-amber-500" />
-              <h3 className="text-2xl font-black text-[#35452E]">KẾT THÚC VÁN CỜ!</h3>
+              <h3 className="text-2xl font-black text-w-text-main">KẾT THÚC VÁN CỜ!</h3>
               <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200 w-full text-amber-900 font-bold">
                 <p>Điểm Đội Đỏ: {teams[0].score}</p>
                 <p>Điểm Đội Xanh: {teams[1].score}</p>

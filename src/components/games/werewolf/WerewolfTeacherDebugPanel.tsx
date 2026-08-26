@@ -27,42 +27,42 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
   const getRoleLabel = (role: WerewolfRole) => {
     switch (role) {
       case 'werewolf':
-        return { text: 'Ma Sói (Bóng đêm)', color: 'bg-red-600 text-white' };
+        return { text: 'Ma Sói (Bóng đêm)', color: 'bg-red-600 text-w-text-main' };
       case 'seer':
-        return { text: 'Tiên Tri (Soi nhân dạng)', color: 'bg-indigo-600 text-white' };
+        return { text: 'Tiên Tri (Soi nhân dạng)', color: 'bg-indigo-600 text-w-text-main' };
       case 'guard':
-        return { text: 'Bảo Vệ (Khiên thần)', color: 'bg-emerald-600 text-white' };
+        return { text: 'Bảo Vệ (Khiên thần)', color: 'bg-emerald-600 text-w-text-main' };
       case 'witch':
-        return { text: 'Phù Thủy (Cứu/Độc)', color: 'bg-purple-600 text-white' };
+        return { text: 'Phù Thủy (Cứu/Độc)', color: 'bg-purple-600 text-w-text-main' };
       case 'hunter':
-        return { text: 'Thợ Săn (Bắn trả)', color: 'bg-amber-600 text-white' };
+        return { text: 'Thợ Săn (Bắn trả)', color: 'bg-amber-600 text-w-text-main' };
       case 'villager':
       default:
-        return { text: 'Dân Làng', color: 'bg-slate-600 text-white' };
+        return { text: 'Dân Làng', color: 'bg-slate-600 text-w-text-main' };
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/70 backdrop-blur-md select-none animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-white/70 backdrop-blur-sm backdrop-blur-md select-none animate-fade-in">
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="w-full max-w-4xl bg-slate-900 border-2 border-indigo-500/50 rounded-3xl text-slate-100 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
+        className="w-full max-w-4xl bg-w-bg-alt border-2 border-indigo-500/50 rounded-3xl text-slate-100 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
       >
         {/* Header */}
-        <div className="p-4 bg-slate-950 border-b border-indigo-900/60 flex items-center justify-between">
+        <div className="p-4 bg-w-bg-card border-b border-indigo-900/60 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-black text-sm">
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-w-text-main font-black text-sm">
               <Key className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-black text-white flex items-center gap-2">
+              <h3 className="text-sm font-black text-w-text-main flex items-center gap-2">
                 <span>BẢNG ĐIỀU KHIỂN BÍ MẬT DÀNH CHO GIÁO VIÊN</span>
                 <span className="text-[10px] bg-red-950 text-red-300 px-2 py-0.5 rounded border border-red-700 font-bold uppercase">
                   Teacher Secret Debug
                 </span>
               </h3>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-w-text-muted">
                 Toàn bộ vai trò thật, ma trận hoài nghi và lịch sử hành động AI ban đêm.
               </p>
             </div>
@@ -70,14 +70,14 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition cursor-pointer"
+            className="p-1.5 rounded-xl bg-w-accent-light hover:bg-slate-700 text-w-primary-dark transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Controls */}
-        <div className="flex border-b border-slate-800 bg-slate-950/60 px-4 gap-2 pt-2">
+        <div className="flex border-b border-w-border bg-w-bg-card px-4 gap-2 pt-2">
           {[
             { id: 'roles', label: '🎭 Danh Sách 12 Vai Trò Thật' },
             { id: 'suspicion', label: '🧠 Trí Nhớ & Hoài Nghi AI' },
@@ -88,8 +88,8 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
               onClick={() => setActiveTab(tab.id as any)}
               className={`px-4 py-2 text-xs font-black rounded-t-xl transition cursor-pointer ${
                 activeTab === tab.id
-                  ? 'bg-slate-900 text-indigo-300 border-t-2 border-indigo-400'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-w-bg-alt text-indigo-300 border-t-2 border-indigo-400'
+                  : 'text-w-text-muted hover:text-slate-200'
               }`}
             >
               {tab.label}
@@ -110,14 +110,14 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
                     key={npc.id}
                     className={`p-3.5 rounded-2xl border flex flex-col justify-between ${
                       !npc.isAlive
-                        ? 'bg-slate-950/70 border-red-900/50 opacity-70'
-                        : 'bg-slate-800/80 border-slate-700'
+                        ? 'bg-w-bg-card border-red-900/50 opacity-70'
+                        : 'bg-w-accent-light border-w-accent-border'
                     }`}
                   >
                     <div className="flex items-center gap-3 mb-2">
                       <span className="text-3xl">{npc.avatar}</span>
                       <div className="overflow-hidden flex-1">
-                        <div className="font-extrabold text-sm text-white flex items-center justify-between">
+                        <div className="font-extrabold text-sm text-w-text-main flex items-center justify-between">
                           <span>{npc.name}</span>
                           <span className={`text-[10px] px-2 py-0.5 rounded font-black ${
                             npc.isAlive ? 'bg-emerald-950 text-emerald-300 border border-emerald-700' : 'bg-red-950 text-red-300 border border-red-700'
@@ -125,21 +125,21 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
                             {npc.isAlive ? 'SỐNG' : 'TỬ NẠN'}
                           </span>
                         </div>
-                        <div className="text-xs text-slate-400 truncate">
+                        <div className="text-xs text-w-text-muted truncate">
                           {npc.job} • {npc.age} tuổi
                         </div>
                       </div>
                     </div>
 
-                    <div className="space-y-1.5 pt-2 border-t border-slate-700/60">
+                    <div className="space-y-1.5 pt-2 border-t border-w-accent-border">
                       <div className={`px-2.5 py-1 rounded-lg text-xs font-black text-center ${roleBadge.color}`}>
                         {roleBadge.text}
                       </div>
 
-                      <div className="text-[11px] text-slate-400 flex items-center justify-between">
+                      <div className="text-[11px] text-w-text-muted flex items-center justify-between">
                         <span>Tính cách: <strong>{personality?.name}</strong> {personality?.badge}</span>
                         {npc.isRevealed && (
-                          <span className="text-amber-400 font-bold">⭐ Đã hé lộ</span>
+                          <span className="text-amber-600 font-bold">⭐ Đã hé lộ</span>
                         )}
                       </div>
                     </div>
@@ -153,7 +153,7 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* NPC Selector List */}
               <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
-                <span className="text-xs font-black text-slate-400 uppercase block mb-1">
+                <span className="text-xs font-black text-w-text-muted uppercase block mb-1">
                   Chọn NPC để kiểm tra AI state:
                 </span>
                 {npcs.map(npc => (
@@ -162,34 +162,34 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
                     onClick={() => setSelectedNpcId(npc.id)}
                     className={`w-full p-2.5 rounded-xl border text-left flex items-center gap-2 transition cursor-pointer ${
                       selectedNpcId === npc.id
-                        ? 'bg-indigo-950 border-indigo-400 text-white shadow-sm'
-                        : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750'
+                        ? 'bg-w-bg-alt border-indigo-400 text-w-text-main shadow-sm'
+                        : 'bg-w-accent-light border-w-accent-border text-w-primary-dark hover:bg-slate-750'
                     }`}
                   >
                     <span className="text-xl">{npc.avatar}</span>
                     <div className="flex-1 overflow-hidden">
                       <div className="font-bold text-xs truncate">{npc.name} ({npc.role})</div>
-                      <div className="text-[10px] text-slate-400">{npc.job}</div>
+                      <div className="text-[10px] text-w-text-muted">{npc.job}</div>
                     </div>
                   </button>
                 ))}
               </div>
 
               {/* Detailed AI Brain State */}
-              <div className="md:col-span-2 bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4">
+              <div className="md:col-span-2 bg-w-bg-card p-4 rounded-2xl border border-w-border space-y-4">
                 {selectedNpc ? (
                   <>
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <div className="flex items-center justify-between pb-3 border-b border-w-border">
                       <div className="flex items-center gap-3">
                         <span className="text-3xl">{selectedNpc.avatar}</span>
                         <div>
-                          <h4 className="font-black text-sm text-white flex items-center gap-2">
+                          <h4 className="font-black text-sm text-w-text-main flex items-center gap-2">
                             <span>{selectedNpc.name}</span>
-                            <span className="text-xs px-2 py-0.5 rounded bg-indigo-900 text-indigo-200">
+                            <span className="text-xs px-2 py-0.5 rounded bg-indigo-50 text-indigo-200">
                               {selectedNpc.role.toUpperCase()}
                             </span>
                           </h4>
-                          <p className="text-xs text-slate-400">
+                          <p className="text-xs text-w-text-muted">
                             Nỗi sợ: {Math.round(selectedNpc.behaviorState.fearLevel * 100)}% • Cảnh giác: {Math.round(selectedNpc.behaviorState.alertness * 100)}%
                           </p>
                         </div>
@@ -198,15 +198,15 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
 
                     {/* Suspicion Scores toward others */}
                     <div>
-                      <h5 className="text-xs font-black text-amber-300 uppercase mb-2">
+                      <h5 className="text-xs font-black text-amber-600 uppercase mb-2">
                         👁️ Điểm Hoài Nghi Đối Với Các NPC Khác (0.00 - 1.00):
                       </h5>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                         {Object.entries(selectedNpc.suspicion).map(([targetId, score]) => {
                           const target = npcs.find(n => n.id === targetId);
                           return (
-                            <div key={targetId} className="p-2 bg-slate-900 rounded-lg border border-slate-800 text-[11px] flex items-center justify-between">
-                              <span className="truncate text-slate-300">{target?.name || targetId}:</span>
+                            <div key={targetId} className="p-2 bg-w-bg-alt rounded-lg border border-w-border text-[11px] flex items-center justify-between">
+                              <span className="truncate text-w-primary-dark">{target?.name || targetId}:</span>
                               <span className={`font-mono font-black ${
                                 score >= 0.7 ? 'text-red-400' : score >= 0.4 ? 'text-yellow-400' : 'text-emerald-400'
                               }`}>
@@ -225,7 +225,7 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
                       </h5>
                       <div className="space-y-1.5 max-h-36 overflow-y-auto">
                         {selectedNpc.memory.map((m, i) => (
-                          <div key={i} className="p-2 bg-slate-900 rounded-lg text-xs text-slate-300 border border-slate-800">
+                          <div key={i} className="p-2 bg-w-bg-alt rounded-lg text-xs text-w-primary-dark border border-w-border">
                             {m.event}
                           </div>
                         ))}
@@ -247,7 +247,7 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
                 </div>
               ) : (
                 nightHistory.map(item => (
-                  <div key={item.night} className="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-2">
+                  <div key={item.night} className="p-4 bg-w-bg-card rounded-2xl border border-w-border space-y-2">
                     <h4 className="text-xs font-black text-indigo-400 uppercase flex items-center gap-2">
                       <span>🌙 Đêm {item.night}</span>
                       <span className="text-[10px] text-slate-500">({item.actionsTaken.length} hành động)</span>
@@ -255,13 +255,13 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
 
                     <div className="space-y-1.5">
                       {item.actionsTaken.map((act, i) => (
-                        <div key={i} className="p-2.5 bg-slate-900 rounded-xl text-xs flex items-center justify-between border border-slate-800">
+                        <div key={i} className="p-2.5 bg-w-bg-alt rounded-xl text-xs flex items-center justify-between border border-w-border">
                           <div>
-                            <strong className="text-white">{act.actorName} ({act.role}):</strong>{' '}
-                            <span className="text-slate-300">{act.reason || act.actionType}</span>
+                            <strong className="text-w-text-main">{act.actorName} ({act.role}):</strong>{' '}
+                            <span className="text-w-primary-dark">{act.reason || act.actionType}</span>
                           </div>
                           {act.targetName && (
-                            <span className="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-700 text-[11px] font-bold shrink-0 ml-2">
+                            <span className="px-2 py-0.5 rounded bg-w-bg-alt text-indigo-300 border border-indigo-700 text-[11px] font-bold shrink-0 ml-2">
                               Mục tiêu: {act.targetName}
                             </span>
                           )}
@@ -276,10 +276,10 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-slate-950 border-t border-slate-800 flex justify-end">
+        <div className="p-3 bg-w-bg-card border-t border-w-border flex justify-end">
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition cursor-pointer"
+            className="px-5 py-2 rounded-xl bg-w-accent-light hover:bg-slate-700 text-w-text-main font-bold text-xs transition cursor-pointer"
           >
             Đóng Panel Debug
           </button>

@@ -157,7 +157,7 @@ HỆ TUẦN HOÀN NGƯỜI`);
   // 2. Classification Setup States
   const isClassification = gameId === 'classification';
   const [classificationCategories, setClassificationCategories] = useState<{ id: string; name: string; color: string; icon: string }[]>([
-    { id: 'cat_1', name: 'Động Vật Có Xương Sống', color: '#4F683C', icon: '🦁' },
+    { id: 'cat_1', name: 'Động Vật Có Xương Sống', color: '#E08283', icon: '🦁' },
     { id: 'cat_2', name: 'Động Vật Không Xương Sống', color: '#3B82F6', icon: '🐙' },
   ]);
   const [classificationItemsText, setClassificationItemsText] = useState<string>(`Chó Corgi: 1
@@ -682,20 +682,20 @@ CHÂN LÝ
   const themesToDisplay = PRESET_THEMES.filter(t => availableThemes.includes(t.id));
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-[#35452E]/40 backdrop-blur-sm animate-fade-in overflow-y-auto">
-      <div className="bg-[#FFFDF5] border border-[#DED5B8] w-full max-w-2xl rounded-[22px] sm:rounded-[26px] shadow-[0_12px_36px_rgba(79,104,60,0.18)] overflow-hidden flex flex-col max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2rem)] my-auto wey-paper-card">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-w-text-main/40 backdrop-blur-sm animate-fade-in overflow-y-auto">
+      <div className="bg-w-bg-card border border-w-border w-full max-w-2xl rounded-[22px] sm:rounded-[26px] shadow-[0_12px_36px_rgba(79,104,60,0.18)] overflow-hidden flex flex-col max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2rem)] my-auto wey-paper-card">
         {/* Header */}
-        <div className="p-4 sm:p-5 bg-[#F8F3E5] border-b border-[#DED5B8] flex items-center justify-between shrink-0 gap-3">
+        <div className="p-4 sm:p-5 bg-w-bg-main border-b border-w-border flex items-center justify-between shrink-0 gap-3">
           <div className="flex items-center gap-3">
             <span className="text-3xl">{gameIcon}</span>
             <div>
-              <h2 className="text-lg sm:text-xl font-[800] text-[#35452E] flex items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-[800] text-w-text-main flex items-center gap-2">
                 <span>{gameTitle}</span>
-                <span className="text-xs font-[800] text-[#4F683C] bg-[#E9F0D9] px-2.5 py-0.5 rounded-full border border-[#B9CDA0]">
+                <span className="text-xs font-[800] text-w-primary-dark bg-w-accent-light px-2.5 py-0.5 rounded-full border border-w-accent-border">
                   Cấu Hình Setup
                 </span>
               </h2>
-              <p className="text-xs font-[600] text-[#74806B]">{gameDescription}</p>
+              <p className="text-xs font-[600] text-w-text-muted">{gameDescription}</p>
             </div>
           </div>
 
@@ -704,7 +704,7 @@ CHÂN LÝ
               <button
                 type="button"
                 onClick={() => onOpenQuickGuide(gameId)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FFFDF5] hover:bg-[#E9F0D9] text-[#4F683C] text-xs font-bold rounded-xl border border-[#B9CDA0] shadow-xs transition hover:-translate-y-0.5 cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-w-bg-card hover:bg-w-accent-light text-w-primary-dark text-xs font-bold rounded-xl border border-w-accent-border shadow-xs transition hover:-translate-y-0.5 cursor-pointer"
                 title="Xem hướng dẫn và luật chơi"
               >
                 <BookOpen className="w-3.5 h-3.5" />
@@ -714,7 +714,7 @@ CHÂN LÝ
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-[12px] text-[#74806B] hover:text-[#35452E] hover:bg-[#F8F3E5] transition cursor-pointer"
+              className="p-1.5 rounded-[12px] text-w-text-muted hover:text-w-text-main hover:bg-w-bg-main transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -726,15 +726,15 @@ CHÂN LÝ
           {isRandomCallGame ? (
             <div className="space-y-5">
               {/* 1. NGÂN HÀNG CÂU HỎI */}
-              <div className="space-y-3 bg-[#E9F0D9] p-4 rounded-2xl border border-[#B9CDA0]">
-                <label className="block text-xs font-black uppercase tracking-wider text-[#35452E] flex items-center gap-2">
-                  <Database className="w-4 h-4 text-[#4F683C]" />
+              <div className="space-y-3 bg-w-accent-light p-4 rounded-2xl border border-w-accent-border">
+                <label className="block text-xs font-black uppercase tracking-wider text-w-text-main flex items-center gap-2">
+                  <Database className="w-4 h-4 text-w-primary-dark" />
                   <span>1. Ngân Hàng Câu Hỏi (Bốc ngẫu nhiên cho học sinh trả lời)</span>
                 </label>
                 <select
                   value={selectedBankId}
                   onChange={(e) => setSelectedBankId(e.target.value)}
-                  className="w-full bg-white border border-[#B9CDA0] text-slate-800 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-sm cursor-pointer"
+                  className="w-full bg-white border border-w-accent-border text-slate-800 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-sm cursor-pointer"
                 >
                   <optgroup label="📝 ÔN TẬP HỌC KÌ (KHTN 8)">
                     {(banks || []).filter(b => b.id.includes('on_tap')).map(b => (
@@ -783,14 +783,14 @@ CHÂN LÝ
               </div>
 
               {/* 2. DANH SÁCH HỌC SINH */}
-              <div className="space-y-3 bg-[#FFFDF5] p-4 rounded-2xl border-2 border-[#DCEBCB]">
+              <div className="space-y-3 bg-w-bg-card p-4 rounded-2xl border-2 border-w-accent-muted">
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-black uppercase tracking-wider text-[#35452E] flex items-center gap-2">
-                    <Users className="w-4 h-4 text-[#4F683C]" />
+                  <label className="block text-xs font-black uppercase tracking-wider text-w-text-main flex items-center gap-2">
+                    <Users className="w-4 h-4 text-w-primary-dark" />
                     <span>2. Danh Sách Học Sinh (1 học sinh / 1 dòng)</span>
                   </label>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-[#4F683C] bg-[#E9F0D9] px-2.5 py-1 rounded-lg border border-[#B9CDA0]">
+                    <span className="text-xs font-bold text-w-primary-dark bg-w-accent-light px-2.5 py-1 rounded-lg border border-w-accent-border">
                       Sĩ số: {randomCallStudentsText.split('\n').filter(s => s.trim()).length} HS
                     </span>
                   </div>
@@ -805,7 +805,7 @@ CHÂN LÝ
                     setTimeout(() => setSavedIndicator(null), 2500);
                   }}
                   placeholder="Nhập hoặc dán danh sách học sinh (mỗi học sinh trên 1 dòng)..."
-                  className="w-full h-44 sm:h-48 p-3.5 bg-white border-2 border-[#DCEBCB] focus:border-[#4F683C] focus:ring-2 focus:ring-[#4F683C]/20 rounded-xl text-xs sm:text-sm font-semibold text-[#35452E] outline-none resize-none custom-scrollbar shadow-inner relative"
+                  className="w-full h-44 sm:h-48 p-3.5 bg-white border-2 border-w-accent-muted focus:border-w-primary-dark focus:ring-2 focus:ring-w-primary-dark/20 rounded-xl text-xs sm:text-sm font-semibold text-w-text-main outline-none resize-none custom-scrollbar shadow-inner relative"
                 />
 
                 <div className="flex items-center justify-between pt-1 flex-wrap gap-2">
@@ -833,7 +833,7 @@ CHÂN LÝ
                     <button
                       type="button"
                       onClick={() => txtCsvInputRef.current?.click()}
-                      className="px-3 py-1.5 bg-[#E9F0D9] hover:bg-[#D4E4C1] text-[#4F683C] text-xs font-bold rounded-xl border border-[#B9CDA0] transition cursor-pointer flex items-center gap-1.5"
+                      className="px-3 py-1.5 bg-w-accent-light hover:bg-[#D4E4C1] text-w-primary-dark text-xs font-bold rounded-xl border border-w-accent-border transition cursor-pointer flex items-center gap-1.5"
                     >
                       <span>📄 Nhập .txt/.csv</span>
                     </button>
@@ -845,7 +845,7 @@ CHÂN LÝ
                         setRandomCallStudentsText(sample);
                         localStorage.setItem('wey_randomcall_students', sample);
                       }}
-                      className="px-3 py-1.5 bg-[#E9F0D9] hover:bg-[#D4E4C1] text-[#4F683C] text-xs font-bold rounded-xl border border-[#B9CDA0] transition cursor-pointer"
+                      className="px-3 py-1.5 bg-w-accent-light hover:bg-[#D4E4C1] text-w-primary-dark text-xs font-bold rounded-xl border border-w-accent-border transition cursor-pointer"
                     >
                       + Mẫu 10 HS
                     </button>
@@ -866,7 +866,7 @@ CHÂN LÝ
                       <Check className="w-3.5 h-3.5" /> Đã lưu tự động
                     </span>
                   ) : (
-                    <span className="text-[11px] text-[#74806B] italic hidden md:inline">
+                    <span className="text-[11px] text-w-text-muted italic hidden md:inline">
                       *Mọi thay đổi đều được lưu tự động
                     </span>
                   )}
@@ -884,7 +884,7 @@ CHÂN LÝ
                     onClick={() => setNoRepeatStudents(true)}
                     className={`p-3.5 rounded-2xl border-2 transition text-left cursor-pointer ${
                       noRepeatStudents
-                        ? 'bg-[#4F683C] text-white font-bold shadow-md border-[#3D522B]'
+                        ? 'bg-w-primary-dark text-white font-bold shadow-md border-w-primary-hover'
                         : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                   >
@@ -902,7 +902,7 @@ CHÂN LÝ
                     onClick={() => setNoRepeatStudents(false)}
                     className={`p-3.5 rounded-2xl border-2 transition text-left cursor-pointer ${
                       !noRepeatStudents
-                        ? 'bg-[#4F683C] text-white font-bold shadow-md border-[#3D522B]'
+                        ? 'bg-w-primary-dark text-white font-bold shadow-md border-w-primary-hover'
                         : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                   >
@@ -1485,18 +1485,18 @@ CHÂN LÝ
 
           {/* 1. WHACK-A-MOLE SPECIFIC SETTINGS */}
           {isWhackAMole && (
-            <div className="space-y-3 bg-[#E9F0D9]/50 p-4 rounded-2xl border border-[#B9CDA0]">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#4F683C] flex items-center gap-2">
+            <div className="space-y-3 bg-w-accent-light/50 p-4 rounded-2xl border border-w-accent-border">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-w-primary-dark flex items-center gap-2">
                 <span>🔨 Cấu Hình Đập Chuột Chũi</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Số hang chuột:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Số hang chuột:</span>
                   <select
                     value={whackHoleCount}
                     onChange={(e) => setWhackHoleCount(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={6}>6 hang (3x2)</option>
                     <option value={8}>8 hang (4x2)</option>
@@ -1506,11 +1506,11 @@ CHÂN LÝ
                 </div>
 
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Tốc độ chuột trồi lên:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Tốc độ chuột trồi lên:</span>
                   <select
                     value={whackMoleSpeed}
                     onChange={(e) => setWhackMoleSpeed(e.target.value as any)}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value="slow">Chậm (Dễ quan sát)</option>
                     <option value="medium">Vừa (Chuẩn nhịp độ)</option>
@@ -1519,7 +1519,7 @@ CHÂN LÝ
                 </div>
 
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Chuột bẫy bom:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Chuột bẫy bom:</span>
                   <button
                     type="button"
                     onClick={() => setWhackHasTrap(!whackHasTrap)}
@@ -1536,15 +1536,15 @@ CHÂN LÝ
 
           {/* 2. CLASSIFICATION SPECIFIC SETTINGS */}
           {isClassification && (
-            <div className="space-y-3 bg-[#E9F0D9]/50 p-4 rounded-2xl border border-[#B9CDA0]">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#4F683C] flex items-center justify-between">
+            <div className="space-y-3 bg-w-accent-light/50 p-4 rounded-2xl border border-w-accent-border">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-w-primary-dark flex items-center justify-between">
                 <span>📁 Cấu Hình Nhóm & Đối Tượng Phân Loại</span>
-                <span className="text-[10px] text-[#74806B] font-bold">Hỗ trợ mọi môn học & kiến thức</span>
+                <span className="text-[10px] text-w-text-muted font-bold">Hỗ trợ mọi môn học & kiến thức</span>
               </label>
 
               {/* Categories list */}
               <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs font-bold text-[#35452E]">
+                <div className="flex items-center justify-between text-xs font-bold text-w-text-main">
                   <span>Danh Sách Nhóm Phân Loại ({classificationCategories.length} nhóm):</span>
                   {classificationCategories.length < 4 && (
                     <button
@@ -1556,7 +1556,7 @@ CHÂN LÝ
                           { id: nextId, name: `Nhóm ${prev.length + 1}`, color: '#f59e0b', icon: '📦' }
                         ]);
                       }}
-                      className="px-2.5 py-1 bg-[#4F683C] text-white rounded-lg text-[11px] font-extrabold hover:bg-[#3E522F] transition cursor-pointer"
+                      className="px-2.5 py-1 bg-w-primary-dark text-white rounded-lg text-[11px] font-extrabold hover:bg-[#3E522F] transition cursor-pointer"
                     >
                       + Thêm Nhóm
                     </button>
@@ -1565,8 +1565,8 @@ CHÂN LÝ
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {classificationCategories.map((cat, idx) => (
-                    <div key={cat.id} className="flex items-center gap-2 bg-white p-2 rounded-xl border border-[#DED5B8] shadow-2xs">
-                      <span className="text-xs font-extrabold text-[#4F683C] w-6 text-center">{idx + 1}.</span>
+                    <div key={cat.id} className="flex items-center gap-2 bg-white p-2 rounded-xl border border-w-border shadow-2xs">
+                      <span className="text-xs font-extrabold text-w-primary-dark w-6 text-center">{idx + 1}.</span>
                       <input
                         type="text"
                         value={cat.name}
@@ -1576,7 +1576,7 @@ CHÂN LÝ
                           setClassificationCategories(updated);
                         }}
                         placeholder={`Tên Nhóm ${idx + 1}`}
-                        className="flex-1 bg-[#F8F4E8] border border-[#E8DFCA] rounded-lg px-2 py-1 text-xs font-bold text-[#35452E] focus:outline-none"
+                        className="flex-1 bg-w-bg-tag border border-[#E8DFCA] rounded-lg px-2 py-1 text-xs font-bold text-w-text-main focus:outline-none"
                       />
                       {classificationCategories.length > 2 && (
                         <button
@@ -1596,14 +1596,14 @@ CHÂN LÝ
 
               {/* Items Textarea */}
               <div className="space-y-1 pt-1">
-                <div className="flex items-center justify-between text-xs font-bold text-[#35452E]">
+                <div className="flex items-center justify-between text-xs font-bold text-w-text-main">
                   <span>Danh Sách Đối Tượng (Cú pháp: "Tên đối tượng : Số thứ tự nhóm"):</span>
                   <button
                     type="button"
                     onClick={() => {
                       setClassificationItemsText(`Mặt Trời: 1\nTrái Đất: 2\nSao Hỏa: 2\nSao Mộc: 2\nSao Bắc Cực: 1\nSao Kim: 2`);
                     }}
-                    className="text-[10px] text-[#4F683C] underline hover:font-bold"
+                    className="text-[10px] text-w-primary-dark underline hover:font-bold"
                   >
                     Nạp mẫu Thiên văn
                   </button>
@@ -1613,7 +1613,7 @@ CHÂN LÝ
                   value={classificationItemsText}
                   onChange={(e) => setClassificationItemsText(e.target.value)}
                   placeholder={`Ví dụ:\nChó Corgi : 1\nBạch Tuộc : 2\nCá Heo : 1`}
-                  className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl p-2.5 text-xs font-mono font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                  className="w-full bg-white border border-w-border text-w-text-main rounded-xl p-2.5 text-xs font-mono font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                 />
               </div>
             </div>
@@ -1621,18 +1621,18 @@ CHÂN LÝ
 
           {/* 3. FLAG CAPTURE SPECIFIC SETTINGS */}
           {isFlagCapture && (
-            <div className="space-y-3 bg-[#E9F0D9]/50 p-4 rounded-2xl border border-[#B9CDA0]">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#4F683C] flex items-center gap-2">
+            <div className="space-y-3 bg-w-accent-light/50 p-4 rounded-2xl border border-w-accent-border">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-w-primary-dark flex items-center gap-2">
                 <span>🚩 Cấu Hình Trò Chơi Cướp Cờ</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Số vòng thi đấu:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Số vòng thi đấu:</span>
                   <select
                     value={flagRounds}
                     onChange={(e) => setFlagRounds(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={5}>5 Vòng cướp cờ</option>
                     <option value={8}>8 Vòng cướp cờ (Chuẩn)</option>
@@ -1642,11 +1642,11 @@ CHÂN LÝ
                 </div>
 
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Điểm thưởng mỗi lần cướp cờ:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Điểm thưởng mỗi lần cướp cờ:</span>
                   <select
                     value={flagPointsCapture}
                     onChange={(e) => setFlagPointsCapture(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={10}>+10 Điểm / cờ</option>
                     <option value={15}>+15 Điểm / cờ (Chuẩn)</option>
@@ -1659,18 +1659,18 @@ CHÂN LÝ
 
           {/* 4. SACK RACE SPECIFIC SETTINGS */}
           {isSackRace && (
-            <div className="space-y-3 bg-[#E9F0D9]/50 p-4 rounded-2xl border border-[#B9CDA0]">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#4F683C] flex items-center gap-2">
+            <div className="space-y-3 bg-w-accent-light/50 p-4 rounded-2xl border border-w-accent-border">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-w-primary-dark flex items-center gap-2">
                 <span>🌾 Cấu Hình Đường Đua Nhảy Bao Bố</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Độ dài đường đua (bước):</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Độ dài đường đua (bước):</span>
                   <select
                     value={sackTrackLength}
                     onChange={(e) => setSackTrackLength(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={5}>5 Bước (Đua ngắn)</option>
                     <option value={7}>7 Bước (Chuẩn)</option>
@@ -1679,11 +1679,11 @@ CHÂN LÝ
                 </div>
 
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Bước tiến khi đúng:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Bước tiến khi đúng:</span>
                   <select
                     value={sackStepPerCorrect}
                     onChange={(e) => setSackStepPerCorrect(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={1}>Tiến 1 bước</option>
                     <option value={2}>Tiến 2 bước (Bứt tốc)</option>
@@ -1691,11 +1691,11 @@ CHÂN LÝ
                 </div>
 
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Khi trả lời sai:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Khi trả lời sai:</span>
                   <select
                     value={sackPenaltyWrong}
                     onChange={(e) => setSackPenaltyWrong(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={0}>Đứng yên</option>
                     <option value={1}>Lùi 1 bước</option>
@@ -1707,19 +1707,19 @@ CHÂN LÝ
 
           {/* 5. SNAIL WORD SEARCH SPECIFIC SETTINGS */}
           {isSnailWordSearch && (
-            <div className="space-y-3 bg-[#E9F0D9]/50 p-4 rounded-2xl border border-[#B9CDA0]">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#4F683C] flex items-center justify-between">
+            <div className="space-y-3 bg-w-accent-light/50 p-4 rounded-2xl border border-w-accent-border">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-w-primary-dark flex items-center justify-between">
                 <span>🐌 Cấu Hình Ma Trận Chữ & Ốc Sên</span>
-                <span className="text-[10px] text-[#74806B] font-bold">Hỗ trợ tiếng Việt có dấu/không dấu</span>
+                <span className="text-[10px] text-w-text-muted font-bold">Hỗ trợ tiếng Việt có dấu/không dấu</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Kích thước bảng ma trận:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Kích thước bảng ma trận:</span>
                   <select
                     value={snailGridSize}
                     onChange={(e) => setSnailGridSize(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={8}>8 x 8 (Dễ - Chữ lớn)</option>
                     <option value={10}>10 x 10 (Chuẩn - Cân đối)</option>
@@ -1728,11 +1728,11 @@ CHÂN LÝ
                 </div>
 
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Độ khó hướng đặt từ:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Độ khó hướng đặt từ:</span>
                   <select
                     value={snailDifficulty}
                     onChange={(e) => setSnailDifficulty(e.target.value as any)}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value="easy">Dễ (Chỉ Ngang & Dọc)</option>
                     <option value="medium">Vừa (Ngang, Dọc, Chéo)</option>
@@ -1742,7 +1742,7 @@ CHÂN LÝ
               </div>
 
               <div className="space-y-1 pt-1">
-                <span className="text-xs font-bold text-[#35452E] block">
+                <span className="text-xs font-bold text-w-text-main block">
                   Danh sách từ cần tìm (Mỗi từ trên một dòng):
                 </span>
                 <textarea
@@ -1750,7 +1750,7 @@ CHÂN LÝ
                   value={snailWordsText}
                   onChange={(e) => setSnailWordsText(e.target.value)}
                   placeholder={`QUANG HỢP\nHÔ HẤP\nDIỆP LỤC\nKHÍ KHỔNG`}
-                  className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl p-2.5 text-xs font-mono font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                  className="w-full bg-white border border-w-border text-w-text-main rounded-xl p-2.5 text-xs font-mono font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                 />
               </div>
             </div>
@@ -1758,15 +1758,15 @@ CHÂN LÝ
 
           {/* 6. MINE BOOM (DÒ BOOM) SPECIFIC SETTINGS */}
           {isMineBoom && (
-            <div className="space-y-3 bg-[#E9F0D9]/50 p-4 rounded-2xl border border-[#B9CDA0]">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#4F683C] flex items-center justify-between">
+            <div className="space-y-3 bg-w-accent-light/50 p-4 rounded-2xl border border-w-accent-border">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-w-primary-dark flex items-center justify-between">
                 <span>💣 Cấu Hình Bãi Dò Boom</span>
-                <span className="text-[10px] text-[#74806B] font-bold">Kịch tính & Cân não</span>
+                <span className="text-[10px] text-w-text-muted font-bold">Kịch tính & Cân não</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Kích thước bảng ô:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Kích thước bảng ô:</span>
                   <select
                     value={`${boomGridRows}x${boomGridCols}`}
                     onChange={(e) => {
@@ -1774,7 +1774,7 @@ CHÂN LÝ
                       setBoomGridRows(r);
                       setBoomGridCols(c);
                     }}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value="4x4">4 x 4 (16 ô)</option>
                     <option value="4x5">4 x 5 (20 ô - Chuẩn)</option>
@@ -1784,11 +1784,11 @@ CHÂN LÝ
                 </div>
 
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Số lượng Boom ẩn:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Số lượng Boom ẩn:</span>
                   <select
                     value={boomCount}
                     onChange={(e) => setBoomCount(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={3}>3 Quả Boom</option>
                     <option value={4}>4 Quả Boom (Cân bằng)</option>
@@ -1798,11 +1798,11 @@ CHÂN LÝ
                 </div>
 
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Dính bao nhiêu Boom thì thua:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Dính bao nhiêu Boom thì thua:</span>
                   <select
                     value={boomMaxToLose}
                     onChange={(e) => setBoomMaxToLose(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={2}>2 Quả Boom (Rất gắt)</option>
                     <option value={3}>3 Quả Boom (Chuẩn luật)</option>
@@ -1812,11 +1812,11 @@ CHÂN LÝ
               </div>
 
               <div>
-                <span className="text-xs text-[#35452E] font-bold block mb-1">Điểm phạt khi trúng Boom:</span>
+                <span className="text-xs text-w-text-main font-bold block mb-1">Điểm phạt khi trúng Boom:</span>
                 <select
                   value={boomPenalty}
                   onChange={(e) => setBoomPenalty(Number(e.target.value))}
-                  className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                  className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                 >
                   <option value={10}>-10 Điểm</option>
                   <option value={15}>-15 Điểm (Chuẩn)</option>
@@ -1828,19 +1828,19 @@ CHÂN LÝ
 
           {/* 7. GOLD MINER (ĐÀO VÀNG) SPECIFIC SETTINGS */}
           {isGoldMiner && (
-            <div className="space-y-3 bg-[#E9F0D9]/50 p-4 rounded-2xl border border-[#B9CDA0]">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#4F683C] flex items-center justify-between">
+            <div className="space-y-3 bg-w-accent-light/50 p-4 rounded-2xl border border-w-accent-border">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-w-primary-dark flex items-center justify-between">
                 <span>⛏️ Cấu Hình Mỏ Đào Vàng</span>
-                <span className="text-[10px] text-[#74806B] font-bold">Canh chuẩn thời điểm thả móc neo</span>
+                <span className="text-[10px] text-w-text-muted font-bold">Canh chuẩn thời điểm thả móc neo</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Số lượng vàng trong mỏ:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Số lượng vàng trong mỏ:</span>
                   <select
                     value={minerGoldCount}
                     onChange={(e) => setMinerGoldCount(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={4}>4 Cục vàng</option>
                     <option value={5}>5 Cục vàng (Chuẩn)</option>
@@ -1849,11 +1849,11 @@ CHÂN LÝ
                 </div>
 
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Số lượng đá cản trở:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Số lượng đá cản trở:</span>
                   <select
                     value={minerRockCount}
                     onChange={(e) => setMinerRockCount(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={2}>2 Khối đá</option>
                     <option value={3}>3 Khối đá (Chuẩn)</option>
@@ -1864,11 +1864,11 @@ CHÂN LÝ
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Tốc độ đung đưa móc neo:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Tốc độ đung đưa móc neo:</span>
                   <select
                     value={minerHookSpeed}
                     onChange={(e) => setMinerHookSpeed(e.target.value as any)}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value="slow">Chậm (Dễ canh)</option>
                     <option value="medium">Vừa phải (Chuẩn)</option>
@@ -1876,13 +1876,13 @@ CHÂN LÝ
                   </select>
                 </div>
 
-                <div className="flex items-center justify-between p-2 bg-white rounded-xl border border-[#DED5B8] mt-4 sm:mt-0">
-                  <span className="text-xs font-bold text-[#35452E]">Có Túi Quà Bí Mật 🎁:</span>
+                <div className="flex items-center justify-between p-2 bg-white rounded-xl border border-w-border mt-4 sm:mt-0">
+                  <span className="text-xs font-bold text-w-text-main">Có Túi Quà Bí Mật 🎁:</span>
                   <input
                     type="checkbox"
                     checked={minerHasSecretBag}
                     onChange={(e) => setMinerHasSecretBag(e.target.checked)}
-                    className="w-4 h-4 accent-[#4F683C] cursor-pointer"
+                    className="w-4 h-4 accent-w-primary-dark cursor-pointer"
                   />
                 </div>
               </div>
@@ -1891,22 +1891,22 @@ CHÂN LÝ
 
           {/* 8. BEAR PASSING (TRUYỀN GẤU) SPECIFIC SETTINGS */}
           {isBearPassing && (
-            <div className="space-y-3 bg-[#E9F0D9]/50 p-4 rounded-2xl border border-[#B9CDA0]">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#4F683C] flex items-center justify-between">
+            <div className="space-y-3 bg-w-accent-light/50 p-4 rounded-2xl border border-w-accent-border">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-w-primary-dark flex items-center justify-between">
                 <span>🧸 Cấu Hình Sân Khấu Truyền Gấu</span>
-                <span className="text-[10px] text-[#74806B] font-bold">Dừng nhạc bất ngờ tìm người may mắn</span>
+                <span className="text-[10px] text-w-text-muted font-bold">Dừng nhạc bất ngờ tìm người may mắn</span>
               </label>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <span className="text-xs font-bold text-[#35452E] flex items-center gap-2">
+                  <span className="text-xs font-bold text-w-text-main flex items-center gap-2">
                     Danh sách học sinh (Mỗi tên 1 dòng):
                     {savedIndicator === 'bear' ? (
                       <span className="text-[10px] text-emerald-600 font-bold italic animate-pulse flex items-center gap-1">
                         <Check className="w-3.5 h-3.5" /> Đã lưu tự động
                       </span>
                     ) : (
-                      <span className="text-[10px] text-[#74806B] italic font-normal">
+                      <span className="text-[10px] text-w-text-muted italic font-normal">
                         (Mọi thay đổi tự động lưu)
                       </span>
                     )}
@@ -1936,11 +1936,11 @@ CHÂN LÝ
                     <button
                       type="button"
                       onClick={() => bearTxtCsvInputRef.current?.click()}
-                      className="px-2 py-1 bg-[#E9F0D9] hover:bg-[#D4E4C1] text-[#4F683C] text-xs font-bold rounded-lg border border-[#B9CDA0] transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                      className="px-2 py-1 bg-w-accent-light hover:bg-[#D4E4C1] text-w-primary-dark text-xs font-bold rounded-lg border border-w-accent-border transition cursor-pointer flex items-center gap-1 shadow-2xs"
                     >
                       📄 TXT/CSV
                     </button>
-                    <span className="text-[11px] font-bold text-[#4F683C] bg-white px-2 py-0.5 rounded-lg border border-[#DED5B8]">
+                    <span className="text-[11px] font-bold text-w-primary-dark bg-white px-2 py-0.5 rounded-lg border border-w-border">
                       {bearStudentsText.split('\n').filter(s => s.trim().length > 0).length} HS
                     </span>
                   </div>
@@ -1957,16 +1957,16 @@ CHÂN LÝ
                       setTimeout(() => setSavedIndicator(null), 2500);
                     } catch (err) {}
                   }}
-                  className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-[#4F683C] shadow-xs"
+                  className="w-full bg-white border border-w-border text-w-text-main rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-w-primary-dark shadow-xs"
                 />
               </div>
 
               <div>
-                <span className="text-xs text-[#35452E] font-bold block mb-1">Chế độ chọn nhạc nền:</span>
+                <span className="text-xs text-w-text-main font-bold block mb-1">Chế độ chọn nhạc nền:</span>
                 <select
                   value={bearMusicMode}
                   onChange={(e) => setBearMusicMode(e.target.value as any)}
-                  className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                  className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                 >
                   <option value="random">Phát ngẫu nhiên giữa các bài nhạc nền</option>
                   <option value="order">Theo bài đã chọn sẵn</option>
@@ -1977,14 +1977,14 @@ CHÂN LÝ
 
           {/* 9. LETTER ARRANGE (SẮP XẾP CHỮ CÁI) SPECIFIC SETTINGS */}
           {isLetterArrange && (
-            <div className="space-y-3 bg-[#E9F0D9]/50 p-4 rounded-2xl border border-[#B9CDA0]">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#4F683C] flex items-center justify-between">
+            <div className="space-y-3 bg-w-accent-light/50 p-4 rounded-2xl border border-w-accent-border">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-w-primary-dark flex items-center justify-between">
                 <span>🔤 Cấu Hình Sắp Xếp Chữ Cái</span>
-                <span className="text-[10px] text-[#74806B] font-bold">Xáo trộn ký tự tiếng Việt</span>
+                <span className="text-[10px] text-w-text-muted font-bold">Xáo trộn ký tự tiếng Việt</span>
               </label>
 
               <div className="space-y-1">
-                <span className="text-xs font-bold text-[#35452E] block">
+                <span className="text-xs font-bold text-w-text-main block">
                   Danh sách từ khóa / cụm từ (Mỗi từ 1 dòng):
                 </span>
                 <textarea
@@ -1992,28 +1992,28 @@ CHÂN LÝ
                   value={letterWordsText}
                   onChange={(e) => setLetterWordsText(e.target.value)}
                   placeholder={`MẶT TRỜI\nQUANG HỢP\nHỆ SINH THÁI`}
-                  className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl p-2.5 text-xs font-mono font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                  className="w-full bg-white border border-w-border text-w-text-main rounded-xl p-2.5 text-xs font-mono font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                <div className="flex items-center justify-between p-2 bg-white rounded-xl border border-[#DED5B8]">
-                  <span className="text-xs font-bold text-[#35452E]">Hiện nút Gợi Ý:</span>
+                <div className="flex items-center justify-between p-2 bg-white rounded-xl border border-w-border">
+                  <span className="text-xs font-bold text-w-text-main">Hiện nút Gợi Ý:</span>
                   <input
                     type="checkbox"
                     checked={letterShowHint}
                     onChange={(e) => setLetterShowHint(e.target.checked)}
-                    className="w-4 h-4 accent-[#4F683C] cursor-pointer"
+                    className="w-4 h-4 accent-w-primary-dark cursor-pointer"
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-2 bg-white rounded-xl border border-[#DED5B8]">
-                  <span className="text-xs font-bold text-[#35452E]">Có phím Dấu Cách:</span>
+                <div className="flex items-center justify-between p-2 bg-white rounded-xl border border-w-border">
+                  <span className="text-xs font-bold text-w-text-main">Có phím Dấu Cách:</span>
                   <input
                     type="checkbox"
                     checked={letterShowSpace}
                     onChange={(e) => setLetterShowSpace(e.target.checked)}
-                    className="w-4 h-4 accent-[#4F683C] cursor-pointer"
+                    className="w-4 h-4 accent-w-primary-dark cursor-pointer"
                   />
                 </div>
               </div>
@@ -2022,19 +2022,19 @@ CHÂN LÝ
 
           {/* 10. APPLE PICK (HÁI TÁO - ÔNG SMITH) SPECIFIC SETTINGS */}
           {isApplePick && (
-            <div className="space-y-3 bg-[#FAF7EE] p-4 rounded-2xl border-2 border-[#E3DCBA]">
-              <label className="text-xs font-black uppercase tracking-wider text-[#35452E] flex items-center justify-between">
+            <div className="space-y-3 bg-w-bg-alt p-4 rounded-2xl border-2 border-[#E3DCBA]">
+              <label className="text-xs font-black uppercase tracking-wider text-w-text-main flex items-center justify-between">
                 <span>🍎 Cấu Hình Bàn Cờ Hái Táo (Ông Smith)</span>
-                <span className="text-[10px] text-[#74806B] font-bold">Boardgame Vườn Táo & Quy Tắc Chia Hết</span>
+                <span className="text-[10px] text-w-text-muted font-bold">Boardgame Vườn Táo & Quy Tắc Chia Hết</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Số lượng ô trên bàn cờ:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Số lượng ô trên bàn cờ:</span>
                   <select
                     value={appleBoardTiles}
                     onChange={(e) => setAppleBoardTiles(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={24}>24 Ô (Ván nhanh)</option>
                     <option value={30}>30 Ô</option>
@@ -2044,11 +2044,11 @@ CHÂN LÝ
                 </div>
 
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Mục tiêu số táo để thắng:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Mục tiêu số táo để thắng:</span>
                   <select
                     value={appleTargetCount}
                     onChange={(e) => setAppleTargetCount(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={4}>4 Quả Táo 🍏 (Nhanh)</option>
                     <option value={6}>6 Quả Táo 🍎 (Chuẩn)</option>
@@ -2060,11 +2060,11 @@ CHÂN LÝ
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Số Bí Mật Ông Smith:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Số Bí Mật Ông Smith:</span>
                   <select
                     value={appleSmithSecretMode}
                     onChange={(e) => setAppleSmithSecretMode(e.target.value as any)}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value="random">Ngẫu nhiên mỗi ván (Khuyên dùng)</option>
                     <option value="manual">Tự chọn số cố định</option>
@@ -2073,11 +2073,11 @@ CHÂN LÝ
 
                 {appleSmithSecretMode === 'manual' ? (
                   <div>
-                    <span className="text-xs text-[#35452E] font-bold block mb-1">Chọn số chia hết (Bị bắt):</span>
+                    <span className="text-xs text-w-text-main font-bold block mb-1">Chọn số chia hết (Bị bắt):</span>
                     <select
                       value={appleSmithSecretNumber}
                       onChange={(e) => setAppleSmithSecretNumber(Number(e.target.value))}
-                      className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                      className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                     >
                       <option value={2}>Chia hết cho 2</option>
                       <option value={3}>Chia hết cho 3</option>
@@ -2087,13 +2087,13 @@ CHÂN LÝ
                     </select>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between p-2 bg-white rounded-xl border border-[#DED5B8] mt-4 sm:mt-0">
-                    <span className="text-xs font-bold text-[#35452E]">Hiện số bí mật cho cả lớp:</span>
+                  <div className="flex items-center justify-between p-2 bg-white rounded-xl border border-w-border mt-4 sm:mt-0">
+                    <span className="text-xs font-bold text-w-text-main">Hiện số bí mật cho cả lớp:</span>
                     <input
                       type="checkbox"
                       checked={appleShowSmithSecret}
                       onChange={(e) => setAppleShowSmithSecret(e.target.checked)}
-                      className="w-4 h-4 accent-[#4F683C] cursor-pointer"
+                      className="w-4 h-4 accent-w-primary-dark cursor-pointer"
                     />
                   </div>
                 )}
@@ -2103,19 +2103,19 @@ CHÂN LÝ
 
           {/* 11. SON TINH - THUY TINH SPECIFIC SETTINGS */}
           {isSonTinhThuyTinh && (
-            <div className="space-y-3 bg-[#F4F8F1] p-4 rounded-2xl border-2 border-[#DCEBCB]">
-              <label className="text-xs font-black uppercase tracking-wider text-[#35452E] flex items-center justify-between">
+            <div className="space-y-3 bg-[#F4F8F1] p-4 rounded-2xl border-2 border-w-accent-muted">
+              <label className="text-xs font-black uppercase tracking-wider text-w-text-main flex items-center justify-between">
                 <span>⚔️ Cấu Hình Đại Chiến Sơn Tinh – Thủy Tinh</span>
-                <span className="text-[10px] text-[#74806B] font-bold">Boardgame Thu Thập Sính Lễ Vua Hùng</span>
+                <span className="text-[10px] text-w-text-muted font-bold">Boardgame Thu Thập Sính Lễ Vua Hùng</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Số hiệp tối đa (Rounds):</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Số hiệp tối đa (Rounds):</span>
                   <select
                     value={stttMaxRounds}
                     onChange={(e) => setStttMaxRounds(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={6}>6 Hiệp (Nhanh)</option>
                     <option value={8}>8 Hiệp</option>
@@ -2125,19 +2125,19 @@ CHÂN LÝ
                 </div>
 
                 <div>
-                  <span className="text-xs text-[#35452E] font-bold block mb-1">Số lượng Sính Lễ cần dâng:</span>
+                  <span className="text-xs text-w-text-main font-bold block mb-1">Số lượng Sính Lễ cần dâng:</span>
                   <select
                     value={stttTargetSinhLe}
                     onChange={(e) => setStttTargetSinhLe(Number(e.target.value))}
-                    className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                    className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                   >
                     <option value={3}>3 Sính Lễ (Voi 9 ngà, Gà 9 cựa, Ngựa 9 hồng mao)</option>
                   </select>
                 </div>
               </div>
 
-              <div className="p-2.5 bg-white rounded-xl border border-[#DCEBCB] text-xs text-[#74806B] font-medium leading-relaxed">
-                💡 <strong>Luật chơi chiến thuật:</strong> Trả lời đúng câu hỏi để nhận <strong className="text-[#35452E]">Điểm Thần Lực (AP)</strong>. Dùng AP để di chuyển tìm sính lễ, thi triển Dâng Núi (Sơn Tinh) hoặc Dâng Nước Lũ (Thủy Tinh) và cống nạp tại Cung Điện Hùng Vương để giành chiến thắng.
+              <div className="p-2.5 bg-white rounded-xl border border-w-accent-muted text-xs text-w-text-muted font-medium leading-relaxed">
+                💡 <strong>Luật chơi chiến thuật:</strong> Trả lời đúng câu hỏi để nhận <strong className="text-w-text-main">Điểm Thần Lực (AP)</strong>. Dùng AP để di chuyển tìm sính lễ, thi triển Dâng Núi (Sơn Tinh) hoặc Dâng Nước Lũ (Thủy Tinh) và cống nạp tại Cung Điện Hùng Vương để giành chiến thắng.
               </div>
             </div>
           )}
@@ -2146,17 +2146,17 @@ CHÂN LÝ
           {isMonopoly && (
             <div className="space-y-4 bg-[#FBF8EF] p-4 rounded-2xl border-2 border-[#E5DEC7]">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-black uppercase tracking-wider text-[#35452E] flex items-center gap-2">
+                <label className="text-xs font-black uppercase tracking-wider text-w-text-main flex items-center gap-2">
                   <span>🎩 Cấu Hình Cờ Tỷ Phú Tri Thức</span>
                 </label>
-                <div className="flex bg-[#EFE9D7] p-0.5 rounded-xl border border-[#DED5B8]">
+                <div className="flex bg-[#EFE9D7] p-0.5 rounded-xl border border-w-border">
                   <button
                     type="button"
                     onClick={() => setMonopolyActiveTab('general')}
                     className={`px-3 py-1 text-xs font-bold rounded-lg transition ${
                       monopolyActiveTab === 'general'
-                        ? 'bg-white text-[#35452E] shadow-2xs'
-                        : 'text-[#74806B] hover:text-[#35452E]'
+                        ? 'bg-white text-w-text-main shadow-2xs'
+                        : 'text-w-text-muted hover:text-w-text-main'
                     }`}
                   >
                     ⚙️ Thiết Lập Chung
@@ -2166,8 +2166,8 @@ CHÂN LÝ
                     onClick={() => setMonopolyActiveTab('tiles')}
                     className={`px-3 py-1 text-xs font-bold rounded-lg transition flex items-center gap-1.5 ${
                       monopolyActiveTab === 'tiles'
-                        ? 'bg-[#4F683C] text-white shadow-2xs'
-                        : 'text-[#74806B] hover:text-[#35452E]'
+                        ? 'bg-w-primary-dark text-white shadow-2xs'
+                        : 'text-w-text-muted hover:text-w-text-main'
                     }`}
                   >
                     <MapPin className="w-3.5 h-3.5" />
@@ -2180,11 +2180,11 @@ CHÂN LÝ
                 <div className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                     <div>
-                      <span className="text-xs text-[#35452E] font-bold block mb-1">Tiền vốn khởi điểm:</span>
+                      <span className="text-xs text-w-text-main font-bold block mb-1">Tiền vốn khởi điểm:</span>
                       <select
                         value={monopolyStartingMoney}
                         onChange={(e) => setMonopolyStartingMoney(Number(e.target.value))}
-                        className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                        className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                       >
                         <option value={1000}>$1,000 (Thử thách sinh tồn)</option>
                         <option value={1500}>$1,500 (Chuẩn quốc tế)</option>
@@ -2194,11 +2194,11 @@ CHÂN LÝ
                     </div>
 
                     <div>
-                      <span className="text-xs text-[#35452E] font-bold block mb-1">Thưởng qua ô START:</span>
+                      <span className="text-xs text-w-text-main font-bold block mb-1">Thưởng qua ô START:</span>
                       <select
                         value={monopolySalaryAmount}
                         onChange={(e) => setMonopolySalaryAmount(Number(e.target.value))}
-                        className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                        className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                       >
                         <option value={100}>+$100 / vòng</option>
                         <option value={200}>+$200 / vòng (Chuẩn)</option>
@@ -2208,11 +2208,11 @@ CHÂN LÝ
                     </div>
 
                     <div>
-                      <span className="text-xs text-[#35452E] font-bold block mb-1">Điều kiện chiến thắng:</span>
+                      <span className="text-xs text-w-text-main font-bold block mb-1">Điều kiện chiến thắng:</span>
                       <select
                         value={monopolyWinCondition}
                         onChange={(e) => setMonopolyWinCondition(e.target.value as any)}
-                        className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                        className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                       >
                         <option value="bankruptcy">Độc Tôn (Các đội khác Phá Sản)</option>
                         <option value="target_wealth">Chạm mốc Tài Sản Mục Tiêu</option>
@@ -2223,11 +2223,11 @@ CHÂN LÝ
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                     <div>
-                      <span className="text-xs text-[#35452E] font-bold block mb-1">Chủ đề bàn cờ:</span>
+                      <span className="text-xs text-w-text-main font-bold block mb-1">Chủ đề bàn cờ:</span>
                       <select
                         value={monopolyBoardTheme}
                         onChange={(e) => setMonopolyBoardTheme(e.target.value as any)}
-                        className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                        className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                       >
                         <option value="vietnam">Danh Lam Thắng Cảnh Việt Nam (Khuyên dùng)</option>
                         <option value="science">Khoa Học Tự Nhiên & STEM</option>
@@ -2236,11 +2236,11 @@ CHÂN LÝ
 
                     {monopolyWinCondition === 'target_wealth' && (
                       <div>
-                        <span className="text-xs text-[#35452E] font-bold block mb-1">Mốc tài sản cần đạt ($):</span>
+                        <span className="text-xs text-w-text-main font-bold block mb-1">Mốc tài sản cần đạt ($):</span>
                         <select
                           value={monopolyTargetWealth}
                           onChange={(e) => setMonopolyTargetWealth(Number(e.target.value))}
-                          className="w-full bg-white border border-[#DED5B8] text-[#35452E] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#4F683C] shadow-xs"
+                          className="w-full bg-white border border-w-border text-w-text-main rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-xs"
                         >
                           <option value={2500}>$2,500 (Trận đấu nhanh)</option>
                           <option value={3500}>$3,500 (Vừa phải)</option>
@@ -2250,7 +2250,7 @@ CHÂN LÝ
                     )}
                   </div>
 
-                  <div className="p-2.5 bg-white rounded-xl border border-[#E5DEC7] text-xs text-[#74806B] font-medium leading-relaxed">
+                  <div className="p-2.5 bg-white rounded-xl border border-[#E5DEC7] text-xs text-w-text-muted font-medium leading-relaxed">
                     💡 <strong>Nguyên tắc cốt lõi:</strong> Trả lời đúng câu hỏi để được gieo xúc xắc du ngoạn các thành phố Việt Nam, mua đất, xây khách sạn, rút thẻ sự kiện và thu tiền thuê khi đối thủ đáp vào đất của mình! Trả lời sai bị mất lượt.
                   </div>
                 </div>
@@ -2258,7 +2258,7 @@ CHÂN LÝ
                 /* Tab Tùy Chỉnh 16 Ô Đất */
                 <div className="space-y-3">
                   <div className="flex items-center justify-between flex-wrap gap-2">
-                    <p className="text-xs text-[#74806B] font-medium">
+                    <p className="text-xs text-w-text-muted font-medium">
                       Chỉnh sửa tên thành phố/địa danh, giá mua và giá thuê cho 16 ô đất bất động sản:
                     </p>
                     <div className="flex items-center gap-1.5">
@@ -2294,9 +2294,9 @@ CHÂN LÝ
 
                   <div className="max-h-60 overflow-y-auto pr-1 space-y-2 custom-scrollbar">
                     {monopolyCustomTiles.map((tile, idx) => (
-                      <div key={tile.id} className="p-2.5 bg-white rounded-xl border border-[#DED5B8] flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                      <div key={tile.id} className="p-2.5 bg-white rounded-xl border border-w-border flex flex-col sm:flex-row items-start sm:items-center gap-2">
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className="w-6 h-6 rounded-lg bg-[#F8F4E8] text-xs font-black flex items-center justify-center border border-[#DED5B8] text-[#55644E]">
+                          <span className="w-6 h-6 rounded-lg bg-w-bg-tag text-xs font-black flex items-center justify-center border border-w-border text-w-text-muted">
                             #{tile.id}
                           </span>
                           <span className="text-base">{tile.icon || '🏠'}</span>
@@ -2316,7 +2316,7 @@ CHÂN LÝ
                                 next[idx] = { ...next[idx], name: e.target.value };
                                 setMonopolyCustomTiles(next);
                               }}
-                              className="w-full bg-[#FFFDF5] border border-slate-200 focus:border-[#4F683C] text-[#35452E] font-bold text-xs px-2 py-1 rounded-lg focus:outline-none"
+                              className="w-full bg-w-bg-card border border-slate-200 focus:border-w-primary-dark text-w-text-main font-bold text-xs px-2 py-1 rounded-lg focus:outline-none"
                             />
                           </div>
 
@@ -2333,7 +2333,7 @@ CHÂN LÝ
                                   next[idx] = { ...next[idx], price: Number(e.target.value) };
                                   setMonopolyCustomTiles(next);
                                 }}
-                                className="w-full bg-[#FFFDF5] border border-slate-200 focus:border-[#4F683C] text-emerald-800 font-bold text-xs px-1.5 py-1 rounded-lg focus:outline-none"
+                                className="w-full bg-w-bg-card border border-slate-200 focus:border-w-primary-dark text-emerald-800 font-bold text-xs px-1.5 py-1 rounded-lg focus:outline-none"
                               />
                             </div>
                           </div>
@@ -2351,7 +2351,7 @@ CHÂN LÝ
                                   next[idx] = { ...next[idx], baseRent: Number(e.target.value) };
                                   setMonopolyCustomTiles(next);
                                 }}
-                                className="w-full bg-[#FFFDF5] border border-slate-200 focus:border-[#4F683C] text-amber-800 font-bold text-xs px-1.5 py-1 rounded-lg focus:outline-none"
+                                className="w-full bg-w-bg-card border border-slate-200 focus:border-w-primary-dark text-amber-800 font-bold text-xs px-1.5 py-1 rounded-lg focus:outline-none"
                               />
                             </div>
                           </div>
@@ -2902,18 +2902,18 @@ CHÂN LÝ
         </div>
 
         {/* Footer */}
-        <div className="p-3 sm:p-4 bg-[#F8F3E5] border-t border-[#DED5B8] flex items-center justify-between gap-3 shrink-0">
+        <div className="p-3 sm:p-4 bg-w-bg-main border-t border-w-border flex items-center justify-between gap-3 shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2.5 bg-[#FFFDF5] hover:bg-[#F8F3E5] text-[#35452E] font-[700] text-xs sm:text-sm rounded-[14px] border border-[#DED5B8] transition cursor-pointer min-h-[44px]"
+            className="px-4 py-2.5 bg-w-bg-card hover:bg-w-bg-main text-w-text-main font-[700] text-xs sm:text-sm rounded-[14px] border border-w-border transition cursor-pointer min-h-[44px]"
           >
             Hủy
           </button>
           <button
             type="button"
             onClick={handleLaunch}
-            className="flex items-center justify-center gap-2 px-6 py-2.5 bg-[#6F8F55] hover:bg-[#5F7E4B] text-white font-[800] text-sm rounded-[15px] shadow-md transition transform hover:-translate-y-0.5 active:translate-y-0 border border-[#5F7E4B] cursor-pointer min-h-[44px]"
+            className="flex items-center justify-center gap-2 px-6 py-2.5 bg-w-primary hover:bg-w-primary-hover text-white font-[800] text-sm rounded-[15px] shadow-md transition transform hover:-translate-y-0.5 active:translate-y-0 border border-w-primary-hover cursor-pointer min-h-[44px]"
           >
             <Play className="w-4 h-4 fill-current text-[#E9D58F]" />
             <span>Vào Chơi Game</span>

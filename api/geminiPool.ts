@@ -66,12 +66,25 @@ export function maskApiKey(key: string): { masked: string; length: number } {
   const len = clean.length;
   if (len === 0) return { masked: '••••••••', length: 0 };
   if (len <= 8) return { masked: '••••••••', length: len };
-  const prefix = clean.slice(0, 6);
+  const prefix = clean.startsWith('AQ.') ? 'AQ.' : (clean.startsWith('AIza') ? 'AIza' : clean.slice(0, 6));
   const suffix = clean.slice(-4);
   return {
     masked: `${prefix}...${suffix}`,
     length: len
   };
+}
+
+/**
+ * Mask all characters except the last 4 characters for debugging logs
+ */
+export function maskKeyExceptLast4(key: string): string {
+  if (!key || typeof key !== 'string') return '[EMPTY]';
+  const clean = key.trim();
+  if (clean.length <= 4) return '****';
+  const last4 = clean.slice(-4);
+  const prefix = clean.startsWith('AQ.') ? 'AQ.' : (clean.startsWith('AIza') ? 'AIza.' : '');
+  const maskedMiddle = '*'.repeat(Math.max(6, clean.length - (prefix.length + 4)));
+  return `${prefix}${maskedMiddle}${last4}`;
 }
 
 /**
@@ -232,6 +245,12 @@ export class GeminiKeyPoolManager {
 
     const envSource = (typeof process !== "undefined" ? process.env : {}) as any;
 
+    console.log(`[GeminiPool] 🔄 Initiating Gemini API Key loader... Environment keys available: ${Object.keys(envSource).length} (Vercel Env: ${envSource.VERCEL_ENV || envSource.NODE_ENV || 'local'})`);
+    const isVercel = Boolean(envSource.VERCEL || envSource.VERCEL_ENV || envSource.NOW_REGION);
+    if (isVercel) {
+      console.log(`[GeminiPool] 🌐 Running in Vercel environment (${envSource.VERCEL_ENV || 'production'}).`);
+    }
+
     const sanitizeKey = (raw: any): string => {
       if (!raw || typeof raw !== 'string') return '';
       let clean = raw.trim().replace(/\r/g, '');
@@ -239,6 +258,12 @@ export class GeminiKeyPoolManager {
         clean = clean.slice(1, -1).trim();
       }
       return clean;
+    };
+
+    const detectKeyFormat = (k: string): string => {
+      if (k.startsWith('AQ.')) return `AQ-format (${k.length} chars)`;
+      if (k.startsWith('AIza')) return `AIza-format (${k.length} chars)`;
+      return `Standard (${k.length} chars)`;
     };
 
     const parseMultiKeys = (raw: any): string[] => {
@@ -255,8 +280,8 @@ export class GeminiKeyPoolManager {
       if (clean.includes(',') || clean.includes(';') || clean.includes('\n')) {
         return clean.split(/[,;\n\r]+/).map(k => sanitizeKey(k)).filter(Boolean);
       }
-      // If contains whitespace and looks like multiple keys
-      if (clean.includes(' ') && clean.includes('AIza')) {
+      // If contains whitespace and looks like multiple keys (AIza or AQ. format)
+      if (clean.includes(' ') && (clean.includes('AIza') || clean.includes('AQ.'))) {
         return clean.split(/\s+/).map(k => sanitizeKey(k)).filter(Boolean);
       }
       return [clean];
@@ -294,18 +319,20 @@ export class GeminiKeyPoolManager {
       const raw = envSource[mkName];
       if (raw) {
         const keyList = parseMultiKeys(raw);
-        console.log(`[GeminiPool] 🔑 Found multi-key variable '${mkName}' -> Parsed ${keyList.length} key(s)`);
+        console.log(`[GeminiPool] 🔑 [Source: process.env.${mkName}] -> Successfully found variable, parsed into ${keyList.length} key element(s)`);
         keyList.forEach((k, idx) => {
           const beforeCount = loadedList.length;
           addKey(k, `${mkName}[${idx + 1}]`, loadedList.length + 1);
           const added = loadedList.length > beforeCount;
           const { masked, length } = maskApiKey(k);
-          console.log(`[GeminiPool]   ├─ [${idx + 1}/${keyList.length}] Masked: ${masked} (len: ${length}) -> ${added ? '✅ Added to pool' : '⚠️ Skipped (duplicate or invalid)'}`);
+          const format = detectKeyFormat(k);
+          const debugMask = maskKeyExceptLast4(k);
+          console.log(`[GeminiPool]   ├─ Item #${idx + 1} from ${mkName} | Format: ${format} | Masked(last4): ${debugMask} (len: ${length}) -> ${added ? '✅ VALID & ADDED' : '⚠️ SKIPPED (Duplicate or Ineligible)'}`);
         });
       }
     }
 
-    // 1. Quét theo số thứ tự từ 1 đến 100
+    // 1. Quét theo số thứ tự từ 1 đến 100 (GEMINI_API_KEY_1...N)
     for (let i = 1; i <= 100; i++) {
       const keysToCheck = [
         `GEMINI_API_KEY_${i}`,
@@ -331,13 +358,15 @@ export class GeminiKeyPoolManager {
         const cleanVal = sanitizeKey(value);
         if (cleanVal) {
           const keys = parseMultiKeys(cleanVal);
-          console.log(`[GeminiPool] 🔑 Found indexed variable '${keyName}' (index: ${i}) -> Parsed ${keys.length} key(s)`);
+          console.log(`[GeminiPool] 🔑 [Source: process.env.${keyName}] (Index #${i}) -> Successfully loaded variable, parsed ${keys.length} key(s)`);
           keys.forEach((k) => {
             const beforeCount = loadedList.length;
             addKey(k, keyName, i);
             const added = loadedList.length > beforeCount;
             const { masked, length } = maskApiKey(k);
-            console.log(`[GeminiPool]   └─ Masked: ${masked} (len: ${length}) -> ${added ? '✅ Added to pool' : '⚠️ Skipped (duplicate or invalid)'}`);
+            const format = detectKeyFormat(k);
+            const debugMask = maskKeyExceptLast4(k);
+            console.log(`[GeminiPool]   └─ Value from ${keyName} | Format: ${format} | Masked(last4): ${debugMask} (len: ${length}) -> ${added ? '✅ VALID & ADDED' : '⚠️ SKIPPED (Duplicate or Ineligible)'}`);
           });
         }
       }
@@ -364,18 +393,20 @@ export class GeminiKeyPoolManager {
       const cleanVal = sanitizeKey(value);
       if (cleanVal) {
         const keys = parseMultiKeys(cleanVal);
-        console.log(`[GeminiPool] 🔑 Found single/standard variable '${keyName}' -> Parsed ${keys.length} key(s)`);
+        console.log(`[GeminiPool] 🔑 [Source: process.env.${keyName}] -> Standard variable detected, parsed ${keys.length} key(s)`);
         keys.forEach((k) => {
           const beforeCount = loadedList.length;
           addKey(k, keyName);
           const added = loadedList.length > beforeCount;
           const { masked, length } = maskApiKey(k);
-          console.log(`[GeminiPool]   └─ Masked: ${masked} (len: ${length}) -> ${added ? '✅ Added to pool' : '⚠️ Skipped (duplicate or invalid)'}`);
+          const format = detectKeyFormat(k);
+          const debugMask = maskKeyExceptLast4(k);
+          console.log(`[GeminiPool]   └─ Value from ${keyName} | Format: ${format} | Masked(last4): ${debugMask} (len: ${length}) -> ${added ? '✅ VALID & ADDED' : '⚠️ SKIPPED (Duplicate or Ineligible)'}`);
         });
       }
     }
 
-    // 3. Quét toàn bộ process.env để tìm bất kỳ key nào có định dạng Google API (AIza...) hoặc chứa chữ GEMINI/GOOGLE_API
+    // 3. Quét toàn bộ process.env để tìm bất kỳ key nào có định dạng Google API (AIza... hoặc AQ....) hoặc chứa chữ GEMINI/GOOGLE_API
     try {
       for (const [k, v] of Object.entries(envSource)) {
         const cleanVal = sanitizeKey(v);
@@ -392,13 +423,15 @@ export class GeminiKeyPoolManager {
 
         if (isGeminiName || isAiZaPattern) {
           const keys = parseMultiKeys(cleanVal);
-          console.log(`[GeminiPool] 🔍 Auto-discovered potential key in env '${k}' -> Parsed ${keys.length} key(s)`);
+          console.log(`[GeminiPool] 🔍 [Source: process.env.${k}] -> Auto-discovered candidate variable, parsed ${keys.length} key(s)`);
           keys.forEach((singleK) => {
             const beforeCount = loadedList.length;
             addKey(singleK, k);
             const added = loadedList.length > beforeCount;
             const { masked, length } = maskApiKey(singleK);
-            console.log(`[GeminiPool]   └─ Masked: ${masked} (len: ${length}) -> ${added ? '✅ Added to pool' : '⚠️ Skipped (duplicate or invalid)'}`);
+            const format = detectKeyFormat(singleK);
+            const debugMask = maskKeyExceptLast4(singleK);
+            console.log(`[GeminiPool]   └─ Value from ${k} | Format: ${format} | Masked(last4): ${debugMask} (len: ${length}) -> ${added ? '✅ VALID & ADDED' : '⚠️ SKIPPED (Duplicate or Ineligible)'}`);
           });
         }
       }

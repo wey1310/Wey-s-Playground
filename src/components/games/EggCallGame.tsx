@@ -295,7 +295,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
       id: `student_${idx + 1}`,
       name,
       avatar: '🐣',
-      color: '#4F683C',
+      color: '#E08283',
       score: studentScores[name] || 0
     }));
     onGameEnd(finalTeams, answerLogs);
@@ -304,29 +304,29 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
   const currentEgg = selectedEggIndex !== null ? eggs[selectedEggIndex] : null;
 
   return (
-    <div className="w-full h-full min-h-[640px] flex flex-col md:flex-row bg-[#FFFDF5] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#DCEBCB]">
+    <div className="w-full h-full min-h-[640px] flex flex-col md:flex-row bg-w-bg-card rounded-3xl overflow-hidden shadow-2xl border-4 border-w-accent-muted">
       
       {/* CỘT TRÁI: QUẢN LÝ DANH SÁCH & TRẠNG THÁI VƯỜN TRỨNG (Scrollable & Fixed size) */}
-      <div className="w-full md:w-80 lg:w-96 bg-[#F8F4E8] border-r-2 border-[#DCEBCB] p-4 sm:p-5 flex flex-col justify-between shrink-0">
+      <div className="w-full md:w-80 lg:w-96 bg-w-bg-tag border-r-2 border-w-accent-muted p-4 sm:p-5 flex flex-col justify-between shrink-0">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-black text-[#35452E] flex items-center gap-2">
-              <Users className="w-5 h-5 text-[#4F683C]" />
+            <h3 className="text-base font-black text-w-text-main flex items-center gap-2">
+              <Users className="w-5 h-5 text-w-primary-dark" />
               <span>Vườn Trứng ({eggs.length} Quả)</span>
             </h3>
-            <span className="px-2.5 py-1 bg-[#4F683C] text-white text-xs font-black rounded-lg shadow-xs">
+            <span className="px-2.5 py-1 bg-w-primary-dark text-w-text-main text-xs font-black rounded-lg shadow-xs">
               {students.length} HS
             </span>
           </div>
 
           {/* Statistics Bar */}
-          <div className="grid grid-cols-2 gap-2 bg-[#E9F0D9] p-2.5 rounded-xl border border-[#B9CDA0]">
+          <div className="grid grid-cols-2 gap-2 bg-w-accent-light p-2.5 rounded-xl border border-w-accent-border">
             <div className="text-center">
-              <span className="block text-[11px] font-bold text-[#74806B]">Chưa mở</span>
-              <span className="text-lg font-black text-[#4F683C]">{remainingCount}</span>
+              <span className="block text-[11px] font-bold text-w-text-muted">Chưa mở</span>
+              <span className="text-lg font-black text-w-primary-dark">{remainingCount}</span>
             </div>
-            <div className="text-center border-l border-[#B9CDA0]">
-              <span className="block text-[11px] font-bold text-[#74806B]">Đã đập</span>
+            <div className="text-center border-l border-w-accent-border">
+              <span className="block text-[11px] font-bold text-w-text-muted">Đã đập</span>
               <span className="text-lg font-black text-[#D86C70]">{openedCount}</span>
             </div>
           </div>
@@ -336,16 +336,16 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
             type="button"
             onClick={handlePickRandomEgg}
             disabled={remainingCount === 0 || crackingEggIndex !== null}
-            className="w-full py-3 bg-gradient-to-r from-[#D86C70] to-[#C55A5E] hover:from-[#C55A5E] hover:to-[#A84B4E] text-white font-black text-xs sm:text-sm rounded-xl shadow-md transition transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
+            className="w-full py-3 bg-gradient-to-r from-[#D86C70] to-[#C55A5E] hover:from-[#C55A5E] hover:to-[#A84B4E] text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-md transition transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
           >
-            <Shuffle className="w-4 h-4 text-white" />
+            <Shuffle className="w-4 h-4 text-w-text-main" />
             <span>Chọn Ngẫu Nhiên 1 Quả Trứng</span>
           </button>
 
           {/* Scrollable Editable Textarea */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between flex-wrap gap-1">
-              <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#74806B]">
+              <label className="block text-[11px] font-extrabold uppercase tracking-wider text-w-text-muted">
                 Danh sách học sinh:
               </label>
               <div className="flex items-center gap-1">
@@ -361,7 +361,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                 <button
                   type="button"
                   onClick={handleResetEggs}
-                  className="text-[11px] font-bold text-[#4F683C] hover:underline cursor-pointer flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#E9F0D9]"
+                  className="text-[11px] font-bold text-w-primary-dark hover:underline cursor-pointer flex items-center gap-1 px-1.5 py-0.5 rounded bg-w-accent-light"
                   title="Trộn lại và đặt lại tất cả trứng"
                 >
                   <RotateCcw className="w-3 h-3" /> Trộn Lại
@@ -370,7 +370,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
             </div>
             <textarea 
               rows={5}
-              className="w-full h-36 p-3 rounded-xl border-2 border-[#DCEBCB] focus:border-[#4F683C] focus:ring-2 focus:ring-[#4F683C]/20 bg-white font-bold text-xs text-[#35452E] resize-none outline-none custom-scrollbar shadow-inner"
+              className="w-full h-36 p-3 rounded-xl border-2 border-w-accent-muted focus:border-w-primary-dark focus:ring-2 focus:ring-w-primary-dark/20 bg-white font-bold text-xs text-w-text-main resize-none outline-none custom-scrollbar shadow-inner"
               value={studentsText}
               onChange={(e) => setStudentsText(e.target.value)}
               placeholder="Nhập tên học sinh..."
@@ -380,13 +380,13 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
           {/* Opened Eggs / Students List */}
           {openedCount > 0 && (
             <div className="space-y-1">
-              <span className="text-[11px] font-bold text-[#74806B]">Học sinh đã xuất hiện:</span>
-              <div className="max-h-24 overflow-y-auto bg-white p-2 rounded-xl border border-[#DCEBCB] space-y-1 custom-scrollbar">
+              <span className="text-[11px] font-bold text-w-text-muted">Học sinh đã xuất hiện:</span>
+              <div className="max-h-24 overflow-y-auto bg-white p-2 rounded-xl border border-w-accent-muted space-y-1 custom-scrollbar">
                 {eggs.filter(e => e.isOpened).map(egg => (
                   <div key={egg.id} className="flex items-center justify-between text-xs py-0.5 px-2 bg-slate-50 rounded text-slate-700 font-semibold">
                     <span className="flex items-center gap-1.5">
                       <span>🥚 #{egg.id}</span>
-                      <span className="font-bold text-[#35452E]">{egg.studentName}</span>
+                      <span className="font-bold text-w-text-main">{egg.studentName}</span>
                     </span>
                     <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${
                       egg.isCorrect === true ? 'bg-emerald-100 text-emerald-800' :
@@ -402,7 +402,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
         </div>
 
         {/* Footer Actions */}
-        <div className="pt-4 border-t border-[#DCEBCB] flex gap-2">
+        <div className="pt-4 border-t border-w-accent-muted flex gap-2">
           <button
             type="button"
             onClick={handleEnd}
@@ -417,14 +417,14 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
       <div className="flex-1 relative overflow-y-auto p-4 sm:p-6 lg:p-8 flex flex-col items-center justify-start custom-scrollbar">
         
         {/* Decorative background glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#FEF9E7] via-[#FFFDF5] to-white pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#FEF9E7] via-w-bg-card to-white pointer-events-none" />
 
         {/* Header Title */}
         <div className="relative z-10 text-center mb-6">
-          <h2 className="text-2xl sm:text-3xl font-black text-[#35452E] tracking-tight flex items-center justify-center gap-2">
+          <h2 className="text-2xl sm:text-3xl font-black text-w-text-main tracking-tight flex items-center justify-center gap-2">
             <span>🥚 ĐẬP TRỨNG GỌI TÊN</span>
           </h2>
-          <p className="text-xs sm:text-sm font-semibold text-[#74806B] mt-1">
+          <p className="text-xs sm:text-sm font-semibold text-w-text-muted mt-1">
             {selectedEggIndex !== null
               ? `Đã đập trúng quả trứng #${eggs[selectedEggIndex].id}! Nhấn nút bên dưới để bốc câu hỏi.`
               : 'Chọn bất kỳ quả trứng nào bên dưới để đập vỡ và hé lộ tên học sinh may mắn'}
@@ -449,11 +449,11 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                         ? 'bg-gradient-to-b from-[#FAF3D1] to-[#EFE2B3] border-[#E9D58F] opacity-90 cursor-default'
                         : isCracking
                         ? 'bg-gradient-to-b from-amber-100 to-amber-200 border-amber-400 shadow-xl'
-                        : 'bg-gradient-to-b from-white to-[#F9F6EA] border-[#DCEBCB] hover:border-[#4F683C] hover:shadow-xl'
+                        : 'bg-gradient-to-b from-white to-[#F9F6EA] border-w-accent-muted hover:border-w-primary-dark hover:shadow-xl'
                     }`}
                   >
                     {/* Number Badge */}
-                    <div className="absolute top-2.5 left-3 text-[11px] font-black text-[#74806B] bg-white/90 px-2 py-0.5 rounded-full border border-[#DCEBCB] shadow-2xs">
+                    <div className="absolute top-2.5 left-3 text-[11px] font-black text-w-text-muted bg-white/90 px-2 py-0.5 rounded-full border border-w-accent-muted shadow-2xs">
                       #{egg.id}
                     </div>
 
@@ -484,7 +484,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                     {/* Status Text / Student Name */}
                     {egg.isOpened ? (
                       <div className="text-center mt-1">
-                        <span className="block text-xs sm:text-sm font-black text-[#35452E] truncate max-w-[130px]">
+                        <span className="block text-xs sm:text-sm font-black text-w-text-main truncate max-w-[130px]">
                           {egg.studentName}
                         </span>
                         {egg.isCorrect !== null && (
@@ -497,7 +497,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                       </div>
                     ) : (
                       <div className="text-center mt-1">
-                        <span className="text-xs font-black text-[#4F683C] bg-[#E9F0D9] px-2.5 py-0.5 rounded-full border border-[#B9CDA0]">
+                        <span className="text-xs font-black text-w-primary-dark bg-w-accent-light px-2.5 py-0.5 rounded-full border border-w-accent-border">
                           {isCracking ? 'Đang Đập...' : 'Nhấp Đập Trứng'}
                         </span>
                       </div>
@@ -509,14 +509,14 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
 
             {/* All Eggs Opened Trophy View */}
             {remainingCount === 0 && (
-              <div className="mt-8 text-center bg-white p-6 rounded-3xl border-2 border-[#DCEBCB] shadow-xl space-y-3">
+              <div className="mt-8 text-center bg-white p-6 rounded-3xl border-2 border-w-accent-muted shadow-xl space-y-3">
                 <div className="text-5xl">🏆</div>
-                <h3 className="text-xl font-black text-[#35452E]">Đã Mở Hết Tất Cả Quả Trứng Trong Vườn!</h3>
-                <p className="text-xs text-[#74806B]">Tất cả học sinh đã hoàn thành lượt gọi tên.</p>
+                <h3 className="text-xl font-black text-w-text-main">Đã Mở Hết Tất Cả Quả Trứng Trong Vườn!</h3>
+                <p className="text-xs text-w-text-muted">Tất cả học sinh đã hoàn thành lượt gọi tên.</p>
                 <button
                   type="button"
                   onClick={handleResetEggs}
-                  className="px-6 py-2.5 bg-[#4F683C] hover:bg-[#3D522B] text-white font-black text-xs rounded-xl shadow-md transition cursor-pointer"
+                  className="px-6 py-2.5 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main font-black text-xs rounded-xl shadow-md transition cursor-pointer"
                 >
                   Trộn Lại Vườn Trứng & Bắt Đầu Vòng Mới
                 </button>
@@ -544,17 +544,17 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                 <div className="text-7xl leading-none">🐣</div>
 
                 <div>
-                  <div className="text-xs font-extrabold uppercase tracking-wider text-[#74806B] mb-1">
+                  <div className="text-xs font-extrabold uppercase tracking-wider text-w-text-muted mb-1">
                     Học sinh xuất hiện bên trong trứng:
                   </div>
-                  <div className="text-3xl sm:text-5xl font-black text-[#35452E] py-2 px-4 bg-[#E9F0D9] rounded-2xl border-2 border-[#B9CDA0] inline-block shadow-inner">
+                  <div className="text-3xl sm:text-5xl font-black text-w-text-main py-2 px-4 bg-w-accent-light rounded-2xl border-2 border-w-accent-border inline-block shadow-inner">
                     {currentEgg.studentName}
                   </div>
                 </div>
 
                 {/* Quick Action Assessment Bar for Egg */}
-                <div className="bg-[#FFFDF5] p-3 rounded-2xl border-2 border-[#DCEBCB] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3 max-w-lg mx-auto">
-                  <div className="text-xs font-bold text-[#74806B] flex items-center gap-1.5">
+                <div className="bg-w-bg-card p-3 rounded-2xl border-2 border-w-accent-muted shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3 max-w-lg mx-auto">
+                  <div className="text-xs font-bold text-w-text-muted flex items-center gap-1.5">
                     <span>Đánh giá nhanh:</span>
                     {currentEgg.isCorrect !== null && (
                       <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase ${
@@ -570,7 +570,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                     <button
                       type="button"
                       onClick={() => handleQuickAction('correct')}
-                      className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer"
+                      className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-w-text-main font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer"
                       title="Ghi nhận trả lời đúng (+10 điểm)"
                     >
                       <CheckCircle className="w-3.5 h-3.5" />
@@ -579,7 +579,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                     <button
                       type="button"
                       onClick={() => handleQuickAction('help')}
-                      className="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-w-text-main font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer"
                       title="Ghi nhận cần hỗ trợ (+5 điểm)"
                     >
                       <span>🤝 Cần hỗ trợ</span>
@@ -587,7 +587,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                     <button
                       type="button"
                       onClick={() => handleQuickAction('incorrect')}
-                      className="px-2.5 py-1.5 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1.5 bg-rose-500 hover:bg-rose-600 text-w-text-main font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer"
                       title="Ghi nhận chưa đúng"
                     >
                       <XCircle className="w-3.5 h-3.5" />
@@ -601,7 +601,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                   <button
                     type="button"
                     onClick={handlePickQuestionForCurrentStudent}
-                    className="px-8 py-3.5 bg-gradient-to-r from-[#4F683C] to-[#3D522B] hover:from-[#3D522B] hover:to-[#2B3B1E] text-white font-black text-base sm:text-lg rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
+                    className="px-8 py-3.5 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-base sm:text-lg rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
                   >
                     <Sparkles className="w-5 h-5 text-[#E9D58F] fill-current" />
                     <span>Bốc Câu Hỏi Cho {currentEgg.studentName}</span>
@@ -623,20 +623,20 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
               <motion.div
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                className="w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-[#DCEBCB] space-y-6"
+                className="w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-w-accent-muted space-y-6"
               >
                 {/* Header: Student Info & Timer */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#DCEBCB]">
+                <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-w-accent-muted">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-[#E9F0D9] text-[#4F683C] flex items-center justify-center text-2xl font-black shadow-xs shrink-0">
+                    <div className="w-12 h-12 rounded-2xl bg-w-accent-light text-w-primary-dark flex items-center justify-center text-2xl font-black shadow-xs shrink-0">
                       🐣
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-[#74806B] uppercase tracking-wider">
+                      <div className="text-xs font-bold text-w-text-muted uppercase tracking-wider">
                         Đang trả lời (Trứng #{currentEgg.id})
                       </div>
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-lg sm:text-xl font-black text-[#35452E]">{currentEgg.studentName}</span>
+                        <span className="text-lg sm:text-xl font-black text-w-text-main">{currentEgg.studentName}</span>
                         {currentEgg.isCorrect !== null && (
                           <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase ${
                             currentEgg.isCorrect 
@@ -652,11 +652,11 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
 
                   <div className="flex items-center gap-2">
                     {/* Quick Action Badges */}
-                    <div className="hidden sm:flex items-center gap-1 bg-[#F8F4E8] p-1 rounded-xl border border-[#DCEBCB]">
+                    <div className="hidden sm:flex items-center gap-1 bg-w-bg-tag p-1 rounded-xl border border-w-accent-muted">
                       <button
                         type="button"
                         onClick={() => handleQuickAction('correct')}
-                        className="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[11px] rounded-lg transition cursor-pointer"
+                        className="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-600 text-w-text-main font-bold text-[11px] rounded-lg transition cursor-pointer"
                         title="Chấm Đúng (+10đ)"
                       >
                         ✓ Đúng
@@ -664,7 +664,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                       <button
                         type="button"
                         onClick={() => handleQuickAction('help')}
-                        className="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px] rounded-lg transition cursor-pointer"
+                        className="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-w-text-main font-bold text-[11px] rounded-lg transition cursor-pointer"
                         title="Cần hỗ trợ (+5đ)"
                       >
                         🤝 Hỗ trợ
@@ -672,7 +672,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                       <button
                         type="button"
                         onClick={() => handleQuickAction('incorrect')}
-                        className="px-2 py-1 bg-rose-500 hover:bg-rose-600 text-white font-bold text-[11px] rounded-lg transition cursor-pointer"
+                        className="px-2 py-1 bg-rose-500 hover:bg-rose-600 text-w-text-main font-bold text-[11px] rounded-lg transition cursor-pointer"
                         title="Chưa đúng (0đ)"
                       >
                         ✗ Sai
@@ -684,7 +684,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                       <div className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl font-black text-sm border-2 ${
                         timeLeft <= 5 
                           ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse'
-                          : 'bg-[#E9F0D9] border-[#B9CDA0] text-[#4F683C]'
+                          : 'bg-w-accent-light border-w-accent-border text-w-primary-dark'
                       }`}>
                         <Clock className="w-4 h-4" />
                         <span>{timeLeft}s</span>
@@ -695,10 +695,10 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
 
                 {/* Question Box */}
                 <div className="space-y-3">
-                  <div className="text-xs font-extrabold text-[#74806B] uppercase tracking-wider">
+                  <div className="text-xs font-extrabold text-w-text-muted uppercase tracking-wider">
                     Câu hỏi #{questionIndex}
                   </div>
-                  <p className="text-base sm:text-xl font-black text-[#35452E] leading-relaxed">
+                  <p className="text-base sm:text-xl font-black text-w-text-main leading-relaxed">
                     {currentQuestion.content}
                   </p>
                 </div>
@@ -714,12 +714,12 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                       let optStyle = "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100";
                       if (showAnswer) {
                         if (isCorrectAnswer) {
-                          optStyle = "bg-emerald-500 text-white border-emerald-600 shadow-md font-black";
+                          optStyle = "bg-emerald-500 text-w-text-main border-emerald-600 shadow-md font-black";
                         } else if (isSelected) {
-                          optStyle = "bg-rose-500 text-white border-rose-600";
+                          optStyle = "bg-rose-500 text-w-text-main border-rose-600";
                         }
                       } else if (isSelected) {
-                        optStyle = "bg-[#4F683C] text-white border-[#3D522B]";
+                        optStyle = "bg-w-primary-dark text-w-text-main border-w-primary-hover";
                       }
 
                       return (
@@ -729,7 +729,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                           onClick={() => !showAnswer && setSelectedOption(idx)}
                           className={`p-3.5 rounded-2xl border-2 text-left font-bold text-xs sm:text-sm transition flex items-center gap-3 cursor-pointer ${optStyle}`}
                         >
-                          <span className="w-6 h-6 rounded-lg bg-black/10 flex items-center justify-center text-xs font-black shrink-0">
+                          <span className="w-6 h-6 rounded-lg bg-white/70 backdrop-blur-sm flex items-center justify-center text-xs font-black shrink-0">
                             {['A', 'B', 'C', 'D'][idx]}
                           </span>
                           <span className="flex-1">{opt}</span>
@@ -748,7 +748,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                 )}
 
                 {/* Bottom Grading & Finish Turn Actions */}
-                <div className="pt-4 border-t border-[#DCEBCB] flex flex-wrap items-center justify-between gap-3">
+                <div className="pt-4 border-t border-w-accent-muted flex flex-wrap items-center justify-between gap-3">
                   {!showAnswer ? (
                     <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                       <button
@@ -763,7 +763,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                       <button
                         type="button"
                         onClick={() => handleGrade(true)}
-                        className="px-5 py-2.5 bg-[#4F683C] hover:bg-[#3D522B] text-white font-black text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
+                        className="px-5 py-2.5 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
                       >
                         <CheckCircle className="w-4 h-4 text-[#E9D58F]" />
                         <span>Chấm Đúng (+10đ)</span>
@@ -772,7 +772,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                       <button
                         type="button"
                         onClick={() => handleGrade(false)}
-                        className="px-5 py-2.5 bg-[#D86C70] hover:bg-[#C55A5E] text-white font-black text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
+                        className="px-5 py-2.5 bg-[#D86C70] hover:bg-[#C55A5E] text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
                       >
                         <XCircle className="w-4 h-4" />
                         <span>Chưa Đúng</span>
@@ -783,7 +783,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                       <button
                         type="button"
                         onClick={handleFinishTurn}
-                        className="px-8 py-3 bg-gradient-to-r from-[#4F683C] to-[#3D522B] hover:from-[#3D522B] hover:to-[#2B3B1E] text-white font-black text-sm sm:text-base rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
+                        className="px-8 py-3 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-sm sm:text-base rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
                       >
                         <span>Xong • Trở Lại Vườn Trứng</span>
                         <ChevronRight className="w-5 h-5" />

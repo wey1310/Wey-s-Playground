@@ -526,9 +526,9 @@ export const ChessGame: React.FC<ChessGameProps> = ({
   };
 
   return (
-    <div className={`flex-1 min-h-0 w-full p-2 sm:p-5 bg-gradient-to-b ${themeInfo.bgClass} rounded-[24px] shadow-2xl flex flex-col justify-between border-2 sm:border-4 border-[#DED5B8] relative`}>
+    <div className={`flex-1 min-h-0 w-full p-2 sm:p-5 bg-gradient-to-b ${themeInfo.bgClass} rounded-[24px] shadow-2xl flex flex-col justify-between border-2 sm:border-4 border-w-border relative`}>
       {/* Top Header & Scoreboard */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white/95 backdrop-blur-md border border-[#DED5B8] p-3 sm:p-4 rounded-2xl shadow-sm">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white/95 backdrop-blur-md border border-w-border p-3 sm:p-4 rounded-2xl shadow-sm">
         {/* Team 1: White */}
         <div
           className={`flex-1 flex items-center gap-3 p-2.5 sm:p-3 rounded-xl border-2 transition-all ${
@@ -572,8 +572,8 @@ export const ChessGame: React.FC<ChessGameProps> = ({
         <div
           className={`flex-1 flex items-center justify-end gap-3 p-2.5 sm:p-3 rounded-xl border-2 transition-all ${
             currentTurnIdx === 1 && !roundWinner
-              ? 'bg-slate-900 border-slate-700 text-white shadow-md scale-102 ring-2 ring-slate-500'
-              : 'bg-slate-800/80 text-slate-200 border-slate-700 opacity-85'
+              ? 'bg-w-bg-alt border-w-accent-border text-w-text-main shadow-md scale-102 ring-2 ring-slate-500'
+              : 'bg-w-accent-light text-slate-200 border-w-accent-border opacity-85'
           }`}
         >
           <div className="flex-1 text-right min-w-0">
@@ -581,12 +581,12 @@ export const ChessGame: React.FC<ChessGameProps> = ({
               <span className="px-2 py-0.5 rounded-md bg-slate-700 text-slate-100 font-black text-xs border border-slate-600">
                 ♚ Đen
               </span>
-              <span className="font-black text-white text-sm sm:text-base truncate">
+              <span className="font-black text-w-text-main text-sm sm:text-base truncate">
                 {teams[1].name}
               </span>
             </div>
-            <div className="text-xs font-bold text-slate-300 mt-0.5">
-              Điểm: <span className="text-amber-300 font-extrabold text-sm sm:text-base">{teams[1].score}</span>
+            <div className="text-xs font-bold text-w-primary-dark mt-0.5">
+              Điểm: <span className="text-amber-600 font-extrabold text-sm sm:text-base">{teams[1].score}</span>
             </div>
           </div>
           <div className="text-2xl sm:text-3xl p-1.5 rounded-xl bg-slate-700 border border-slate-600 shadow-xs">
@@ -619,7 +619,7 @@ export const ChessGame: React.FC<ChessGameProps> = ({
                 </span>
               ))}
               {capturedByBlack.length === 0 && (
-                <span className="text-[10px] text-slate-400 italic font-medium">Chưa có</span>
+                <span className="text-[10px] text-w-text-muted italic font-medium">Chưa có</span>
               )}
             </div>
           </div>
@@ -628,17 +628,17 @@ export const ChessGame: React.FC<ChessGameProps> = ({
           <div className="bg-white/90 backdrop-blur-xs p-3 rounded-2xl border border-slate-200 shadow-xs flex-1 max-h-48 overflow-y-auto hidden sm:block">
             <div className="text-[11px] font-black text-slate-700 mb-1.5 flex items-center justify-between">
               <span>Lịch Sử Nước Đi:</span>
-              <span className="text-[10px] text-slate-400">{moveHistory.length} nước</span>
+              <span className="text-[10px] text-w-text-muted">{moveHistory.length} nước</span>
             </div>
             <div className="space-y-1">
               {moveHistory.slice(0, 10).map((m, idx) => (
                 <div key={idx} className="text-[10px] font-bold text-slate-700 bg-slate-50 px-2 py-1 rounded-lg border border-slate-200 flex items-center gap-1">
-                  <span className="text-slate-400">#{moveHistory.length - idx}</span>
+                  <span className="text-w-text-muted">#{moveHistory.length - idx}</span>
                   <span className="font-extrabold">{m.notation}</span>
                 </div>
               ))}
               {moveHistory.length === 0 && (
-                <span className="text-[10px] text-slate-400 italic">Chưa có nước đi nào</span>
+                <span className="text-[10px] text-w-text-muted italic">Chưa có nước đi nào</span>
               )}
             </div>
           </div>
@@ -689,7 +689,7 @@ export const ChessGame: React.FC<ChessGameProps> = ({
                         <span
                           className={`text-xl sm:text-2xl md:text-3xl font-normal leading-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] transition-transform ${
                             cell.color === 'w'
-                              ? 'text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.8)]'
+                              ? 'text-w-text-main drop-shadow-[0_2px_3px_rgba(0,0,0,0.8)]'
                               : 'text-slate-950 drop-shadow-[0_2px_3px_rgba(255,255,255,0.4)]'
                           } ${isSelected ? 'scale-110' : 'hover:scale-105'}`}
                         >
@@ -718,12 +718,12 @@ export const ChessGame: React.FC<ChessGameProps> = ({
 
           {/* Victory / Draw Overlay */}
           {roundWinner && (
-            <div className="absolute inset-0 bg-black/65 backdrop-blur-xs rounded-[24px] flex flex-col items-center justify-center p-6 text-center animate-fade-in z-30">
+            <div className="absolute inset-0 bg-white/70 backdrop-blur-sm backdrop-blur-xs rounded-[24px] flex flex-col items-center justify-center p-6 text-center animate-fade-in z-30">
               <div className="text-5xl mb-2">👑</div>
-              <h3 className="text-xl sm:text-2xl font-black text-amber-300 mb-1">
+              <h3 className="text-xl sm:text-2xl font-black text-amber-600 mb-1">
                 {roundWinner === 'DRAW' ? 'VÁN CỜ HÒA!' : `${roundWinner.name} THẮNG CỜ VUA!`}
               </h3>
-              <p className="text-xs sm:text-sm text-white font-extrabold mb-4 bg-amber-500/30 px-4 py-1.5 rounded-full border border-amber-400">
+              <p className="text-xs sm:text-sm text-w-text-main font-extrabold mb-4 bg-amber-500/30 px-4 py-1.5 rounded-full border border-amber-400">
                 {roundWinner === 'DRAW'
                   ? 'Hai bên chấp nhận kết quả hòa'
                   : `Thưởng thắng cờ x5 = +${winBonusPts} Điểm!`}
@@ -733,7 +733,7 @@ export const ChessGame: React.FC<ChessGameProps> = ({
                 <button
                   type="button"
                   onClick={handleResetBoard}
-                  className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-w-text-main font-extrabold text-xs sm:text-sm rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer"
                 >
                   <RefreshCw className="w-4 h-4" />
                   <span>Xếp Lại Bàn Cờ</span>
@@ -741,7 +741,7 @@ export const ChessGame: React.FC<ChessGameProps> = ({
                 <button
                   type="button"
                   onClick={() => onGameEnd(teams, answerLogs)}
-                  className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-w-text-main font-extrabold text-xs sm:text-sm rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer"
                 >
                   <Trophy className="w-4 h-4 text-amber-200" />
                   <span>Tổng Kết Trò Chơi</span>
@@ -765,7 +765,7 @@ export const ChessGame: React.FC<ChessGameProps> = ({
                 </span>
               ))}
               {capturedByWhite.length === 0 && (
-                <span className="text-[10px] text-slate-400 italic font-medium">Chưa có</span>
+                <span className="text-[10px] text-w-text-muted italic font-medium">Chưa có</span>
               )}
             </div>
           </div>
@@ -785,7 +785,7 @@ export const ChessGame: React.FC<ChessGameProps> = ({
       </div>
 
       {/* Bottom Action Controls */}
-      <div className="bg-white/95 backdrop-blur-md border border-[#DED5B8] p-3 sm:p-4 rounded-2xl shadow-sm flex flex-wrap items-center justify-between gap-3">
+      <div className="bg-white/95 backdrop-blur-md border border-w-border p-3 sm:p-4 rounded-2xl shadow-sm flex flex-wrap items-center justify-between gap-3">
         {/* Left Status */}
         <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
           <span className="p-1.5 bg-amber-100 rounded-lg text-amber-800">
@@ -809,8 +809,8 @@ export const ChessGame: React.FC<ChessGameProps> = ({
                 hasMoveRight
                   ? 'bg-slate-200 text-slate-500 border-slate-300 cursor-not-allowed'
                   : currentTurnIdx === 0
-                  ? 'bg-amber-600 hover:bg-amber-700 text-white border-amber-700 shadow-amber-200 animate-pulse hover:scale-105'
-                  : 'bg-slate-800 hover:bg-slate-900 text-white border-slate-900 shadow-slate-300 animate-pulse hover:scale-105'
+                  ? 'bg-amber-600 hover:bg-amber-700 text-w-text-main border-amber-700 shadow-amber-200 animate-pulse hover:scale-105'
+                  : 'bg-w-accent-light hover:bg-w-bg-alt text-w-text-main border-slate-900 shadow-slate-300 animate-pulse hover:scale-105'
               }`}
             >
               <Dices className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200" />
@@ -864,7 +864,7 @@ export const ChessGame: React.FC<ChessGameProps> = ({
           <button
             type="button"
             onClick={() => onGameEnd(teams, answerLogs)}
-            className="px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-extrabold transition shadow-sm flex items-center gap-1 cursor-pointer"
+            className="px-3 py-2 bg-rose-600 hover:bg-rose-700 text-w-text-main rounded-xl text-xs font-extrabold transition shadow-sm flex items-center gap-1 cursor-pointer"
           >
             <Trophy className="w-3.5 h-3.5 text-amber-200" />
             <span>Tổng Kết</span>

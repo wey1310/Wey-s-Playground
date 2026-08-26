@@ -58,7 +58,7 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
       return config.teams.map(t => ({ ...t, score: t.score || 0 }));
     }
     return [
-      { id: 'team-1', name: 'Đội 1', avatar: '🦁', color: '#4F683C', score: 0 },
+      { id: 'team-1', name: 'Đội 1', avatar: '🦁', color: '#E08283', score: 0 },
       { id: 'team-2', name: 'Đội 2', avatar: '🐯', color: '#3B82F6', score: 0 },
     ];
   });
@@ -324,19 +324,19 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col items-center justify-between p-3 sm:p-5 max-w-6xl mx-auto select-none">
       {/* Top Header & Scoreboard */}
-      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/90 backdrop-blur-sm p-4 rounded-3xl border-2 border-[#DED5B8] shadow-sm mb-4">
+      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/90 backdrop-blur-sm p-4 rounded-3xl border-2 border-w-border shadow-sm mb-4">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-2xl shadow-xs">
             💣
           </div>
           <div>
-            <h1 className="text-xl font-[900] text-[#35452E] flex items-center gap-2">
+            <h1 className="text-xl font-[900] text-w-text-main flex items-center gap-2">
               Dò Boom Tri Thức
               <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200">
                 {boomCount} 💣 Ẩn Giấu
               </span>
             </h1>
-            <p className="text-xs font-bold text-[#74806B]">
+            <p className="text-xs font-bold text-w-text-muted">
               Trả lời đúng để dò ô nhận điểm thưởng • Tránh xa bẫy Boom! (3 Boom = Loại)
             </p>
           </div>
@@ -356,22 +356,22 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
                   isEliminated
                     ? 'bg-slate-100 border-slate-300 opacity-60'
                     : isActive
-                    ? 'bg-[#E9F0D9] border-[#4F683C] shadow-md scale-105 ring-2 ring-[#4F683C]/20'
-                    : 'bg-[#FFFDF5] border-[#DED5B8]'
+                    ? 'bg-w-accent-light border-w-primary-dark shadow-md scale-105 ring-2 ring-w-primary-dark/20'
+                    : 'bg-w-bg-card border-w-border'
                 }`}
               >
                 <span className="text-xl">{t.avatar}</span>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-black text-[#35452E]">{t.name}</span>
+                    <span className="text-xs font-black text-w-text-main">{t.name}</span>
                     {isEliminated && (
-                      <span className="text-[10px] bg-red-500 text-white font-black px-1.5 rounded">
+                      <span className="text-[10px] bg-red-500 text-w-text-main font-black px-1.5 rounded">
                         BỊ LOẠI
                       </span>
                     )}
                   </div>
                   <div className="flex items-center gap-2 text-xs font-black">
-                    <span className="text-[#4F683C]">{t.score} đ</span>
+                    <span className="text-w-primary-dark">{t.score} đ</span>
                     <span className="text-red-500 flex items-center text-[10px]">
                       {Array.from({ length: maxBoomsToLose }).map((_, bIdx) => (
                         <span key={bIdx} className={bIdx < booms ? 'opacity-100 scale-110' : 'opacity-25'}>
@@ -387,7 +387,7 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
 
           <button
             onClick={handleFinishGame}
-            className="px-3.5 py-2 bg-[#4F683C] hover:bg-[#3D522F] text-white text-xs font-black rounded-xl shadow-xs transition"
+            className="px-3.5 py-2 bg-w-primary-dark hover:bg-[#3D522F] text-w-text-main text-xs font-black rounded-xl shadow-xs transition"
           >
             Tổng Kết
           </button>
@@ -397,7 +397,7 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
       {/* Survivor Victory Banner */}
       {isOnlyOneSurvivor && (
         <div className="w-full mb-4 p-4 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 border-2 border-amber-500 rounded-2xl text-center shadow-lg animate-bounce">
-          <h3 className="text-lg sm:text-2xl font-[900] text-[#35452E] flex items-center justify-center gap-2">
+          <h3 className="text-lg sm:text-2xl font-[900] text-w-text-main flex items-center justify-center gap-2">
             🏆 Chúc Mừng {teams.find(t => !isTeamEliminated(t.id))?.name} Đã Sống Sót & Chiến Thắng! 🏆
           </h3>
         </div>
@@ -406,16 +406,16 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
       {/* Main Play Area */}
       <div className="w-full flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
         {/* Left Column: Question Stage */}
-        <div className="lg:col-span-5 flex flex-col justify-between bg-white rounded-3xl p-5 border-2 border-[#DED5B8] shadow-sm min-h-[380px]">
+        <div className="lg:col-span-5 flex flex-col justify-between bg-white rounded-3xl p-5 border-2 border-w-border shadow-sm min-h-[380px]">
           {/* Question Header & Timer */}
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-[#DED5B8] mb-3">
+            <div className="flex items-center justify-between pb-3 border-b border-w-border mb-3">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-black px-2.5 py-1 rounded-xl bg-[#E9F0D9] text-[#4F683C] border border-[#B9CDA0]">
+                <span className="text-xs font-black px-2.5 py-1 rounded-xl bg-w-accent-light text-w-primary-dark border border-w-accent-border">
                   Câu {questionIndex + 1}
                 </span>
-                <span className="text-xs font-bold text-[#74806B]">
-                  Lượt của: <strong className="text-[#4F683C]">{activeTeam.name}</strong>
+                <span className="text-xs font-bold text-w-text-muted">
+                  Lượt của: <strong className="text-w-primary-dark">{activeTeam.name}</strong>
                 </span>
               </div>
               <div className="flex items-center gap-1.5 text-xs font-black text-amber-800 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200">
@@ -425,7 +425,7 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
             </div>
 
             {/* Question Content */}
-            <h3 className="text-base sm:text-lg font-[800] text-[#35452E] leading-snug mb-4">
+            <h3 className="text-base sm:text-lg font-[800] text-w-text-main leading-snug mb-4">
               {currentQuestion.content}
             </h3>
           </div>
@@ -435,7 +435,7 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
             {currentQuestion.options?.map((opt, idx) => {
               const isSelected = selectedOption === idx;
               const isCorrect = idx === Number(currentQuestion.correct);
-              let btnClass = 'bg-[#FFFDF5] hover:bg-[#F8F4E6] text-[#35452E] border-[#DED5B8]';
+              let btnClass = 'bg-w-bg-card hover:bg-[#F8F4E6] text-w-text-main border-w-border';
 
               if (isAnswerChecked) {
                 if (isCorrect) {
@@ -443,7 +443,7 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
                 } else if (isSelected && !isCorrect) {
                   btnClass = 'bg-red-100 border-red-400 text-red-950 font-bold';
                 } else {
-                  btnClass = 'bg-slate-50 border-slate-200 text-slate-400 opacity-60';
+                  btnClass = 'bg-slate-50 border-slate-200 text-w-text-muted opacity-60';
                 }
               }
 
@@ -455,7 +455,7 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
                   className={`w-full p-3 text-left text-sm rounded-2xl border-2 transition-all flex items-center justify-between cursor-pointer ${btnClass}`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-7 h-7 rounded-xl bg-white border border-[#DED5B8] flex items-center justify-center text-xs font-black text-[#4F683C]">
+                    <span className="w-7 h-7 rounded-xl bg-white border border-w-border flex items-center justify-center text-xs font-black text-w-primary-dark">
                       {String.fromCharCode(65 + idx)}
                     </span>
                     <span className="font-bold">{opt}</span>
@@ -468,7 +468,7 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
           </div>
 
           {/* Guide / Status Box */}
-          <div className="mt-4 pt-3 border-t border-[#DED5B8] text-center">
+          <div className="mt-4 pt-3 border-t border-w-border text-center">
             {isTilePickingPhase ? (
               <div className="p-2.5 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-800 text-xs font-black animate-pulse flex items-center justify-center gap-2">
                 <Sparkles className="w-4 h-4 text-emerald-600" />
@@ -480,7 +480,7 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
                 <span>Chưa chính xác! Mất lượt dò ô, chuyển sang đội tiếp theo...</span>
               </div>
             ) : (
-              <p className="text-[11px] font-bold text-[#74806B]">
+              <p className="text-[11px] font-bold text-w-text-muted">
                 Chọn đáp án đúng để kích hoạt quyền mở ô kho báu Dò Boom
               </p>
             )}
@@ -488,21 +488,21 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
         </div>
 
         {/* Right Column: Boom Grid */}
-        <div className="lg:col-span-7 flex flex-col justify-between bg-gradient-to-b from-[#FFFDF5] to-[#F5EFE0] rounded-3xl p-5 border-2 border-[#DED5B8] shadow-sm min-h-[380px] relative overflow-hidden">
+        <div className="lg:col-span-7 flex flex-col justify-between bg-gradient-to-b from-w-bg-card to-[#F5EFE0] rounded-3xl p-5 border-2 border-w-border shadow-sm min-h-[380px] relative overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-black uppercase tracking-wider text-[#4F683C] bg-white px-3 py-1 rounded-xl border border-[#B9CDA0]">
+              <span className="text-xs font-black uppercase tracking-wider text-w-primary-dark bg-white px-3 py-1 rounded-xl border border-w-accent-border">
                 Bản Đồ Kho Báu ({rows}x{cols})
               </span>
-              <span className="text-xs font-bold text-[#74806B]">
+              <span className="text-xs font-bold text-w-text-muted">
                 Đã mở: {grid.filter(t => t.isRevealed).length}/{grid.length}
               </span>
             </div>
 
             <button
               onClick={initBoard}
-              className="p-2 bg-white hover:bg-slate-100 text-[#4F683C] border border-[#DED5B8] rounded-xl text-xs font-bold flex items-center gap-1.5 transition"
+              className="p-2 bg-white hover:bg-slate-100 text-w-primary-dark border border-w-border rounded-xl text-xs font-bold flex items-center gap-1.5 transition"
               title="Khởi tạo lại bảng mới"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -531,11 +531,11 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
                   className={`aspect-square rounded-2xl flex flex-col items-center justify-center p-2 text-center transition-all relative overflow-hidden border-2 shadow-xs cursor-pointer ${
                     isRevealed
                       ? tile.isBoom
-                        ? 'bg-gradient-to-br from-red-500 to-rose-600 border-red-700 text-white shadow-md'
+                        ? 'bg-gradient-to-br from-red-500 to-rose-600 border-red-700 text-w-text-main shadow-md'
                         : 'bg-gradient-to-br from-amber-100 to-yellow-200 border-amber-400 text-amber-900 shadow-md'
                       : isTilePickingPhase
-                      ? 'bg-white hover:bg-[#E9F0D9] border-[#4F683C] text-[#4F683C] shadow-md ring-2 ring-[#4F683C]/30 animate-pulse'
-                      : 'bg-[#FFFDF5] border-[#DED5B8] text-[#74806B]'
+                      ? 'bg-white hover:bg-w-accent-light border-w-primary-dark text-w-primary-dark shadow-md ring-2 ring-w-primary-dark/30 animate-pulse'
+                      : 'bg-w-bg-card border-w-border text-w-text-muted'
                   }`}
                 >
                   {isRevealed ? (
@@ -556,10 +556,10 @@ export const MineBoomGame: React.FC<MineBoomGameProps> = ({
                     )
                   ) : (
                     <div className="flex flex-col items-center">
-                      <span className="text-sm sm:text-base font-black text-[#4F683C]">
+                      <span className="text-sm sm:text-base font-black text-w-primary-dark">
                         {tile.id + 1}
                       </span>
-                      <span className="text-[10px] font-extrabold text-[#74806B]">
+                      <span className="text-[10px] font-extrabold text-w-text-muted">
                         ❓
                       </span>
                     </div>
