@@ -98,6 +98,38 @@
   --w-text-muted: #7F8C8D;
 }
 
+.theme-deepspace {
+  --w-bg-main: #0B0F19;
+  --w-bg-card: #151E2E;
+  --w-bg-alt: #1E293B;
+  --w-bg-tag: #233048;
+  --w-border: #2D3D58;
+  --w-accent-light: #182234;
+  --w-accent-muted: #27354F;
+  --w-accent-border: #43557A;
+  --w-primary: #818CF8;
+  --w-primary-dark: #6366F1;
+  --w-primary-hover: #4F46E5;
+  --w-text-main: #F1F5F9;
+  --w-text-muted: #94A3B8;
+}
+
+.theme-brightclassroom {
+  --w-bg-main: #FFF9F2;
+  --w-bg-card: #FFFFFF;
+  --w-bg-alt: #FEF3E8;
+  --w-bg-tag: #FDF0DF;
+  --w-border: #F3DFC8;
+  --w-accent-light: #EBF8F2;
+  --w-accent-muted: #D2F2E2;
+  --w-accent-border: #A6E3C6;
+  --w-primary: #4A9C78;
+  --w-primary-dark: #357A5B;
+  --w-primary-hover: #2B664C;
+  --w-text-main: #2D3748;
+  --w-text-muted: #718096;
+}
+
 body {
   font-family: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
   color: var(--w-text-main);

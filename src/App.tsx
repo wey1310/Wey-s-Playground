@@ -102,6 +102,8 @@ import {
   Tag,
   Filter,
   X,
+  Sun,
+  Moon,
 } from 'lucide-react';
 
 export interface GameInfo {
@@ -1209,11 +1211,30 @@ export default function App() {
   const currentQuestions = currentGameBank?.questions || [];
   const selectedGameInfo = GAMES_LIST.find(g => g.id === selectedGameType) || GAMES_LIST[0];
 
+  const isDeepSpace = webConfig.primaryTheme === 'deepspace';
+
+  const toggleDeepSpaceMode = () => {
+    soundFx.cardFlip();
+    const nextTheme = isDeepSpace ? 'brightclassroom' : 'deepspace';
+    setWebConfig(prev => ({
+      ...prev,
+      primaryTheme: nextTheme,
+    }));
+  };
+
   // Theme background helper
   const getAppBackgroundStyle = () => {
     if (activeGameConfig?.theme) {
       return {
         backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.4)), url(/assets/themes/${activeGameConfig.theme}.jpg)`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+      };
+    }
+    if (webConfig.primaryTheme === 'deepspace') {
+      return {
+        backgroundImage: `radial-gradient(ellipse at top, #1E293B 0%, #0F172A 45%, #0B0F19 100%)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -1349,6 +1370,33 @@ export default function App() {
               <Music className="w-4 h-4 text-w-primary-dark group-hover:scale-110 transition-transform" />
               <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping opacity-75" />
               <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full" />
+            </button>
+
+            {/* Theme Toggle Button: Deep Space (Dark Mode) vs Bright Classroom (Light Mode) */}
+            <button
+              onClick={toggleDeepSpaceMode}
+              className={`p-2.5 rounded-[18px] border shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all cursor-pointer relative group flex items-center gap-1.5 ${
+                isDeepSpace
+                  ? 'bg-[#1E293B] hover:bg-[#2D3D58] text-[#F1F5F9] border-[#43557A] shadow-[0_0_12px_rgba(129,140,248,0.25)]'
+                  : 'bg-w-bg-card hover:bg-[#FEF3E8] text-amber-600 border-[#F5D3C8]'
+              }`}
+              title={
+                isDeepSpace
+                  ? 'Đang ở chế độ: Deep Space (Tối) - Bấm để chuyển sang Bright Classroom (Sáng)'
+                  : 'Đang ở chế độ: Bright Classroom (Sáng) - Bấm để chuyển sang Deep Space (Tối)'
+              }
+            >
+              {isDeepSpace ? (
+                <>
+                  <Moon className="w-4 h-4 text-indigo-300 group-hover:rotate-12 transition-transform" />
+                  <span className="text-[11px] font-[800] text-indigo-200 hidden lg:inline">Deep Space</span>
+                </>
+              ) : (
+                <>
+                  <Sun className="w-4 h-4 text-amber-500 group-hover:rotate-45 transition-transform" />
+                  <span className="text-[11px] font-[800] text-amber-700 hidden lg:inline">Lớp Học</span>
+                </>
+              )}
             </button>
           </div>
         </div>

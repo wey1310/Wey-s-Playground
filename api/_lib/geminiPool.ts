@@ -1,11 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { initFirebase } from './aiUsage.js';
-
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const dotenv = require('dotenv');
-  dotenv?.config?.();
-} catch {}
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const MODEL_PRIORITY = [
   "gemini-3.7-flash",

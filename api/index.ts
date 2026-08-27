@@ -2,8 +2,8 @@ import express, { Router, Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 dotenv.config();
 import { GoogleGenAI, Type } from "@google/genai";
-import { geminiPool } from "./geminiPool.js";
-import { listVercelEnvs, addVercelEnv, removeVercelEnv, triggerVercelDeployment } from "./vercelSync.js";
+import { geminiPool } from "./_lib/geminiPool.js";
+import { listVercelEnvs, addVercelEnv, removeVercelEnv, triggerVercelDeployment } from "./_lib/vercelSync.js";
 import { 
   verifyAndCheckQuota, 
   recordUsage, 
@@ -12,8 +12,8 @@ import {
   getRecentValidationLogs, 
   categorizeGeminiError,
   sanitizeLogMessage 
-} from "./aiUsage.js";
-import geminiRouter from "./gemini.js";
+} from "./_lib/aiUsage.js";
+import geminiRouter from "./_lib/gemini.js";
 
 const app = express();
 app.use(express.json({ limit: "10mb" }));

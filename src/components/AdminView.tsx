@@ -36,7 +36,7 @@ export interface WebConfig {
   siteSubtitle: string;
   bgImageUrl: string;
   announcement: string;
-  primaryTheme: 'pastel' | 'matcha' | 'sakura' | 'sky' | 'mono';
+  primaryTheme: 'pastel' | 'brightclassroom' | 'deepspace' | 'matcha' | 'sakura' | 'sky' | 'mono';
   gameAvatars?: Record<string, string>;
 }
 
@@ -555,6 +555,8 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     className="w-full px-3.5 py-2.5 bg-white border border-w-border rounded-xl text-xs focus:ring-2 focus:ring-w-primary cursor-pointer"
                   >
                     <option value="pastel">🎨 Pastel (Mặc Định)</option>
+                    <option value="brightclassroom">🏫 Bright Classroom (Phòng Học Tươi Sáng)</option>
+                    <option value="deepspace">🌌 Deep Space (Vũ Trụ Huyền Bí - Dark Mode)</option>
                     <option value="matcha">🍵 Matcha (Xanh Lá Đậm)</option>
                     <option value="sakura">🌸 Sakura (Hồng Phấn Pastel)</option>
                     <option value="sky">🌤️ Sky (Xanh Da Trời Mềm Mại)</option>
