@@ -20,6 +20,7 @@ interface BoxItem {
   opened: boolean;
   points: number;
   itemIndex: number;
+  assetPath: string;
   name: string;
   emoji: string;
   ownerId?: string;
@@ -29,16 +30,31 @@ interface BoxItem {
 }
 
 const THEMES = [
-  { id: 'conan', name: '🕵️ Thám Tử Conan', bg: '/assets/games/openbox/thamtubackground.jpg' },
-  { id: 'anime', name: '⚡ Thế Giới Anime', bg: '/assets/games/openbox/galaxyclosed.jpg' },
-  { id: 'pokemon', name: '⚡ Bảo Bối Pokemon', bg: '/assets/games/openbox/rainbowbackground.jpg' },
-  { id: 'disney', name: '🏰 Vương Quốc Disney', bg: '/assets/games/openbox/maybackground.webp' },
-  { id: 'daiduong', name: '🌊 Đại Dương Bí Ẩn', bg: '/assets/games/openbox/daiduongbackground.jpg' },
-  { id: 'galaxy', name: '🌌 Thiên Hà Vũ Trụ', bg: '/assets/games/openbox/galaxybackground.jpg' },
-  { id: 'caoboi', name: '🤠 Miền Tây Hoang Dã', bg: '/assets/games/openbox/caoboibackground.jpg' },
-  { id: 'forest', name: '🌲 Rừng Xanh Kỳ Bí', bg: '/assets/games/openbox/forestbackground.jpg' },
-  { id: 'basic', name: '🎁 Hộp Quà May Mắn', bg: '/assets/games/openbox/basicbackground.webp' },
+  { id: 'pokemon', name: '⚡ Bảo Bối Pokemon', bg: '/assets/games/openbox/rainbowbackground.jpg', closedBox: '/assets/games/pokemon/Ball.jpg' },
+  { id: 'thamtu', name: '🕵️ Thám Tử Conan', bg: '/assets/games/openbox/thamtubackground.jpg', closedBox: '/assets/games/openbox/thamtuclosed.webp' },
+  { id: 'daiduong', name: '🌊 Đại Dương Bí Ẩn', bg: '/assets/games/openbox/daiduongbackground.jpg', closedBox: '/assets/games/openbox/daiduongclosed.webp' },
+  { id: 'caoboi', name: '🤠 Miền Tây Hoang Dã', bg: '/assets/games/openbox/caoboibackground.jpg', closedBox: '/assets/games/openbox/caoboiclosed.webp' },
+  { id: 'may', name: '☁️ Vùng Đất Mây', bg: '/assets/games/openbox/maybackground.webp', closedBox: '/assets/games/openbox/mayclosed.webp' },
+  { id: 'galaxy', name: '🌌 Thiên Hà Vũ Trụ', bg: '/assets/games/openbox/galaxybackground.jpg', closedBox: '/assets/games/openbox/galaxyclosed.jpg' },
+  { id: 'forest', name: '🌲 Rừng Xanh Kỳ Bí', bg: '/assets/games/openbox/forestbackground.jpg', closedBox: '/assets/games/openbox/forestclosed.jpg' },
+  { id: 'rainbow', name: '🌈 Cầu Vồng Kỳ Diệu', bg: '/assets/games/openbox/rainbowbackground.jpg', closedBox: '/assets/games/openbox/rainbowclosed.jpg' },
+  { id: 'note', name: '🎵 Nốt Nhạc Vui Vẻ', bg: '/assets/games/openbox/notebackground.jpg', closedBox: '/assets/games/openbox/noteclosed.jpg' },
+  { id: 'basic', name: '🎁 Hộp Quà May Mắn', bg: '/assets/games/openbox/basicbackground.webp', closedBox: '/assets/games/openbox/basicclosed.webp' },
 ];
+
+const getBoxOpenedAsset = (themeId: string, itemIdx: number): string => {
+  if (themeId === 'pokemon') {
+    return `/assets/games/pokemon/${itemIdx}.png`;
+  }
+  return `/assets/games/blindbox/boxopened-${themeId}${itemIdx}.webp`;
+};
+
+const getFallbackOpenedAsset = (themeId: string): string => {
+  if (themeId === 'pokemon') return '/assets/games/pokemon/1.png';
+  const webpList = ['thamtu', 'daiduong', 'caoboi', 'may', 'basic'];
+  const ext = webpList.includes(themeId) ? 'webp' : 'jpg';
+  return `/assets/games/openbox/${themeId}opened-correct.${ext}`;
+};
 
 const MYSTERY_REWARDS = [
   { name: 'Cúp Vàng Danh Dự', points: 50, emoji: '🏆' },
@@ -73,7 +89,7 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
   );
 
   const [currentTurnIdx, setCurrentTurnIdx] = useState<number>(0);
-  const [selectedTheme, setSelectedTheme] = useState<string>('conan');
+  const [selectedTheme, setSelectedTheme] = useState<string>('pokemon');
   const [boxes, setBoxes] = useState<BoxItem[]>([]);
   
   // Game Flow States
@@ -90,16 +106,26 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
 
   const currentTeam = teams[currentTurnIdx] || teams[0];
 
-  // Initialize 20 mystery boxes
+  // Initialize 20 mystery boxes with shuffled 1-20 item indices
   const initBoxes = useCallback(() => {
+    const indices = Array.from({ length: 20 }, (_, i) => i + 1);
+    // Shuffle indices 1..20
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+
     const shuffledRewards = [...MYSTERY_REWARDS].sort(() => Math.random() - 0.5);
+
     const newBoxes: BoxItem[] = Array.from({ length: 20 }).map((_, i) => {
+      const itemIdx = indices[i];
       const reward = shuffledRewards[i % shuffledRewards.length];
       return {
         id: i,
         opened: false,
         points: reward.points,
-        itemIndex: (i % 20) + 1,
+        itemIndex: itemIdx,
+        assetPath: getBoxOpenedAsset(selectedTheme, itemIdx),
         name: reward.name,
         emoji: reward.emoji,
       };
@@ -108,11 +134,11 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
     setPhase('IDLE');
     setActiveQuestion(null);
     setRevealedBox(null);
-  }, []);
+  }, [selectedTheme]);
 
   useEffect(() => {
     initBoxes();
-  }, [initBoxes, selectedTheme]);
+  }, [initBoxes]);
 
   const showToast = (text: string, type: 'success' | 'error' | 'info') => {
     setToastMessage({ text, type });
@@ -502,55 +528,67 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
                   }`}
                 >
                   {box.opened ? (
-                    // Opened Box Content
-                    <div className="absolute inset-0 p-2 flex flex-col items-center justify-between text-center overflow-hidden">
+                    // Opened Box Content with specific boxopened asset
+                    <div className="absolute inset-0 p-2 flex flex-col items-center justify-between text-center overflow-hidden bg-w-bg-card rounded-2xl border-2 border-amber-400/80 shadow-md">
                       {/* Owner Tag */}
                       <div 
-                        className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full border border-white shadow-md flex items-center justify-center text-xs font-bold text-w-text-main z-20"
+                        className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full border border-white shadow-md flex items-center justify-center text-xs font-bold text-white z-20"
                         style={{ backgroundColor: box.ownerColor || '#64748b' }}
                         title={`Được mở bởi: ${box.ownerName}`}
                       >
                         {box.ownerAvatar || '👤'}
                       </div>
 
-                      {/* Item Emoji & Index */}
-                      <div className="flex-1 flex flex-col items-center justify-center mt-2">
-                        <span className="text-3xl sm:text-4xl filter drop-shadow-md">{box.emoji}</span>
-                        <span className="text-[10px] font-bold text-w-primary-dark mt-1 line-clamp-1 max-w-[90%]">
+                      {/* Item Asset Image or Emoji */}
+                      <div className="flex-1 w-full flex flex-col items-center justify-center mt-1">
+                        <img 
+                          src={box.assetPath} 
+                          alt={box.name}
+                          className="w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow-md transition-transform transform hover:scale-110"
+                          onError={(e) => {
+                            // Fallback to fallback opened asset or emoji
+                            const target = e.currentTarget;
+                            const fallback = getFallbackOpenedAsset(selectedTheme);
+                            if (target.src !== fallback) {
+                              target.src = fallback;
+                            } else {
+                              target.style.display = 'none';
+                            }
+                          }}
+                        />
+                        <span className="text-[11px] font-[800] text-w-text-main mt-0.5 line-clamp-1 max-w-[90%]">
                           {box.name}
                         </span>
                       </div>
 
                       {/* Points badge */}
-                      <div className={`text-xs sm:text-sm font-black px-2 py-0.5 rounded-md shadow-sm ${
-                        box.points > 0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                      <div className={`text-xs font-black px-2.5 py-0.5 rounded-full shadow-xs ${
+                        box.points > 0 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-rose-100 text-rose-800 border border-rose-300'
                       }`}>
                         {box.points > 0 ? `+${box.points}` : box.points}đ
                       </div>
                     </div>
                   ) : (
                     // Closed Blind Box
-                    <div className="absolute inset-0 p-2 flex flex-col items-center justify-center text-center">
+                    <div className="absolute inset-0 p-2 flex flex-col items-center justify-center text-center bg-w-bg-card/90 rounded-2xl border border-w-border hover:border-w-primary/60 shadow-xs">
                       <div className="w-3/4 h-3/4 relative flex items-center justify-center">
                         <img 
-                          src={`/assets/games/blindbox/boxclosed-${selectedTheme}.webp`}
+                          src={themeConfig.closedBox || `/assets/games/openbox/basicclosed.webp`}
                           alt="Mystery Box"
                           className="w-full h-full object-contain filter drop-shadow-md"
                           onError={(e) => {
-                            // Fallback if specific webp not found
-                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.src = '/assets/games/openbox/basicclosed.webp';
                           }}
                         />
-                        <Package className="w-10 h-10 sm:w-12 sm:h-12 text-pink-400/80 group-hover:text-pink-300" />
                       </div>
 
                       {/* Box Number Tag */}
-                      <div className="absolute bottom-1.5 font-black text-xs sm:text-sm text-w-text-main/70 bg-white/70 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10">
+                      <div className="absolute bottom-1.5 font-black text-xs text-w-text-main bg-w-bg-alt px-2.5 py-0.5 rounded-full border border-w-border shadow-xs">
                         #{box.id + 1}
                       </div>
 
                       {isPickable && (
-                        <div className="absolute top-1 bg-amber-400 text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded-full shadow-lg">
+                        <div className="absolute top-1 bg-amber-400 text-slate-950 font-black text-[10px] px-2 py-0.5 rounded-full shadow-md animate-bounce">
                           MỞ TÔI!
                         </div>
                       )}
@@ -662,42 +700,55 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
       {/* REVEALED BOX MODAL */}
       <AnimatePresence>
         {phase === 'REVEALED_BOX' && revealedBox && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/70 backdrop-blur-sm backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
             <motion.div 
               initial={{ scale: 0.6, opacity: 0, rotate: -10 }}
               animate={{ scale: 1, opacity: 1, rotate: 0 }}
               exit={{ scale: 0.6, opacity: 0 }}
-              className="bg-gradient-to-b from-slate-900 to-slate-950 rounded-3xl p-6 sm:p-8 max-w-md w-full border-2 border-amber-400 text-center shadow-[0_0_50px_rgba(251,191,36,0.3)] flex flex-col items-center"
+              className="bg-w-bg-card rounded-3xl p-6 sm:p-8 max-w-md w-full border-2 border-amber-400 text-center shadow-[0_0_50px_rgba(251,191,36,0.3)] flex flex-col items-center wey-paper-card"
             >
               <div className="text-xs font-black text-amber-600 uppercase tracking-widest mb-1 flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4" />
                 MỞ HỘP BÍ ẨN #{revealedBox.id + 1}
               </div>
 
-              <div className="text-sm font-bold text-w-primary-dark mb-4">
-                Chúc mừng <strong className="text-w-text-main">{currentTeam.name}</strong> đã nhận được:
+              <div className="text-sm font-bold text-w-text-muted mb-4">
+                Chúc mừng <strong className="text-w-text-main">{currentTeam.name}</strong> đã mở được:
               </div>
 
-              {/* Item Avatar / Animation */}
-              <div className="w-32 h-32 rounded-3xl bg-amber-500/10 border-2 border-amber-400 flex items-center justify-center text-7xl shadow-2xl mb-4 animate-bounce">
-                {revealedBox.emoji}
+              {/* Item Avatar / Image Asset */}
+              <div className="w-32 h-32 rounded-3xl bg-amber-50 border-2 border-amber-300 flex items-center justify-center p-3 shadow-lg mb-4 animate-bounce">
+                <img 
+                  src={revealedBox.assetPath} 
+                  alt={revealedBox.name}
+                  className="w-full h-full object-contain filter drop-shadow-md"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    const fallback = getFallbackOpenedAsset(selectedTheme);
+                    if (target.src !== fallback) {
+                      target.src = fallback;
+                    } else {
+                      target.style.display = 'none';
+                    }
+                  }}
+                />
               </div>
 
               <h4 className="text-2xl font-[900] text-w-text-main mb-2">
                 {revealedBox.name}
               </h4>
 
-              <div className={`text-3xl font-[900] mb-6 px-4 py-1.5 rounded-2xl shadow-inner ${
-                revealedBox.points > 0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+              <div className={`text-2xl sm:text-3xl font-[900] mb-6 px-5 py-2 rounded-2xl shadow-xs ${
+                revealedBox.points > 0 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-rose-100 text-rose-800 border border-rose-300'
               }`}>
                 {revealedBox.points > 0 ? `+${revealedBox.points} Điểm` : `${revealedBox.points} Điểm`}
               </div>
 
               <button
                 onClick={handleNextTurn}
-                className="w-full py-4 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-w-text-main font-black text-base rounded-2xl shadow-xl shadow-pink-500/25 transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="w-full py-3.5 wey-btn-primary font-black text-sm sm:text-base rounded-2xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
               >
-                Tiếp Tục Lượt Sau
+                <span>Tiếp Tục Lượt Sau</span>
                 <ChevronRight className="w-5 h-5" />
               </button>
             </motion.div>

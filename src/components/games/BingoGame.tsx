@@ -111,69 +111,82 @@ export const BingoGame: React.FC<BingoGameProps> = ({ config, questions, onGameE
 
   const handleJudgeAnswer = (isCorrect: boolean, correctAnswerText: string) => {
     const currentTeam = teams[currentTurnTeamIdx] || teams[0];
+    
+    // Extract Answer Option Token (e.g., "1D", "3D", "4A", "5Đ", "6S")
+    let optToken = '';
+    if (currentQuestion) {
+      if (currentQuestion.type === 'mcq') {
+        const letter = String.fromCharCode(65 + Number(currentQuestion.correct));
+        optToken = `${currentQuestionNum}${letter}`;
+      } else if (currentQuestion.type === 'tf') {
+        const letter = currentQuestion.correct ? 'Đ' : 'S';
+        optToken = `${currentQuestionNum}${letter}`;
+      } else {
+        optToken = `${currentQuestionNum}A`;
+      }
+    } else {
+      // Mode number or manual answer format check
+      const cleanText = correctAnswerText.trim().toUpperCase();
+      if (cleanText.startsWith('A') || cleanText.startsWith('B') || cleanText.startsWith('C') || cleanText.startsWith('D') || cleanText.startsWith('Đ') || cleanText.startsWith('S')) {
+        optToken = `${currentQuestionNum}${cleanText[0]}`;
+      } else {
+        optToken = `${currentQuestionNum}`;
+      }
+    }
+
+    setLastStampedToken(optToken);
+
     if (isCorrect) {
       soundFx.correct();
-
-      // Extract Answer Option Token (e.g., "1D", "3D", "4A", "5Đ", "6S")
-      let optToken = '';
-      if (currentQuestion) {
-        if (currentQuestion.type === 'mcq') {
-          const letter = String.fromCharCode(65 + Number(currentQuestion.correct));
-          optToken = `${currentQuestionNum}${letter}`;
-        } else if (currentQuestion.type === 'tf') {
-          const letter = currentQuestion.correct ? 'Đ' : 'S';
-          optToken = `${currentQuestionNum}${letter}`;
-        } else {
-          optToken = `${currentQuestionNum}A`;
-        }
-      } else {
-        // Mode number or manual answer format check
-        const cleanText = correctAnswerText.trim().toUpperCase();
-        if (cleanText.startsWith('A') || cleanText.startsWith('B') || cleanText.startsWith('C') || cleanText.startsWith('D') || cleanText.startsWith('Đ') || cleanText.startsWith('S')) {
-          optToken = `${currentQuestionNum}${cleanText[0]}`;
-        } else {
-          optToken = `${currentQuestionNum}A`;
-        }
-      }
-
-      setLastStampedToken(optToken);
-
-      // Add points for current team that answered correctly
-      let nextTeams = teams.map((t, idx) =>
-        idx === currentTurnTeamIdx ? { ...t, score: t.score + (config.pointsPerCorrect || 10) } : t
-      );
-
-      // Auto stamp current token (e.g. "1D") across ALL team grids!
-      const updatedBingoGrids = teamBingoGrids.map(tState => {
-        const newStamped = tState.stamped.map(row => [...row]);
-
-        for (let r = 0; r < gridSize; r++) {
-          for (let c = 0; c < gridSize; c++) {
-            const cellVal = String(tState.grid[r][c]).trim().toUpperCase();
-            // Check exact token or question num match
-            if (cellVal === optToken.toUpperCase() || cellVal === `${currentQuestionNum}` || cellVal === `CÂU ${currentQuestionNum}`) {
-              newStamped[r][c] = true;
-            }
-          }
-        }
-
-        const isBingo = checkBingoLine(newStamped, gridSize);
-        if (isBingo && !tState.hasBingo) {
-          soundFx.winFanfare();
-          // Award bonus score
-          nextTeams = nextTeams.map(t =>
-            t.id === tState.teamId ? { ...t, score: t.score + 50 } : t
-          );
-        }
-
-        return { ...tState, stamped: newStamped, hasBingo: isBingo };
-      });
-
-      setTeams(nextTeams);
-      setTeamBingoGrids(updatedBingoGrids);
     } else {
       soundFx.wrong();
     }
+
+    // Update teams score if answered correctly
+    let nextTeams = teams.map((t, idx) =>
+      (idx === currentTurnTeamIdx && isCorrect)
+        ? { ...t, score: t.score + (config.pointsPerCorrect || 10) }
+        : t
+    );
+
+    // AUTO-TICK: When question is judged/completed, auto tick matching cell on ALL team cards
+    const qNumStr = `${currentQuestionNum}`;
+    const updatedBingoGrids = teamBingoGrids.map(tState => {
+      const newStamped = tState.stamped.map(row => [...row]);
+
+      for (let r = 0; r < gridSize; r++) {
+        for (let c = 0; c < gridSize; c++) {
+          const cellVal = String(tState.grid[r][c]).trim().toUpperCase();
+          // Match criteria:
+          // 1. Exact token: "3B" === "3B"
+          // 2. Question number prefix match if token has letter
+          // 3. Simple question number: "3" or "CÂU 3"
+          if (
+            cellVal === optToken.toUpperCase() ||
+            cellVal === qNumStr ||
+            cellVal === `CÂU ${qNumStr}` ||
+            cellVal === `Q${qNumStr}` ||
+            (optToken && cellVal.startsWith(`${qNumStr}`) && optToken.startsWith(`${qNumStr}`))
+          ) {
+            newStamped[r][c] = true;
+          }
+        }
+      }
+
+      const isBingo = checkBingoLine(newStamped, gridSize);
+      if (isBingo && !tState.hasBingo) {
+        soundFx.winFanfare();
+        // Award bonus score for completing a line
+        nextTeams = nextTeams.map(t =>
+          t.id === tState.teamId ? { ...t, score: t.score + 50 } : t
+        );
+      }
+
+      return { ...tState, stamped: newStamped, hasBingo: isBingo };
+    });
+
+    setTeams(nextTeams);
+    setTeamBingoGrids(updatedBingoGrids);
 
     // Save log
     const log: AnswerLog = {
@@ -210,43 +223,43 @@ export const BingoGame: React.FC<BingoGameProps> = ({ config, questions, onGameE
   };
 
   return (
-    <div className="flex-1 min-h-0 w-full p-4 sm:p-6 bg-gradient-to-b from-indigo-950 via-slate-900 to-purple-950 text-w-text-main rounded-2xl shadow-2xl flex flex-col justify-between">
+    <div className="flex-1 min-h-[100dvh] w-full p-3 sm:p-5 bg-w-bg-main text-w-text-main flex flex-col justify-between overflow-y-auto">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-w-bg-alt border border-indigo-500/30 p-4 rounded-xl">
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-w-bg-card border border-w-border p-4 rounded-2xl shadow-xs shrink-0">
         <div className="flex items-center gap-3">
           <span className="text-3xl">🧩</span>
           <div>
-            <h2 className="text-xl font-extrabold text-amber-600 flex items-center gap-2">
+            <h2 className="text-lg sm:text-xl font-[900] text-w-text-main flex items-center gap-2">
               <span>Bingo Tri Thức - Bảng Toàn Bộ Đội</span>
-              <span className="text-xs px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-normal">
-                {gridSize}x{gridSize} Auto-Tick
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-w-accent-light text-w-primary border border-w-accent-border font-bold">
+                {gridSize}x{gridSize} Tự Động Tick
               </span>
             </h2>
-            <p className="text-xs text-w-primary-dark">
-              Trả lời câu hỏi ➔ Tự động Tick cho TẤT CẢ các nhóm có ô đáp án (dạng 1D, 3D, 4A, 5Đ, 6S)!
+            <p className="text-xs text-w-text-muted">
+              Trả lời câu hỏi ➔ Tự động Tick ô tương ứng (dạng 1D, 3D, 4A, 5Đ, 6S) cho các nhóm!
             </p>
           </div>
         </div>
 
         <button
           onClick={() => onGameEnd(teams, answerLogs)}
-          className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-w-text-main font-bold text-xs rounded-xl transition shadow"
+          className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs sm:text-sm rounded-xl transition shadow-xs cursor-pointer"
         >
           Tổng Kết Game
         </button>
       </div>
 
       {/* Main Control Panel & Spin Button */}
-      <div className="my-4 space-y-4">
-        <div className="bg-w-bg-alt border border-indigo-200 p-4 rounded-2xl shadow-xl flex flex-wrap items-center justify-between gap-3">
+      <div className="my-3 space-y-3 shrink-0">
+        <div className="bg-w-bg-card border border-w-border p-3 sm:p-4 rounded-2xl shadow-xs flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-bold text-indigo-400 font-mono uppercase tracking-wider">
+            <span className="text-xs font-bold text-w-primary font-mono uppercase tracking-wider">
               BẢNG QUAY CÂU HỎI BINGO
             </span>
             {lastStampedToken && (
-              <span className="px-3 py-1 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shadow flex items-center gap-1.5 animate-pulse">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Vừa Auto-Tick Đáp Án: {lastStampedToken}</span>
+              <span className="px-3 py-1 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs shadow-xs flex items-center gap-1.5 animate-pulse">
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                <span>Vừa Auto-Tick Ô: {lastStampedToken}</span>
               </span>
             )}
           </div>
@@ -254,7 +267,7 @@ export const BingoGame: React.FC<BingoGameProps> = ({ config, questions, onGameE
           {gameState === 'WAIT_SPIN' && (
             <button
               onClick={handleSpinQuestion}
-              className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-lg transition animate-bounce"
+              className="flex items-center gap-2 px-6 py-2.5 wey-btn-primary font-extrabold text-xs sm:text-sm rounded-xl shadow-md transition transform hover:scale-105 active:scale-95 cursor-pointer"
             >
               <Dices className="w-4 h-4" />
               <span>Quay Chọn Câu Hỏi</span>
@@ -263,10 +276,10 @@ export const BingoGame: React.FC<BingoGameProps> = ({ config, questions, onGameE
         </div>
 
         {/* Active turn team indicator */}
-        <div className="flex items-center justify-between bg-w-bg-card p-3 rounded-xl border border-indigo-500/20">
-          <span className="text-xs font-bold text-amber-600 font-mono flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
-            LƯỢT QUAY: {teams[currentTurnTeamIdx]?.avatar} {teams[currentTurnTeamIdx]?.name}
+        <div className="flex items-center justify-between bg-w-bg-card p-3 rounded-xl border border-w-border">
+          <span className="text-xs font-bold text-w-text-main flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+            LƯỢT QUAY: {teams[currentTurnTeamIdx]?.avatar} <strong className="text-w-primary">{teams[currentTurnTeamIdx]?.name}</strong>
           </span>
         </div>
 
@@ -287,31 +300,31 @@ export const BingoGame: React.FC<BingoGameProps> = ({ config, questions, onGameE
         />
 
         {/* ALL TEAM BINGO CARDS DISPLAYED SIMULTANEOUSLY SIDE-BY-SIDE */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           {teams.map((team, idx) => {
             const tState = teamBingoGrids[idx] || generateBingoGrid(team.id, config, questions, gridSize);
 
             return (
               <div
                 key={team.id}
-                className={`p-4 rounded-2xl border transition shadow-xl flex flex-col justify-between space-y-3 ${
+                className={`p-3.5 rounded-2xl border transition shadow-xs flex flex-col justify-between space-y-2.5 ${
                   tState.hasBingo
-                    ? 'bg-amber-950/80 border-amber-400 ring-2 ring-amber-400/50'
-                    : 'bg-w-bg-alt border-indigo-200 hover:border-indigo-400'
+                    ? 'bg-amber-50/90 border-amber-400 ring-2 ring-amber-400/40'
+                    : 'bg-w-bg-card border-w-border hover:border-w-primary/50'
                 }`}
               >
                 {/* Team Info Header */}
-                <div className="flex items-center justify-between border-b border-indigo-500/20 pb-2">
+                <div className="flex items-center justify-between border-b border-w-border pb-2">
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">{team.avatar}</span>
                     <div>
                       <div className="font-extrabold text-sm text-w-text-main flex items-center gap-1.5">
                         <span>{team.name}</span>
                         {tState.hasBingo && (
-                          <Trophy className="w-4 h-4 text-amber-600 animate-bounce" />
+                          <Trophy className="w-4 h-4 text-amber-500 animate-bounce" />
                         )}
                       </div>
-                      <div className="text-[11px] font-mono text-amber-600 font-bold">
+                      <div className="text-xs font-bold text-w-primary">
                         Điểm: {team.score}đ
                       </div>
                     </div>
@@ -319,16 +332,16 @@ export const BingoGame: React.FC<BingoGameProps> = ({ config, questions, onGameE
 
                   <button
                     onClick={() => handleRegenerateBingoGrid(team.id)}
-                    className="p-1.5 rounded-lg bg-w-accent-light hover:bg-slate-700 text-w-primary-dark hover:text-amber-600 transition text-[10px] flex items-center gap-1"
+                    className="p-1.5 rounded-lg bg-w-bg-alt hover:bg-w-accent-light text-w-text-muted hover:text-w-text-main transition text-[11px] font-semibold flex items-center gap-1 cursor-pointer"
                     title="Đổi phiếu Bingo mới cho đội này"
                   >
                     <RefreshCw className="w-3 h-3" />
-                    <span>Tạo Mới</span>
+                    <span>Đổi phiếu</span>
                   </button>
                 </div>
 
                 {tState.hasBingo && (
-                  <div className="px-2 py-1 rounded bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-[11px] text-center shadow animate-pulse">
+                  <div className="px-2 py-1 rounded-xl bg-amber-500 text-slate-950 font-black text-xs text-center shadow-xs animate-pulse">
                     🎉 BINGO CẮM CỜ THÀNH CÔNG! (+50Đ)
                   </div>
                 )}
@@ -354,14 +367,14 @@ export const BingoGame: React.FC<BingoGameProps> = ({ config, questions, onGameE
                               )
                             );
                           }}
-                          className={`aspect-square rounded-lg border p-1 text-[10px] font-black font-mono transition flex flex-col items-center justify-center text-center shadow ${
+                          className={`aspect-square rounded-xl border p-1 text-[11px] font-black font-mono transition flex flex-col items-center justify-center text-center shadow-xs cursor-pointer ${
                             isStamped
-                              ? 'bg-amber-400 text-slate-950 border-amber-200 ring-2 ring-amber-300/60 scale-105'
-                              : 'bg-w-bg-card border-w-border text-w-primary-dark hover:border-slate-600'
+                              ? 'bg-amber-400 text-slate-950 border-amber-500 ring-2 ring-amber-300 font-extrabold scale-105'
+                              : 'bg-w-bg-alt/70 border-w-border text-w-text-main hover:border-w-primary/60 hover:bg-w-accent-light'
                           }`}
                         >
                           {isStamped ? (
-                            <CheckCircle2 className="w-3.5 h-3.5 text-slate-950 fill-amber-300" />
+                            <CheckCircle2 className="w-4 h-4 text-slate-950 fill-amber-300" />
                           ) : (
                             <span className="truncate max-w-full">{val}</span>
                           )}
@@ -376,8 +389,8 @@ export const BingoGame: React.FC<BingoGameProps> = ({ config, questions, onGameE
         </div>
       </div>
 
-      <div className="text-center text-xs text-w-text-muted font-medium pt-2">
-        Mỗi đáp án đúng sẽ tự động tick ô có mã tương ứng (ví dụ: 1D, 3D, 4A, 5Đ) trên tất cả phiếu Bingo!
+      <div className="text-center text-xs text-w-text-muted font-medium pt-2 pb-1 shrink-0">
+        Mỗi khi câu hỏi có kết quả, hệ thống tự động tick các ô tương ứng trên tất cả phiếu Bingo!
       </div>
     </div>
   );

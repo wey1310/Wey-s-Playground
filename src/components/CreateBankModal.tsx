@@ -22,6 +22,19 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({ isOpen, onClos
   const [tags, setTags] = useState(initialData?.tags?.join(', ') || '');
   const [visibility, setVisibility] = useState<'private' | 'public'>(initialData?.visibility || 'private');
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setName(initialData?.name || '');
+      setGrade(initialData?.grade || 'Lớp 7');
+      setSubject(initialData?.subject || 'Khoa học tự nhiên');
+      setTopic(initialData?.topic || '');
+      setFolder(initialData?.folder || '');
+      setDescription(initialData?.description || '');
+      setTags(initialData?.tags?.join(', ') || '');
+      setVisibility(initialData?.visibility || 'private');
+    }
+  }, [isOpen, initialData]);
+
   const availableSubjects = useMemo(() => {
     return getSubjectsForGrade(grade);
   }, [grade]);
