@@ -262,7 +262,7 @@ export const WheelGame: React.FC<WheelGameProps> = ({ config, questions, onGameE
 
   return (
     <div 
-      className="flex-1 min-h-0 w-full p-4 sm:p-6 rounded-3xl shadow-2xl flex flex-col justify-between relative overflow-hidden select-none border-4"
+      className="game-fit-screen p-2 sm:p-4 rounded-2xl shadow-xl flex flex-col justify-between relative overflow-hidden select-none border-2"
       style={{
         backgroundImage: `url(/assets/themes/${config.theme}.jpg)`,
         backgroundSize: 'cover',
@@ -270,51 +270,50 @@ export const WheelGame: React.FC<WheelGameProps> = ({ config, questions, onGameE
         borderColor: themeConfig.wheelBorder,
       }}
     >
-      <div className="absolute inset-0 pointer-events-none bg-w-bg-card backdrop-blur-[2px]"></div>
+      <div className="absolute inset-0 pointer-events-none bg-w-bg-card/80 backdrop-blur-xs"></div>
       
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-w-bg-card backdrop-blur-md border border-white/20 p-4 rounded-2xl z-10 shadow-xl">
-        <div className="flex items-center gap-3">
-          <span className="text-3xl animate-bounce">🎡</span>
+      <div className="flex flex-wrap items-center justify-between gap-2 bg-w-bg-card/95 backdrop-blur border border-w-border px-3 py-2 rounded-xl z-10 shadow-md shrink-0">
+        <div className="flex items-center gap-2">
+          <span className="text-xl sm:text-2xl">🎡</span>
           <div>
-
-            <h2 className="text-xl sm:text-2xl font-black text-w-text-main flex items-center gap-2">
-              <span>Vòng Quay Kỳ Diệu</span>
+            <h2 className="text-xs sm:text-sm font-black text-w-text-main flex items-center gap-2">
+              <span>VÒNG QUAY MAY MẮN</span>
               <span 
-                className="text-xs px-2.5 py-0.5 rounded-full font-bold border"
+                className="text-[10px] px-2 py-0.5 rounded-full font-bold border"
                 style={{
-                  backgroundColor: `${themeConfig.wheelBorder}33`,
+                  backgroundColor: `${themeConfig.wheelBorder}22`,
                   borderColor: themeConfig.wheelBorder,
-                  color: themeConfig.wheelCenter,
+                  color: themeConfig.pointerColor,
                 }}
               >
                 {themeInfo.icon} {themeInfo.name}
               </span>
             </h2>
-            <p className="text-xs text-slate-200 font-medium">
-              Quay vòng quay ➔ Trúng vạch câu hỏi ➔ Trả lời nhận điểm thưởng!
+            <p className="text-[10px] text-w-text-muted font-medium">
+              Quay vòng quay ➔ Trúng vạch câu hỏi ➔ Trả lời nhận điểm!
             </p>
           </div>
         </div>
 
         {/* Teams Dashboard */}
         {config.teamMode && (
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5 flex-wrap">
             {teams.map((team, idx) => {
               const isTurn = idx === currentTurnTeamIdx;
               return (
                 <div
                   key={team.id}
-                  className={`px-3 py-1.5 rounded-xl border flex items-center gap-2 transition-all ${
+                  className={`px-2.5 py-1 rounded-xl border flex items-center gap-1.5 transition-all ${
                     isTurn
-                      ? 'bg-amber-500/30 border-amber-400 text-amber-200 ring-2 ring-amber-400/60 scale-105 shadow-lg'
-                      : 'bg-w-bg-alt border-w-border text-w-primary-dark'
+                      ? 'bg-amber-500/20 border-amber-400 text-amber-600 ring-2 ring-amber-400/60 shadow-xs'
+                      : 'bg-w-bg-alt border-w-border text-w-text-main'
                   }`}
                 >
-                  <span className="text-lg">{team.avatar}</span>
-                  <div className="text-xs">
+                  <span className="text-base">{team.avatar}</span>
+                  <div className="text-[11px]">
                     <div className="font-bold leading-none" style={{ color: team.color }}>{team.name}</div>
-                    <div className="font-mono text-amber-600 font-extrabold mt-0.5">{team.score} điểm</div>
+                    <div className="font-mono text-amber-600 font-extrabold">{team.score}đ</div>
                   </div>
                 </div>
               );
@@ -324,18 +323,18 @@ export const WheelGame: React.FC<WheelGameProps> = ({ config, questions, onGameE
 
         <button
           onClick={() => onGameEnd(teams, answerLogs)}
-          className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-w-text-main font-black text-xs rounded-xl transition shadow-lg"
+          className="wey-btn-danger px-3 py-1.5 text-xs rounded-xl cursor-pointer shrink-0"
         >
           Kết Thúc
         </button>
       </div>
 
       {/* Wheel Arena */}
-      <div className="my-6 flex flex-col items-center justify-center space-y-6 z-10">
+      <div className="my-auto py-1 flex-1 min-h-0 flex flex-col items-center justify-center space-y-2 z-10 overflow-hidden">
         <div className="relative flex flex-col items-center">
           {/* Top Pointer Indicator */}
-          <div className="z-20 -mb-5 relative flex items-center justify-center">
-            <svg width="38" height="38" viewBox="0 0 38 38" className="drop-shadow-2xl filter">
+          <div className="z-20 -mb-4 relative flex items-center justify-center">
+            <svg width="32" height="32" viewBox="0 0 38 38" className="drop-shadow-lg filter">
               <polygon 
                 points="19,34 6,8 32,8" 
                 fill={themeConfig.pointerColor} 
@@ -348,11 +347,11 @@ export const WheelGame: React.FC<WheelGameProps> = ({ config, questions, onGameE
 
           {/* SVG Wheel Container */}
           <div
-            className="w-80 sm:w-[420px] h-80 sm:h-[420px] rounded-full shadow-2xl transition-transform ease-out relative"
+            className="w-[min(54vmin,330px)] h-[min(54vmin,330px)] rounded-full shadow-xl transition-transform ease-out relative"
             style={{
               transform: `rotate(${rotation}deg)`,
               transitionDuration: isSpinning ? '4000ms' : '0ms',
-              boxShadow: `0 20px 50px ${themeConfig.shadowColor}`,
+              boxShadow: `0 10px 25px ${themeConfig.shadowColor}`,
             }}
           >
             <svg viewBox="0 0 100 100" className="w-full h-full rounded-full overflow-hidden">
@@ -458,19 +457,18 @@ export const WheelGame: React.FC<WheelGameProps> = ({ config, questions, onGameE
           </div>
 
           {/* Spin Action Button */}
-          <div className="mt-6">
+          <div className="mt-3">
             <button
               disabled={isSpinning}
               onClick={handleSpinWheel}
-              className="flex items-center gap-2.5 px-8 py-3.5 text-slate-950 font-black text-sm rounded-full shadow-2xl transition transform hover:scale-105 active:scale-95 disabled:opacity-50 border-2 border-white/80 cursor-pointer"
+              className="flex items-center gap-2 px-6 py-2 text-white font-black text-xs sm:text-sm rounded-full shadow-lg transition transform hover:scale-105 active:scale-95 disabled:opacity-50 border border-white/80 cursor-pointer"
               style={{
                 backgroundColor: themeConfig.pointerColor,
-                color: '#ffffff',
-                boxShadow: `0 10px 30px ${themeConfig.shadowColor}`,
+                boxShadow: `0 6px 20px ${themeConfig.shadowColor}`,
               }}
             >
-              <Disc className={`w-5 h-5 ${isSpinning ? 'animate-spin' : ''}`} />
-              <span>{isSpinning ? 'Đang Quay Vòng...' : `Lượt: ${currentTeam.name} - QUAY NGAY!`}</span>
+              <Disc className={`w-4 h-4 ${isSpinning ? 'animate-spin' : ''}`} />
+              <span>{isSpinning ? 'Đang Quay...' : `Lượt: ${currentTeam.name} - QUAY NGAY!`}</span>
             </button>
           </div>
         </div>
@@ -492,8 +490,8 @@ export const WheelGame: React.FC<WheelGameProps> = ({ config, questions, onGameE
         }}
       />
 
-      <div className="text-center text-xs text-slate-200 font-medium pt-2 z-10">
-        Vòng quay hiển thị theo chủ đề <strong className="text-amber-600">{themeInfo.name}</strong>. Mỗi vạch ứng với một câu hỏi ôn tập!
+      <div className="text-center text-[11px] text-w-text-muted font-bold bg-w-bg-card/80 py-1 px-3 rounded-full border border-w-border mx-auto z-10 shrink-0">
+        Vòng quay chủ đề <strong className="text-w-primary">{themeInfo.name}</strong> • Mỗi vạch ứng với một câu hỏi ôn tập!
       </div>
     </div>
   );

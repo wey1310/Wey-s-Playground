@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { GameSetupConfig, Question, AnswerLog, Team } from '../../types';
 import { soundFx } from '../../utils/audio';
+import { MathChemRenderer } from '../../utils/mathChemFormatter';
 
 interface SonTinhThuyTinhGameProps {
   config: GameSetupConfig;
@@ -673,9 +674,9 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                   <div className="text-[11px] font-extrabold text-w-text-muted uppercase tracking-wider">
                     Câu hỏi #{questionNumber} (Nhận +3 Điểm Thần Lực AP nếu đúng)
                   </div>
-                  <p className="text-sm sm:text-base font-black text-w-text-main leading-relaxed">
-                    {currentQuestion.content}
-                  </p>
+                  <div className="text-sm sm:text-base font-black text-w-text-main leading-relaxed">
+                    <MathChemRenderer text={currentQuestion.content} />
+                  </div>
                 </div>
 
                 {currentQuestion.options && currentQuestion.options.length > 0 && (
@@ -706,7 +707,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                           <span className="w-5 h-5 rounded-md bg-white/70 backdrop-blur-sm flex items-center justify-center text-[10px] font-black shrink-0">
                             {['A','B','C','D'][idx]}
                           </span>
-                          <span className="flex-1">{opt}</span>
+                          <span className="flex-1"><MathChemRenderer text={opt} /></span>
                         </button>
                       );
                     })}
@@ -721,7 +722,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
                     onClick={() => handleAnswerSubmit(true)}
                     className="px-4 py-2.5 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main font-black text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
                   >
-                    <CheckCircle className="w-4 h-4 text-[#E9D58F]" />
+                    <CheckCircle className="w-4 h-4 text-amber-500" />
                     <span>Trả Lời Đúng (+3 AP)</span>
                   </button>
 
@@ -872,7 +873,7 @@ export const SonTinhThuyTinhGame: React.FC<SonTinhThuyTinhGameProps> = ({
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-3xl p-6 sm:p-8 border-4 border-[#E9D58F] shadow-2xl text-center space-y-5 flex-1 flex flex-col items-center justify-center"
+              className="bg-white rounded-3xl p-6 sm:p-8 border-4 border-w-border shadow-2xl text-center space-y-5 flex-1 flex flex-col items-center justify-center"
             >
               <div className="text-6xl sm:text-7xl">🏆</div>
 

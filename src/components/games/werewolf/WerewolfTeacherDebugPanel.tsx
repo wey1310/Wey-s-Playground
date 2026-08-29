@@ -27,36 +27,36 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
   const getRoleLabel = (role: WerewolfRole) => {
     switch (role) {
       case 'werewolf':
-        return { text: 'Ma Sói (Bóng đêm)', color: 'bg-red-600 text-w-text-main' };
+        return { text: 'Ma Sói (Bóng đêm)', color: 'bg-red-600 text-white' };
       case 'seer':
-        return { text: 'Tiên Tri (Soi nhân dạng)', color: 'bg-indigo-600 text-w-text-main' };
+        return { text: 'Tiên Tri (Soi nhân dạng)', color: 'bg-indigo-600 text-white' };
       case 'guard':
-        return { text: 'Bảo Vệ (Khiên thần)', color: 'bg-emerald-600 text-w-text-main' };
+        return { text: 'Bảo Vệ (Khiên thần)', color: 'bg-emerald-600 text-white' };
       case 'witch':
-        return { text: 'Phù Thủy (Cứu/Độc)', color: 'bg-purple-600 text-w-text-main' };
+        return { text: 'Phù Thủy (Cứu/Độc)', color: 'bg-purple-600 text-white' };
       case 'hunter':
-        return { text: 'Thợ Săn (Bắn trả)', color: 'bg-amber-600 text-w-text-main' };
+        return { text: 'Thợ Săn (Bắn trả)', color: 'bg-amber-600 text-white' };
       case 'villager':
       default:
-        return { text: 'Dân Làng', color: 'bg-slate-600 text-w-text-main' };
+        return { text: 'Dân Làng', color: 'bg-slate-600 text-white' };
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-white/70 backdrop-blur-sm backdrop-blur-md select-none animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-md select-none animate-fade-in">
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="w-full max-w-4xl bg-w-bg-alt border-2 border-indigo-500/50 rounded-3xl text-slate-100 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
+        className="w-full max-w-4xl bg-zinc-900 border-2 border-indigo-500/50 rounded-3xl text-slate-100 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
       >
         {/* Header */}
-        <div className="p-4 bg-w-bg-card border-b border-indigo-900/60 flex items-center justify-between">
+        <div className="p-4 bg-zinc-950 border-b border-indigo-900/60 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-w-text-main font-black text-sm">
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-black text-sm">
               <Key className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-black text-w-text-main flex items-center gap-2">
+              <h3 className="text-sm font-black text-white flex items-center gap-2">
                 <span>BẢNG ĐIỀU KHIỂN BÍ MẬT DÀNH CHO GIÁO VIÊN</span>
                 <span className="text-[10px] bg-red-950 text-red-300 px-2 py-0.5 rounded border border-red-700 font-bold uppercase">
                   Teacher Secret Debug
@@ -255,13 +255,13 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
 
                     <div className="space-y-1.5">
                       {item.actionsTaken.map((act, i) => (
-                        <div key={i} className="p-2.5 bg-w-bg-alt rounded-xl text-xs flex items-center justify-between border border-w-border">
+                        <div key={i} className="p-2.5 bg-zinc-800/80 rounded-xl text-xs flex items-center justify-between border border-zinc-700">
                           <div>
-                            <strong className="text-w-text-main">{act.actorName} ({act.role}):</strong>{' '}
-                            <span className="text-w-primary-dark">{act.reason || act.actionType}</span>
+                            <strong className="text-zinc-100">{act.actorName} ({act.role}):</strong>{' '}
+                            <span className="text-amber-300">{act.reason || act.actionType}</span>
                           </div>
                           {act.targetName && (
-                            <span className="px-2 py-0.5 rounded bg-w-bg-alt text-indigo-300 border border-indigo-700 text-[11px] font-bold shrink-0 ml-2">
+                            <span className="px-2 py-0.5 rounded bg-zinc-900 text-indigo-300 border border-indigo-700 text-[11px] font-bold shrink-0 ml-2">
                               Mục tiêu: {act.targetName}
                             </span>
                           )}
@@ -276,10 +276,10 @@ export const WerewolfTeacherDebugPanel: React.FC<WerewolfTeacherDebugPanelProps>
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-w-bg-card border-t border-w-border flex justify-end">
+        <div className="p-3 bg-zinc-950 border-t border-zinc-800 flex justify-end">
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-w-accent-light hover:bg-slate-700 text-w-text-main font-bold text-xs transition cursor-pointer"
+            className="px-5 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-bold text-xs transition cursor-pointer"
           >
             Đóng Panel Debug
           </button>

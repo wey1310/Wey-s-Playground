@@ -3,8 +3,33 @@ import { GameSetupConfig, Question, AnswerLog } from '../../types';
 import { motion, AnimatePresence } from 'motion/react';
 import confetti from 'canvas-confetti';
 import { soundFx } from '../../utils/audio';
-import { Users, Shuffle, CheckCircle, XCircle, RotateCcw, Clock, Eye, Sparkles, ChevronRight, Play, Layers, Award, UserCheck } from 'lucide-react';
+import { 
+  Users, 
+  Shuffle, 
+  CheckCircle, 
+  XCircle, 
+  RotateCcw, 
+  Clock, 
+  Eye, 
+  Sparkles, 
+  ChevronRight, 
+  Play, 
+  Layers, 
+  Award, 
+  UserCheck,
+  History,
+  ListOrdered,
+  Copy,
+  Check,
+  Trash2,
+  ArrowDownUp,
+  FileSpreadsheet
+} from 'lucide-react';
 import { StudentImportButton } from '../StudentImportButton';
+import { MathChemRenderer } from '../../utils/mathChemFormatter';
+import { SessionHistoryLog, type SessionCallRecord } from '../SessionHistoryLog';
+
+export type { SessionCallRecord };
 
 interface GameProps {
   config: GameSetupConfig;
@@ -39,6 +64,10 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
   const [calledStudents, setCalledStudents] = useState<string[]>([]);
   const [noRepeat, setNoRepeat] = useState<boolean>(config.noRepeatStudents !== false);
   const [studentScores, setStudentScores] = useState<Record<string, number>>({});
+
+  // Session History Log States
+  const [sessionHistory, setSessionHistory] = useState<SessionCallRecord[]>([]);
+  const sessionRoundRef = useRef<number>(0);
 
   // Batch Call Count (Number of students to call in one batch)
   const [batchCount, setBatchCount] = useState<number>(1);
@@ -159,6 +188,22 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
           setCalledStudents(prev => [...prev, ...finalWinners]);
         }
 
+        // Record into Session History Log
+        const nextRound = sessionRoundRef.current + 1;
+        sessionRoundRef.current = nextRound;
+        const newRecord: SessionCallRecord = {
+          id: `session_call_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          roundNumber: nextRound,
+          timestamp: Date.now(),
+          batchSize: effectiveCount,
+          students: finalWinners.map(name => ({
+            name,
+            status: 'called',
+            score: 0,
+          })),
+        };
+        setSessionHistory(prev => [...prev, newRecord]);
+
         confetti({
           particleCount: 120 + effectiveCount * 25,
           spread: 80 + effectiveCount * 10,
@@ -241,6 +286,24 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
       soundFx.play('wrong');
     }
 
+    // Sync Session History Log
+    const scoreVal = status === 'correct' ? 10 : status === 'help' ? 5 : 0;
+    setSessionHistory(prev => {
+      return prev.map(rec => {
+        const hasSt = rec.students.some(s => s.name === studentToScore);
+        if (!hasSt) return rec;
+        return {
+          ...rec,
+          students: rec.students.map(s => {
+            if (s.name === studentToScore) {
+              return { ...s, status, score: scoreVal };
+            }
+            return s;
+          })
+        };
+      });
+    });
+
     const newLog: AnswerLog = {
       questionId: currentQuestion ? currentQuestion.id : `quick_${Date.now()}`,
       questionContent: currentQuestion ? currentQuestion.content : 'Đánh giá phát biểu trực tiếp',
@@ -266,6 +329,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
     const updatedStatus = { ...studentStatus };
     const updatedScores = { ...studentScores };
     const newLogs: AnswerLog[] = [];
+    const scoreVal = status === 'correct' ? 10 : status === 'help' ? 5 : 0;
 
     pickedStudents.forEach(student => {
       updatedStatus[student] = status;
@@ -287,6 +351,21 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
       });
     });
 
+    // Sync all picked students in session history log
+    setSessionHistory(prev => {
+      return prev.map(rec => {
+        return {
+          ...rec,
+          students: rec.students.map(s => {
+            if (pickedStudents.includes(s.name)) {
+              return { ...s, status, score: scoreVal };
+            }
+            return s;
+          })
+        };
+      });
+    });
+
     setStudentStatus(updatedStatus);
     setStudentScores(updatedScores);
     setAnswerLogs(prev => [...prev, ...newLogs]);
@@ -303,6 +382,54 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
     if (isQuestionActive) {
       setShowAnswer(true);
     }
+  };
+
+  // Toggle student status directly from session history list
+  const handleToggleStudentStatusInHistory = (recordId: string, studentName: string) => {
+    setSessionHistory(prev => {
+      return prev.map(rec => {
+        if (rec.id !== recordId) return rec;
+        return {
+          ...rec,
+          students: rec.students.map(st => {
+            if (st.name !== studentName) return st;
+            const cycleMap: Record<string, 'correct' | 'help' | 'incorrect' | 'called'> = {
+              'called': 'correct',
+              'correct': 'help',
+              'help': 'incorrect',
+              'incorrect': 'called',
+            };
+            const nextStatus = cycleMap[st.status] || 'correct';
+            const nextScore = nextStatus === 'correct' ? 10 : nextStatus === 'help' ? 5 : 0;
+            const oldScore = st.score || 0;
+
+            setStudentScores(sc => ({
+              ...sc,
+              [studentName]: Math.max(0, (sc[studentName] || 0) - oldScore + nextScore)
+            }));
+
+            if (nextStatus !== 'called') {
+              setStudentStatus(s => ({ ...s, [studentName]: nextStatus }));
+            }
+
+            return {
+              ...st,
+              status: nextStatus,
+              score: nextScore
+            };
+          })
+        };
+      });
+    });
+    soundFx.play('click');
+  };
+
+  // Clear session history log
+  const handleClearSessionHistory = () => {
+    if (sessionHistory.length === 0) return;
+    setSessionHistory([]);
+    sessionRoundRef.current = 0;
+    soundFx.play('click');
   };
 
   // Step 3: Grade student answer
@@ -528,8 +655,8 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
           <div className="relative z-10 flex flex-col items-center max-w-2xl w-full">
             
             {/* Roulette Multi-Slot Board */}
-            <div className="w-full bg-w-text-main p-6 sm:p-8 rounded-3xl border-4 border-[#E9D58F] shadow-[0_15px_40px_rgba(53,69,46,0.35)] text-center relative overflow-hidden">
-              <div className="absolute top-3 left-4 text-xs font-black text-[#E9D58F] uppercase tracking-wider flex items-center gap-1.5">
+            <div className="w-full bg-w-text-main p-6 sm:p-8 rounded-3xl border-4 border-w-border shadow-[0_15px_40px_rgba(53,69,46,0.35)] text-center relative overflow-hidden">
+              <div className="absolute top-3 left-4 text-xs font-black text-amber-500 uppercase tracking-wider flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Bảng Quay Gọi Tên ({isRolling ? `Đang quay ${displayRollNames.length} bạn...` : `${displayRollNames.length} Học Sinh`})</span>
               </div>
@@ -557,7 +684,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                         : { duration: 0.12 }
                     }
                     className={`text-3xl sm:text-5xl font-black tracking-tight ${
-                      isRolling ? 'text-[#E9D58F]' : (pickedStudents.length > 0 ? 'text-w-bg-card drop-shadow-[0_4px_12px_rgba(233,213,143,0.5)]' : 'text-w-text-muted')
+                      isRolling ? 'text-amber-500' : (pickedStudents.length > 0 ? 'text-w-bg-card drop-shadow-[0_4px_12px_rgba(233,213,143,0.5)]' : 'text-w-text-muted')
                     }`}
                   >
                     {displayRollNames[0] || '---'}
@@ -573,11 +700,11 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                       transition={{ delay: idx * 0.08, duration: 0.3 }}
                       className={`p-3.5 rounded-2xl border-2 flex items-center gap-2.5 text-left transition ${
                         pickedStudents.length > 0
-                          ? 'bg-[#43573A] border-[#E9D58F] text-w-bg-card shadow-md'
-                          : 'bg-[#2E3C27] border-w-primary-dark text-[#E9D58F]'
+                          ? 'bg-[#43573A] border-w-border text-w-bg-card shadow-md'
+                          : 'bg-[#2E3C27] border-w-primary-dark text-amber-500'
                       }`}
                     >
-                      <div className="w-8 h-8 rounded-xl bg-[#E9D58F] text-w-text-main font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
+                      <div className="w-8 h-8 rounded-xl bg-amber-100 text-w-text-main font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
                         #{idx + 1}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -592,9 +719,9 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
               {/* Rolling Animation Indicator */}
               {isRolling && (
                 <div className="flex justify-center gap-1.5 pt-2">
-                  <span className="w-2 h-2 rounded-full bg-[#E9D58F] animate-bounce" />
-                  <span className="w-2 h-2 rounded-full bg-[#E9D58F] animate-bounce [animation-delay:0.2s]" />
-                  <span className="w-2 h-2 rounded-full bg-[#E9D58F] animate-bounce [animation-delay:0.4s]" />
+                  <span className="w-2 h-2 rounded-full bg-amber-100 animate-bounce" />
+                  <span className="w-2 h-2 rounded-full bg-amber-100 animate-bounce [animation-delay:0.2s]" />
+                  <span className="w-2 h-2 rounded-full bg-amber-100 animate-bounce [animation-delay:0.4s]" />
                 </div>
               )}
             </div>
@@ -774,7 +901,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                       onClick={() => handlePickRandomQuestion(activeStudentIndex)}
                       className="px-8 py-3.5 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-base sm:text-lg rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
                     >
-                      <Sparkles className="w-5 h-5 text-[#E9D58F] fill-current" />
+                      <Sparkles className="w-5 h-5 text-amber-500 fill-current" />
                       <span>
                         {pickedStudents.length === 1 
                           ? `Bốc Câu Hỏi Cho ${pickedStudents[0]}` 
@@ -804,7 +931,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                   disabled={isRolling || remainingStudents.length === 0}
                   className="px-10 py-4 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-xl sm:text-2xl rounded-2xl shadow-xl transition transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer uppercase tracking-wider flex items-center gap-3"
                 >
-                  <Shuffle className="w-6 h-6 text-[#E9D58F]" />
+                  <Shuffle className="w-6 h-6 text-amber-500" />
                   <span>
                     {isRolling 
                       ? `Đang Quay ${batchCount} Học Sinh...` 
@@ -953,9 +1080,9 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
               <div className="text-xs font-extrabold text-w-text-muted uppercase tracking-wider">
                 Câu hỏi #{questionIndex}
               </div>
-              <p className="text-base sm:text-xl font-black text-w-text-main leading-relaxed">
-                {currentQuestion.content}
-              </p>
+              <div className="text-base sm:text-xl font-black text-w-text-main leading-relaxed">
+                <MathChemRenderer text={currentQuestion.content} />
+              </div>
             </div>
 
             {/* Options Grid (MCQ) */}
@@ -987,7 +1114,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                       <span className="w-6 h-6 rounded-lg bg-white/70 backdrop-blur-sm flex items-center justify-center text-xs font-black shrink-0">
                         {['A', 'B', 'C', 'D'][idx]}
                       </span>
-                      <span className="flex-1">{opt}</span>
+                      <span className="flex-1"><MathChemRenderer text={opt} /></span>
                     </button>
                   );
                 })}
@@ -998,7 +1125,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
             {showAnswer && currentQuestion.explanation && (
               <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200 text-xs font-semibold text-amber-900 leading-relaxed">
                 <span className="font-black">💡 Lời Giải: </span>
-                {currentQuestion.explanation}
+                <MathChemRenderer text={currentQuestion.explanation} />
               </div>
             )}
 
@@ -1020,7 +1147,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                     onClick={() => handleGrade(true)}
                     className="px-5 py-2.5 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
                   >
-                    <CheckCircle className="w-4 h-4 text-[#E9D58F]" />
+                    <CheckCircle className="w-4 h-4 text-amber-500" />
                     <span>Chấm Đúng (+10đ)</span>
                   </button>
 
@@ -1048,6 +1175,15 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
             </div>
           </motion.div>
         )}
+
+        {/* STAGE 3: SESSION HISTORY LOG (CHRONOLOGICAL CALLED STUDENTS LIST BELOW MAIN STAGE) */}
+        <SessionHistoryLog
+          history={sessionHistory}
+          onToggleStudentStatus={handleToggleStudentStatusInHistory}
+          onClearHistory={handleClearSessionHistory}
+          studentScores={studentScores}
+          totalCalledCount={calledStudents.length}
+        />
 
       </div>
     </div>

@@ -4,6 +4,7 @@ import confetti from 'canvas-confetti';
 import { Clock, RotateCcw, Volume2, VolumeX, CheckCircle, XCircle, Trophy } from 'lucide-react';
 import { GameSetupConfig, Question, AnswerLog, Team } from '../../types';
 import { soundFx } from '../../utils/audio';
+import { MathChemRenderer } from '../../utils/mathChemFormatter';
 
 interface CoThuGameProps {
   config: GameSetupConfig;
@@ -571,7 +572,9 @@ export const CoThuGame: React.FC<CoThuGameProps> = ({
                 )}
               </div>
               <div className="mt-4 flex-1">
-                <p className="text-sm font-black text-w-text-main leading-relaxed mb-4">{currentQuestion.content}</p>
+                <div className="text-sm font-black text-w-text-main leading-relaxed mb-4">
+                  <MathChemRenderer text={currentQuestion.content} />
+                </div>
                 <div className="space-y-2">
                   {currentQuestion.options?.map((opt, idx) => {
                     const isSelected = selectedOption === idx;
@@ -587,7 +590,7 @@ export const CoThuGame: React.FC<CoThuGameProps> = ({
 
                     return (
                       <button key={idx} onClick={() => !showAnswer && setSelectedOption(idx)} className={`w-full p-2.5 rounded-xl border-2 text-left font-bold text-sm transition ${optStyle}`}>
-                        {opt}
+                        <MathChemRenderer text={opt} />
                       </button>
                     );
                   })}

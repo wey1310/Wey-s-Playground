@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { GameSetupConfig, Team, AnswerLog, Question } from '../../types';
 import { soundFx } from '../../utils/audio';
+import { MathChemRenderer } from '../../utils/mathChemFormatter';
 
 interface GoldMinerGameProps {
   config: GameSetupConfig;
@@ -514,9 +515,9 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
               </div>
             </div>
 
-            <h3 className="text-base sm:text-lg font-[800] text-w-text-main leading-snug mb-4">
-              {currentQuestion.content}
-            </h3>
+            <div className="text-base sm:text-lg font-[800] text-w-text-main leading-snug mb-4">
+              <MathChemRenderer text={currentQuestion.content} />
+            </div>
           </div>
 
           {/* Options */}
@@ -547,7 +548,7 @@ export const GoldMinerGame: React.FC<GoldMinerGameProps> = ({
                     <span className="w-7 h-7 rounded-xl bg-white border border-w-border flex items-center justify-center text-xs font-black text-w-primary-dark">
                       {String.fromCharCode(65 + idx)}
                     </span>
-                    <span className="font-bold">{opt}</span>
+                    <span className="font-bold"><MathChemRenderer text={opt} /></span>
                   </div>
                   {isAnswerChecked && isCorrect && <CheckCircle2 className="w-5 h-5 text-emerald-600" />}
                   {isAnswerChecked && isSelected && !isCorrect && <XCircle className="w-5 h-5 text-red-500" />}

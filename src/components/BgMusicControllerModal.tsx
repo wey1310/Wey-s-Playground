@@ -49,23 +49,23 @@ export const BgMusicControllerModal: React.FC<BgMusicControllerModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-w-accent-light border-b border-[#D8E6C3] px-5 py-4 flex items-center justify-between shrink-0">
+        <div className="bg-w-bg-main border-b border-w-border px-5 py-4 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-w-primary-dark text-w-bg-card flex items-center justify-center shadow-xs">
+            <div className="w-9 h-9 rounded-xl bg-w-primary text-white flex items-center justify-center shadow-xs">
               <Music className={`w-5 h-5 ${musicState.isPlaying ? 'animate-bounce' : ''}`} />
             </div>
             <div>
               <h3 className="font-[800] text-w-text-main text-base leading-tight">
                 Nhạc Nền Trò Chơi & Lớp Học
               </h3>
-              <p className="text-[11px] font-[700] text-[#637357]">
+              <p className="text-[11px] font-[600] text-w-text-muted">
                 Tự động lặp lại, hỗ trợ tải file MP3 từ máy tính
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-white hover:bg-rose-50 text-w-text-muted hover:text-rose-600 border border-w-border flex items-center justify-center transition cursor-pointer"
+            className="w-8 h-8 rounded-xl bg-w-bg-card hover:bg-w-accent-light text-w-text-muted hover:text-w-text-main border border-w-border flex items-center justify-center transition cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -75,17 +75,17 @@ export const BgMusicControllerModal: React.FC<BgMusicControllerModalProps> = ({
         <div className="p-5 space-y-4 overflow-y-auto flex-1">
           {/* Upload alert if any */}
           {uploadSuccess && (
-            <div className="p-2.5 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-bold flex items-center gap-2 animate-fade-in">
+            <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-600 text-xs font-bold flex items-center gap-2 animate-fade-in">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>{uploadSuccess}</span>
             </div>
           )}
 
           {/* Main Control Banner */}
-          <div className="bg-w-bg-tag rounded-2xl p-4 border border-[#E8DFCA] flex items-center justify-between gap-4">
+          <div className="bg-w-bg-alt rounded-2xl p-4 border border-w-border flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
               <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${
-                musicState.isPlaying ? 'bg-w-primary-dark animate-spin [animation-duration:4s]' : 'bg-slate-400'
+                musicState.isPlaying ? 'bg-w-primary animate-spin [animation-duration:4s]' : 'bg-w-text-muted/40'
               }`}>
                 <Disc className="w-6 h-6" />
               </div>
@@ -97,8 +97,8 @@ export const BgMusicControllerModal: React.FC<BgMusicControllerModalProps> = ({
                   {musicState.currentTrack?.description || ''}
                 </div>
                 <div className="mt-1 flex items-center gap-1.5">
-                  <span className={`w-2 h-2 rounded-full ${musicState.isPlaying ? 'bg-emerald-500 animate-ping' : 'bg-slate-400'}`} />
-                  <span className="text-[10px] font-bold text-w-primary-dark">
+                  <span className={`w-2 h-2 rounded-full ${musicState.isPlaying ? 'bg-emerald-500 animate-ping' : 'bg-w-text-muted'}`} />
+                  <span className="text-[10px] font-bold text-w-primary">
                     {musicState.isPlaying ? 'Đang phát lặp lại' : 'Đang tạm dừng'}
                   </span>
                 </div>
@@ -109,7 +109,7 @@ export const BgMusicControllerModal: React.FC<BgMusicControllerModalProps> = ({
             <button
               onClick={() => bgMusicManager.togglePlay()}
               className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-md transition transform hover:scale-105 active:scale-95 cursor-pointer shrink-0 ${
-                musicState.isPlaying ? 'bg-[#D96B6B] hover:bg-[#C85656]' : 'bg-w-primary-dark hover:bg-[#3E522F]'
+                musicState.isPlaying ? 'bg-rose-500 hover:bg-rose-600' : 'wey-btn-primary'
               }`}
               title={musicState.isPlaying ? 'Tạm dừng nhạc' : 'Phát nhạc nền'}
             >
@@ -118,18 +118,18 @@ export const BgMusicControllerModal: React.FC<BgMusicControllerModalProps> = ({
           </div>
 
           {/* Volume Control */}
-          <div className="bg-white rounded-2xl p-3.5 border border-[#E5DEC7] space-y-2">
-            <div className="flex items-center justify-between text-xs font-[700] text-w-primary-dark">
+          <div className="bg-w-bg-alt rounded-2xl p-3.5 border border-w-border space-y-2">
+            <div className="flex items-center justify-between text-xs font-[700] text-w-text-main">
               <span className="flex items-center gap-1.5">
-                <Volume2 className="w-4 h-4" />
+                <Volume2 className="w-4 h-4 text-w-primary" />
                 Âm lượng nhạc nền
               </span>
-              <span>{Math.round(musicState.volume * 100)}%</span>
+              <span className="font-mono text-w-primary font-bold">{Math.round(musicState.volume * 100)}%</span>
             </div>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => bgMusicManager.toggleMute()}
-                className="text-w-text-muted hover:text-w-primary-dark transition"
+                className="text-w-text-muted hover:text-w-text-main transition cursor-pointer"
               >
                 {musicState.isMuted || musicState.volume === 0 ? (
                   <VolumeX className="w-4 h-4 text-rose-500" />
@@ -144,7 +144,7 @@ export const BgMusicControllerModal: React.FC<BgMusicControllerModalProps> = ({
                 step="0.05"
                 value={musicState.isMuted ? 0 : musicState.volume}
                 onChange={(e) => bgMusicManager.setVolume(parseFloat(e.target.value))}
-                className="w-full h-2 bg-w-accent-light rounded-lg appearance-none cursor-pointer accent-w-primary-dark"
+                className="w-full h-2 bg-w-accent-light rounded-lg appearance-none cursor-pointer accent-w-primary"
               />
             </div>
           </div>
@@ -161,7 +161,7 @@ export const BgMusicControllerModal: React.FC<BgMusicControllerModalProps> = ({
             />
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="w-full py-2.5 px-4 bg-gradient-to-r from-w-primary-dark to-[#3E522F] hover:brightness-110 text-white font-[800] text-xs rounded-xl shadow-xs flex items-center justify-center gap-2 cursor-pointer transition active:scale-95"
+              className="w-full py-2.5 px-4 wey-btn-primary font-[800] text-xs rounded-xl shadow-xs flex items-center justify-center gap-2 cursor-pointer transition active:scale-95"
             >
               <Upload className="w-4 h-4" />
               <span>Tải file MP3 / Nhạc từ máy tính của bạn</span>
@@ -174,7 +174,7 @@ export const BgMusicControllerModal: React.FC<BgMusicControllerModalProps> = ({
           {/* Playlist Track Selection */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between px-1">
-              <label className="text-xs font-[800] text-w-primary-dark uppercase tracking-wider block">
+              <label className="text-xs font-[800] text-w-primary uppercase tracking-wider block">
                 Danh sách bài nhạc ({musicState.tracks.length})
               </label>
             </div>
@@ -186,8 +186,8 @@ export const BgMusicControllerModal: React.FC<BgMusicControllerModalProps> = ({
                     key={track.id}
                     className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition ${
                       isSelected
-                        ? 'bg-w-accent-light border-[#A8C68A] text-w-text-main shadow-2xs'
-                        : 'bg-white hover:bg-w-bg-tag border-[#E8DFCA] text-[#4D5A46]'
+                        ? 'bg-w-accent-light border-w-accent-border text-w-text-main shadow-2xs'
+                        : 'bg-w-bg-card hover:bg-w-bg-alt border-w-border text-w-text-main'
                     }`}
                   >
                     <button
@@ -195,15 +195,15 @@ export const BgMusicControllerModal: React.FC<BgMusicControllerModalProps> = ({
                       className="flex items-center gap-2.5 min-w-0 flex-1 text-left cursor-pointer"
                     >
                       <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-[800] shrink-0 ${
-                        isSelected ? 'bg-w-primary-dark text-white' : 'bg-w-accent-light text-w-primary-dark'
+                        isSelected ? 'bg-w-primary text-white' : 'bg-w-accent-light text-w-primary'
                       }`}>
                         {idx + 1}
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-[800] truncate">{track.name}</span>
+                          <span className="text-xs font-[800] truncate text-w-text-main">{track.name}</span>
                           {track.isCustom && (
-                            <span className="text-[9px] bg-amber-200 text-amber-900 font-bold px-1.5 py-0.2 rounded-full">
+                            <span className="text-[9px] bg-amber-500/20 text-amber-600 border border-amber-400/30 font-bold px-1.5 py-0.2 rounded-full">
                               Tải lên
                             </span>
                           )}
@@ -219,14 +219,14 @@ export const BgMusicControllerModal: React.FC<BgMusicControllerModalProps> = ({
                             e.stopPropagation();
                             bgMusicManager.removeCustomTrack(track.id);
                           }}
-                          className="p-1 text-slate-400 hover:text-rose-600 rounded-lg transition"
+                          className="p-1 text-w-text-muted hover:text-rose-500 rounded-lg transition cursor-pointer"
                           title="Xóa bài nhạc này"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       )}
                       {isSelected && (
-                        <Radio className="w-4 h-4 text-w-primary-dark fill-w-primary-dark" />
+                        <Radio className="w-4 h-4 text-w-primary fill-w-primary" />
                       )}
                     </div>
                   </div>
@@ -237,11 +237,11 @@ export const BgMusicControllerModal: React.FC<BgMusicControllerModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="bg-w-bg-tag border-t border-[#E8DFCA] px-5 py-3 flex items-center justify-between text-[11px] text-w-text-muted shrink-0">
+        <div className="bg-w-bg-main border-t border-w-border px-5 py-3 flex items-center justify-between text-[11px] text-w-text-muted shrink-0">
           <span>Gợi ý: Thầy cô có thể tải bài hát trực tiếp ở nút trên</span>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-w-primary-dark hover:bg-[#3E522F] text-white font-[800] rounded-xl transition cursor-pointer shadow-2xs"
+            className="px-4 py-1.5 wey-btn-primary font-[800] rounded-xl transition cursor-pointer shadow-2xs"
           >
             Đóng
           </button>

@@ -58,7 +58,7 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({ isOpen, onClos
             <input 
               required
               value={name} onChange={e => setName(e.target.value)}
-              className="w-full bg-white border border-w-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary focus:ring-2 focus:ring-w-primary/20 shadow-sm"
+              className="w-full bg-w-input-bg border border-w-input-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary focus:ring-2 focus:ring-w-primary/20 shadow-xs"
               placeholder="VD: Ôn tập Toán giữa kì 1..."
             />
           </div>
@@ -69,7 +69,7 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({ isOpen, onClos
               <select 
                 required
                 value={grade} onChange={e => handleGradeChange(e.target.value)}
-                className="w-full bg-white border border-w-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary cursor-pointer shadow-sm"
+                className="w-full bg-w-input-bg border border-w-input-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary cursor-pointer shadow-xs"
               >
                 {GRADES.map(g => (
                   <option key={g} value={g}>{g}</option>
@@ -81,7 +81,7 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({ isOpen, onClos
               <select 
                 required
                 value={subject} onChange={e => setSubject(e.target.value)}
-                className="w-full bg-white border border-w-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary cursor-pointer shadow-sm"
+                className="w-full bg-w-input-bg border border-w-input-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary cursor-pointer shadow-xs"
               >
                 {availableSubjects.map(s => (
                   <option key={s} value={s}>{s}</option>
@@ -97,7 +97,7 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({ isOpen, onClos
             <input 
               list="bank-create-lessons"
               value={topic} onChange={e => setTopic(e.target.value)}
-              className="w-full bg-white border border-w-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary shadow-sm"
+              className="w-full bg-w-input-bg border border-w-input-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary shadow-xs"
               placeholder="Chọn bài học gợi ý hoặc nhập tự do..."
             />
             <datalist id="bank-create-lessons">
@@ -113,7 +113,7 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({ isOpen, onClos
               <span className="text-[11px] font-[700] text-w-text-muted flex items-center gap-1 mb-1">
                 <BookOpen className="w-3.5 h-3.5 text-w-primary" /> Gợi ý bài học SGK:
               </span>
-              <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-w-bg-main/50 rounded-[12px] border border-w-border/60">
+              <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-w-bg-alt/50 rounded-[12px] border border-w-border/60">
                 {suggestedLessons.slice(0, 6).map((les, idx) => (
                   <button
                     key={idx}
@@ -123,7 +123,7 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({ isOpen, onClos
                       if (!name) setName(`${subject} - ${les}`);
                     }}
                     className={`text-[11px] px-2 py-0.5 rounded-[8px] border transition cursor-pointer font-[600] ${
-                      topic === les ? 'bg-w-primary text-white border-w-primary' : 'bg-white text-w-text-main border-w-border hover:bg-w-accent-light'
+                      topic === les ? 'bg-w-primary text-white border-w-primary' : 'bg-w-bg-card text-w-text-main border-w-border hover:bg-w-accent-light'
                     }`}
                   >
                     {les}
@@ -140,7 +140,7 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({ isOpen, onClos
             <input 
               list="bank-create-folders"
               value={folder} onChange={e => setFolder(e.target.value)}
-              className="w-full bg-white border border-w-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary shadow-sm"
+              className="w-full bg-w-input-bg border border-w-input-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary shadow-xs"
               placeholder="VD: Đề thi Giữa Kì 1, Kho chuyên đề, Đề 15 phút..."
             />
             <datalist id="bank-create-folders">
@@ -155,7 +155,7 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({ isOpen, onClos
             <textarea 
               value={description} onChange={e => setDescription(e.target.value)}
               placeholder="Ghi chú thêm về bộ câu hỏi, lưu ý khi giảng dạy..."
-              className="w-full bg-white border border-w-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary min-h-[70px] shadow-sm"
+              className="w-full bg-w-input-bg border border-w-input-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary min-h-[70px] shadow-xs"
             />
           </div>
 
@@ -163,7 +163,7 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({ isOpen, onClos
             <label className="block text-xs font-[700] text-w-text-muted mb-1.5">Tags (cách nhau bởi dấu phẩy)</label>
             <input 
               value={tags} onChange={e => setTags(e.target.value)}
-              className="w-full bg-white border border-w-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary shadow-sm"
+              className="w-full bg-w-input-bg border border-w-input-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary shadow-xs"
               placeholder="VD: ôn thi, giữa kì 1, nâng cao, học kì 2"
             />
           </div>
@@ -200,7 +200,7 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({ isOpen, onClos
         <div className="p-4 sm:p-5 border-t border-w-border flex justify-end gap-3 bg-w-bg-main/70 shrink-0">
           <button 
             onClick={onClose}
-            className="px-5 py-2.5 rounded-[14px] text-w-text-muted font-[700] text-sm hover:bg-[#E9D58F]/30 transition-colors cursor-pointer"
+            className="px-5 py-2.5 rounded-[14px] text-w-text-muted font-[700] text-sm hover:bg-w-accent-light transition-colors cursor-pointer"
           >
             Hủy
           </button>
@@ -218,7 +218,7 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({ isOpen, onClos
                 visibility
               });
             }}
-            className="px-5 py-2.5 rounded-[14px] bg-w-primary hover:bg-w-primary-hover text-white font-[700] text-sm shadow-md transition-colors cursor-pointer"
+            className="px-5 py-2.5 rounded-[14px] wey-btn-primary font-[700] text-sm shadow-md transition-colors cursor-pointer"
           >
             {initialData ? 'Lưu Thay Đổi' : 'Tạo Bộ Mới'}
           </button>

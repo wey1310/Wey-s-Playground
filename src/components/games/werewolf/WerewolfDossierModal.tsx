@@ -28,45 +28,45 @@ export const WerewolfDossierModal: React.FC<WerewolfDossierModalProps> = ({
   const getRoleLabel = (role: WerewolfRole) => {
     switch (role) {
       case 'werewolf':
-        return { text: 'Ma Sói', color: 'bg-red-600 text-w-text-main', icon: '🐺' };
+        return { text: 'Ma Sói', color: 'bg-red-600 text-white', icon: '🐺' };
       case 'seer':
-        return { text: 'Tiên Tri', color: 'bg-indigo-600 text-w-text-main', icon: '🔮' };
+        return { text: 'Tiên Tri', color: 'bg-indigo-600 text-white', icon: '🔮' };
       case 'guard':
-        return { text: 'Bảo Vệ', color: 'bg-emerald-600 text-w-text-main', icon: '🛡️' };
+        return { text: 'Bảo Vệ', color: 'bg-emerald-600 text-white', icon: '🛡️' };
       case 'witch':
-        return { text: 'Phù Thủy', color: 'bg-purple-600 text-w-text-main', icon: '🧪' };
+        return { text: 'Phù Thủy', color: 'bg-purple-600 text-white', icon: '🧪' };
       case 'hunter':
-        return { text: 'Thợ Săn', color: 'bg-amber-600 text-w-text-main', icon: '🏹' };
+        return { text: 'Thợ Săn', color: 'bg-amber-600 text-white', icon: '🏹' };
       case 'villager':
       default:
-        return { text: 'Dân Làng', color: 'bg-slate-600 text-w-text-main', icon: '🌿' };
+        return { text: 'Dân Làng', color: 'bg-slate-600 text-white', icon: '🌿' };
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-white/70 backdrop-blur-sm backdrop-blur-md select-none overflow-y-auto animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-md select-none overflow-y-auto animate-fade-in">
       <motion.div
         initial={{ scale: 0.95, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         className="w-full max-w-4xl bg-w-bg-card border-2 border-w-border rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.4)] overflow-hidden flex flex-col max-h-[94vh]"
       >
         {/* Header Banner */}
-        <div className={`p-5 sm:p-6 text-w-text-main text-center relative overflow-hidden shrink-0 ${
+        <div className={`p-5 sm:p-6 text-white text-center relative overflow-hidden shrink-0 ${
           isVillagersWin
             ? 'bg-gradient-to-r from-emerald-800 via-teal-700 to-emerald-800'
             : 'bg-gradient-to-r from-red-950 via-slate-900 to-red-950'
         }`}>
           <div className="relative z-10">
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black bg-white/20 text-w-text-main uppercase tracking-widest mb-2 shadow-xs border border-white/30">
+            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black bg-white/20 text-white uppercase tracking-widest mb-2 shadow-xs border border-white/30">
               <Sparkles className="w-3.5 h-3.5" />
               <span>{isVillagersWin ? '🎉 DÂN LÀNG TOÀN THẮNG' : '🐺 MA SÓI CHIẾM LÀNG'} ({totalNights} Đêm)</span>
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-w-text-main">
+            <h2 className="text-2xl sm:text-3xl font-black text-white">
               {isVillagersWin 
                 ? '🏆 TOÀN BỘ MA SÓI ĐÃ BỊ VẠCH TRẦN & TIÊU DIỆT!' 
                 : '☠️ BẦY MA SÓI ĐÃ ÁP ĐẢO & THỐNG TRỊ NGÔI LÀNG!'}
             </h2>
-            <p className="text-xs text-w-text-main/90 font-medium mt-1">
+            <p className="text-xs text-white/90 font-medium mt-1">
               {isVillagersWin
                 ? 'Ngôi làng đã tìm lại được ánh sáng hòa bình nhờ sự tài trí của các điều tra viên!'
                 : 'Màn đêm vĩnh cửu bao trùm ngôi làng, các cư dân lương thiện đã gục ngã.'}
@@ -104,7 +104,7 @@ export const WerewolfDossierModal: React.FC<WerewolfDossierModalProps> = ({
 
                     <div className="flex items-center gap-3 mb-3">
                       <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl font-black shadow-xs text-w-text-main"
+                        className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl font-black shadow-xs text-white"
                         style={{ backgroundColor: team.color }}
                       >
                         {team.avatar}
@@ -165,7 +165,7 @@ export const WerewolfDossierModal: React.FC<WerewolfDossierModalProps> = ({
                       </div>
                     )}
 
-                    <div className="mt-1 pt-1.5 border-t border-[#E5DEC7] space-y-1">
+                    <div className="mt-1 pt-1.5 border-t border-w-border space-y-1">
                       <div className={`px-1.5 py-0.5 rounded-lg text-[10px] font-black text-center ${roleBadge.color}`}>
                         {roleBadge.icon} {roleBadge.text}
                       </div>
@@ -192,7 +192,7 @@ export const WerewolfDossierModal: React.FC<WerewolfDossierModalProps> = ({
 
           <button
             onClick={onPlayAgain}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-w-text-main font-black text-xs shadow-md transition cursor-pointer"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-md transition cursor-pointer"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Chơi Ván Mới (Reset Toàn Bộ NPC)</span>

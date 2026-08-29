@@ -60,7 +60,7 @@ export const WerewolfGuessModal: React.FC<WerewolfGuessModalProps> = ({
         className="w-full max-w-2xl bg-w-bg-card border-2 border-w-border rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.35)] overflow-hidden flex flex-col max-h-[92vh]"
       >
         {/* Header */}
-        <div className="p-4 sm:p-5 bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-700 text-w-text-main flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-700 text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <div 
               className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-inner font-black"
@@ -73,7 +73,7 @@ export const WerewolfGuessModal: React.FC<WerewolfGuessModalProps> = ({
                 <Sparkles className="w-3 h-3" />
                 <span>Quyền Bỏ Phiếu Treo Cổ</span>
               </span>
-              <h3 className="text-lg sm:text-xl font-black text-w-text-main">
+              <h3 className="text-lg sm:text-xl font-black text-white">
                 ⚖️ {team.name} — QUYẾT ĐỊNH TREO CỔ AI?
               </h3>
             </div>
@@ -252,7 +252,7 @@ export const WerewolfGuessModal: React.FC<WerewolfGuessModalProps> = ({
           <button
             type="button"
             onClick={handleConfirm}
-            className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-amber-600 hover:bg-amber-500 text-w-text-main font-black text-sm shadow-md hover:shadow-lg transition cursor-pointer"
+            className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-black text-sm shadow-md hover:shadow-lg transition cursor-pointer"
           >
             <span>Thực Thi Quyết Định</span>
             <ArrowRight className="w-4 h-4" />

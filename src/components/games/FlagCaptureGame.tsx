@@ -124,7 +124,7 @@ export const FlagCaptureGame: React.FC<FlagCaptureGameProps> = ({ config, questi
       <header className="bg-w-bg-card px-4 py-2.5 flex items-center justify-between border-b border-white/10 z-30 shrink-0">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-emerald-500 flex items-center justify-center shadow-md">
-            <Flag className="w-5 h-5 text-w-text-main" />
+            <Flag className="w-5 h-5 text-white" />
           </div>
           <div>
             <h1 className="text-sm sm:text-base font-[900] tracking-wide text-w-text-main flex items-center gap-2">
@@ -162,7 +162,7 @@ export const FlagCaptureGame: React.FC<FlagCaptureGameProps> = ({ config, questi
 
           <button 
             onClick={handleFinishGame}
-            className="px-3.5 py-1.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5"
+            className="px-3.5 py-1.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5"
           >
             <Trophy className="w-4 h-4" />
             Thoát
@@ -302,7 +302,7 @@ export const FlagCaptureGame: React.FC<FlagCaptureGameProps> = ({ config, questi
 
                 <button
                   onClick={handleFinishGame}
-                  className="flex-1 py-3.5 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-w-text-main font-black rounded-2xl shadow-xl shadow-amber-500/20 transition-all active:scale-95 flex items-center justify-center gap-2"
+                  className="flex-1 py-3.5 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-white font-black rounded-2xl shadow-xl shadow-amber-500/20 transition-all active:scale-95 flex items-center justify-center gap-2"
                 >
                   <Trophy className="w-4 h-4" />
                   Xem Tổng Kết

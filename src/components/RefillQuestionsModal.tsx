@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { QuestionBank, GameSetupConfig } from "../types";
-import { X, Database, Hash, PlaySquare, Trophy, Sparkles } from 'lucide-react';
+import { X, Database, Hash, PlaySquare, Trophy, RefreshCw } from 'lucide-react';
 import { safeAlert } from '../utils/safeAlert';
 
 interface RefillQuestionsModalProps {
@@ -79,7 +79,7 @@ export const RefillQuestionsModal: React.FC<RefillQuestionsModalProps> = ({
             <div>
               <h2 className="text-base sm:text-lg font-[800] text-w-text-main flex items-center gap-2">
                 <span>Đã Hết Câu Hỏi!</span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 border border-amber-400/30">
                   Lựa chọn tiếp tục
                 </span>
               </h2>
@@ -90,7 +90,7 @@ export const RefillQuestionsModal: React.FC<RefillQuestionsModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 hover:bg-slate-200/60 rounded-xl text-slate-500 transition cursor-pointer"
+            className="p-1.5 hover:bg-w-bg-alt rounded-xl text-w-text-muted hover:text-w-text-main transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -98,22 +98,22 @@ export const RefillQuestionsModal: React.FC<RefillQuestionsModalProps> = ({
 
         {/* 3 Main Choice Cards */}
         <div className="p-5 overflow-y-auto space-y-4">
-          <p className="text-xs font-bold text-slate-700">
+          <p className="text-xs font-bold text-w-text-muted">
             Thầy/Cô vui lòng chọn một trong các phương án dưới đây để tiếp tục:
           </p>
 
           {/* Option 1: Nạp câu hỏi để chơi tiếp */}
-          <div className="bg-white border-2 border-indigo-200 rounded-2xl p-4 shadow-sm space-y-3">
+          <div className="bg-w-bg-card border-2 border-w-border rounded-2xl p-4 shadow-sm space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-black text-xs">
+                <span className="w-6 h-6 rounded-full bg-w-accent-light text-w-primary flex items-center justify-center font-black text-xs border border-w-accent-border">
                   1
                 </span>
-                <h3 className="font-extrabold text-sm text-indigo-950">
+                <h3 className="font-extrabold text-sm text-w-text-main">
                   Nạp Câu Hỏi Để Chơi Tiếp
                 </h3>
               </div>
-              <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-200">
+              <span className="text-[10px] font-bold text-w-primary bg-w-accent-light px-2 py-0.5 rounded-lg border border-w-accent-border">
                 Khuyên Dùng
               </span>
             </div>
@@ -123,10 +123,10 @@ export const RefillQuestionsModal: React.FC<RefillQuestionsModalProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('refill_bank')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border ${
+                className={`py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border cursor-pointer ${
                   activeTab === 'refill_bank'
-                    ? 'bg-indigo-600 text-white border-indigo-700 shadow-sm'
-                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    ? 'bg-w-primary text-white border-w-primary-dark shadow-xs'
+                    : 'bg-w-bg-alt text-w-text-muted border-w-border hover:bg-w-accent-light hover:text-w-text-main'
                 }`}
               >
                 <Database className="w-3.5 h-3.5" />
@@ -136,10 +136,10 @@ export const RefillQuestionsModal: React.FC<RefillQuestionsModalProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('refill_number')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border ${
+                className={`py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border cursor-pointer ${
                   activeTab === 'refill_number'
-                    ? 'bg-indigo-600 text-white border-indigo-700 shadow-sm'
-                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    ? 'bg-w-primary text-white border-w-primary-dark shadow-xs'
+                    : 'bg-w-bg-alt text-w-text-muted border-w-border hover:bg-w-accent-light hover:text-w-text-main'
                 }`}
               >
                 <Hash className="w-3.5 h-3.5" />
@@ -149,13 +149,13 @@ export const RefillQuestionsModal: React.FC<RefillQuestionsModalProps> = ({
 
             {activeTab === 'refill_bank' && (
               <div className="space-y-1.5 animate-fade-in pt-1">
-                <label className="text-[11px] font-bold text-slate-600">
+                <label className="text-[11px] font-bold text-w-text-muted">
                   Chọn Ngân Hàng Câu Hỏi Mới:
                 </label>
                 <select
                   value={selectedBankId}
                   onChange={(e) => setSelectedBankId(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-indigo-500 shadow-xs"
+                  className="w-full bg-w-input-bg border border-w-input-border rounded-xl px-3 py-2 text-xs font-bold text-w-text-main focus:outline-none focus:border-w-primary shadow-xs"
                 >
                   <option value="" disabled>-- Chọn Ngân Hàng --</option>
                   {banks.map(bank => (
@@ -169,7 +169,7 @@ export const RefillQuestionsModal: React.FC<RefillQuestionsModalProps> = ({
 
             {activeTab === 'refill_number' && (
               <div className="space-y-1.5 animate-fade-in pt-1">
-                <label className="text-[11px] font-bold text-slate-600">
+                <label className="text-[11px] font-bold text-w-text-muted">
                   Số Lượng Câu Hỏi Ảo Cần Nạp:
                 </label>
                 <div className="flex items-center gap-2">
@@ -179,9 +179,9 @@ export const RefillQuestionsModal: React.FC<RefillQuestionsModalProps> = ({
                     max={100}
                     value={totalQuestionsNumber}
                     onChange={(e) => setTotalQuestionsNumber(Math.max(1, parseInt(e.target.value) || 10))}
-                    className="w-24 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 text-center focus:outline-none focus:border-indigo-500"
+                    className="w-24 bg-w-input-bg border border-w-input-border rounded-xl px-3 py-1.5 text-xs font-bold text-w-text-main text-center focus:outline-none focus:border-w-primary"
                   />
-                  <span className="text-xs font-medium text-slate-500">câu hỏi số tự do</span>
+                  <span className="text-xs font-medium text-w-text-muted">câu hỏi số tự do</span>
                 </div>
               </div>
             )}
@@ -189,25 +189,25 @@ export const RefillQuestionsModal: React.FC<RefillQuestionsModalProps> = ({
             <button
               type="button"
               onClick={handleApplyRefill}
-              className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-2.5 wey-btn-primary text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Sparkles className="w-4 h-4 text-amber-200" />
+              <RefreshCw className="w-4 h-4" />
               <span>Nạp Câu Hỏi & Tiếp Tục Chơi Ngay</span>
             </button>
           </div>
 
           {/* Option 2: Tiếp tục chơi mà không nạp (Chơi tự do) */}
-          <div className="bg-white border-2 border-emerald-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between gap-3">
+          <div className="bg-w-bg-card border-2 border-emerald-500/30 rounded-2xl p-4 shadow-sm flex flex-col justify-between gap-3">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-xs">
+                <span className="w-6 h-6 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center font-black text-xs border border-emerald-500/30">
                   2
                 </span>
-                <h3 className="font-extrabold text-sm text-emerald-950">
+                <h3 className="font-extrabold text-sm text-w-text-main">
                   Tiếp Tục Chơi Tự Do (Không Cần Câu Hỏi)
                 </h3>
               </div>
-              <p className="text-[11px] font-medium text-slate-600 pl-8">
+              <p className="text-[11px] font-medium text-w-text-muted pl-8">
                 Chuyển ván đấu sang lượt đi tự do: các đội lần lượt đi nước cờ / thao tác trên bàn cờ mà không cần random câu hỏi nữa.
               </p>
             </div>
@@ -223,17 +223,17 @@ export const RefillQuestionsModal: React.FC<RefillQuestionsModalProps> = ({
           </div>
 
           {/* Option 3: Tổng kết trò chơi */}
-          <div className="bg-white border-2 border-rose-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between gap-3">
+          <div className="bg-w-bg-card border-2 border-rose-500/30 rounded-2xl p-4 shadow-sm flex flex-col justify-between gap-3">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="w-6 h-6 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center font-black text-xs">
+                <span className="w-6 h-6 rounded-full bg-rose-500/15 text-rose-600 flex items-center justify-center font-black text-xs border border-rose-500/30">
                   3
                 </span>
-                <h3 className="font-extrabold text-sm text-rose-950">
+                <h3 className="font-extrabold text-sm text-w-text-main">
                   Tổng Kết Trò Chơi
                 </h3>
               </div>
-              <p className="text-[11px] font-medium text-slate-600 pl-8">
+              <p className="text-[11px] font-medium text-w-text-muted pl-8">
                 Kết thúc ván đấu ngay bây giờ và chuyển thẳng tới màn hình vinh danh, xếp hạng điểm số và nhật ký trả lời.
               </p>
             </div>
@@ -254,7 +254,7 @@ export const RefillQuestionsModal: React.FC<RefillQuestionsModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl border border-slate-300 transition cursor-pointer"
+            className="px-4 py-2 bg-w-bg-card hover:bg-w-accent-light text-w-text-main text-xs font-bold rounded-xl border border-w-border transition cursor-pointer"
           >
             Đóng Popup
           </button>

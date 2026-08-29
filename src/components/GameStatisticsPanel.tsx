@@ -27,7 +27,7 @@ export const GameStatisticsPanel: React.FC<Props> = ({ playCounts, totalQuestion
   const totalPlays = Object.values(playCounts).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="bg-[#FFFDFB] border border-w-border p-5 sm:p-6 rounded-[22px] shadow-sm mb-8">
+    <div className="bg-w-bg-card border border-w-border p-5 sm:p-6 rounded-[22px] shadow-sm mb-8">
       <h3 className="text-xl font-[800] text-w-text-main flex items-center gap-2.5 mb-6">
         <Target className="w-6 h-6 text-w-primary" />
         <span>Thống Kê Hoạt Động</span>
@@ -37,7 +37,7 @@ export const GameStatisticsPanel: React.FC<Props> = ({ playCounts, totalQuestion
         {/* Stats Cards */}
         <div className="lg:col-span-1 space-y-4">
           <div className="bg-w-accent-light p-5 rounded-2xl border border-w-accent-border flex items-center gap-4">
-            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-w-bg-card border border-w-border rounded-xl shadow-xs flex items-center justify-center shrink-0">
               <Gamepad2 className="w-6 h-6 text-w-primary" />
             </div>
             <div>
@@ -46,40 +46,47 @@ export const GameStatisticsPanel: React.FC<Props> = ({ playCounts, totalQuestion
             </div>
           </div>
 
-          <div className="bg-[#FAF3D1] p-5 rounded-2xl border border-[#E9D58F] flex items-center gap-4">
-            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center flex-shrink-0">
-              <Trophy className="w-6 h-6 text-[#D4A346]" />
+          <div className="bg-w-bg-alt p-5 rounded-2xl border border-w-border flex items-center gap-4">
+            <div className="w-12 h-12 bg-w-bg-card border border-w-border rounded-xl shadow-xs flex items-center justify-center shrink-0">
+              <Trophy className="w-6 h-6 text-amber-500" />
             </div>
             <div>
-              <p className="text-sm font-[700] text-[#917622]">Số câu đã trả lời</p>
-              <p className="text-3xl font-[900] text-[#7A6218]">{totalQuestions}</p>
+              <p className="text-sm font-[700] text-w-text-muted">Số câu đã trả lời</p>
+              <p className="text-3xl font-[900] text-amber-500">{totalQuestions}</p>
             </div>
           </div>
         </div>
 
         {/* Chart */}
-        <div className="lg:col-span-2 bg-white border border-[#F0EBE1] rounded-2xl p-4 sm:p-5">
+        <div className="lg:col-span-2 bg-w-bg-card border border-w-border rounded-2xl p-4 sm:p-5">
           <h4 className="text-sm font-[800] text-w-text-muted mb-4 uppercase tracking-wider">Top Trò Chơi Yêu Thích</h4>
           {data.length > 0 ? (
             <div className="h-[200px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--w-border)" />
                   <XAxis 
                     dataKey="name" 
-                    tick={{ fill: '#7F8C8D', fontSize: 11, fontWeight: 600 }}
+                    tick={{ fill: 'var(--w-text-muted)', fontSize: 11, fontWeight: 600 }}
                     tickLine={false}
-                    axisLine={{ stroke: '#E5E7EB' }}
+                    axisLine={{ stroke: 'var(--w-border)' }}
                   />
                   <YAxis 
-                    tick={{ fill: '#7F8C8D', fontSize: 12, fontWeight: 600 }}
+                    tick={{ fill: 'var(--w-text-muted)', fontSize: 12, fontWeight: 600 }}
                     tickLine={false}
                     axisLine={false}
                     allowDecimals={false}
                   />
                   <Tooltip 
-                    cursor={{ fill: '#F9FAFB' }}
-                    contentStyle={{ borderRadius: '12px', border: '1px solid #FADBD8', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', fontWeight: 'bold' }}
+                    cursor={{ fill: 'var(--w-bg-alt)' }}
+                    contentStyle={{
+                      backgroundColor: 'var(--w-bg-card)',
+                      color: 'var(--w-text-main)',
+                      borderColor: 'var(--w-border)',
+                      borderRadius: '12px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                      fontWeight: 'bold',
+                    }}
                   />
                   <Bar dataKey="plays" radius={[6, 6, 0, 0]} maxBarSize={50}>
                     {data.map((entry, index) => (
@@ -90,7 +97,7 @@ export const GameStatisticsPanel: React.FC<Props> = ({ playCounts, totalQuestion
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-[200px] w-full flex items-center justify-center text-[#9CA3AF] font-[600]">
+            <div className="h-[200px] w-full flex items-center justify-center text-w-text-muted font-[600]">
               Chưa có dữ liệu. Hãy chơi game để thống kê!
             </div>
           )}

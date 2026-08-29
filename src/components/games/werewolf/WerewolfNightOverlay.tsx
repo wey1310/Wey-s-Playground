@@ -46,7 +46,7 @@ export const WerewolfNightOverlay: React.FC<WerewolfNightOverlayProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-[#050811]/95 backdrop-blur-md text-w-text-main select-none overflow-hidden"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-[#050811]/95 backdrop-blur-md text-white select-none overflow-hidden"
     >
       {/* Mystical Moon and Fog Backdrop */}
       <div className="relative flex flex-col items-center max-w-lg w-full text-center">

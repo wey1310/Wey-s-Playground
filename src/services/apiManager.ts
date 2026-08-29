@@ -172,11 +172,25 @@ export const apiManager = {
   async refreshPool(): Promise<KeyPoolPublicState> {
     try {
       isLoadingPool = true;
-      let res = await fetch('/api/gemini/refresh', { method: 'POST' });
-      if (res.status === 404 || res.status === 405) {
-        res = await fetch('/api/gemini-keys/pool/refresh', { method: 'POST' });
+      const refreshEndpoints = [
+        '/api/gemini/refresh',
+        '/api/gemini-keys/pool/refresh'
+      ];
+
+      let res: Response | null = null;
+      for (const ep of refreshEndpoints) {
+        try {
+          res = await fetch(ep, { 
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+          });
+          if (res.ok) break;
+        } catch {
+          // continue to next endpoint
+        }
       }
-      if (res.ok) {
+
+      if (res && res.ok) {
         const data = await res.json();
         if (data && typeof data === 'object') {
           const totalKeys = typeof data.totalKeysConfigured === 'number'
@@ -210,7 +224,7 @@ export const apiManager = {
         }
       }
     } catch (e) {
-      console.error('Error refreshing pool:', e);
+      console.warn('Refresh pool notice:', e);
     } finally {
       isLoadingPool = false;
     }

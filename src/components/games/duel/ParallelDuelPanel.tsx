@@ -63,7 +63,7 @@ export const ParallelDuelPanel: React.FC<ParallelDuelPanelProps> = ({
         
         <button
           onClick={onSmash}
-          className={`w-full max-w-xs py-6 px-6 rounded-3xl font-black text-2xl text-w-text-main shadow-2xl transform active:scale-95 transition-all flex flex-col items-center gap-2 ${
+          className={`w-full max-w-xs py-6 px-6 rounded-3xl font-black text-2xl text-white shadow-2xl transform active:scale-95 transition-all flex flex-col items-center gap-2 ${
             isPlayerA 
               ? 'bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 shadow-rose-500/30' 
               : 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-blue-500/30'
@@ -71,7 +71,7 @@ export const ParallelDuelPanel: React.FC<ParallelDuelPanelProps> = ({
         >
           <Zap className="w-10 h-10 animate-pulse" />
           <span>NHẤN KÉO!</span>
-          <span className="text-xs font-medium text-w-text-main/80 mt-1">
+          <span className="text-xs font-medium text-white/80 mt-1">
             Phím: {isPlayerA ? 'W, A, S, D' : '↑, ←, ↓, →'}
           </span>
         </button>
@@ -83,7 +83,7 @@ export const ParallelDuelPanel: React.FC<ParallelDuelPanelProps> = ({
     <div className={`flex flex-col h-full p-2.5 sm:p-3.5 relative select-none ${isPlayerA ? 'bg-slate-100/80' : 'bg-slate-100/80'}`}>
       
       {/* 1. Header Bar: Team Name + Big Yellow Score Badge (Exactly like the photo) */}
-      <div className={`flex items-center justify-between px-4 py-2.5 rounded-2xl shadow-md ${theme.headerBg} text-w-text-main mb-2.5 shrink-0`}>
+      <div className={`flex items-center justify-between px-4 py-2.5 rounded-2xl shadow-md ${theme.headerBg} text-white mb-2.5 shrink-0`}>
         <div className="flex items-center gap-2.5 truncate">
           <span className="text-2xl filter drop-shadow">{team.avatar}</span>
           <span className="font-black text-base sm:text-lg tracking-wide uppercase truncate">
@@ -121,7 +121,7 @@ export const ParallelDuelPanel: React.FC<ParallelDuelPanelProps> = ({
               {playerState.lastAnswerIsCorrect === true && (
                 <div className="flex flex-col items-center gap-1.5 text-emerald-400">
                   <CheckCircle2 className="w-16 h-16 animate-bounce" />
-                  <span className="font-black text-2xl tracking-wider text-w-text-main">CHÍNH XÁC!</span>
+                  <span className="font-black text-2xl tracking-wider text-emerald-300">CHÍNH XÁC!</span>
                   <span className="text-sm text-emerald-300 font-bold bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-500/50">
                     +{config.pointsPerCorrect || 10} điểm
                   </span>
@@ -130,7 +130,7 @@ export const ParallelDuelPanel: React.FC<ParallelDuelPanelProps> = ({
               {playerState.lastAnswerIsCorrect === false && (
                 <div className="flex flex-col items-center gap-1.5 text-rose-400">
                   <XCircle className="w-16 h-16 animate-shake" />
-                  <span className="font-black text-2xl tracking-wider text-w-text-main">CHƯA ĐÚNG!</span>
+                  <span className="font-black text-2xl tracking-wider text-rose-300">CHƯA ĐÚNG!</span>
                   <span className="text-sm text-rose-300 font-bold bg-rose-950/80 px-3 py-1 rounded-full border border-rose-500/50">
                     -{config.pointsPerWrong || 5} điểm
                   </span>
@@ -145,10 +145,10 @@ export const ParallelDuelPanel: React.FC<ParallelDuelPanelProps> = ({
           <>
             {/* Big Question Container (Solid Team Color, bold white text) */}
             <div className={`flex-1 rounded-2xl p-4 sm:p-5 shadow-md flex flex-col justify-center text-center overflow-y-auto ${theme.cardBg} border ${theme.border}`}>
-              <div className="text-[11px] font-black uppercase tracking-widest text-w-text-main/70 mb-1">
+              <div className="text-[11px] font-black uppercase tracking-widest text-white/80 mb-1">
                 CÂU HỎI SỐ #{playerState.currentQuestionNum}
               </div>
-              <div className="text-sm sm:text-base md:text-lg font-bold leading-relaxed text-w-text-main drop-shadow-sm line-clamp-6">
+              <div className="text-sm sm:text-base md:text-lg font-bold leading-relaxed text-white drop-shadow-sm line-clamp-6">
                 {playerState.currentQuestion.content}
               </div>
             </div>
@@ -207,14 +207,14 @@ export const ParallelDuelPanel: React.FC<ParallelDuelPanelProps> = ({
                 <div className="flex items-center gap-2.5 w-full">
                   <button 
                     onClick={() => onTeacherJudge(true)} 
-                    className="flex-1 py-3.5 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-w-text-main text-xs sm:text-sm font-black rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-1.5"
+                    className="flex-1 py-3.5 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs sm:text-sm font-black rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-1.5"
                   >
                     <CheckCircle2 className="w-5 h-5" />
                     ĐÚNG (+{config.pointsPerCorrect || 10}đ)
                   </button>
                   <button 
                     onClick={() => onTeacherJudge(false)} 
-                    className="flex-1 py-3.5 bg-rose-600 hover:bg-rose-500 active:scale-95 text-w-text-main text-xs sm:text-sm font-black rounded-xl shadow-lg shadow-rose-600/30 transition-all flex items-center justify-center gap-1.5"
+                    className="flex-1 py-3.5 bg-rose-600 hover:bg-rose-500 active:scale-95 text-white text-xs sm:text-sm font-black rounded-xl shadow-lg shadow-rose-600/30 transition-all flex items-center justify-center gap-1.5"
                   >
                     <XCircle className="w-5 h-5" />
                     SAI (-{config.pointsPerWrong || 5}đ)

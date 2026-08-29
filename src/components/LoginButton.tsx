@@ -53,12 +53,12 @@ export const LoginButton: React.FC<LoginButtonProps> = ({ onCloudBanksLoaded }) 
           <span className="truncate text-[11px] font-bold text-w-text-main">
             {user.displayName || user.email?.split('@')[0]}
           </span>
-          <span className="text-[9px] text-[#637559] truncate font-medium">
+          <span className="text-[9px] text-w-text-muted truncate font-medium">
             {user.email}
           </span>
         </div>
         {isAdmin && (
-          <span className="bg-w-primary-dark text-[#E9D58F] px-1.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-0.5">
+          <span className="bg-w-primary-dark text-amber-500 px-1.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-0.5">
             <Shield className="w-2.5 h-2.5" />
             ADMIN
           </span>
@@ -66,7 +66,7 @@ export const LoginButton: React.FC<LoginButtonProps> = ({ onCloudBanksLoaded }) 
         <button
           onClick={logout}
           title="Đăng xuất"
-          className="p-1.5 hover:bg-w-accent-muted hover:text-[#E05252] rounded-full text-w-primary-dark transition ml-0.5"
+          className="p-1.5 hover:bg-w-accent-muted hover:text-rose-500 rounded-full text-w-primary-dark transition ml-0.5 cursor-pointer"
         >
           <LogOut className="w-3.5 h-3.5" />
         </button>
@@ -77,7 +77,7 @@ export const LoginButton: React.FC<LoginButtonProps> = ({ onCloudBanksLoaded }) 
   return (
     <button
       onClick={handleLogin}
-      className="flex items-center gap-1.5 px-3.5 py-2 bg-w-bg-card hover:bg-w-bg-main text-w-primary-dark font-[800] text-xs rounded-[18px] border border-[#C9D8B8] shadow-[0_2px_8px_rgba(79,104,60,0.06)] hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+      className="flex items-center gap-1.5 px-3.5 py-2 bg-w-bg-card hover:bg-w-accent-light text-w-primary-dark font-[800] text-xs rounded-[18px] border border-w-border shadow-[0_2px_8px_rgba(79,104,60,0.06)] hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
       title="Đăng nhập tài khoản Google để lưu trữ đám mây & không giới hạn lượt chơi"
     >
       <LogIn className="w-3.5 h-3.5 text-w-primary" />

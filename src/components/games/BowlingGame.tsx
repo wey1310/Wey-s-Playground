@@ -19,6 +19,7 @@ import { BowlingLane } from './bowling/BowlingLane';
 import { BowlingScoreboard } from './bowling/BowlingScoreboard';
 import { BowlingTeacherPanel } from './bowling/BowlingTeacherPanel';
 import { soundFx } from '../../utils/audio';
+import { MathChemRenderer } from '../../utils/mathChemFormatter';
 
 interface BowlingGameProps {
   config: GameSetupConfig;
@@ -272,7 +273,7 @@ export const BowlingGame: React.FC<BowlingGameProps> = ({
             </div>
 
             <h3 className="text-base sm:text-lg font-black text-zinc-100 mb-4 leading-relaxed">
-              {currentQuestion.content}
+              <MathChemRenderer text={currentQuestion.content} />
             </h3>
 
             {currentQuestion.options && currentQuestion.options.length > 0 && (
@@ -302,7 +303,7 @@ export const BowlingGame: React.FC<BowlingGameProps> = ({
                         <span className="w-7 h-7 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-black text-amber-600">
                           {String.fromCharCode(65 + idx)}
                         </span>
-                        <span>{option}</span>
+                        <span><MathChemRenderer text={option} /></span>
                       </div>
                       {showSuccess && <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />}
                       {showFailure && <XCircle className="w-5 h-5 text-rose-400 shrink-0" />}

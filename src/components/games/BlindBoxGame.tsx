@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundFx } from '../../utils/audio';
+import { MathChemRenderer } from '../../utils/mathChemFormatter';
 
 interface GameProps {
   config: GameSetupConfig;
@@ -579,11 +580,13 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
                     Lượt của: {currentTeam.avatar} {currentTeam.name}
                   </span>
                 </div>
-                <h3 className="text-lg sm:text-2xl font-black leading-snug">
-                  {config.mode === 'bank' && activeQuestion 
-                    ? activeQuestion.content 
-                    : `CÂU HỎI SỐ ${activeQuestionNum}`}
-                </h3>
+                <div className="text-lg sm:text-2xl font-black leading-snug">
+                  {config.mode === 'bank' && activeQuestion ? (
+                    <MathChemRenderer text={activeQuestion.content} />
+                  ) : (
+                    `CÂU HỎI SỐ ${activeQuestionNum}`
+                  )}
+                </div>
               </div>
 
               {/* Body */}
@@ -613,7 +616,7 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
                             {label}
                           </div>
                           <span className="text-sm sm:text-base font-bold text-slate-200 group-hover:text-w-text-main">
-                            {optionText}
+                            <MathChemRenderer text={optionText} />
                           </span>
                         </button>
                       );

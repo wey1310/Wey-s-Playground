@@ -18,6 +18,7 @@ import confetti from 'canvas-confetti';
 import { GameSetupConfig, Question } from '../../types';
 import { TeaBattleGameState, BattleTeamState, TeaCup } from './tea_battle/teaBattleTypes';
 import { TeaBattleEngine } from './tea_battle/teaBattleEngine';
+import { MathChemRenderer } from '../../utils/mathChemFormatter';
 import { TeaCupGrid } from './tea_battle/TeaCupGrid';
 import { TeaBattleScoreboard } from './tea_battle/TeaBattleScoreboard';
 import { TeaBattleSequenceModal } from './tea_battle/TeaBattleSequenceModal';
@@ -269,7 +270,7 @@ export const TeaBattleGame: React.FC<TeaBattleGameProps> = ({
             {/* Question Text */}
             <div className="bg-white/70 backdrop-blur-sm border border-amber-500/30 rounded-2xl p-5 mb-6 text-center">
               <h2 className="text-lg sm:text-2xl font-black text-w-text-main leading-relaxed">
-                {currentQuestion.content}
+                <MathChemRenderer text={currentQuestion.content} />
               </h2>
             </div>
 
@@ -288,7 +289,7 @@ export const TeaBattleGame: React.FC<TeaBattleGameProps> = ({
                       <span className="w-8 h-8 rounded-xl bg-amber-500 text-black font-black text-sm flex items-center justify-center shrink-0">
                         {label}
                       </span>
-                      <span className="flex-1">{option}</span>
+                      <span className="flex-1"><MathChemRenderer text={option} /></span>
                     </button>
                   );
                 })}

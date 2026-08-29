@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { GameSetupConfig, Question, AnswerLog } from '../../types';
 import { Check, X, ShieldAlert, Award } from 'lucide-react';
 import { soundFx } from '../../utils/audio';
+import { MathChemRenderer } from '../../utils/mathChemFormatter';
 
 interface GameProps {
   config: GameSetupConfig;
@@ -125,16 +126,18 @@ export const TowerGame: React.FC<GameProps> = ({ config, questions, onGameEnd })
        {showQuestion ? (
          <div className="absolute inset-0 bg-white/70 backdrop-blur-sm backdrop-blur-sm z-50 flex items-center justify-center p-4">
            <div className="bg-[#FDFBF7] p-8 rounded-3xl max-w-xl w-full shadow-2xl transform scale-100 animate-in zoom-in-95 duration-200 border-2 border-[#E9E4D4]">
-             <h3 className="text-xl font-bold text-slate-800 mb-6 text-center leading-relaxed">{question?.content || 'Câu hỏi thủ công (đọc cho học sinh)'}</h3>
+             <h3 className="text-xl font-bold text-slate-800 mb-6 text-center leading-relaxed">
+               {question?.content ? <MathChemRenderer text={question.content} /> : 'Câu hỏi thủ công (đọc cho học sinh)'}
+             </h3>
              <div className="flex flex-col gap-4">
-                <button onClick={() => handleAnswer(true)} className="py-4 bg-emerald-100 hover:bg-emerald-200 border-2 border-emerald-300 text-emerald-800 rounded-2xl font-black text-lg shadow-sm flex items-center justify-center gap-2"><Check className="w-6 h-6"/> Trả Lời Đúng</button>
-                <button onClick={() => handleAnswer(false)} className="py-4 bg-rose-100 hover:bg-rose-200 border-2 border-rose-300 text-rose-800 rounded-2xl font-black text-lg shadow-sm flex items-center justify-center gap-2"><X className="w-6 h-6"/> Trả Lời Sai</button>
+                <button onClick={() => handleAnswer(true)} className="py-4 bg-emerald-100 hover:bg-emerald-200 border-2 border-emerald-300 text-emerald-800 rounded-2xl font-black text-lg shadow-sm flex items-center justify-center gap-2 cursor-pointer"><Check className="w-6 h-6"/> Trả Lời Đúng</button>
+                <button onClick={() => handleAnswer(false)} className="py-4 bg-rose-100 hover:bg-rose-200 border-2 border-rose-300 text-rose-800 rounded-2xl font-black text-lg shadow-sm flex items-center justify-center gap-2 cursor-pointer"><X className="w-6 h-6"/> Trả Lời Sai</button>
              </div>
            </div>
          </div>
        ) : (
          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
-           <button onClick={() => setShowQuestion(true)} className="px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:scale-105 text-w-text-main font-black rounded-full shadow-xl transition-all border-4 border-white">Lượt của {activeTeam.name}</button>
+           <button onClick={() => setShowQuestion(true)} className="px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:scale-105 text-white font-black rounded-full shadow-xl transition-all border-4 border-white cursor-pointer">Lượt của {activeTeam.name}</button>
          </div>
        )}
     </div>

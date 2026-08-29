@@ -1272,11 +1272,11 @@ export const GameQuickGuideModal: React.FC<GameQuickGuideModalProps> = ({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-[#FFFDFB] border-2 border-w-border rounded-[24px] max-w-lg w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto animate-scale-up">
+      <div className="bg-w-bg-card border-2 border-w-border rounded-[24px] max-w-lg w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto animate-scale-up wey-paper-card">
         {/* Header */}
-        <div className="bg-[#F8F4E6] p-4 sm:p-5 border-b border-w-border flex items-center justify-between gap-3">
+        <div className="bg-w-bg-main p-4 sm:p-5 border-b border-w-border flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-white border border-[#D8CFAF] shadow-2xs flex items-center justify-center text-2xl shrink-0">
+            <div className="w-11 h-11 rounded-2xl bg-w-bg-card border border-w-border shadow-2xs flex items-center justify-center text-2xl shrink-0">
               {guide.icon}
             </div>
             <div>
@@ -1293,7 +1293,7 @@ export const GameQuickGuideModal: React.FC<GameQuickGuideModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-500 hover:text-slate-800 border border-[#D8CFAF] transition cursor-pointer shrink-0"
+            className="p-1.5 rounded-xl bg-w-bg-card hover:bg-w-accent-light text-w-text-muted hover:text-w-text-main border border-w-border transition cursor-pointer shrink-0"
             title="Đóng"
           >
             <X className="w-5 h-5" />
@@ -1306,7 +1306,7 @@ export const GameQuickGuideModal: React.FC<GameQuickGuideModalProps> = ({
           <div className="bg-w-accent-light/70 p-3 rounded-xl border border-w-accent-border flex items-start gap-2.5 text-w-text-main">
             <Trophy className="w-4 h-4 text-w-primary shrink-0 mt-0.5" />
             <div className="leading-relaxed">
-              <strong className="font-extrabold text-[#293B23]">Mục tiêu: </strong>
+              <strong className="font-extrabold text-w-primary-dark">Mục tiêu: </strong>
               {guide.objective}
             </div>
           </div>
@@ -1321,9 +1321,9 @@ export const GameQuickGuideModal: React.FC<GameQuickGuideModalProps> = ({
               {guide.steps.map((step, idx) => (
                 <div
                   key={idx}
-                  className="p-2.5 rounded-xl bg-white border border-[#E8E1CE] flex items-start gap-2.5 text-slate-700 leading-relaxed shadow-2xs"
+                  className="p-2.5 rounded-xl bg-w-bg-alt border border-w-border flex items-start gap-2.5 text-w-text-main leading-relaxed shadow-2xs"
                 >
-                  <span className="w-5 h-5 rounded-full bg-w-accent-light text-w-primary-dark font-black text-[11px] flex items-center justify-center shrink-0 border border-w-accent-border">
+                  <span className="w-5 h-5 rounded-full bg-w-accent-light text-w-primary font-black text-[11px] flex items-center justify-center shrink-0 border border-w-accent-border">
                     {idx + 1}
                   </span>
                   <span className="pt-0.5">{step}</span>
@@ -1334,11 +1334,11 @@ export const GameQuickGuideModal: React.FC<GameQuickGuideModalProps> = ({
 
           {/* Cách tính điểm */}
           <div className="space-y-2">
-            <h4 className="font-black uppercase tracking-wider text-amber-800 flex items-center gap-1.5 text-[11px]">
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+            <h4 className="font-black uppercase tracking-wider text-amber-500 flex items-center gap-1.5 text-[11px]">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
               <span>Quy chuẩn tính điểm:</span>
             </h4>
-            <div className="p-2.5 rounded-xl bg-w-bg-card border border-amber-200 space-y-1.5 text-amber-950 font-medium">
+            <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-400/30 space-y-1.5 text-w-text-main font-medium">
               {guide.scoring.map((score, idx) => (
                 <div key={idx} className="flex items-center gap-2">
                   <span className="text-amber-500">⭐</span>
@@ -1350,10 +1350,10 @@ export const GameQuickGuideModal: React.FC<GameQuickGuideModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="bg-[#F8F5E9] p-3.5 sm:p-4 border-t border-w-border flex items-center justify-between gap-3">
+        <div className="bg-w-bg-main p-3.5 sm:p-4 border-t border-w-border flex items-center justify-between gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl border border-slate-300 transition cursor-pointer"
+            className="px-4 py-2 bg-w-bg-card hover:bg-w-accent-light text-w-text-main text-xs font-bold rounded-xl border border-w-border transition cursor-pointer"
           >
             Đã Hiểu
           </button>
@@ -1364,9 +1364,9 @@ export const GameQuickGuideModal: React.FC<GameQuickGuideModalProps> = ({
                 onClose();
                 onStartGame();
               }}
-              className="px-4 py-2 bg-w-primary hover:bg-w-primary-hover text-white text-xs font-black rounded-xl shadow-sm transition flex items-center gap-2 cursor-pointer"
+              className="px-4 py-2 wey-btn-primary text-xs font-black rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer"
             >
-              <Play className="w-3.5 h-3.5 fill-current text-[#E9D58F]" />
+              <Play className="w-3.5 h-3.5 fill-current" />
               <span>Vào Chơi Game</span>
             </button>
           )}

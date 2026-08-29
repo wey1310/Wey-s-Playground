@@ -176,11 +176,11 @@ export const QuestionDisplayModal: React.FC<QuestionDisplayModalProps> = ({
               <h2 className="text-base sm:text-lg font-[800] text-w-text-main flex items-center gap-2">
                 <span>{titlePrefix} #{questionNumber}</span>
                 {mode === 'bank' ? (
-                  <span className="text-[11px] font-[800] text-w-primary-hover bg-[#E2EED3] px-2.5 py-0.5 rounded-full border border-w-accent-border">
+                  <span className="text-[11px] font-[800] text-w-primary bg-w-accent-light px-2.5 py-0.5 rounded-full border border-w-accent-border">
                     Ngân Hàng
                   </span>
                 ) : (
-                  <span className="text-[11px] font-[800] text-[#8C3A50] bg-[#FCE8EE] px-2.5 py-0.5 rounded-full border border-[#F2B6C7]">
+                  <span className="text-[11px] font-[800] text-amber-600 bg-amber-500/15 px-2.5 py-0.5 rounded-full border border-amber-400/30">
                     Chế Độ Số
                   </span>
                 )}
@@ -237,12 +237,12 @@ export const QuestionDisplayModal: React.FC<QuestionDisplayModalProps> = ({
                       const isOptionCorrect = Number(question.correct) === oIdx;
                       const isUserSelected = selectedOptionIdx === oIdx;
 
-                      let buttonStyle = "bg-white border-w-border text-w-text-main hover:border-w-primary hover:bg-w-bg-main shadow-sm";
+                      let buttonStyle = "bg-w-bg-card border-w-border text-w-text-main hover:border-w-primary hover:bg-w-bg-alt shadow-xs";
                       if (showResult) {
                         if (isOptionCorrect) {
-                          buttonStyle = "bg-[#E2EED3] border-w-accent-border text-w-text-main font-[800] shadow-sm ring-2 ring-[#8FA875]";
+                          buttonStyle = "bg-w-accent-light border-w-accent-border text-w-text-main font-[800] shadow-xs ring-2 ring-emerald-500/50";
                         } else if (isUserSelected && !isOptionCorrect) {
-                          buttonStyle = "bg-[#FCE8EE] border-[#F2B6C7] text-[#8C3A50] font-[800] shadow-sm";
+                          buttonStyle = "bg-rose-500/15 border-rose-400/30 text-rose-600 font-[800] shadow-xs";
                         } else {
                           buttonStyle = "bg-w-bg-card border-w-border text-w-text-muted opacity-50";
                         }
@@ -258,9 +258,9 @@ export const QuestionDisplayModal: React.FC<QuestionDisplayModalProps> = ({
                           <div className="flex items-center gap-3">
                             <span className={`w-7 h-7 rounded-[12px] font-mono font-[800] text-xs flex items-center justify-center shrink-0 ${
                               showResult && isOptionCorrect
-                                ? 'bg-w-primary text-white'
+                                ? 'bg-emerald-500 text-white'
                                 : showResult && isUserSelected
-                                ? 'bg-[#E05252] text-white'
+                                ? 'bg-rose-500 text-white'
                                 : 'bg-w-accent-light text-w-text-main'
                             }`}>
                               {String.fromCharCode(65 + oIdx)}
@@ -269,12 +269,12 @@ export const QuestionDisplayModal: React.FC<QuestionDisplayModalProps> = ({
                           </div>
 
                           {showResult && isOptionCorrect && (
-                            <span className="flex items-center gap-1 text-xs font-[800] text-w-primary-hover bg-[#E2EED3] px-2 py-0.5 rounded-lg shrink-0">
+                            <span className="flex items-center gap-1 text-xs font-[800] text-emerald-600 bg-emerald-500/15 border border-emerald-400/30 px-2 py-0.5 rounded-lg shrink-0">
                               <Check className="w-4 h-4" /> Đúng
                             </span>
                           )}
                           {showResult && isUserSelected && !isOptionCorrect && (
-                            <span className="flex items-center gap-1 text-xs font-[800] text-[#8C3A50] bg-[#FCE8EE] px-2 py-0.5 rounded-lg shrink-0">
+                            <span className="flex items-center gap-1 text-xs font-[800] text-rose-600 bg-rose-500/15 border border-rose-400/30 px-2 py-0.5 rounded-lg shrink-0">
                               <X className="w-4 h-4" /> Sai
                             </span>
                           )}
@@ -296,12 +296,12 @@ export const QuestionDisplayModal: React.FC<QuestionDisplayModalProps> = ({
                       const isExpected = Boolean(question.correct) === choice;
                       const isSelected = selectedTfChoice === choice;
 
-                      let style = "bg-white border-w-border text-w-text-main hover:border-w-primary shadow-sm";
+                      let style = "bg-w-bg-card border-w-border text-w-text-main hover:border-w-primary shadow-xs";
                       if (showResult) {
                         if (isExpected) {
-                          style = "bg-[#E2EED3] border-w-accent-border text-w-text-main font-[800] shadow-sm ring-2 ring-[#8FA875]";
+                          style = "bg-w-accent-light border-w-accent-border text-w-text-main font-[800] shadow-xs ring-2 ring-emerald-500/50";
                         } else if (isSelected && !isExpected) {
-                          style = "bg-[#FCE8EE] border-[#F2B6C7] text-[#8C3A50] font-[800] shadow-sm";
+                          style = "bg-rose-500/15 border-rose-400/30 text-rose-600 font-[800] shadow-xs";
                         } else {
                           style = "bg-w-bg-card border-w-border text-w-text-muted opacity-50";
                         }
@@ -329,15 +329,15 @@ export const QuestionDisplayModal: React.FC<QuestionDisplayModalProps> = ({
                   {!showTextAnswer ? (
                     <button
                       onClick={() => setShowTextAnswer(true)}
-                      className="w-full py-3 bg-w-accent-light hover:bg-w-accent-muted text-w-text-main font-[800] text-xs rounded-[18px] transition flex items-center justify-center gap-2 border border-w-accent-border shadow-sm cursor-pointer"
+                      className="w-full py-3 wey-btn-secondary text-xs rounded-[18px] flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <Eye className="w-4 h-4" />
+                      <Eye className="w-4 h-4 text-w-primary" />
                       <span>Hiện Đáp Án Chuẩn</span>
                     </button>
                   ) : (
                     <div className="space-y-3">
-                      <div className="p-3 bg-[#E2EED3] border border-w-accent-border rounded-[18px] text-xs text-w-text-main font-[700]">
-                        <span className="text-w-primary-hover uppercase font-[800] tracking-wider block text-[10px] mb-0.5">Đáp án chuẩn:</span>
+                      <div className="p-3 bg-w-accent-light border border-w-accent-border rounded-[18px] text-xs text-w-text-main font-[700]">
+                        <span className="text-w-primary uppercase font-[800] tracking-wider block text-[10px] mb-0.5">Đáp án chuẩn:</span>
                         <span><MathChemRenderer text={String(question.correct)} /></span>
                       </div>
 
@@ -345,13 +345,13 @@ export const QuestionDisplayModal: React.FC<QuestionDisplayModalProps> = ({
                         <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3 pt-1">
                           <button
                             onClick={() => handleJudgeTextQuestion(true)}
-                            className="w-full sm:flex-1 py-3 bg-w-primary hover:bg-w-primary-hover text-white font-[800] text-xs sm:text-sm rounded-[15px] shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer min-h-[44px]"
+                            className="w-full sm:flex-1 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-[800] text-xs sm:text-sm rounded-[15px] shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer min-h-[44px]"
                           >
                             <Check className="w-4 h-4" /> Trả Lời Đúng
                           </button>
                           <button
                             onClick={() => handleJudgeTextQuestion(false)}
-                            className="w-full sm:flex-1 py-3 bg-[#E05252] hover:bg-[#C84040] text-white font-[800] text-xs sm:text-sm rounded-[15px] shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer min-h-[44px]"
+                            className="w-full sm:flex-1 py-3 wey-btn-danger text-xs sm:text-sm rounded-[15px] shadow-xs min-h-[44px]"
                           >
                             <X className="w-4 h-4" /> Trả Lời Sai
                           </button>
@@ -365,7 +365,7 @@ export const QuestionDisplayModal: React.FC<QuestionDisplayModalProps> = ({
           ) : (
             /* NUMBER MODE */
             <div className="py-4 space-y-4 text-center">
-              <div className="inline-flex p-3 bg-[#E2EED3] text-w-primary-hover rounded-[20px] border border-w-accent-border shadow-sm">
+              <div className="inline-flex p-3 bg-w-accent-light text-w-primary rounded-[20px] border border-w-accent-border shadow-xs">
                 <HelpCircle className="w-8 h-8" />
               </div>
               <div>
@@ -379,13 +379,13 @@ export const QuestionDisplayModal: React.FC<QuestionDisplayModalProps> = ({
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3 pt-2">
                   <button
                     onClick={() => handleJudgeNumberMode(true)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-w-primary hover:bg-w-primary-hover text-white font-[800] text-xs sm:text-sm rounded-[18px] shadow-md transition cursor-pointer min-h-[44px]"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-[800] text-xs sm:text-sm rounded-[18px] shadow-md transition cursor-pointer min-h-[44px]"
                   >
                     <Check className="w-4 h-4" /> Trả Lời ĐÚNG (+10đ)
                   </button>
                   <button
                     onClick={() => handleJudgeNumberMode(false)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-[#E05252] hover:bg-[#C84040] text-white font-[800] text-xs sm:text-sm rounded-[18px] shadow-md transition cursor-pointer min-h-[44px]"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 wey-btn-danger text-xs sm:text-sm rounded-[18px] shadow-md cursor-pointer min-h-[44px]"
                   >
                     <X className="w-4 h-4" /> Trả Lời SAI (0đ)
                   </button>
@@ -397,10 +397,10 @@ export const QuestionDisplayModal: React.FC<QuestionDisplayModalProps> = ({
           {/* Result Feedback Banner */}
           {showResult && (
             <div className="space-y-3 pt-2 animate-fade-in">
-              <div className={`p-4 rounded-[20px] text-center font-[800] text-sm sm:text-base border shadow-sm flex items-center justify-center gap-2 ${
+              <div className={`p-4 rounded-[20px] text-center font-[800] text-sm sm:text-base border shadow-xs flex items-center justify-center gap-2 ${
                 isCorrect
-                  ? 'bg-[#E2EED3] border-w-accent-border text-w-text-main'
-                  : 'bg-[#FCE8EE] border-[#F2B6C7] text-[#8C3A50]'
+                  ? 'bg-w-accent-light border-w-accent-border text-w-text-main'
+                  : 'bg-rose-500/15 border-rose-400/30 text-rose-600'
               }`}>
                 {isCorrect ? (
                   <>
@@ -409,7 +409,7 @@ export const QuestionDisplayModal: React.FC<QuestionDisplayModalProps> = ({
                   </>
                 ) : (
                   <>
-                    <AlertCircle className="w-5 h-5 text-[#E05252] shrink-0" />
+                    <AlertCircle className="w-5 h-5 text-rose-500 shrink-0" />
                     <span>TRẢ LỜI CHƯA ĐÚNG! 0 ĐIỂM</span>
                   </>
                 )}
@@ -418,8 +418,8 @@ export const QuestionDisplayModal: React.FC<QuestionDisplayModalProps> = ({
               {/* Explanation in Bank mode */}
               {mode === 'bank' && question?.explanation && (
                 <div className="p-3 bg-w-bg-main border border-w-border rounded-[18px] text-xs text-w-text-main font-[600]">
-                  <span className="font-[800] text-w-primary-dark">💡 Giải thích: </span>
-                  <span>{question.explanation}</span>
+                  <span className="font-[800] text-w-primary">💡 Giải thích: </span>
+                  <MathChemRenderer text={question.explanation} />
                 </div>
               )}
 
@@ -434,7 +434,7 @@ export const QuestionDisplayModal: React.FC<QuestionDisplayModalProps> = ({
                     value={manualCorrectText}
                     onChange={(e) => setManualCorrectText(e.target.value)}
                     placeholder="VD: Đáp án A hoặc Lời giải..."
-                    className="w-full bg-[#FFFDF7] border border-w-border text-w-text-main rounded-[14px] px-3 py-2 text-xs font-[600] focus:outline-none focus:border-w-primary shadow-sm"
+                    className="w-full bg-w-bg-card border border-w-border text-w-text-main rounded-[14px] px-3 py-2 text-xs font-[600] focus:outline-none focus:border-w-primary shadow-sm"
                   />
                 </div>
               )}

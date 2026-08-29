@@ -1,4 +1,4 @@
-import { type QuestionBank, type AppUser, ADMIN_EMAILS, type UserActivityLog, type GameSessionRecord } from "../types";
+import { type QuestionBank, type AppUser, ADMIN_EMAILS, type UserActivityLog, type GameSessionRecord, type WebConfig } from "../types";
 import { db, auth } from './firebase';
 import {
   collection,
@@ -434,3 +434,38 @@ export async function getCloudQuestionBanks(userId?: string): Promise<QuestionBa
     return [];
   }
 }
+
+/**
+ * Fetch Web Configuration (including custom game avatars, theme, title) from Firestore
+ */
+export async function getWebConfigCloud(): Promise<Partial<WebConfig> | null> {
+  try {
+    const docRef = doc(db, 'system', 'webConfig');
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data() as Partial<WebConfig>;
+    }
+    return null;
+  } catch (e) {
+    console.warn('Error fetching webConfig from Firestore:', e);
+    return null;
+  }
+}
+
+/**
+ * Save Web Configuration to Firestore for cross-client persistence
+ */
+export async function saveWebConfigCloud(config: WebConfig): Promise<boolean> {
+  try {
+    const docRef = doc(db, 'system', 'webConfig');
+    await setDoc(docRef, {
+      ...config,
+      updatedAt: new Date().toISOString(),
+    }, { merge: true });
+    return true;
+  } catch (e) {
+    console.warn('Error saving webConfig to Firestore:', e);
+    return false;
+  }
+}
+

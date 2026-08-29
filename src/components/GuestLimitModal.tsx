@@ -52,15 +52,15 @@ export const GuestLimitModal: React.FC<GuestLimitModalProps> = ({
 
         {/* Modal Body */}
         <div className="p-6 space-y-5 text-w-text-main">
-          <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl space-y-2 text-center">
-            <div className="text-2xl font-black text-amber-900">
+          <div className="p-4 bg-amber-500/10 border border-amber-400/30 rounded-2xl space-y-2 text-center">
+            <div className="text-2xl font-black text-amber-500">
               {playsUsed}/{maxPlays} Lượt
             </div>
-            <p className="text-xs font-bold text-amber-800">
+            <p className="text-xs font-bold text-w-text-main">
               Bạn đã sử dụng hết số lượt chơi miễn phí trong ngày hôm nay.
             </p>
-            <div className="text-[11px] font-mono text-amber-700 bg-white/80 py-1 px-2.5 rounded-lg inline-block border border-amber-200">
-              Mã khách (Guest ID): <span className="font-bold">{guestId}</span>
+            <div className="text-[11px] font-mono text-w-text-muted bg-w-bg-card py-1 px-2.5 rounded-lg inline-block border border-w-border">
+              Mã khách (Guest ID): <span className="font-bold text-w-text-main">{guestId}</span>
             </div>
           </div>
 

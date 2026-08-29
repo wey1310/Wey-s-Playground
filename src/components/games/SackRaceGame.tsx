@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Trophy, Sparkles, Clock, Zap, CheckCircle2, XCircle, Award, Flag, ChevronRight } from 'lucide-react';
 import { GameSetupConfig, Question, Team, AnswerLog } from '../../types';
 import { soundFx } from '../../utils/audio';
+import { MathChemRenderer } from '../../utils/mathChemFormatter';
 
 interface SackRaceGameProps {
   config: GameSetupConfig;
@@ -316,15 +317,15 @@ export const SackRaceGame: React.FC<SackRaceGameProps> = ({
       <div className="w-full bg-w-bg-card border-2 border-w-primary-dark/20 rounded-3xl p-4 sm:p-6 shadow-sm wey-paper-card text-center space-y-4">
         <div className="flex items-center justify-between text-xs font-[800] text-w-text-muted">
           <span className="flex items-center gap-1.5">
-            <Zap className="w-4 h-4 text-[#E9D58F]" />
+            <Zap className="w-4 h-4 text-amber-500" />
             Lượt nhảy của: <strong className="text-w-primary-dark">{activeTeam.name}</strong>
           </span>
           <span>Đúng: Tiến +{stepPerCorrect} bước (+{pointsCorrect}đ)</span>
         </div>
 
-        <h3 className="text-lg sm:text-xl font-[800] text-w-text-main max-w-3xl mx-auto leading-relaxed">
-          {currentQuestion?.content}
-        </h3>
+        <div className="text-lg sm:text-xl font-[800] text-w-text-main max-w-3xl mx-auto leading-relaxed">
+          {currentQuestion?.content && <MathChemRenderer text={currentQuestion.content} />}
+        </div>
 
         {/* Options */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-3xl mx-auto pt-2">
@@ -353,7 +354,7 @@ export const SackRaceGame: React.FC<SackRaceGameProps> = ({
                 <span className="w-7 h-7 rounded-xl bg-white/70 backdrop-blur-sm flex items-center justify-center font-[900] text-xs shrink-0">
                   {String.fromCharCode(65 + idx)}
                 </span>
-                <span className="flex-1">{opt}</span>
+                <span className="flex-1"><MathChemRenderer text={opt} /></span>
               </button>
             );
           })}

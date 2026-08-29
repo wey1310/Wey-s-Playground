@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { GameSetupConfig, Question, AnswerLog } from '../../types';
 import { soundFx } from '../../utils/audio';
 import { Shield, Zap, Flame, Dices, Check, X } from 'lucide-react';
+import { MathChemRenderer } from '../../utils/mathChemFormatter';
 
 interface BettingGameProps {
   config: GameSetupConfig;
@@ -212,14 +213,16 @@ export const BettingGame: React.FC<BettingGameProps> = ({ config, questions, onG
                   <span className="text-xs font-extrabold text-amber-600 font-mono">
                     CÂU HỎI #{currentQuestionNum}:
                   </span>
-                  <p className="text-base font-bold text-w-text-main">{currentQuestion.content}</p>
+                  <div className="text-base font-bold text-w-text-main">
+                    <MathChemRenderer text={currentQuestion.content} />
+                  </div>
 
                   {currentQuestion.type === 'mcq' && currentQuestion.options && (
                     <div className="grid grid-cols-2 gap-2 pt-1">
                       {currentQuestion.options.map((opt, oIdx) => (
                         <div key={oIdx} className="text-xs p-2 bg-w-bg-card border border-w-border rounded-lg text-w-primary-dark">
                           <span className="font-bold text-amber-600 mr-1">{String.fromCharCode(65 + oIdx)}.</span>
-                          <span>{opt}</span>
+                          <span><MathChemRenderer text={opt} /></span>
                         </div>
                       ))}
                     </div>

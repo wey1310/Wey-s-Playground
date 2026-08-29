@@ -431,241 +431,6 @@ apiRouter.get("/ai-usage", async (req, res) => {
   }
 });
 
-// AI Question Generator - Chuẩn CT GDPT 2018 & SGK Kết nối tri thức với cuộc sống
-apiRouter.post("/generate-questions", async (req, res) => {
-  const mode = req.body.aiMode || "balanced";
-  await withAiQuota(req, res, mode, async (req, res, modelConfig) => {
-    const { 
-      subject, 
-      grade, 
-      topic, 
-      types, 
-      count = 10,
-      learningOutcome,
-      cognitiveLevels,
-      matrix = 'standard',
-      competencyFocus,
-      textbookEdition = 'Kết nối tri thức với cuộc sống'
-    } = req.body;
-    
-    if (!topic || !subject) {
-      res.status(400).json({ success: false, error: "Môn học và tên chủ đề bài học là bắt buộc!" });
-      return;
-    }
-    
-    // Phòng vệ an toàn tuyệt đối cho mảng types từ Client gửi lên
-    const safeTypes = Array.isArray(types) && types.length > 0 ? types : ['mcq'];
-    const typeMapping: Record<string, string> = {
-      'mcq': 'Trắc nghiệm 4 lựa chọn (A, B, C, D)',
-      'tf': 'Đúng / Sai (True / False)',
-      'text': 'Trả lời ngắn / Điền khuyết'
-    };
-    const typeString = safeTypes.map(t => typeMapping[t] || t).join(", ");
-
-    const ai = getGeminiClient((req as any).resolvedApiKey);
-    let safeCount = Math.min(Math.max(1, count), 20); 
-
-    // Phân bổ ma trận nhận thức
-    const cognitiveInfo = Array.isArray(cognitiveLevels) && cognitiveLevels.length > 0
-      ? `Tập trung vào các mức độ nhận thức sau: ${cognitiveLevels.join(', ')}.`
-      : matrix === 'practice'
-      ? `Phân bổ mức độ nhận thức theo ma trận Ôn tập & Củng cố: ~50% Nhận biết, ~30% Thông hiểu, ~20% Vận dụng.`
-      : matrix === 'advanced'
-      ? `Phân bổ mức độ nhận thức theo ma trận Phát triển năng lực: ~20% Nhận biết, ~30% Thông hiểu, ~30% Vận dụng, ~20% Vận dụng cao.`
-      : matrix === 'balanced'
-      ? `Phân bổ đều 4 mức độ nhận thức: Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao (~25% mỗi mức).`
-      : `Phân bổ mức độ nhận thức theo ma trận chuẩn Bộ GD&ĐT: ~40% Nhận biết, ~30% Thông hiểu, ~20% Vận dụng, ~10% Vận dụng cao.`;
-
-    const outcomeContext = learningOutcome && learningOutcome.trim()
-      ? `- Yêu cầu cần đạt (YCCĐ) trọng tâm người dạy yêu cầu: "${learningOutcome.trim()}"`
-      : `- Tự động xác định chính xác các YCCĐ cốt lõi của bài học theo khung Chương trình GDPT 2018 (Thông tư 32/2018/TT-BGDĐT) môn ${subject} ${grade}.`;
-
-    const competencyContext = competencyFocus && competencyFocus.trim()
-      ? `- Trọng tâm phát triển năng lực: "${competencyFocus.trim()}"`
-      : `- Phát triển toàn diện các năng lực đặc thù của môn ${subject} và năng lực chung (giải quyết vấn đề, tự chủ - tự học).`;
-    
-    const prompt = `YÊU CẦU BIÊN SOẠN CÂU HỎI KHẢO THÍ:
-- Môn học: ${subject}
-- Khối/Lớp: ${grade || "Chung"}
-- Tên bài học / Chủ đề yêu cầu: "${topic}"
-- Bộ sách giáo khoa chuẩn: ${textbookEdition} (Nhà xuất bản Giáo dục Việt Nam)
-- Khung chương trình chuẩn: Chương trình Giáo dục Phổ thông 2018 (Ban hành kèm Thông tư 32/2018/TT-BGDĐT)
-- Số lượng câu hỏi cần tạo nếu hợp lệ: ${safeCount} câu
-- Định dạng câu hỏi: ${typeString}
-${outcomeContext}
-${competencyContext}
-- Ma trận phân bổ nhận thức: ${cognitiveInfo}
-
-QUY TRÌNH THẨM ĐỊNH & BIÊN SOẠN BẮT BUỘC:
-1. BƯỚC 1: THẨM ĐỊNH TÍNH HỢP LỆ VỚI CT GDPT 2018 VÀ SGK KẾT NỐI TRI THỨC
-   - Nếu chủ đề "${topic}" hoặc môn "${subject}" KHÔNG THUỘC phạm vi chương trình giáo dục phổ thông (K-12) của Bộ Giáo dục & Đào tạo Việt Nam, hoặc là nội dung phi giáo dục (cờ bạc, bạo lực, văn hóa phẩm độc hại, hack, thông tin giả/xuyên tạc, giải trí không lành mạnh, spam ký tự), hoặc KHÔNG THỂ ánh xạ tới bất kỳ Yêu cầu cần đạt (YCCĐ) nào trong CT GDPT 2018 và SGK Kết nối tri thức:
-     -> BẮT BUỘC TRẢ VỀ: "isValidCurriculum": false, "rejectionReason": "Nêu rõ và lịch sự lý do từ chối sư phạm bằng Tiếng Việt...", "questions": []
-   - Nếu chủ đề hợp lệ:
-     -> ĐẶT "isValidCurriculum": true, "rejectionReason": null, và tiến hành biên soạn đúng ${safeCount} câu hỏi ở Bước 2.
-
-2. BƯỚC 2: QUY TẮC BIÊN SOẠN CHUẨN MỰC SƯ PHẠM
-   - Đúng chuẩn kiến thức, kĩ năng, thuật ngữ và danh pháp khoa học quốc tế mới (Đặc biệt danh pháp Hóa học/KHTN chuẩn IUPAC: alkane, alkene, alkyne, alcohol, aldehyde, ketone, carboxylic acid, ester, amine, amino acid, protein, lipid, carbohydrate, oxygen, hydrogen, sulfur, nitrogen, chlorine, sodium, potassium, calcium, copper, iron, zinc, aluminium, oxide, hydroxide, sulfate, chloride, nitrate, carbonate, enthalpy, entropy...).
-   - Thể hiện sâu sắc tinh thần "Kết nối tri thức với cuộc sống": Câu hỏi gắn liền thực tiễn sinh động, hiện tượng tự nhiên đời sống, ứng dụng công nghệ, bảo vệ môi trường, bối cảnh đất nước và con người Việt Nam.
-   - Phân hóa rõ ràng 4 mức độ nhận thức: 'Nhận biết', 'Thông hiểu', 'Vận dụng', 'Vận dụng cao'. Mỗi câu phải ghi rõ trường cognitiveLevel.
-   - Với mỗi câu hỏi, chỉ rõ Yêu cầu cần đạt (learningOutcome) và Năng lực đặc thù (competency) được đánh giá.
-   - Câu trắc nghiệm (mcq) phải có 4 phương án A, B, C, D phân biệt, phương án nhiễu có tính sư phạm cao.
-   - Lời giải thích (explanation) phải chi tiết, nêu rõ căn cứ bài học trong SGK ${textbookEdition} và các bước lập luận/giải.`;
-    
-    if (prompt.length > 10000) {
-      throw new Error("Dữ liệu đầu vào quá dài. Tối đa 10.000 ký tự.");
-    }
-
-    const response = await ai.models.generateContent({
-      model: modelConfig.model,
-      contents: prompt,
-      config: {
-        systemInstruction: `Bạn là Chuyên gia Khảo thí và Đánh giá Giáo dục Quốc gia Việt Nam kiêm Tác giả bộ sách giáo khoa "Kết nối tri thức với cuộc sống" (NXB Giáo dục Việt Nam). Bạn tuân thủ tuyệt đối Chương trình Giáo dục phổ thông 2018 (Thông tư 32/2018/TT-BGDĐT). Bạn có nghĩa vụ thẩm định nghiêm ngặt tính sư phạm và BẮT BUỘC TỪ CHỐI (isValidCurriculum = false) mọi chủ đề hoặc yêu cầu đầu vào không thuộc hoặc không thể ánh xạ vào CT GDPT 2018 và SGK Kết nối tri thức. Khi hợp lệ, bạn tạo ra các câu hỏi mẫu mực, chuẩn danh pháp khoa học mới và giàu tính thực tiễn.`,
-        temperature: 0.55,
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            isValidCurriculum: {
-              type: Type.BOOLEAN,
-              description: "true nếu chủ đề thuộc CT GDPT 2018 & SGK Kết nối tri thức; false nếu không thuộc chương trình giáo dục hoặc không phù hợp sư phạm"
-            },
-            rejectionReason: {
-              type: Type.STRING,
-              description: "Giải thích chi tiết lý do từ chối nếu isValidCurriculum = false"
-            },
-            curriculumMapping: {
-              type: Type.OBJECT,
-              properties: {
-                subject: { type: Type.STRING },
-                grade: { type: Type.STRING },
-                textbookLesson: { type: Type.STRING },
-                primaryLearningOutcome: { type: Type.STRING }
-              }
-            },
-            questions: {
-              type: Type.ARRAY,
-              description: "Mảng danh sách câu hỏi tạo được khi hợp lệ",
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  type: { type: Type.STRING, description: "'mcq', 'tf', hoặc 'text'" },
-                  content: { type: Type.STRING, description: "Nội dung câu hỏi chuẩn mực sư phạm" },
-                  options: { type: Type.ARRAY, items: { type: Type.STRING }, description: "4 phương án cho mcq [A, B, C, D]" },
-                  correct: { type: Type.STRING, description: "index (0-3) cho mcq, 'true'/'false' cho tf, đáp án text cho text" },
-                  cognitiveLevel: { type: Type.STRING, description: "'Nhận biết', 'Thông hiểu', 'Vận dụng', hoặc 'Vận dụng cao'" },
-                  learningOutcome: { type: Type.STRING, description: "Yêu cầu cần đạt (YCCĐ) theo CT GDPT 2018" },
-                  competency: { type: Type.STRING, description: "Năng lực đặc thù của môn học" },
-                  explanation: { type: Type.STRING, description: "Lời giải thích sư phạm chi tiết và căn cứ SGK Kết nối tri thức" }
-                },
-                required: ["type", "content", "correct", "cognitiveLevel", "explanation"]
-              }
-            }
-          },
-          required: ["isValidCurriculum", "questions"]
-        }
-      }
-    });
-
-    let text = response.text || "";
-    if (text.includes("```json")) {
-      text = text.replace(/```json/gi, "").replace(/```/g, "").trim();
-    } else if (text.includes("```")) {
-      text = text.replace(/```/g, "").trim();
-    }
-    
-    let parsedResult: any = null;
-    try {
-      parsedResult = JSON.parse(text);
-    } catch {
-      const startObj = text.indexOf('{');
-      const endObj = text.lastIndexOf('}');
-      if (startObj !== -1 && endObj !== -1) {
-        try {
-          parsedResult = JSON.parse(text.substring(startObj, endObj + 1));
-        } catch {
-          parsedResult = null;
-        }
-      }
-      if (!parsedResult) {
-        const start = text.indexOf('[');
-        const end = text.lastIndexOf(']');
-        if (start !== -1 && end !== -1) {
-          parsedResult = {
-            isValidCurriculum: true,
-            questions: JSON.parse(text.substring(start, end + 1))
-          };
-        } else {
-          throw new Error("Không thể phân tích dữ liệu phản hồi từ AI.");
-        }
-      }
-    }
-
-    // Kiểm tra tính từ chối bắt buộc (Mandatory rejection)
-    if (parsedResult.isValidCurriculum === false) {
-      const rejectMsg = parsedResult.rejectionReason || 
-        `Yêu cầu "${topic}" không thuộc phạm vi chuẩn của Chương trình GDPT 2018 hoặc SGK Kết nối tri thức với cuộc sống. Vui lòng chọn hoặc nhập tên bài học chuẩn trong chương trình phổ thông.`;
-      res.status(400).json({ 
-        success: false, 
-        error: rejectMsg,
-        rejectionReason: rejectMsg
-      });
-      return;
-    }
-
-    const rawList = Array.isArray(parsedResult.questions) ? parsedResult.questions : [];
-    if (rawList.length === 0) {
-      res.status(400).json({
-        success: false,
-        error: parsedResult.rejectionReason || "Không thể tạo câu hỏi cho chủ đề này theo chuẩn GDPT 2018. Vui lòng thử lại với tên bài học cụ thể hơn."
-      });
-      return;
-    }
-
-    const formatted = rawList.map((q: any, idx: number) => {
-      let finalCorrect: any = q.correct;
-      if (q.type === 'mcq') {
-        const num = parseInt(String(q.correct), 10);
-        finalCorrect = isNaN(num) ? 0 : Math.min(3, Math.max(0, num));
-      } else if (q.type === 'tf') {
-        finalCorrect = String(q.correct).toLowerCase() === 'true';
-      } else {
-        finalCorrect = String(q.correct);
-      }
-
-      // Chuẩn hóa mức độ nhận thức
-      let rawCog = String(q.cognitiveLevel || 'Thông hiểu').trim();
-      let cogLevel = 'Thông hiểu';
-      if (rawCog.toLowerCase().includes('nhận biết') || rawCog.toLowerCase().includes('nhan biet')) {
-        cogLevel = 'Nhận biết';
-      } else if (rawCog.toLowerCase().includes('vận dụng cao') || rawCog.toLowerCase().includes('van dung cao')) {
-        cogLevel = 'Vận dụng cao';
-      } else if (rawCog.toLowerCase().includes('vận dụng') || rawCog.toLowerCase().includes('van dung')) {
-        cogLevel = 'Vận dụng';
-      } else {
-        cogLevel = 'Thông hiểu';
-      }
-
-      return {
-        id: `ai_${Date.now()}_${idx}`,
-        type: q.type || 'mcq',
-        content: q.content || `Câu ${idx + 1}`,
-        options: Array.isArray(q.options) && q.options.length === 4 ? q.options : (q.type === 'mcq' ? ["A", "B", "C", "D"] : undefined),
-        correct: finalCorrect,
-        cognitiveLevel: cogLevel,
-        learningOutcome: q.learningOutcome || `Yêu cầu cần đạt chuẩn bài học môn ${subject} ${grade}`,
-        competency: q.competency || `Năng lực đặc thù môn ${subject}`,
-        explanation: q.explanation || ''
-      };
-    });
-
-    res.json({ 
-      success: true, 
-      questions: formatted,
-      curriculumMapping: parsedResult.curriculumMapping
-    });
-  });
-});
-
 // Các API khác...
 apiRouter.post("/parse-document", async (req, res) => {
   const mode = req.body.aiMode || "smart";
@@ -908,64 +673,6 @@ Văn bản thô cần phân tích:
   });
 });
 
-apiRouter.post("/generate-image", async (req, res) => {
-  const mode = req.body.aiMode || "smart";
-  await withAiQuota(req, res, mode, async (req, res, modelConfig) => {
-    const { prompt: imagePrompt, subject = "Học tập" } = req.body;
-    if (!imagePrompt) {
-      res.status(400).json({ success: false, error: "Mô tả hình ảnh là bắt buộc!" });
-      return;
-    }
-    
-    if (imagePrompt.length > 2000) throw new Error("Mô tả hình ảnh quá dài");
-    
-    const ai = getGeminiClient((req as any).resolvedApiKey);
-    const promptText = `Tạo vector SVG học tập môn ${subject}: "${imagePrompt}". Chỉ xuất DUY NHẤT một thẻ <svg ...>...</svg> hoàn chỉnh và hợp lệ, viewBox="0 0 400 300", màu sắc tươi sáng, đẹp mắt.`;
-
-    const response = await ai.models.generateContent({
-      model: modelConfig.model,
-      contents: promptText,
-      config: {
-        systemInstruction: "Chuyên gia thiết kế SVG giáo dục. Chỉ xuất SVG.",
-        temperature: 0.7,
-      },
-    });
-
-    let rawText = response.text || "";
-    let cleanSvg = rawText.trim();
-    if (cleanSvg.includes("<svg") && cleanSvg.includes("</svg>")) {
-      cleanSvg = cleanSvg.substring(cleanSvg.indexOf("<svg"), cleanSvg.lastIndexOf("</svg>") + 6);
-    } else {
-      cleanSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%"><rect width="400" height="300" rx="20" fill="#F0FDF4" stroke="#86EFAC" stroke-width="2"/><circle cx="200" cy="130" r="60" fill="#BBF7D0"/><text x="200" y="145" font-size="50" text-anchor="middle">🌟</text><text x="200" y="230" font-size="16" font-weight="bold" fill="#166534" text-anchor="middle">${imagePrompt.slice(0, 35)}</text></svg>`;
-    }
-
-    const dataUri = `data:image/svg+xml;utf8,${encodeURIComponent(cleanSvg)}`;
-    res.json({ success: true, svg: cleanSvg, dataUri, prompt: imagePrompt });
-  });
-});
-
-apiRouter.post("/enhance-question", async (req, res) => {
-  const mode = req.body.aiMode || "balanced";
-  await withAiQuota(req, res, mode, async (req, res, modelConfig) => {
-    const { content, type = "mcq", subject = "Tổng hợp" } = req.body;
-    const ai = getGeminiClient((req as any).resolvedApiKey);
-    const safeContent = content.slice(0, 4000);
-    const prompt = `Soạn đáp án & giải thích cho câu hỏi: "${safeContent}", loại ${type}, môn ${subject}.`;
-
-    const response = await ai.models.generateContent({
-      model: modelConfig.model,
-      contents: prompt,
-      config: {
-        temperature: 0.6,
-        responseMimeType: "application/json",
-      },
-    });
-
-    const parsed = JSON.parse(response.text || "{}");
-    res.json({ success: true, ...parsed });
-  });
-});
-
 apiRouter.post("/generate-wheel-phrase", async (req, res) => {
   const mode = req.body.aiMode || "fast";
   await withAiQuota(req, res, mode, async (req, res, modelConfig) => {
@@ -1033,33 +740,41 @@ apiRouter.post("/generate-pictogram", async (req, res) => {
 });
 
 // Gemini Pool Endpoints
-apiRouter.get("/gemini-keys/pool", async (req, res) => {
+const handlePoolStatus = (req: Request, res: Response) => {
   try {
     const publicState = geminiPool.getPublicState();
-    res.status(200).json(publicState);
+    return res.status(200).json(publicState);
   } catch (e: any) {
-    res.status(200).json({ success: false, totalKeysConfigured: 0, totalConfigured: 0, keys: [], error: e?.message || "Không thể lấy thông tin Key Pool" });
+    return res.status(200).json({ 
+      success: true, 
+      totalKeysConfigured: 0, 
+      usableKeysNow: 0, 
+      totalConfigured: 0, 
+      keys: [], 
+      error: e?.message || "Không thể lấy thông tin Key Pool" 
+    });
   }
-});
+};
 
-apiRouter.get("/gemini-keys/pool-state", async (req, res) => {
-  try {
-    const publicState = geminiPool.getPublicState();
-    res.status(200).json(publicState);
-  } catch (e: any) {
-    res.status(200).json({ success: false, totalKeysConfigured: 0, totalConfigured: 0, keys: [], error: e?.message || "Không thể lấy thông tin Key Pool" });
-  }
-});
-
-apiRouter.post("/gemini-keys/pool/refresh", async (req, res) => {
+const handlePoolRefresh = (req: Request, res: Response) => {
   try {
     geminiPool.loadGeminiKeys();
     const publicState = geminiPool.getPublicState();
-    res.status(200).json({ ...publicState, message: "Đã làm mới danh sách Key Pool từ Environment Variables." });
+    return res.status(200).json({ ...publicState, message: "Đã làm mới danh sách Key Pool từ Environment Variables." });
   } catch (e: any) {
-    res.status(200).json({ success: false, error: e?.message || "Không thể làm mới Key Pool" });
+    return res.status(200).json({ success: false, error: e?.message || "Không thể làm mới Key Pool" });
   }
-});
+};
+
+apiRouter.get("/gemini/status", handlePoolStatus);
+apiRouter.get("/gemini/rotation-status", handlePoolStatus);
+apiRouter.get("/gemini/pool", handlePoolStatus);
+apiRouter.get("/gemini/pool-state", handlePoolStatus);
+apiRouter.post("/gemini/refresh", handlePoolRefresh);
+
+apiRouter.get("/gemini-keys/pool", handlePoolStatus);
+apiRouter.get("/gemini-keys/pool-state", handlePoolStatus);
+apiRouter.post("/gemini-keys/pool/refresh", handlePoolRefresh);
 
 apiRouter.post("/gemini-keys/test-rotation", async (req, res) => {
   try {

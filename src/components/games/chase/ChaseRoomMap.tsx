@@ -63,8 +63,8 @@ export const ChaseRoomMap: React.FC<ChaseRoomMapProps> = ({
   const canClickFurniture = (phase === 'idle' || phase === 'tom_finding') && onSelectTargetLocation;
 
   return (
-    <div className="relative w-full max-w-6xl mx-auto rounded-[28px] overflow-hidden shadow-2xl border-4 border-amber-900/60 bg-zinc-950">
-      <div className="relative w-full aspect-[16/9] min-h-[380px] sm:min-h-[520px] overflow-hidden select-none">
+    <div className="relative w-full max-w-5xl mx-auto rounded-[28px] overflow-hidden shadow-2xl border-4 border-amber-900/60 bg-zinc-950">
+      <div className="relative w-full aspect-[16/9] overflow-hidden select-none">
         
         {/* Background Image of Living Room */}
         <img 

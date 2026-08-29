@@ -1,6 +1,6 @@
 {
   "name": "Ôn Tập Tri Thức - Đấu Trường Game Show",
-  "description": "Nền tảng trò chơi tương tác giáo dục toàn diện với 34+ trò chơi sinh động, hệ thống Quản Trị Gemini API Key độc lập, Trợ lý AI tạo đề chuẩn CT GDPT 2018, OCR quét tài liệu đa định dạng, linh thú hướng dẫn Wey và tự động lưu danh sách học sinh.",
+  "description": "Nền tảng trò chơi tương tác giáo dục toàn diện với 34+ trò chơi sinh động, hệ thống quản lý ngân hàng câu hỏi chuyên nghiệp chuẩn CT GDPT 2018, hiển thị công thức Toán Lý Hóa LaTeX / KaTeX, tương tác camera chuyển động và quản lý lớp học.",
   "requestFramePermissions": ["camera", "microphone"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

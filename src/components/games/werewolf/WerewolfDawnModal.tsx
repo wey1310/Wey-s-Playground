@@ -87,7 +87,7 @@ export const WerewolfDawnModal: React.FC<WerewolfDawnModalProps> = ({
             </div>
           ) : (
             <div className="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-200 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500 text-w-text-main flex items-center justify-center text-xl shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl shrink-0">
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <div>
@@ -125,14 +125,14 @@ export const WerewolfDawnModal: React.FC<WerewolfDawnModalProps> = ({
                 <UserCheck className="w-4 h-4" />
                 <span>Lượt Điều Tra Đêm {nightNumber}</span>
               </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-w-text-main border border-w-accent-border">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-slate-800 border border-w-accent-border">
                 Random 1 Đội
               </span>
             </div>
 
             <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-w-accent-border shadow-xs">
               <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-sm text-w-text-main font-black"
+                className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-sm text-white font-black"
                 style={{ backgroundColor: selectedTeam.color }}
               >
                 {selectedTeam.avatar}
@@ -158,7 +158,7 @@ export const WerewolfDawnModal: React.FC<WerewolfDawnModalProps> = ({
         {/* Footer Action */}
         <div className="p-4 bg-w-bg-main border-t border-w-border flex flex-wrap items-center justify-between gap-3">
           {onToggleSkipQuestions ? (
-            <label className="flex items-center gap-2 text-xs font-bold text-w-text-main cursor-pointer">
+            <label className="flex items-center gap-2 text-xs font-bold text-slate-800 cursor-pointer">
               <input
                 type="checkbox"
                 checked={skipQuestions}
@@ -171,7 +171,7 @@ export const WerewolfDawnModal: React.FC<WerewolfDawnModalProps> = ({
 
           <button
             onClick={onProceedToQuestion}
-            className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-w-text-main font-black text-sm shadow-md hover:shadow-lg transition cursor-pointer"
+            className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm shadow-md hover:shadow-lg transition cursor-pointer"
           >
             {skipQuestions ? (
               <>

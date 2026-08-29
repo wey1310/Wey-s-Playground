@@ -833,7 +833,7 @@ CHÂN LÝ
                     <button
                       type="button"
                       onClick={() => txtCsvInputRef.current?.click()}
-                      className="px-3 py-1.5 bg-w-accent-light hover:bg-[#D4E4C1] text-w-primary-dark text-xs font-bold rounded-xl border border-w-accent-border transition cursor-pointer flex items-center gap-1.5"
+                      className="px-3 py-1.5 bg-w-accent-light hover:bg-w-accent-muted text-w-primary-dark text-xs font-bold rounded-xl border border-w-accent-border transition cursor-pointer flex items-center gap-1.5"
                     >
                       <span>📄 Nhập .txt/.csv</span>
                     </button>
@@ -845,7 +845,7 @@ CHÂN LÝ
                         setRandomCallStudentsText(sample);
                         localStorage.setItem('wey_randomcall_students', sample);
                       }}
-                      className="px-3 py-1.5 bg-w-accent-light hover:bg-[#D4E4C1] text-w-primary-dark text-xs font-bold rounded-xl border border-w-accent-border transition cursor-pointer"
+                      className="px-3 py-1.5 bg-w-accent-light hover:bg-w-accent-muted text-w-primary-dark text-xs font-bold rounded-xl border border-w-accent-border transition cursor-pointer"
                     >
                       + Mẫu 10 HS
                     </button>
@@ -892,7 +892,7 @@ CHÂN LÝ
                       <span className="text-base">🎯</span>
                       <span className="font-black text-sm">Không Lặp Lại (Khuyên Dùng)</span>
                     </div>
-                    <p className={`text-[11px] leading-snug ${noRepeatStudents ? 'text-[#E9D58F]' : 'text-slate-500'}`}>
+                    <p className={`text-[11px] leading-snug ${noRepeatStudents ? 'text-amber-500' : 'text-slate-500'}`}>
                       Học sinh đã gọi sẽ được đánh dấu đã trả lời và tạm thời không xuất hiện ở các lượt quay kế tiếp.
                     </p>
                   </button>
@@ -910,7 +910,7 @@ CHÂN LÝ
                       <span className="text-base">🔁</span>
                       <span className="font-black text-sm">Cho Phép Lặp Lại</span>
                     </div>
-                    <p className={`text-[11px] leading-snug ${!noRepeatStudents ? 'text-[#E9D58F]' : 'text-slate-500'}`}>
+                    <p className={`text-[11px] leading-snug ${!noRepeatStudents ? 'text-amber-500' : 'text-slate-500'}`}>
                       Mọi học sinh đều có thể được gọi lại ở bất kỳ lượt nào mà không bị loại trừ.
                     </p>
                   </button>
@@ -1936,7 +1936,7 @@ CHÂN LÝ
                     <button
                       type="button"
                       onClick={() => bearTxtCsvInputRef.current?.click()}
-                      className="px-2 py-1 bg-w-accent-light hover:bg-[#D4E4C1] text-w-primary-dark text-xs font-bold rounded-lg border border-w-accent-border transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                      className="px-2 py-1 bg-w-accent-light hover:bg-w-accent-muted text-w-primary-dark text-xs font-bold rounded-lg border border-w-accent-border transition cursor-pointer flex items-center gap-1 shadow-2xs"
                     >
                       📄 TXT/CSV
                     </button>
@@ -2144,7 +2144,7 @@ CHÂN LÝ
 
           {/* 12. MONOPOLY (CỜ TỶ PHÚ) SPECIFIC SETTINGS */}
           {isMonopoly && (
-            <div className="space-y-4 bg-[#FBF8EF] p-4 rounded-2xl border-2 border-[#E5DEC7]">
+            <div className="space-y-4 bg-[#FBF8EF] p-4 rounded-2xl border-2 border-w-border">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-black uppercase tracking-wider text-w-text-main flex items-center gap-2">
                   <span>🎩 Cấu Hình Cờ Tỷ Phú Tri Thức</span>
@@ -2250,7 +2250,7 @@ CHÂN LÝ
                     )}
                   </div>
 
-                  <div className="p-2.5 bg-white rounded-xl border border-[#E5DEC7] text-xs text-w-text-muted font-medium leading-relaxed">
+                  <div className="p-2.5 bg-white rounded-xl border border-w-border text-xs text-w-text-muted font-medium leading-relaxed">
                     💡 <strong>Nguyên tắc cốt lõi:</strong> Trả lời đúng câu hỏi để được gieo xúc xắc du ngoạn các thành phố Việt Nam, mua đất, xây khách sạn, rút thẻ sự kiện và thu tiền thuê khi đối thủ đáp vào đất của mình! Trả lời sai bị mất lượt.
                   </div>
                 </div>
@@ -2915,7 +2915,7 @@ CHÂN LÝ
             onClick={handleLaunch}
             className="flex items-center justify-center gap-2 px-6 py-2.5 bg-w-primary hover:bg-w-primary-hover text-white font-[800] text-sm rounded-[15px] shadow-md transition transform hover:-translate-y-0.5 active:translate-y-0 border border-w-primary-hover cursor-pointer min-h-[44px]"
           >
-            <Play className="w-4 h-4 fill-current text-[#E9D58F]" />
+            <Play className="w-4 h-4 fill-current text-amber-500" />
             <span>Vào Chơi Game</span>
           </button>
         </div>

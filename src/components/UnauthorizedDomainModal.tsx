@@ -134,9 +134,9 @@ export const UnauthorizedDomainModal: React.FC<UnauthorizedDomainModalProps> = (
               </select>
               <button
                 onClick={handleQuickAdminLogin}
-                className="px-4 py-2 bg-w-primary-dark hover:bg-[#3D522E] text-[#E9D58F] font-black text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 transition active:scale-95 shrink-0"
+                className="px-4 py-2 bg-w-primary-dark hover:bg-w-primary text-amber-500 font-black text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 transition active:scale-95 shrink-0"
               >
-                <UserCheck className="w-4 h-4 text-[#E9D58F]" />
+                <UserCheck className="w-4 h-4 text-amber-500" />
                 <span>Vào Ngay (Admin)</span>
               </button>
             </div>
@@ -146,7 +146,7 @@ export const UnauthorizedDomainModal: React.FC<UnauthorizedDomainModalProps> = (
           <div className="pt-2">
             <button
               onClick={onClose}
-              className="w-full py-3 bg-[#E2EED3] hover:bg-[#D4E4C1] text-w-primary-hover font-black text-xs rounded-[16px] transition border border-w-accent-border"
+              className="w-full py-3 bg-w-accent-light hover:bg-w-accent-muted text-w-primary-hover font-black text-xs rounded-[16px] transition border border-w-accent-border"
             >
               Đã hiểu, đóng cửa sổ
             </button>

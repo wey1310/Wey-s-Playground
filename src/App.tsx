@@ -4,17 +4,12 @@ import { DEFAULT_QUESTION_BANKS } from './data/defaultBanks';
 import { soundFx } from './utils/audio';
 
 import { QuestionBankEditor } from './components/QuestionBankEditor';
-import { AiQuestionModal } from './components/AiQuestionModal';
 import { GameStatisticsPanel } from './components/GameStatisticsPanel';
 import { GameSetupModal } from './components/GameSetupModal';
 import { RefillQuestionsModal } from './components/RefillQuestionsModal';
 import { SummaryModal } from './components/SummaryModal';
 import { GuestLimitModal } from './components/GuestLimitModal';
 import { UnauthorizedDomainModal } from './components/UnauthorizedDomainModal';
-import { ApiSelectModal } from './components/api/ApiSelectModal';
-import { ApiManagerModal } from './components/api/ApiManagerModal';
-import { NavbarApiStatus } from './components/api/NavbarApiStatus';
-import { apiManager } from './services/apiManager';
 
 import { OpenBoxGame } from './components/games/OpenBoxGame';
 import { MancalaGame } from './components/games/MancalaGame';
@@ -72,7 +67,7 @@ import { QuestionBankView } from './components/QuestionBankView';
 import { GameQuickGuideModal } from './components/GameQuickGuideModal';
 import { WeyGuideMascot } from './components/WeyGuideMascot';
 import { useAuth } from './contexts/AuthContext';
-import { saveQuestionBankToCloud, deleteCloudQuestionBank, getCloudQuestionBanks } from './lib/db';
+import { saveQuestionBankToCloud, deleteCloudQuestionBank, getCloudQuestionBanks, getWebConfigCloud, saveWebConfigCloud } from './lib/db';
 import { getPlayLimitStatus, consumePlayCount, PlayLimitStatus } from './utils/playLimit';
 
 import {
@@ -104,466 +99,17 @@ import {
   X,
   Sun,
   Moon,
+  Plus,
 } from 'lucide-react';
 
-export interface GameInfo {
-  id: GameType;
-  title: string;
-  description: string;
-  icon: string;
-  badge: string;
-  color: string;
-  tags?: string[];
-}
-
-export const GAMES_LIST: GameInfo[] = [
-  {
-    id: 'ai_star_call',
-    title: 'Ngôi Sao Tri Thức',
-    description: 'Điều khiển bằng AI Camera, giơ ngón tay gọi tên học sinh ngẫu nhiên.',
-    icon: '🌟',
-    badge: 'Camera AI',
-    color: 'from-blue-600 to-indigo-800',
-    tags: ['Khởi động', 'Gọi tên', 'Công Nghệ AI'],
-  },
-  {
-    id: 'ai_galaxy_call',
-    title: 'Dải Ngân Hà',
-    description: 'Hiệu ứng dải ngân hà tuyệt đẹp. Điều khiển 100% bằng cử chỉ tay.',
-    icon: '🌌',
-    badge: 'Camera AI',
-    color: 'from-purple-600 to-indigo-800',
-    tags: ['Khởi động', 'Gọi tên', 'Công Nghệ AI'],
-  },
-  {
-    id: 'ai_nebula_call',
-    title: 'Tinh Vân Huyền Bí',
-    description: 'Thu hút tinh vân bằng bàn tay. Gọi tên học sinh thật ngầu.',
-    icon: '🌠',
-    badge: 'Camera AI',
-    color: 'from-blue-600 to-purple-800',
-    tags: ['Khởi động', 'Gọi tên', 'Công Nghệ AI'],
-  },
-  {
-    id: 'ai_bubble_call',
-    title: 'Bong Bóng Trí Tuệ',
-    description: 'Chỉ tay để làm nổ bong bóng phép thuật gọi tên.',
-    icon: '🫧',
-    badge: 'Camera AI',
-    color: 'from-cyan-600 to-blue-800',
-    tags: ['Khởi động', 'Gọi tên', 'Công Nghệ AI'],
-  },
-
-  {
-    id: 'eggcall',
-    title: 'Đập Trứng Gọi Tên',
-    description: 'Trò chơi điểm danh ngẫu nhiên vui nhộn với hiệu ứng đập trứng.',
-    icon: '🥚',
-    badge: 'Mini Game',
-    color: 'from-orange-400 to-red-500',
-    tags: ['Khởi động', 'Gọi tên'],
-  },
-  {
-    id: 'blindbox',
-    title: 'Blind Box',
-    description: 'Mở hộp mù ngẫu nhiên nhận điểm số bí mật và trả lời câu hỏi.',
-    icon: '🎁',
-    badge: 'Trắc nghiệm',
-    color: 'from-pink-500 to-purple-600',
-    tags: ['Khởi động', 'Đồng đội', 'Luyện tập'],
-  },
-  {
-    id: 'lucky_star',
-    title: '⭐ Ngôi Sao May Mắn',
-    description: 'Bầu trời sao vũ trụ lung linh, xáo trộn huyền ảo và ngẫu nhiên chọn ra học sinh may mắn.',
-    icon: '⭐',
-    badge: 'Mới • Bầu trời sao',
-    color: 'from-amber-500 via-yellow-400 to-amber-600',
-    tags: ['Khởi động', 'Gọi tên', 'Lớp học', 'Vũ trụ'],
-  },
-  {
-    id: 'randomcall',
-    title: 'Gọi Tên Ngẫu Nhiên',
-    description: 'Điều khiển bằng cử chỉ tay qua Camera để chọn học sinh ngẫu nhiên và trả lời câu hỏi.',
-    icon: '🤚',
-    badge: 'Công Nghệ AI',
-    color: 'from-blue-600 to-indigo-800',
-    tags: ['Khởi động', 'Luyện tập', 'Gọi tên'],
-  },
-  {
-    id: 'openbox',
-    title: 'Hộp Quà May Mắn',
-    description: 'Mở hộp quà bất ngờ, trả lời câu hỏi tích điểm thưởng.',
-    icon: '🎁',
-    badge: 'Trắc nghiệm',
-    color: 'from-amber-500 to-rose-600',
-    tags: ['Khởi động', 'Luyện tập'],
-  },
-  {
-    id: 'mancala',
-    title: 'Ô Ăn Quan',
-    description: 'Trò chơi dân gian kết hợp hỏi đáp, rải quân ăn điểm.',
-    icon: '🏺',
-    badge: 'Trí tuệ',
-    color: 'from-amber-600 to-amber-900',
-    tags: ['Đấu trí', 'Tìm hiểu kiến thức'],
-  },
-  {
-    id: 'wheel',
-    title: 'Vòng Quay Kỳ Diệu',
-    description: 'Thử vận may với vòng quay, chinh phục thử thách.',
-    icon: '🎡',
-    badge: 'May mắn',
-    color: 'from-purple-500 to-pink-600',
-    tags: ['Khởi động', 'Gọi tên'],
-  },
-  {
-    id: 'ludo',
-    title: 'Đua Cá Ngựa',
-    description: 'Tung xúc xắc, vượt chướng ngại vật đưa ngựa về chuồng.',
-    icon: '🎲',
-    badge: 'Chiến thuật',
-    color: 'from-blue-500 to-indigo-600',
-    tags: ['Đồng đội', 'Luyện tập'],
-  },
-  {
-    id: 'betting',
-    title: 'Cược Điểm Sinh Tử',
-    description: 'Cược số điểm bạn tin tưởng và nhân đôi phần thưởng.',
-    icon: '💰',
-    badge: 'Mạo hiểm',
-    color: 'from-emerald-500 to-teal-600',
-    tags: ['Đấu trí', 'Củng cố'],
-  },
-  {
-    id: 'bingo',
-    title: 'Bingo Tri Thức',
-    description: 'Điền đúng câu hỏi để tạo thành hàng thẳng chiến thắng.',
-    icon: '🎯',
-    badge: 'Kịch tính',
-    color: 'from-rose-500 to-orange-500',
-    tags: ['Luyện tập', 'Củng cố'],
-  },
-  {
-    id: 'territory',
-    title: 'Chiếm Lãnh Thổ',
-    description: 'Trả lời đúng để mở rộng bờ cõi bản đồ cho đội mình.',
-    icon: '🗺️',
-    badge: 'Đồng đội',
-    color: 'from-amber-500 to-yellow-600',
-    tags: ['Đồng đội', 'Luyện tập'],
-  },
-  {
-    id: 'tug_of_war',
-    title: 'Kéo Co Trí Tuệ',
-    description: 'Kéo dây về phía đội mình bằng tốc độ trả lời đúng.',
-    icon: '🪢',
-    badge: 'Tốc độ',
-    color: 'from-red-500 to-amber-600',
-    tags: ['Vận động', 'Đồng đội', 'Khởi động'],
-  },
-  {
-    id: 'tower',
-    title: 'Xây Tháp Tri Thức',
-    description: 'Chồng từng tầng tháp thật cao bằng những câu trả lời chuẩn xác.',
-    icon: '🏗️',
-    badge: 'Kiên trì',
-    color: 'from-cyan-500 to-blue-600',
-    tags: ['Luyện tập', 'Củng cố'],
-  },
-  {
-    id: 'puzzle',
-    title: 'Mảnh Ghép Bí Ẩn',
-    description: 'Lật mở từng ô tranh bí mật phía sau các câu đố hóc búa.',
-    icon: '🧩',
-    badge: 'Khám phá',
-    color: 'from-violet-500 to-purple-700',
-    tags: ['Khởi động', 'Tìm hiểu kiến thức'],
-  },
-  {
-    id: 'race',
-    title: 'Đua Xe Siêu Tốc',
-    description: 'Tăng tốc về đích đầu tiên bằng cách giải toán thần sầu.',
-    icon: '🏎️',
-    badge: 'Cạnh tranh',
-    color: 'from-red-600 to-rose-700',
-    tags: ['Luyện tập', 'Củng cố'],
-  },
-  {
-    id: 'pokemon',
-    title: 'Bắt Pokemon',
-    description: 'Sưu tập các Pokemon huyền thoại khi chinh phục câu hỏi.',
-    icon: '⚡',
-    badge: 'Sưu tầm',
-    color: 'from-yellow-400 to-amber-500',
-    tags: ['Luyện tập', 'Khởi động'],
-  },
-  {
-    id: 'battleship',
-    title: 'Bắn Tàu Chiến',
-    description: 'Định vị tọa độ bắn chìm hạm đội tàu đối phương.',
-    icon: '🚢',
-    badge: 'Đấu trí',
-    color: 'from-slate-600 to-blue-900',
-    tags: ['Đấu trí', 'Củng cố'],
-  },
-  {
-    id: 'pictogram',
-    title: 'Đuổi Hình Bắt Chữ',
-    description: 'Nhìn hình đoán ý, lật mở câu thành ngữ bí ẩn.',
-    icon: '🖼️',
-    badge: 'Ô chữ',
-    color: 'from-amber-400 to-orange-500',
-    tags: ['Khởi động', 'Tìm hiểu kiến thức'],
-  },
-  {
-    id: 'magic_wheel',
-    title: 'Chiếc Nón Kỳ Diệu',
-    description: 'Bảng ô chữ bí mật, trả lời câu hỏi và lật mở từng chữ cái.',
-    icon: '🔮',
-    badge: 'Ô chữ',
-    color: 'from-purple-600 to-indigo-700',
-    tags: ['Tìm hiểu kiến thức', 'Đấu trí'],
-  },
-  {
-    id: 'pose_challenge',
-    title: 'Thử Thách Vận Động',
-    description: 'Tạo dáng động tác hình thể tương ứng với đáp án bạn chọn.',
-    icon: '🤸',
-    badge: 'Vận động',
-    color: 'from-emerald-400 to-teal-500',
-    tags: ['Vận động', 'Khởi động'],
-  },
-  {
-    id: 'caro',
-    title: 'Cờ Caro (3x3)',
-    description: 'Đấu trí Caro 2 đội, trả lời đúng để đánh X/O tạo hàng 3.',
-    icon: '❌',
-    badge: 'Chiến thuật',
-    color: 'from-rose-500 to-red-600',
-    tags: ['Đấu trí', 'Củng cố', 'Đồng đội'],
-  },
-  {
-    id: 'chess',
-    title: 'Cờ Vua Tri Thức',
-    description: 'Đại chiến Cờ Vua 2 đội, định hướng vị trí đi và bắt Vua đối phương.',
-    icon: '♟️',
-    badge: 'Đấu trí',
-    color: 'from-amber-700 to-slate-900',
-    tags: ['Đấu trí', 'Đồng đội'],
-  },
-  {
-    id: 'whack_a_mole',
-    title: 'Đập Chuột Chũi',
-    description: 'Phản xạ nhanh tay đập trúng chú chuột mang đáp án chính xác trên sân cỏ.',
-    icon: '🔨',
-    badge: 'Phản xạ',
-    color: 'from-amber-600 to-yellow-500',
-    tags: ['Khởi động', 'Luyện tập', 'Vận động'],
-  },
-  {
-    id: 'classification',
-    title: 'Phân Loại',
-    description: 'Kéo thả hoặc phân chia các đối tượng vào nhóm kiến thức tương ứng.',
-    icon: '📁',
-    badge: 'Kiến thức',
-    color: 'from-teal-500 to-emerald-600',
-    tags: ['Luyện tập', 'Tìm hiểu kiến thức', 'Đồng đội'],
-  },
-  {
-    id: 'flag_capture',
-    title: 'Cướp Cờ',
-    description: 'Gameshow cướp cờ kịch tính, trả lời đúng để bứt tốc giật cờ vàng về căn cứ.',
-    icon: '🚩',
-    badge: 'Vận động',
-    color: 'from-red-500 to-amber-500',
-    tags: ['Vận động', 'Đồng đội', 'Đấu trí'],
-  },
-  {
-    id: 'sack_race',
-    title: 'Nhảy Bao Bố',
-    description: 'Đua nhảy bao bố nhiều làn, trả lời đúng để bật nhảy bứt phá về đích.',
-    icon: '🌾',
-    badge: 'Đua tốc độ',
-    color: 'from-green-500 to-emerald-700',
-    tags: ['Vận động', 'Đồng đội', 'Luyện tập'],
-  },
-  {
-    id: 'snail_word_search',
-    title: 'Ốc Sên Tinh Mắt',
-    description: 'Tìm từ khóa ẩn giấu trong ma trận chữ cái cùng linh vật Ốc Sên tinh nghịch.',
-    icon: '🐌',
-    badge: 'Tìm từ',
-    color: 'from-lime-500 to-emerald-600',
-    tags: ['Tìm hiểu kiến thức', 'Đấu trí', 'Luyện tập'],
-  },
-  {
-    id: 'mine_boom',
-    title: 'Dò Boom Tri Thức',
-    description: 'Chiến thuật chọn ô né Boom, trả lời câu hỏi và ăn điểm vàng kịch tính.',
-    icon: '💣',
-    badge: 'Cân não',
-    color: 'from-amber-600 to-red-600',
-    tags: ['Đấu trí', 'Đồng đội', 'Luyện tập'],
-  },
-  {
-    id: 'gold_miner',
-    title: 'Đào Vàng',
-    description: 'Canh chuẩn góc thả móc neo để kéo vàng nguyên khối, né tránh đá tảng.',
-    icon: '⛏️',
-    badge: 'Khéo léo',
-    color: 'from-amber-500 to-yellow-600',
-    tags: ['Khởi động', 'Luyện tập', 'Đồng đội'],
-  },
-  {
-    id: 'bear_pass',
-    title: 'Truyền Gấu Sân Khấu',
-    description: 'Âm nhạc phát rộn ràng, chú gấu dừng bất ngờ khi nhạc tắt để tìm người may mắn.',
-    icon: '🧸',
-    badge: 'Gọi tên',
-    color: 'from-emerald-500 to-teal-600',
-    tags: ['Khởi động', 'Gọi tên', 'Vận động'],
-  },
-  {
-    id: 'letter_arrange',
-    title: 'Sắp Xếp Chữ Cái',
-    description: 'Sắp xếp các thẻ chữ cái tiếng Việt bị xáo trộn thành từ khóa kiến thức chuẩn.',
-    icon: '🔤',
-    badge: 'Ô chữ',
-    color: 'from-indigo-500 to-purple-600',
-    tags: ['Tìm hiểu kiến thức', 'Luyện tập', 'Củng cố'],
-  },
-  {
-    id: 'apple_pick',
-    title: 'Hái Táo (Ông Smith)',
-    description: 'Bàn cờ hái táo chiến thuật, né tránh ô chia hết cho số bí mật của Ông Smith.',
-    icon: '🍎',
-    badge: 'Boardgame',
-    color: 'from-red-500 to-rose-700',
-    tags: ['Đấu trí', 'Đồng đội', 'Luyện tập'],
-  },
-  {
-    id: "cothu",
-    title: "Cờ Thú (Jungle Chess)",
-    description: "Trận chiến trí tuệ của các loài vật, ăn quân theo cấp bậc và đưa quân vào hang ổ đối phương.",
-    icon: "🐾",
-    badge: "Chiến thuật",
-    color: "from-green-600 to-emerald-700",
-  },
-  {
-    id: 'son_tinh_thuy_tinh',
-    title: 'Sơn Tinh Thủy Tinh',
-    description: 'Đại chiến chiến thuật tìm sính lễ, thi triển thần phép dâng núi và gọi lũ dâng nước.',
-    icon: '⚔️',
-    badge: 'Chiến thuật',
-    color: 'from-emerald-600 to-blue-700',
-    tags: ['Đấu trí', 'Đồng đội', 'Tìm hiểu kiến thức'],
-  },
-  {
-    id: 'monopoly',
-    title: 'Cờ Tỷ Phú Tri Thức',
-    description: 'Boardgame kinh tế giáo dục theo lượt: trả lời câu hỏi, gieo xúc xắc, mua đất, xây nhà, thu tiền thuê & rút thẻ sự kiện!',
-    icon: '🎩',
-    badge: 'Boardgame',
-    color: 'from-amber-600 to-yellow-700',
-    tags: ['Đấu trí', 'Đồng đội', 'Luyện tập'],
-  },
-  {
-    id: 'werewolf_village',
-    title: 'Ma Sói: Ngôi Làng Bí Ẩn',
-    description: 'Đấu trí điều tra 12 cư dân AI thông minh: chu kỳ đêm/ngày huyền bí, trả lời câu hỏi để mở quyền đoán nhân dạng kẻ giấu mặt!',
-    icon: '🐺',
-    badge: 'Trinh thám',
-    color: 'from-indigo-900 to-slate-950',
-    tags: ['Đấu trí', 'Đồng đội', 'Tìm hiểu kiến thức', 'Củng cố'],
-  },
-  {
-    id: 'case_investigation',
-    title: 'Hồ Sơ Vụ Án (Conan Mystery)',
-    description: 'Đại chiến suy luận thám tử đỉnh cao: khám nghiệm hiện trường, bóc trần mâu thuẫn lời khai, giải mã timeline và chỉ điểm kẻ thủ ác!',
-    icon: '🔎',
-    badge: 'Thám tử',
-    color: 'from-amber-800 to-stone-950',
-    tags: ['Đấu trí', 'Đồng đội', 'Tìm hiểu kiến thức', 'Củng cố'],
-  },
-  {
-    id: 'tea_battle',
-    title: 'Đại Chiến Trà (Tanjiro vs Kanao)',
-    description: 'Nhập vai Tanjiro khiêu chiến Kanao: chọn cốc trà theo số thứ tự, trả lời câu hỏi để úp cốc thắng điểm hoặc bị tạt trà!',
-    icon: '🍵',
-    badge: 'Trà Đạo Anime',
-    color: 'from-emerald-700 to-teal-900',
-    tags: ['Đấu trí', 'Đồng đội', 'Luyện tập', 'Củng cố'],
-  },
-  {
-    id: 'bowling',
-    title: 'Bowling Trí Tuệ',
-    description: 'Sàn Bowling giáo dục: trả lời đúng để nhận bóng ném, canh lực và góc ném ngã Strike toàn bộ 10 Pins!',
-    icon: '🎳',
-    badge: 'Physics',
-    color: 'from-amber-600 to-red-800',
-    tags: ['Khởi động', 'Luyện tập', 'Vận động'],
-  },
-  {
-    id: 'chase',
-    title: 'Rượt Bắt (Tom & Jerry Catch)',
-    description: 'Mèo Tom truy bắt chuột Jerry trong phòng khách: trả lời đúng để vào săn bắt, đoán đúng vị trí đồ vật nhân đôi x2 điểm!',
-    icon: '🐱🐭',
-    badge: 'Truy Tìm x2 Điểm',
-    color: 'from-indigo-700 to-purple-900',
-    tags: ['Đồng đội', 'Đấu trí', 'Củng cố'],
-  },
-];
+import { GameInfo, GAMES_LIST } from './data/gamesList';
 
 const getTagColor = (tag: string) => {
-  switch (tag) {
-    case 'Khởi động': return 'bg-[#FFE4E1] text-[#D86C70] border-[#F8BBD0]'; // Pastel Pink/Red
-    case 'Luyện tập': return 'bg-[#E3F2FD] text-[#2C629F] border-[#BBDEFB]'; // Pastel Blue
-    case 'Tìm hiểu kiến thức': return 'bg-[#FFF9C4] text-[#8C7B14] border-[#FFF59D]'; // Pastel Yellow
-    case 'Gọi tên': return 'bg-[#E1BEE7] text-[#6A1B9A] border-[#CE93D8]'; // Pastel Purple
-    case 'Củng cố': return 'bg-[#C8E6C9] text-[#2E7D32] border-[#A5D6A7]'; // Pastel Green
-    case 'Vận động': return 'bg-[#FFCCBC] text-[#D84315] border-[#FFAB91]'; // Pastel Deep Orange
-    case 'Đấu trí': return 'bg-[#B2EBF2] text-[#006064] border-[#80DEEA]'; // Pastel Cyan
-    case 'Đồng đội': return 'bg-[#FFECB3] text-[#F57F17] border-[#FFE082]'; // Pastel Amber
-    default: return 'bg-gray-100 text-gray-700 border-gray-300';
-  }
+  return 'bg-w-bg-tag text-w-primary border-w-border/60';
 };
 
 const getBadgeStyle = (badge: string) => {
-  switch (badge) {
-    case 'Trắc nghiệm':
-      return 'bg-w-accent-light text-w-primary-dark border-w-accent-border';
-    case 'Trí tuệ':
-      return 'bg-[#FAF3D1] text-[#7A6218] border-[#E9D58F]';
-    case 'May mắn':
-      return 'bg-[#FBE8EC] text-[#913B53] border-[#F2B6C7]';
-    case 'Chiến thuật':
-      return 'bg-[#E2EED3] text-w-primary-hover border-w-accent-border';
-    case 'Mạo hiểm':
-      return 'bg-w-accent-light text-w-primary-dark border-w-accent-border';
-    case 'Kịch tính':
-      return 'bg-[#FBE8EC] text-[#913B53] border-[#F2B6C7]';
-    case 'Đồng đội':
-      return 'bg-[#FAF3D1] text-[#7A6218] border-[#E9D58F]';
-    case 'Tốc độ':
-      return 'bg-[#FBE8EC] text-[#913B53] border-[#F2B6C7]';
-    case 'Kiên trì':
-      return 'bg-[#E2EED3] text-w-primary-hover border-w-accent-border';
-    case 'Khám phá':
-      return 'bg-w-accent-light text-w-primary-dark border-w-accent-border';
-    case 'Cạnh tranh':
-      return 'bg-[#FBE8EC] text-[#913B53] border-[#F2B6C7]';
-    case 'Sưu tầm':
-      return 'bg-[#FAF3D1] text-[#7A6218] border-[#E9D58F]';
-    case 'Đấu trí':
-      return 'bg-[#E2EED3] text-w-primary-hover border-w-accent-border';
-    case 'Ô chữ':
-      return 'bg-[#FAF3D1] text-[#7A6218] border-[#E9D58F]';
-    case 'Vận động':
-      return 'bg-[#E2EED3] text-w-primary-hover border-w-accent-border';
-    default:
-      return 'bg-w-accent-light text-w-primary-dark border-w-accent-border';
-  }
+  return 'bg-w-accent-light text-w-primary-dark border-w-accent-border/60';
 };
 
 export default function App() {
@@ -696,19 +242,31 @@ export default function App() {
     localStorage.setItem('wey_web_config', JSON.stringify(webConfig));
     document.title = webConfig.siteTitle || "WEY'S PLAYGROUND";
     
-    // Apply dynamic theme to body
-    const themeClass = webConfig.primaryTheme && webConfig.primaryTheme !== 'pastel' ? `theme-${webConfig.primaryTheme}` : '';
-    // Remove all theme classes first
-    Array.from(document.body.classList).forEach(c => {
-      if (c.startsWith('theme-')) {
-        document.body.classList.remove(c);
-      }
+    // Apply dynamic theme to both html root and body
+    const allThemeNames = ['matcha', 'sakura', 'sky', 'mono', 'deepspace', 'brightclassroom'];
+    allThemeNames.forEach(t => {
+      document.documentElement.classList.remove(`theme-${t}`);
+      document.body.classList.remove(`theme-${t}`);
     });
-    // Add the selected theme if any
-    if (themeClass) {
-      document.body.classList.add(themeClass);
+
+    const activeTheme = webConfig.primaryTheme || 'pastel';
+    if (activeTheme !== 'pastel') {
+      document.documentElement.classList.add(`theme-${activeTheme}`);
+      document.body.classList.add(`theme-${activeTheme}`);
+      document.documentElement.setAttribute('data-theme', activeTheme);
+    } else {
+      document.documentElement.removeAttribute('data-theme');
     }
   }, [webConfig]);
+
+  // Load web config from cloud on mount
+  React.useEffect(() => {
+    getWebConfigCloud().then(config => {
+      if (config) {
+        setWebConfig(prev => ({ ...prev, ...config }));
+      }
+    });
+  }, []);
 
   // Handler to keep only the single latest question bank ("Chốt cái mới nhất thôi")
   const handleKeepOnlyLatestBank = async () => {
@@ -754,9 +312,6 @@ export default function App() {
   const [isMuted, setIsMuted] = useState<boolean>(soundFx.getMute());
 
   // Active Modals
-  const [isAiModalOpen, setIsAiModalOpen] = useState<boolean>(false);
-  const [isApiSelectModalOpen, setIsApiSelectModalOpen] = useState<boolean>(false);
-  const [isApiManagerModalOpen, setIsApiManagerModalOpen] = useState<boolean>(false);
   const [isSetupModalOpen, setIsSetupModalOpen] = useState<boolean>(false);
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState<boolean>(false);
   const [showRefillModal, setShowRefillModal] = useState<boolean>(false);
@@ -1192,18 +747,6 @@ export default function App() {
     setActiveGameConfig(null);
   };
 
-  const handleAiQuestionsGenerated = async (newBank: QuestionBank) => {
-    setQuestionBanks(prev => [newBank, ...prev]);
-    setActiveBankId(newBank.id);
-    if (user?.uid) {
-      await saveQuestionBankToCloud({
-        ...newBank,
-        userId: user.uid,
-        userEmail: user.email || undefined,
-      });
-    }
-  };
-
   const activeBank = questionBanks.find(b => b.id === activeBankId) || questionBanks[0];
   const currentGameBank = activeGameConfig?.selectedBankId
     ? questionBanks.find(b => b.id === activeGameConfig.selectedBankId) || activeBank
@@ -1240,13 +783,29 @@ export default function App() {
         backgroundAttachment: 'fixed',
       };
     }
-    return {
-      backgroundImage: `url(${webConfig.bgImageUrl || '/assets/home-bg.webp'})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed',
-    };
+    
+    // If custom background image (other than default home-bg) was configured
+    if (webConfig.bgImageUrl && webConfig.bgImageUrl !== '/assets/home-bg.webp') {
+      return {
+        backgroundImage: `url(${webConfig.bgImageUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+      };
+    }
+
+    if (!webConfig.primaryTheme || webConfig.primaryTheme === 'pastel') {
+      return {
+        backgroundImage: `url(/assets/home-bg.webp)`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+      };
+    }
+
+    return {};
   };
+
 
   return (
     <div
@@ -1296,7 +855,7 @@ export default function App() {
                 setActiveGameConfig(null);
                 setCurrentView('question-bank');
               }}
-              className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-[#E2EED3] hover:bg-[#D4E4C1] text-w-primary-hover font-[700] text-[11px] sm:text-xs rounded-[16px] shadow-[0_4px_12px_rgba(79,104,60,0.12)] hover:shadow-[0_6px_16px_rgba(79,104,60,0.18)] transition-all duration-200 border border-w-accent-border"
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-w-accent-light hover:bg-w-accent-muted text-w-primary-dark font-[700] text-[11px] sm:text-xs rounded-[16px] shadow-sm transition-all duration-200 border border-w-accent-border"
             >
               <Database className="w-4 h-4 text-w-primary-dark" />
               <span className="hidden sm:inline">Ngân Hàng Câu Hỏi</span>
@@ -1311,9 +870,9 @@ export default function App() {
                   setActiveGameConfig(null);
                   setCurrentView('admin');
                 }}
-                className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 bg-w-primary-dark hover:bg-[#3E522F] text-[#E9D58F] text-xs font-[800] rounded-[18px] shadow-sm hover:-translate-y-0.5 transition-all cursor-pointer border border-[#E9D58F]/30"
+                className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 bg-w-primary-dark hover:bg-w-primary text-w-bg-card text-xs font-[800] rounded-[18px] shadow-sm hover:-translate-y-0.5 transition-all cursor-pointer border border-w-bg-card/30"
               >
-                <ShieldCheck className="w-3.5 h-3.5 text-[#E9D58F]" />
+                <ShieldCheck className="w-3.5 h-3.5 text-w-bg-card" />
                 <span>Admin Hub</span>
               </button>
             )}
@@ -1329,30 +888,13 @@ export default function App() {
               }}
             />
 
-            {/* API Health Status Indicator & Quick Switcher */}
-            <NavbarApiStatus
-              onOpenSelectModal={() => setIsApiSelectModalOpen(true)}
-              onOpenManagerModal={() => setIsApiManagerModalOpen(true)}
-            />
-
-            <button
-              onClick={() => {
-                soundFx.buttonClick();
-                setIsAiModalOpen(true);
-              }}
-              className="flex items-center gap-1.5 px-3.5 sm:px-4.5 py-2 bg-[#F2B6C7] hover:bg-[#EEA3B7] text-w-text-main text-xs font-[800] rounded-[18px] border border-[#E59EB2] shadow-[0_3px_10px_rgba(242,182,199,0.35)] hover:-translate-y-0.5 transition-all cursor-pointer"
-            >
-              <Sparkles className="w-4 h-4 text-w-bg-card animate-spin" />
-              <span className="hidden sm:inline">Tạo Bằng AI</span>
-            </button>
-
             <button
               onClick={toggleMute}
-              className="p-2.5 bg-w-bg-card hover:bg-w-bg-main text-w-primary-dark rounded-[18px] border border-[#D8CFAF] shadow-[0_2px_8px_rgba(79,104,60,0.06)] hover:-translate-y-0.5 transition-all cursor-pointer"
+              className="p-2.5 bg-w-bg-card hover:bg-w-bg-alt text-w-primary-dark rounded-[18px] border border-w-border shadow-sm hover:-translate-y-0.5 transition-all cursor-pointer"
               title={isMuted ? 'Bật Âm Thanh' : 'Tắt Âm Thanh'}
             >
               {isMuted ? (
-                <VolumeX className="w-4 h-4 text-[#E05252]" />
+                <VolumeX className="w-4 h-4 text-rose-500" />
               ) : (
                 <Volume2 className="w-4 h-4 text-w-primary" />
               )}
@@ -1375,10 +917,10 @@ export default function App() {
             {/* Theme Toggle Button: Deep Space (Dark Mode) vs Bright Classroom (Light Mode) */}
             <button
               onClick={toggleDeepSpaceMode}
-              className={`p-2.5 rounded-[18px] border shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all cursor-pointer relative group flex items-center gap-1.5 ${
+              className={`p-2.5 rounded-[18px] border shadow-sm hover:-translate-y-0.5 transition-all cursor-pointer relative group flex items-center gap-1.5 ${
                 isDeepSpace
-                  ? 'bg-[#1E293B] hover:bg-[#2D3D58] text-[#F1F5F9] border-[#43557A] shadow-[0_0_12px_rgba(129,140,248,0.25)]'
-                  : 'bg-w-bg-card hover:bg-[#FEF3E8] text-amber-600 border-[#F5D3C8]'
+                  ? 'bg-w-bg-alt hover:bg-w-accent-muted text-w-primary border-w-accent-border shadow-md'
+                  : 'bg-w-bg-card hover:bg-w-bg-tag text-amber-600 border-w-border'
               }`}
               title={
                 isDeepSpace
@@ -1405,7 +947,7 @@ export default function App() {
       {/* Main Content Body */}
       <main className={`flex-1 flex flex-col w-full mx-auto transition-all ${
         activeGameConfig
-          ? 'max-w-[1550px] p-2 sm:p-3 space-y-3'
+          ? 'max-w-[1600px] p-1.5 sm:p-2.5 min-h-0'
           : 'max-w-7xl p-4 sm:p-6 lg:p-8 space-y-6'
       }`}>
         
@@ -1420,7 +962,7 @@ export default function App() {
             </div>
             <button
               onClick={clearError}
-              className="px-3 py-1 bg-rose-200 hover:bg-rose-300 text-rose-900 rounded-lg text-xs font-bold transition"
+              className="wey-btn-danger px-3 py-1 text-xs rounded-lg cursor-pointer"
             >
               Đóng
             </button>
@@ -1430,8 +972,8 @@ export default function App() {
         {/* Render Active Game Mode */}
         {activeGameConfig ? (
           <div 
-            className={`flex flex-col ${stageMetrics.isCompactHeight ? 'space-y-1.5' : 'space-y-3'} ${
-              isFullscreen ? 'p-1.5 sm:p-3 overflow-y-auto w-full h-full min-h-screen' : 'flex-1 w-full'
+            className={`flex flex-col ${stageMetrics.isCompactHeight ? 'space-y-1' : 'space-y-2'} ${
+              isFullscreen ? 'p-1.5 sm:p-2.5 overflow-hidden w-full h-[100dvh] max-h-[100dvh]' : 'flex-1 min-h-0 w-full'
             }`}
             ref={gameContainerRef}
             style={{
@@ -1472,7 +1014,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={toggleFullscreen}
-                  className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-slate-100 text-w-primary-hover text-xs font-bold rounded-lg border border-slate-300 shadow-2xs transition hover:-translate-y-0.5 cursor-pointer"
+                  className="wey-btn-secondary flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg cursor-pointer"
                   title={isFullscreen ? "Thu nhỏ" : "Phóng to toàn màn hình máy chiếu"}
                 >
                   {isFullscreen ? <Minimize className="w-3.5 h-3.5" /> : <Maximize className="w-3.5 h-3.5" />}
@@ -1482,7 +1024,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => handleOpenQuickGuide(activeGameConfig.gameId)}
-                  className="flex items-center gap-1 px-2.5 py-1 bg-w-accent-light hover:bg-[#D4E4C1] text-w-primary-hover text-xs font-bold rounded-lg border border-w-accent-border shadow-2xs transition hover:-translate-y-0.5 cursor-pointer"
+                  className="wey-btn-secondary flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg cursor-pointer"
                   title="Xem nhanh hướng dẫn luật chơi"
                 >
                   <BookOpen className="w-3.5 h-3.5" />
@@ -1492,7 +1034,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={handleGoHome}
-                  className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-lg border border-slate-300 shadow-2xs transition cursor-pointer"
+                  className="wey-btn-danger px-2.5 py-1 text-xs rounded-lg cursor-pointer"
                 >
                   Thoát Game
                 </button>
@@ -1870,7 +1412,10 @@ export default function App() {
               setCurrentView('bank-editor');
             }}
             webConfig={webConfig}
-            onUpdateWebConfig={newConfig => setWebConfig(newConfig)}
+            onUpdateWebConfig={newConfig => {
+              setWebConfig(newConfig);
+              saveWebConfigCloud(newConfig);
+            }}
           />
         ) : currentView === 'bank-editor' ? (
           <div>
@@ -1891,7 +1436,35 @@ export default function App() {
                   });
                 }
               }}
-              onOpenAiGenerator={() => setIsAiModalOpen(true)}
+              onUpdateBank={async updatedBank => {
+                setQuestionBanks(prev =>
+                  prev.map(b => (b.id === updatedBank.id ? updatedBank : b))
+                );
+                if (user?.uid) {
+                  await saveQuestionBankToCloud({
+                    ...updatedBank,
+                    userId: user.uid,
+                    userEmail: user.email || undefined,
+                  });
+                }
+              }}
+              onCreateBank={async newBank => {
+                setQuestionBanks(prev => [newBank, ...prev]);
+                setActiveBankId(newBank.id);
+                if (user?.uid) {
+                  await saveQuestionBankToCloud({
+                    ...newBank,
+                    userId: user.uid,
+                    userEmail: user.email || undefined,
+                  });
+                }
+              }}
+              onDeleteBank={async bankId => {
+                setQuestionBanks(prev => prev.filter(b => b.id !== bankId));
+                if (user?.uid) {
+                  await deleteCloudQuestionBank(bankId);
+                }
+              }}
             />
           </div>
         ) : currentView === 'question-bank' ? (
@@ -1899,11 +1472,12 @@ export default function App() {
             onBack={() => setCurrentView('home')}
             questionBanks={questionBanks}
             onUpdateBanks={newBanks => setQuestionBanks(newBanks)}
+            activeBankId={activeBankId}
+            onSelectActiveBank={bankId => setActiveBankId(bankId)}
             onOpenQuickManager={bankId => {
               setActiveBankId(bankId);
               setCurrentView('bank-editor');
             }}
-            onOpenAiGenerator={() => setIsAiModalOpen(true)}
           />
         ) : (
           /* HOME VIEW - GAME CATALOG, SEARCH & TAGS */
@@ -1940,11 +1514,11 @@ export default function App() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setIsAiModalOpen(true)}
-                  className="flex-1 sm:flex-initial px-3.5 py-2 bg-[#F2B6C7] hover:bg-[#EEA3B7] text-w-text-main text-xs font-extrabold rounded-xl border border-[#E59EB2] shadow-2xs transition hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-1.5"
+                  onClick={() => setCurrentView('bank-editor')}
+                  className="flex-1 sm:flex-initial px-3.5 py-2 wey-btn-primary text-xs font-extrabold rounded-xl shadow-2xs transition hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-w-bg-card" />
-                  <span>Tạo Bằng AI</span>
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Soạn & Quản Lý Câu Hỏi</span>
                 </button>
               </div>
             </div>
@@ -2046,7 +1620,7 @@ export default function App() {
                   return (
                     <div
                       key={game.id}
-                      className="group bg-w-bg-card hover:bg-white border-2 border-w-border hover:border-w-accent-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 relative overflow-hidden"
+                      className="group wey-game-card p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden"
                     >
                       {/* Top Badges & Meta */}
                       <div className="space-y-3">
@@ -2107,7 +1681,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={() => handleOpenSetup(game.id)}
-                          className="flex-1 py-2.5 px-3 bg-w-primary-dark hover:bg-w-primary-hover text-white text-xs font-black rounded-xl shadow-xs hover:shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer transform group-hover:scale-[1.02]"
+                          className="flex-1 py-2.5 px-3 wey-btn-primary text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transform group-hover:scale-[1.02]"
                         >
                           <Play className="w-3.5 h-3.5 fill-current" />
                           <span>Chơi Ngay</span>
@@ -2116,7 +1690,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={(e) => handleOpenQuickGuide(game.id, e)}
-                          className="p-2.5 bg-white hover:bg-slate-50 text-w-text-muted hover:text-w-text-main rounded-xl border border-w-border shadow-2xs transition cursor-pointer"
+                          className="p-2.5 wey-btn-secondary rounded-xl cursor-pointer"
                           title="Xem luật chơi"
                         >
                           <BookOpen className="w-4 h-4" />
@@ -2146,7 +1720,7 @@ export default function App() {
                     setSearchQuery('');
                     setSelectedTag(null);
                   }}
-                  className="px-5 py-2.5 bg-w-primary-dark hover:bg-w-primary-hover text-white text-xs font-extrabold rounded-xl shadow-xs transition cursor-pointer"
+                  className="px-5 py-2.5 wey-btn-primary text-xs rounded-xl cursor-pointer"
                 >
                   Xem Tất Cả Trò Chơi
                 </button>
@@ -2200,25 +1774,6 @@ export default function App() {
         />
       )}
 
-      <AiQuestionModal
-        isOpen={isAiModalOpen}
-        onClose={() => setIsAiModalOpen(false)}
-        banks={questionBanks}
-        activeBankId={activeBankId}
-        onSaveGeneratedQuestions={async (newBank: QuestionBank) => {
-          setQuestionBanks(prev => [newBank, ...prev]);
-          if (user?.uid) {
-            await saveQuestionBankToCloud({
-              ...newBank,
-              userId: user.uid,
-              userEmail: user.email || undefined,
-            });
-          }
-          setActiveBankId(newBank.id);
-          setIsAiModalOpen(false);
-        }}
-      />
-
       <BgMusicControllerModal
         isOpen={isBgMusicModalOpen}
         onClose={() => setIsBgMusicModalOpen(false)}
@@ -2254,28 +1809,6 @@ export default function App() {
         isOpen={showUnauthorizedModal}
         onClose={() => setShowUnauthorizedModal(false)}
       />
-
-      {isApiSelectModalOpen && (
-        <ApiSelectModal
-          isOpen={isApiSelectModalOpen}
-          onClose={() => setIsApiSelectModalOpen(false)}
-          onSelectAndProceed={(config) => {
-            apiManager.setActiveApiId(config.id);
-            setIsApiSelectModalOpen(false);
-          }}
-          onOpenFullManager={() => {
-            setIsApiSelectModalOpen(false);
-            setIsApiManagerModalOpen(true);
-          }}
-        />
-      )}
-
-      {isApiManagerModalOpen && (
-        <ApiManagerModal
-          isOpen={isApiManagerModalOpen}
-          onClose={() => setIsApiManagerModalOpen(false)}
-        />
-      )}
 
       <GameQuickGuideModal
         isOpen={isQuickGuideOpen}

@@ -345,7 +345,7 @@ export const ClassificationGame: React.FC<ClassificationGameProps> = ({
               {/* Items Classified Inside Tray */}
               <div className="flex-1 bg-[#FAF6EC] rounded-2xl p-2.5 border border-[#E8DFCA] flex flex-wrap gap-1.5 content-start overflow-y-auto max-h-56">
                 {itemsInside.length === 0 ? (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-[#9CA3AF] text-xs font-bold italic py-6">
+                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 text-xs font-bold italic py-6">
                     <span>Thả hoặc chọn vào đây</span>
                   </div>
                 ) : (

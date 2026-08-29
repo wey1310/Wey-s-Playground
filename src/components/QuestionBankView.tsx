@@ -1,61 +1,118 @@
 import { safeAlert, safeConfirm } from "../utils/safeAlert";
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Search, Plus, FileText, Lock, Globe, Star, MoreVertical, Trash2, Copy, 
-  ArrowLeft, History, Folder, FolderPlus, Grid, List, Layers, 
-  Filter, Sparkles, BookOpen, CheckCircle2, ChevronDown, ChevronRight,
-  MoveRight, Check, Tag, Info
+  ArrowLeft, Folder, FolderPlus, Grid, List, Layers, 
+  BookOpen, CheckCircle2, ChevronDown, ChevronRight,
+  Tag, GripVertical, CheckSquare, Square, FolderCheck, X, Edit3,
+  FolderOpen, Sparkles, Bot, ExternalLink
 } from 'lucide-react';
 import type { QuestionBank, Question } from "../types";
 import { useAuth } from '../contexts/AuthContext';
 import { CreateBankModal } from './CreateBankModal';
 import { GRADES, ALL_SUBJECTS } from '../data/curriculumData';
+import { MathChemRenderer } from '../utils/mathChemFormatter';
+import { soundFx } from '../utils/audio';
 
 interface QuestionBankViewProps {
   onBack: () => void;
   questionBanks: QuestionBank[];
   onUpdateBanks: (banks: QuestionBank[]) => void;
   onOpenQuickManager: (bankId: string) => void;
-  onOpenAiGenerator?: () => void;
+  activeBankId?: string;
+  onSelectActiveBank?: (bankId: string) => void;
 }
 
 type TabType = 'all' | 'presets' | 'mine' | 'public' | 'private' | 'favorite' | 'trash';
 type ViewMode = 'folders' | 'grid' | 'table' | 'questions';
 type GroupByMode = 'grade' | 'subject' | 'folder';
 
+const CUSTOM_FOLDERS_STORAGE_KEY = 'wey_custom_folders_list';
+
 export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
   onBack,
   questionBanks,
   onUpdateBanks,
   onOpenQuickManager,
-  onOpenAiGenerator
 }) => {
   const { user } = useAuth();
+
+  // Retrieve Gem AI Converter URL from saved web configuration
+  const gemConverterUrl = useMemo(() => {
+    try {
+      const saved = localStorage.getItem('wey_web_config');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.gemConverterUrl;
+      }
+    } catch (e) {}
+    return undefined;
+  }, []);
   
   // Navigation & View States
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('folders');
-  const [groupByMode, setGroupByMode] = useState<GroupByMode>('grade');
+  const [groupByMode, setGroupByMode] = useState<GroupByMode>('folder');
   
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
   const [subjectFilter, setSubjectFilter] = useState('');
   const [gradeFilter, setGradeFilter] = useState('');
-  const [folderFilter, setFolderFilter] = useState('');
+  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [hasQuestionsFilter, setHasQuestionsFilter] = useState<'all' | 'has_questions' | 'empty'>('all');
   
+  // Custom Folders State (Persisted in localStorage & combined with existing banks)
+  const [customFolders, setCustomFolders] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem(CUSTOM_FOLDERS_STORAGE_KEY);
+      const parsed: string[] = stored ? JSON.parse(stored) : [];
+      const bankFolders = questionBanks
+        .map(b => b.folder?.trim())
+        .filter((f): f is string => Boolean(f));
+      return Array.from(new Set([...parsed, ...bankFolders])).sort();
+    } catch {
+      return ['Đề kiểm tra 15 phút', 'Đề thi Giữa kỳ', 'Đề thi Học kỳ', 'Chuyên đề Nâng cao'];
+    }
+  });
+
+  // Save custom folders when updated
+  useEffect(() => {
+    try {
+      localStorage.setItem(CUSTOM_FOLDERS_STORAGE_KEY, JSON.stringify(customFolders));
+    } catch (e) {
+      console.warn('Could not persist custom folders', e);
+    }
+  }, [customFolders]);
+
   // Modals & Popups
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [editingBank, setEditingBank] = useState<QuestionBank | null>(null);
-  
-  // Folder Creation Modal
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
-  
+  const [inlineCreatingFolder, setInlineCreatingFolder] = useState(false);
+  const [inlineFolderName, setInlineFolderName] = useState('');
+  const [editingFolderOriginal, setEditingFolderOriginal] = useState<string | null>(null);
+  const [editingFolderName, setEditingFolderName] = useState('');
+
   // Move to Folder Modal
   const [bankToMove, setBankToMove] = useState<QuestionBank | null>(null);
   const [selectedTargetFolder, setSelectedTargetFolder] = useState<string>('');
+
+  // Drag-and-Drop States
+  const [draggedBankId, setDraggedBankId] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOverFolder, setDragOverFolder] = useState<string | null>(null);
+
+  // Batch Selection State
+  const [selectedBankIds, setSelectedBankIds] = useState<Set<string>>(new Set());
+  const [batchTargetFolder, setBatchTargetFolder] = useState<string>('');
+
+  // Toast notification
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
 
   // Collapsed sections in Folder view
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
@@ -67,16 +124,16 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
     }));
   };
 
-  // Extract all unique custom folders from existing banks
+  // Extract all available folders (combining customFolders list and banks' folders)
   const availableFolders = useMemo(() => {
-    const folders = new Set<string>();
+    const folders = new Set<string>(customFolders);
     questionBanks.forEach(b => {
       if (b.folder && b.folder.trim() && !b.isDeleted) {
         folders.add(b.folder.trim());
       }
     });
     return Array.from(folders).sort();
-  }, [questionBanks]);
+  }, [customFolders, questionBanks]);
 
   // Overall Statistics for the repository
   const repoStats = useMemo(() => {
@@ -91,7 +148,26 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
       gradesCount,
       presetsCount: activeBanks.filter(b => b.isPreset).length,
       userBanksCount: activeBanks.filter(b => !b.isPreset).length,
+      favoritesCount: activeBanks.filter(b => b.favorite).length,
+      trashCount: questionBanks.filter(b => b.isDeleted).length,
     };
+  }, [questionBanks]);
+
+  // Folder bank counts map
+  const folderCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    availableFolders.forEach(f => { counts[f] = 0; });
+    questionBanks.forEach(b => {
+      if (!b.isDeleted && b.folder && b.folder.trim()) {
+        const f = b.folder.trim();
+        counts[f] = (counts[f] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [availableFolders, questionBanks]);
+
+  const unorganizedCount = useMemo(() => {
+    return questionBanks.filter(b => !b.isDeleted && (!b.folder || !b.folder.trim())).length;
   }, [questionBanks]);
 
   // Filtered Banks
@@ -108,16 +184,24 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
       if (activeTab === 'private' && bank.visibility !== 'private') return false;
       if (activeTab === 'favorite' && !bank.favorite) return false;
 
+      // Sidebar folder selection
+      if (selectedFolder !== null) {
+        if (selectedFolder === '__unorganized__') {
+          if (bank.folder && bank.folder.trim()) return false;
+        } else {
+          if (bank.folder !== selectedFolder) return false;
+        }
+      }
+
       // Dropdown filters
       if (subjectFilter && bank.subject !== subjectFilter) return false;
       if (gradeFilter && bank.grade !== gradeFilter) return false;
-      if (folderFilter && (bank.folder || 'Chưa phân loại') !== folderFilter) return false;
 
       // Question count filter
       if (hasQuestionsFilter === 'has_questions' && (!bank.questions || bank.questions.length === 0)) return false;
       if (hasQuestionsFilter === 'empty' && bank.questions && bank.questions.length > 0) return false;
 
-      // Search query (for Banks view modes)
+      // Search query
       if (viewMode !== 'questions' && searchQuery.trim()) {
         const query = searchQuery.toLowerCase().trim();
         const matchesName = bank.name.toLowerCase().includes(query);
@@ -134,7 +218,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
 
       return true;
     });
-  }, [questionBanks, activeTab, subjectFilter, gradeFilter, folderFilter, hasQuestionsFilter, searchQuery, user, viewMode]);
+  }, [questionBanks, activeTab, selectedFolder, subjectFilter, gradeFilter, hasQuestionsFilter, searchQuery, user, viewMode]);
 
   // Filtered Questions (for 'questions' view mode)
   const filteredQuestionsList = useMemo(() => {
@@ -168,6 +252,14 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
   const groupedBanks = useMemo(() => {
     const groups: Record<string, QuestionBank[]> = {};
 
+    // When grouping by folder, include empty custom folders if viewing all
+    if (groupByMode === 'folder' && !selectedFolder) {
+      availableFolders.forEach(f => {
+        groups[f] = [];
+      });
+      groups['Chưa phân loại'] = [];
+    }
+
     filteredBanks.forEach(bank => {
       let key = 'Chưa phân loại';
       if (groupByMode === 'grade') {
@@ -175,7 +267,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
       } else if (groupByMode === 'subject') {
         key = bank.subject || 'Tổng hợp';
       } else if (groupByMode === 'folder') {
-        key = bank.folder || '📁 Thư mục chung';
+        key = bank.folder ? bank.folder.trim() : 'Chưa phân loại';
       }
 
       if (!groups[key]) {
@@ -186,6 +278,8 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
 
     // Sort group keys logically
     const sortedKeys = Object.keys(groups).sort((a, b) => {
+      if (a === 'Chưa phân loại') return 1;
+      if (b === 'Chưa phân loại') return -1;
       if (groupByMode === 'grade') {
         const numA = parseInt(a.replace(/\D/g, '')) || 99;
         const numB = parseInt(b.replace(/\D/g, '')) || 99;
@@ -199,19 +293,187 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
       banks: groups[key],
       totalQuestions: groups[key].reduce((acc, b) => acc + (b.questions?.length || 0), 0)
     }));
-  }, [filteredBanks, groupByMode]);
+  }, [filteredBanks, groupByMode, availableFolders, selectedFolder]);
 
-  // Handle moving bank to folder
-  const handleMoveToFolder = (targetFolder: string) => {
-    if (!bankToMove) return;
-    const cleanFolder = targetFolder.trim() || undefined;
-    onUpdateBanks(questionBanks.map(b => b.id === bankToMove.id ? { ...b, folder: cleanFolder, updatedAt: new Date().toISOString() } : b));
-    setBankToMove(null);
-    setSelectedTargetFolder('');
+  // Handle Drag and Drop Assignment of bank to folder
+  const handleAssignBankToFolder = (bankId: string, folderName: string | null) => {
+    const bank = questionBanks.find(b => b.id === bankId);
+    if (!bank) return;
+
+    const cleanFolder = folderName && folderName.trim() ? folderName.trim() : undefined;
+    const updatedBanks = questionBanks.map(b => 
+      b.id === bankId 
+        ? { ...b, folder: cleanFolder, updatedAt: new Date().toISOString() } 
+        : b
+    );
+    onUpdateBanks(updatedBanks);
+    soundFx.cardFlip();
+
+    const targetDesc = cleanFolder ? `thư mục "${cleanFolder}"` : 'Thư mục chung (Bỏ phân loại)';
+    showToast(`Đã chuyển bộ đề "${bank.name}" vào ${targetDesc}`);
+  };
+
+  // Handle Drag Start
+  const handleDragStart = (e: React.DragEvent, bankId: string) => {
+    e.dataTransfer.setData('text/plain', bankId);
+    setDraggedBankId(bankId);
+    setIsDragging(true);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedBankId(null);
+    setIsDragging(false);
+    setDragOverFolder(null);
+  };
+
+  // Handle Drop on a specific Folder
+  const handleDropOnFolder = (e: React.DragEvent, targetFolder: string | null) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const bankId = e.dataTransfer.getData('text/plain') || draggedBankId;
+    if (bankId) {
+      handleAssignBankToFolder(bankId, targetFolder);
+    }
+    setDragOverFolder(null);
+    setIsDragging(false);
+    setDraggedBankId(null);
+  };
+
+  // Handle Create New Folder
+  const handleCreateNewFolder = (folderName: string) => {
+    const trimmed = folderName.trim();
+    if (!trimmed) {
+      safeAlert('Vui lòng nhập tên thư mục!');
+      return;
+    }
+    if (availableFolders.includes(trimmed)) {
+      safeAlert('Thư mục này đã tồn tại!');
+      return;
+    }
+    const updated = [...customFolders, trimmed].sort();
+    setCustomFolders(updated);
+    setSelectedFolder(trimmed);
+    setGroupByMode('folder');
+    soundFx.buttonClick();
+    showToast(`Đã tạo thư mục mới: "${trimmed}"`);
+    setInlineCreatingFolder(false);
+    setInlineFolderName('');
+    setIsFolderModalOpen(false);
+    setNewFolderName('');
+  };
+
+  // Handle Rename Folder
+  const handleRenameFolder = (oldName: string, newName: string) => {
+    const trimmed = newName.trim();
+    if (!trimmed || trimmed === oldName) {
+      setEditingFolderOriginal(null);
+      return;
+    }
+    const updatedFolders = customFolders.map(f => f === oldName ? trimmed : f).sort();
+    setCustomFolders(updatedFolders);
+    const updatedBanks = questionBanks.map(b => b.folder === oldName ? { ...b, folder: trimmed, updatedAt: new Date().toISOString() } : b);
+    onUpdateBanks(updatedBanks);
+    if (selectedFolder === oldName) {
+      setSelectedFolder(trimmed);
+    }
+    setEditingFolderOriginal(null);
+    showToast(`Đã đổi tên thư mục thành "${trimmed}"`);
+  };
+
+  // Handle Delete Folder
+  const handleDeleteFolder = (folderName: string) => {
+    const count = folderCounts[folderName] || 0;
+    const msg = count > 0 
+      ? `Bạn có chắc muốn xóa thư mục "${folderName}"? ${count} bộ đề bên trong sẽ được chuyển về "Chưa phân loại".`
+      : `Bạn có chắc muốn xóa thư mục "${folderName}"?`;
+      
+    if (safeConfirm(msg)) {
+      setCustomFolders(customFolders.filter(f => f !== folderName));
+      const updatedBanks = questionBanks.map(b => b.folder === folderName ? { ...b, folder: undefined, updatedAt: new Date().toISOString() } : b);
+      onUpdateBanks(updatedBanks);
+      if (selectedFolder === folderName) {
+        setSelectedFolder(null);
+      }
+      showToast(`Đã xóa thư mục "${folderName}"`);
+    }
+  };
+
+  // Batch Selection Handlers
+  const toggleSelectBank = (bankId: string) => {
+    setSelectedBankIds(prev => {
+      const next = new Set(prev);
+      if (next.has(bankId)) next.delete(bankId);
+      else next.add(bankId);
+      return next;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedBankIds.size === filteredBanks.length) {
+      setSelectedBankIds(new Set());
+    } else {
+      setSelectedBankIds(new Set(filteredBanks.map(b => b.id)));
+    }
+  };
+
+  const handleBatchMove = () => {
+    if (selectedBankIds.size === 0) {
+      safeAlert('Vui lòng chọn ít nhất một bộ đề để di chuyển!');
+      return;
+    }
+    const cleanFolder = batchTargetFolder.trim() || undefined;
+    const updatedBanks = questionBanks.map(b => {
+      if (selectedBankIds.has(b.id)) {
+        return { ...b, folder: cleanFolder, updatedAt: new Date().toISOString() };
+      }
+      return b;
+    });
+    onUpdateBanks(updatedBanks);
+    soundFx.cardFlip();
+    const targetDesc = cleanFolder ? `thư mục "${cleanFolder}"` : 'Thư mục chung';
+    showToast(`Đã chuyển ${selectedBankIds.size} bộ đề vào ${targetDesc}`);
+    setSelectedBankIds(new Set());
+    setBatchTargetFolder('');
+  };
+
+  const handleBatchFavorite = () => {
+    if (selectedBankIds.size === 0) return;
+    const updatedBanks = questionBanks.map(b => {
+      if (selectedBankIds.has(b.id)) {
+        return { ...b, favorite: true, updatedAt: new Date().toISOString() };
+      }
+      return b;
+    });
+    onUpdateBanks(updatedBanks);
+    showToast(`Đã thêm ${selectedBankIds.size} bộ đề vào Yêu thích`);
+    setSelectedBankIds(new Set());
+  };
+
+  const handleBatchDelete = () => {
+    if (selectedBankIds.size === 0) return;
+    if (safeConfirm(`Bạn có chắc muốn chuyển ${selectedBankIds.size} bộ đề vào thùng rác?`)) {
+      const updatedBanks = questionBanks.map(b => {
+        if (selectedBankIds.has(b.id)) {
+          return { ...b, isDeleted: true, updatedAt: new Date().toISOString() };
+        }
+        return b;
+      });
+      onUpdateBanks(updatedBanks);
+      showToast(`Đã chuyển ${selectedBankIds.size} bộ đề vào thùng rác`);
+      setSelectedBankIds(new Set());
+    }
   };
 
   return (
     <div className="w-full flex flex-col space-y-5">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-w-primary text-white font-[800] text-xs sm:text-sm px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 animate-in fade-in slide-in-from-bottom-3 border border-white/20">
+          <FolderCheck className="w-4 h-4 shrink-0" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* Top Header & Quick Actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -232,29 +494,36 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
               </span>
             </div>
             <p className="text-w-text-muted text-xs sm:text-sm font-[600] mt-0.5">
-              Kho kiến thức tập trung: phân loại thông minh theo khối lớp, môn học và thư mục chuyên đề.
+              Hỗ trợ kéo thả vào thư mục, di chuyển hàng loạt và phân loại thông minh.
             </p>
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2 flex-wrap">
-          {onOpenAiGenerator && (
-            <button
-              onClick={onOpenAiGenerator}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-linear-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-[800] text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+          {gemConverterUrl && (
+            <a
+              href={gemConverterUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-[800] text-xs sm:text-sm shadow-xs transition hover:scale-105 cursor-pointer"
+              title="Chuyển đổi văn bản/tài liệu câu hỏi sang format chuẩn bằng Gem AI"
             >
-              <Sparkles className="w-4 h-4 text-amber-200" />
-              AI Tạo Đề Nhanh
-            </button>
+              <Bot className="w-4 h-4" />
+              <span>Chuyển Đổi Format Bằng Gem AI</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
           )}
 
           <button
-            onClick={() => setIsFolderModalOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-w-bg-card hover:bg-w-accent-light text-w-primary-dark font-[700] text-xs sm:text-sm border border-w-accent-border shadow-xs transition-colors cursor-pointer"
+            onClick={() => {
+              setInlineCreatingFolder(true);
+              setInlineFolderName('');
+            }}
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-w-bg-card hover:bg-w-accent-light text-w-primary-dark font-[800] text-xs sm:text-sm border border-w-accent-border shadow-xs transition-all cursor-pointer"
           >
             <FolderPlus className="w-4 h-4" />
-            Tạo Thư Mục
+            + Tạo Thư Mục Mới
           </button>
 
           <button
@@ -262,7 +531,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
               setEditingBank(null);
               setIsCreateModalOpen(true);
             }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-w-primary hover:bg-w-primary-hover text-white font-[800] text-xs sm:text-sm shadow-[0_4px_12px_rgba(79,104,60,0.2)] transition-all cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl wey-btn-primary text-xs sm:text-sm shadow-sm cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             Tạo Bộ Đề Mới
@@ -270,617 +539,974 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
         </div>
       </div>
 
-      {/* Summary Stats Strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-w-bg-card border border-w-border p-3.5 rounded-[22px] shadow-xs">
-        <div className="flex items-center gap-3 px-3 py-1.5 border-r border-w-border/60 last:border-0">
-          <div className="w-9 h-9 rounded-xl bg-w-accent-light text-w-primary-dark flex items-center justify-center font-[800]">
-            📚
-          </div>
-          <div>
-            <div className="text-[11px] font-[700] text-w-text-muted">Tổng số bộ đề</div>
-            <div className="text-base font-[900] text-w-text-main">{repoStats.totalBanks} bộ</div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 px-3 py-1.5 border-r border-w-border/60 last:border-0">
-          <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-[800]">
-            📝
-          </div>
-          <div>
-            <div className="text-[11px] font-[700] text-w-text-muted">Tổng số câu hỏi</div>
-            <div className="text-base font-[900] text-emerald-800">{repoStats.totalQuestions} câu</div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 px-3 py-1.5 border-r border-w-border/60 last:border-0">
-          <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-[800]">
-            🎓
-          </div>
-          <div>
-            <div className="text-[11px] font-[700] text-w-text-muted">Khối lớp & Môn</div>
-            <div className="text-base font-[900] text-w-text-main">{repoStats.gradesCount} khối • {repoStats.subjectsCount} môn</div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 px-3 py-1.5">
-          <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-[800]">
-            📁
-          </div>
-          <div>
-            <div className="text-[11px] font-[700] text-w-text-muted">Thư mục chuyên đề</div>
-            <div className="text-base font-[900] text-amber-800">{availableFolders.length} thư mục</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Control Bar: Search + Filters + View Mode Switcher */}
-      <div className="bg-w-bg-card border border-w-border p-3.5 rounded-[22px] shadow-sm flex flex-col gap-3">
-        {/* Row 1: Search & Dropdowns */}
-        <div className="flex flex-col lg:flex-row gap-3 items-center">
-          {/* Search Input */}
-          <div className="flex-1 relative w-full">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-w-text-muted" />
-            <input
-              type="text"
-              placeholder="Tìm kiếm theo tên bộ đề, bài học SGK, môn, khối lớp, tags..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-w-border rounded-[16px] text-xs sm:text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary focus:ring-2 focus:ring-w-primary/20 transition-all shadow-xs"
-            />
-            {searchQuery && (
-              <button 
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-[700] text-w-text-muted hover:text-w-text-main"
-              >
-                Xóa
-              </button>
-            )}
-          </div>
-
-          {/* Quick Dropdown Selectors */}
-          <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full lg:w-auto items-center">
-            {/* Grade Filter */}
-            <select
-              value={gradeFilter}
-              onChange={e => setGradeFilter(e.target.value)}
-              className="flex-1 sm:flex-none px-3 py-2 bg-white border border-w-border rounded-[14px] text-xs font-[700] text-w-primary-dark cursor-pointer shadow-xs focus:outline-none focus:border-w-primary"
-            >
-              <option value="">🎓 Tất cả Khối Lớp</option>
-              {GRADES.map(gr => (
-                <option key={gr} value={gr}>{gr}</option>
-              ))}
-            </select>
-
-            {/* Subject Filter */}
-            <select 
-              value={subjectFilter}
-              onChange={e => setSubjectFilter(e.target.value)}
-              className="flex-1 sm:flex-none px-3 py-2 bg-white border border-w-border rounded-[14px] text-xs font-[700] text-w-primary-dark cursor-pointer shadow-xs focus:outline-none focus:border-w-primary"
-            >
-              <option value="">📚 Tất cả Môn Học</option>
-              {ALL_SUBJECTS.map(subj => (
-                <option key={subj} value={subj}>{subj}</option>
-              ))}
-            </select>
-
-            {/* Custom Folder Filter */}
-            {availableFolders.length > 0 && (
-              <select
-                value={folderFilter}
-                onChange={e => setFolderFilter(e.target.value)}
-                className="flex-1 sm:flex-none px-3 py-2 bg-white border border-w-border rounded-[14px] text-xs font-[700] text-w-primary-dark cursor-pointer shadow-xs focus:outline-none focus:border-w-primary"
-              >
-                <option value="">📁 Tất cả Thư Mục</option>
-                {availableFolders.map(f => (
-                  <option key={f} value={f}>📁 {f}</option>
-                ))}
-              </select>
-            )}
-
-            {/* Question Count Filter */}
-            <select
-              value={hasQuestionsFilter}
-              onChange={e => setHasQuestionsFilter(e.target.value as any)}
-              className="flex-1 sm:flex-none px-3 py-2 bg-white border border-w-border rounded-[14px] text-xs font-[700] text-w-primary-dark cursor-pointer shadow-xs focus:outline-none focus:border-w-primary"
-            >
-              <option value="all">📝 Mọi số lượng câu</option>
-              <option value="has_questions">✅ Có câu hỏi (&gt;0)</option>
-              <option value="empty">⚠️ Chưa có câu hỏi (0)</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Row 2: Category Tabs & View Mode Toggles */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-2 border-t border-w-border/60">
-          {/* Quick Filter Pills */}
-          <div className="flex gap-1.5 overflow-x-auto pb-1 max-w-full hide-scrollbar">
-            {[
-              { id: 'all', label: 'Tất cả kho', icon: '📚' },
-              { id: 'presets', label: 'Mẫu KHTN Chuẩn SGK', icon: '🔬' },
-              { id: 'mine', label: 'Bộ của tôi', icon: '👤' },
-              { id: 'favorite', label: 'Yêu thích', icon: '⭐' },
-              { id: 'public', label: 'Công khai', icon: '🌎' },
-              { id: 'private', label: 'Riêng tư', icon: '🔒' },
-              { id: 'trash', label: 'Thùng rác', icon: '🗑' }
-            ].map(tab => (
+      {/* Main 2-Column Responsive Layout with Left Sidebar */}
+      <div className="flex flex-col lg:flex-row gap-5 items-start">
+        
+        {/* ===================================================================== */}
+        {/* LEFT SIDEBAR: THƯ MỤC & PHÂN LOẠI (DRAG & DROP DROP ZONES)            */}
+        {/* ===================================================================== */}
+        <aside className="w-full lg:w-72 xl:w-80 shrink-0 space-y-4">
+          
+          {/* Main Sidebar Box */}
+          <div className="bg-w-bg-card border-2 border-w-border rounded-[24px] p-4 shadow-xs flex flex-col space-y-4">
+            
+            {/* Sidebar Title & 'New Folder' button */}
+            <div className="flex items-center justify-between pb-3 border-b border-w-border">
+              <div className="flex items-center gap-2">
+                <Folder className="w-4 h-4 text-w-primary" />
+                <h3 className="font-[900] text-sm text-w-text-main">
+                  Thư Mục & Phân Loại
+                </h3>
+              </div>
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as TabType)}
-                className={`px-3 py-1.5 rounded-xl font-[800] text-xs whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
-                  activeTab === tab.id 
-                    ? 'bg-w-primary-dark text-white shadow-xs' 
-                    : 'bg-w-bg-main text-[#556948] hover:bg-w-accent-light'
-                }`}
+                onClick={() => setInlineCreatingFolder(prev => !prev)}
+                className="text-[11px] font-[800] text-w-primary-dark hover:text-w-primary px-2 py-1 rounded-lg bg-w-accent-light hover:bg-w-accent-muted transition-colors flex items-center gap-1 cursor-pointer"
+                title="Tạo thêm thư mục nhóm mới"
               >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
+                <Plus className="w-3.5 h-3.5" />
+                <span>Thư mục</span>
               </button>
-            ))}
-          </div>
+            </div>
 
-          {/* View Mode & Group Switchers */}
-          <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
-            {viewMode === 'folders' && (
-              <div className="flex items-center gap-1 bg-w-bg-main p-1 rounded-xl border border-w-border">
-                <span className="text-[10px] font-[800] text-w-text-muted px-1.5">Gom theo:</span>
-                <button
-                  onClick={() => setGroupByMode('grade')}
-                  className={`text-[11px] font-[700] px-2 py-0.5 rounded-lg transition-colors cursor-pointer ${
-                    groupByMode === 'grade' ? 'bg-w-primary-dark text-white' : 'text-[#556948] hover:bg-w-accent-light'
-                  }`}
-                >
-                  Khối Lớp
-                </button>
-                <button
-                  onClick={() => setGroupByMode('subject')}
-                  className={`text-[11px] font-[700] px-2 py-0.5 rounded-lg transition-colors cursor-pointer ${
-                    groupByMode === 'subject' ? 'bg-w-primary-dark text-white' : 'text-[#556948] hover:bg-w-accent-light'
-                  }`}
-                >
-                  Môn Học
-                </button>
-                <button
-                  onClick={() => setGroupByMode('folder')}
-                  className={`text-[11px] font-[700] px-2 py-0.5 rounded-lg transition-colors cursor-pointer ${
-                    groupByMode === 'folder' ? 'bg-w-primary-dark text-white' : 'text-[#556948] hover:bg-w-accent-light'
-                  }`}
-                >
-                  Thư Mục
-                </button>
+            {/* Inline New Folder Input */}
+            {inlineCreatingFolder && (
+              <div className="p-3 bg-w-bg-alt border border-w-border rounded-2xl space-y-2 animate-in fade-in">
+                <div className="text-[11px] font-[800] text-w-text-main flex items-center justify-between">
+                  <span>Đặt tên thư mục mới:</span>
+                  <button 
+                    onClick={() => setInlineCreatingFolder(false)}
+                    className="text-w-text-muted hover:text-w-text-main p-0.5"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  placeholder="VD: Ôn thi Giữa kỳ 1..."
+                  value={inlineFolderName}
+                  onChange={(e) => setInlineFolderName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleCreateNewFolder(inlineFolderName);
+                    if (e.key === 'Escape') setInlineCreatingFolder(false);
+                  }}
+                  autoFocus
+                  className="w-full px-3 py-1.5 bg-w-input-bg border border-w-input-border rounded-xl text-xs font-[700] text-w-text-main focus:outline-none focus:border-w-primary"
+                />
+                <div className="flex justify-end gap-1.5">
+                  <button
+                    onClick={() => setInlineCreatingFolder(false)}
+                    className="px-2.5 py-1 rounded-lg text-[11px] font-[700] text-w-text-muted hover:bg-w-bg-card"
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    onClick={() => handleCreateNewFolder(inlineFolderName)}
+                    className="px-3 py-1 rounded-lg text-[11px] font-[800] wey-btn-primary"
+                  >
+                    Tạo Ngay
+                  </button>
+                </div>
               </div>
             )}
 
-            {/* View Mode Icons */}
-            <div className="flex items-center bg-w-bg-main p-1 rounded-xl border border-w-border">
-              <button
-                onClick={() => setViewMode('folders')}
-                title="Chế độ Kho & Thư mục phân cấp (Dễ quan sát)"
-                className={`p-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-[700] ${
-                  viewMode === 'folders' ? 'bg-w-primary-dark text-white shadow-xs' : 'text-w-text-muted hover:bg-w-accent-light'
-                }`}
-              >
-                <Layers className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">Kho phân cấp</span>
-              </button>
+            {/* System Presets & Navigation Tabs */}
+            <div className="space-y-1">
+              <div className="text-[10px] font-[800] text-w-text-muted uppercase tracking-wider px-2 mb-1">
+                Bộ sưu tập hệ thống
+              </div>
 
-              <button
-                onClick={() => setViewMode('table')}
-                title="Chế độ Bảng danh sách thu gọn (Đỡ kéo nhiều, xem được nhiều bộ)"
-                className={`p-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-[700] ${
-                  viewMode === 'table' ? 'bg-w-primary-dark text-white shadow-xs' : 'text-w-text-muted hover:bg-w-accent-light'
-                }`}
-              >
-                <List className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">Bảng siêu gọn</span>
-              </button>
-
-              <button
-                onClick={() => setViewMode('grid')}
-                title="Chế độ Lưới thẻ trực quan"
-                className={`p-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-[700] ${
-                  viewMode === 'grid' ? 'bg-w-primary-dark text-white shadow-xs' : 'text-w-text-muted hover:bg-w-accent-light'
-                }`}
-              >
-                <Grid className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">Thẻ lưới</span>
-              </button>
-              
-              <button
-                onClick={() => setViewMode('questions')}
-                title="Chế độ Tìm kiếm Câu hỏi"
-                className={`p-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-[700] ${
-                  viewMode === 'questions' ? 'bg-w-primary-dark text-white shadow-xs' : 'text-w-text-muted hover:bg-w-accent-light'
-                }`}
-              >
-                <Search className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">Tìm câu hỏi</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content Area based on ViewMode */}
-
-      {/* ========================================================================= */}
-      {/* 1. FOLDERS / SHELVES HIERARCHICAL VIEW (GOM THEO KHỐI/MÔN/THƯ MỤC)        */}
-      {/* ========================================================================= */}
-      {viewMode === 'folders' && (
-        <div className="space-y-4">
-          {groupedBanks.map(({ key, banks, totalQuestions }) => {
-            const isCollapsed = Boolean(collapsedGroups[key]);
-            return (
-              <div 
-                key={key} 
-                className="bg-w-bg-card border border-w-border rounded-[22px] shadow-sm overflow-hidden transition-all"
-              >
-                {/* Group Accordion Header */}
-                <div 
-                  onClick={() => toggleGroupCollapse(key)}
-                  className="flex items-center justify-between p-4 bg-w-bg-main/80 hover:bg-[#F2ECD8] cursor-pointer transition-colors select-none border-b border-w-border/50"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-w-accent-light text-w-primary-dark border border-w-accent-border">
-                      <Folder className="w-5 h-5" />
+              {[
+                { id: 'all', label: 'Tất cả ngân hàng', icon: '📚', count: repoStats.totalBanks },
+                { id: 'presets', label: 'Mẫu KHTN Chuẩn SGK', icon: '🔬', count: repoStats.presetsCount },
+                { id: 'mine', label: 'Bộ của tôi', icon: '👤', count: repoStats.userBanksCount },
+                { id: 'favorite', label: 'Yêu thích', icon: '⭐', count: repoStats.favoritesCount },
+                { id: 'trash', label: 'Thùng rác', icon: '🗑️', count: repoStats.trashCount },
+              ].map(tab => {
+                const isActive = activeTab === tab.id && selectedFolder === null;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setActiveTab(tab.id as TabType);
+                      setSelectedFolder(null);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-[800] transition-all cursor-pointer ${
+                      isActive
+                        ? 'bg-w-primary text-white shadow-xs'
+                        : 'text-w-text-main hover:bg-w-accent-light'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span>{tab.icon}</span>
+                      <span>{tab.label}</span>
                     </div>
-                    <div>
-                      <h3 className="font-[900] text-w-text-main text-base sm:text-lg flex items-center gap-2">
-                        {key}
-                        <span className="text-xs font-[800] px-2 py-0.5 rounded-full bg-w-primary-dark text-white">
-                          {banks.length} bộ đề
-                        </span>
-                      </h3>
-                      <p className="text-[12px] font-[600] text-w-text-muted">
-                        Tổng cộng {totalQuestions} câu hỏi đã sẵn sàng
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs font-[700] text-w-text-muted hidden sm:inline">
-                      {isCollapsed ? 'Nhấn để mở' : 'Nhấn để thu gọn'}
+                    <span className={`text-[11px] px-2 py-0.5 rounded-full font-[700] ${
+                      isActive ? 'bg-white/20 text-white' : 'bg-w-bg-alt text-w-text-muted'
+                    }`}>
+                      {tab.count}
                     </span>
-                    <button className="p-1 rounded-lg text-w-text-muted">
-                      {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                    </button>
-                  </div>
-                </div>
+                  </button>
+                );
+              })}
+            </div>
 
-                {/* Group Content (List of Cards) */}
-                {!isCollapsed && (
-                  <div className="p-4 sm:p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {banks.map(bank => (
-                      <BankCardItem
-                        key={bank.id}
-                        bank={bank}
-                        activeTab={activeTab}
-                        onOpenQuickManager={onOpenQuickManager}
-                        onToggleFavorite={() => onUpdateBanks(questionBanks.map(b => b.id === bank.id ? {...b, favorite: !b.favorite} : b))}
-                        onEdit={() => {
-                          setEditingBank(bank);
-                          setIsCreateModalOpen(true);
-                        }}
-                        onDuplicate={() => {
-                          const newBank: QuestionBank = {
-                            ...bank,
-                            id: `bank_${Date.now()}`,
-                            name: `${bank.name} (Bản sao)`,
-                            isPreset: false,
-                            createdAt: new Date().toISOString(),
-                          };
-                          onUpdateBanks([...questionBanks, newBank]);
-                        }}
-                        onMoveFolder={() => {
-                          setBankToMove(bank);
-                          setSelectedTargetFolder(bank.folder || '');
-                        }}
-                        onDelete={() => {
-                          onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: true } : b));
-                        }}
-                        onRestore={() => {
-                          onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: false } : b));
-                        }}
-                        onPermanentDelete={() => {
-                          if (safeConfirm('Bạn chắc chắn muốn xóa vĩnh viễn bộ câu hỏi này?')) {
-                            onUpdateBanks(questionBanks.filter(b => b.id !== bank.id));
-                          }
-                        }}
-                      />
-                    ))}
+            {/* Custom Folders Section (DRAG AND DROP TARGETS) */}
+            <div className="space-y-1.5 pt-2 border-t border-w-border">
+              <div className="flex items-center justify-between px-2 mb-1">
+                <span className="text-[10px] font-[800] text-w-text-muted uppercase tracking-wider">
+                  Thư mục tùy chỉnh ({availableFolders.length})
+                </span>
+                {isDragging && (
+                  <span className="text-[10px] font-[800] text-w-primary animate-pulse flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" /> Thả vào đây
+                  </span>
+                )}
+              </div>
+
+              {/* List of Custom Folders */}
+              <div className="space-y-1 max-h-[320px] overflow-y-auto pr-1">
+                {availableFolders.map(folder => {
+                  const isSelected = selectedFolder === folder;
+                  const isDragTarget = dragOverFolder === folder;
+                  const count = folderCounts[folder] || 0;
+                  const isEditingThis = editingFolderOriginal === folder;
+
+                  return (
+                    <div
+                      key={folder}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setDragOverFolder(folder);
+                      }}
+                      onDragLeave={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (dragOverFolder === folder) setDragOverFolder(null);
+                      }}
+                      onDrop={(e) => handleDropOnFolder(e, folder)}
+                      className={`group relative rounded-xl border-2 transition-all select-none ${
+                        isDragTarget
+                          ? 'border-dashed border-w-primary bg-w-accent-light text-w-primary-dark shadow-md scale-[1.02] p-2'
+                          : isSelected
+                          ? 'bg-w-primary-dark text-white border-transparent shadow-xs p-2'
+                          : 'bg-w-bg-card hover:bg-w-accent-light border-transparent text-w-text-main p-2'
+                      }`}
+                    >
+                      {isEditingThis ? (
+                        <div className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
+                          <input
+                            type="text"
+                            value={editingFolderName}
+                            onChange={e => setEditingFolderName(e.target.value)}
+                            onKeyDown={e => {
+                              if (e.key === 'Enter') handleRenameFolder(folder, editingFolderName);
+                              if (e.key === 'Escape') setEditingFolderOriginal(null);
+                            }}
+                            autoFocus
+                            className="flex-1 px-2 py-1 bg-w-input-bg border border-w-primary rounded-lg text-xs font-[700] text-w-text-main"
+                          />
+                          <button
+                            onClick={() => handleRenameFolder(folder, editingFolderName)}
+                            className="p-1 text-emerald-600 hover:bg-emerald-50 rounded"
+                          >
+                            ✓
+                          </button>
+                          <button
+                            onClick={() => setEditingFolderOriginal(null)}
+                            className="p-1 text-rose-500 hover:bg-rose-50 rounded"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ) : (
+                        <div 
+                          className="flex items-center justify-between cursor-pointer"
+                          onClick={() => {
+                            setSelectedFolder(isSelected ? null : folder);
+                            setActiveTab('all');
+                          }}
+                        >
+                          <div className="flex items-center gap-2 truncate pr-1">
+                            <Folder className={`w-4 h-4 shrink-0 ${isSelected ? 'text-white' : 'text-amber-500'}`} />
+                            <span className="text-xs font-[800] truncate">
+                              {folder}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-1 shrink-0">
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-[700] ${
+                              isSelected ? 'bg-white/20 text-white' : 'bg-w-bg-alt text-w-text-muted'
+                            }`}>
+                              {count}
+                            </span>
+
+                            {/* Folder actions dropdown / buttons on hover */}
+                            <div className="opacity-0 group-hover:opacity-100 flex items-center gap-0.5 transition-opacity">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingFolderOriginal(folder);
+                                  setEditingFolderName(folder);
+                                }}
+                                className="p-1 text-w-text-muted hover:text-w-primary rounded"
+                                title="Đổi tên thư mục"
+                              >
+                                <Edit3 className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteFolder(folder);
+                                }}
+                                className="p-1 text-w-text-muted hover:text-rose-500 rounded"
+                                title="Xóa thư mục"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+
+                {availableFolders.length === 0 && (
+                  <div className="p-3 text-center text-w-text-muted text-xs font-[600] border border-dashed border-w-border rounded-xl">
+                    Chưa có thư mục nào. Nhấn "+ Thư mục" để tạo!
                   </div>
                 )}
               </div>
-            );
-          })}
 
-          {groupedBanks.length === 0 && (
-            <div className="py-16 text-center text-w-text-muted font-medium border-2 border-dashed border-w-border rounded-[24px] bg-w-bg-card">
-              <p className="text-base font-[700] text-w-text-main">Không tìm thấy bộ câu hỏi nào phù hợp với bộ lọc hiện tại.</p>
-              <p className="text-xs text-w-text-muted mt-1">Hãy thử xóa từ khóa tìm kiếm hoặc chọn "Tất cả kho" để xem đầy đủ.</p>
+              {/* Unorganized / Thư mục chung Drop Target */}
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setDragOverFolder('__unorganized__');
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (dragOverFolder === '__unorganized__') setDragOverFolder(null);
+                }}
+                onDrop={(e) => handleDropOnFolder(e, null)}
+                onClick={() => {
+                  setSelectedFolder(selectedFolder === '__unorganized__' ? null : '__unorganized__');
+                  setActiveTab('all');
+                }}
+                className={`p-2 rounded-xl border-2 transition-all cursor-pointer flex items-center justify-between text-xs font-[800] ${
+                  dragOverFolder === '__unorganized__'
+                    ? 'border-dashed border-w-primary bg-w-accent-light text-w-primary-dark shadow-md scale-[1.02]'
+                    : selectedFolder === '__unorganized__'
+                    ? 'bg-w-primary-dark text-white border-transparent'
+                    : 'bg-w-bg-alt/70 hover:bg-w-accent-light border-transparent text-w-text-muted'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <FolderOpen className="w-4 h-4 text-w-text-muted" />
+                  <span>Chưa phân loại (Chung)</span>
+                </div>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-w-bg-card text-w-text-muted font-[700]">
+                  {unorganizedCount}
+                </span>
+              </div>
+            </div>
+
+            {/* Quick Drag & Drop Hint */}
+            <div className="p-2.5 rounded-xl bg-w-accent-light/60 border border-w-accent-border/50 text-[11px] font-[600] text-w-primary-dark flex items-start gap-2">
+              <Sparkles className="w-3.5 h-3.5 text-w-primary shrink-0 mt-0.5" />
+              <span>
+                <strong>Mẹo nhanh:</strong> Nhấp giữ thẻ bộ đề bên phải và kéo thả thẳng vào thư mục bên trái để phân loại ngay lập tức!
+              </span>
+            </div>
+          </div>
+
+          {/* =================================================================== */}
+          {/* BATCH ACTION CONTROLLER (WHEN 1 OR MORE BANKS ARE CHECKED)           */}
+          {/* =================================================================== */}
+          {selectedBankIds.size > 0 && (
+            <div className="bg-w-bg-card border-2 border-w-primary rounded-[24px] p-4 shadow-lg flex flex-col space-y-3 animate-in fade-in slide-in-from-bottom-2">
+              <div className="flex items-center justify-between pb-2 border-b border-w-border">
+                <div className="flex items-center gap-2">
+                  <CheckSquare className="w-4 h-4 text-w-primary" />
+                  <span className="font-[900] text-xs text-w-text-main">
+                    Đã chọn {selectedBankIds.size} bộ đề
+                  </span>
+                </div>
+                <button
+                  onClick={() => setSelectedBankIds(new Set())}
+                  className="text-[10px] font-[700] text-w-text-muted hover:text-w-text-main"
+                >
+                  Bỏ chọn
+                </button>
+              </div>
+
+              {/* Target Folder Selector for Batch Move */}
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-[800] text-w-text-muted">
+                  Chuyển {selectedBankIds.size} bộ vào thư mục:
+                </label>
+                <select
+                  value={batchTargetFolder}
+                  onChange={(e) => setBatchTargetFolder(e.target.value)}
+                  className="w-full px-3 py-2 bg-w-input-bg border border-w-input-border rounded-xl text-xs font-[700] text-w-text-main focus:outline-none focus:border-w-primary"
+                >
+                  <option value="">📂 Bỏ phân loại (Thư mục chung)</option>
+                  {availableFolders.map(f => (
+                    <option key={f} value={f}>📁 {f}</option>
+                  ))}
+                </select>
+                <button
+                  onClick={handleBatchMove}
+                  className="w-full py-2 wey-btn-primary text-xs font-[800] flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <FolderCheck className="w-4 h-4" />
+                  <span>Xác Nhận Chuyển Thư Mục</span>
+                </button>
+              </div>
+
+              {/* Batch secondary actions */}
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button
+                  onClick={handleBatchFavorite}
+                  className="py-1.5 px-2 bg-w-bg-alt hover:bg-w-accent-light text-w-text-main font-[700] text-[11px] rounded-xl border border-w-border transition-colors flex items-center justify-center gap-1"
+                >
+                  <Star className="w-3 h-3 text-amber-500" />
+                  <span>Yêu thích</span>
+                </button>
+                <button
+                  onClick={handleBatchDelete}
+                  className="py-1.5 px-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-[700] text-[11px] rounded-xl border border-rose-200 transition-colors flex items-center justify-center gap-1"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  <span>Xóa</span>
+                </button>
+              </div>
             </div>
           )}
-        </div>
-      )}
+        </aside>
 
-      {/* ========================================================================= */}
-      {/* 2. COMPACT TABLE VIEW (SIÊU GỌN GÀNG, ĐỠ KÉO NHIỀU, XEM ĐƯỢC NHIỀU BỘ)    */}
-      {/* ========================================================================= */}
-      {viewMode === 'table' && (
-        <div className="bg-w-bg-card border border-w-border rounded-[22px] shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-w-bg-main border-b border-w-border text-[11px] font-[800] text-w-primary-dark uppercase tracking-wider">
-                  <th className="py-3 px-4 w-10 text-center">⭐</th>
-                  <th className="py-3 px-4">Tên Bộ Đề & Chủ Đề</th>
-                  <th className="py-3 px-3">Khối / Lớp</th>
-                  <th className="py-3 px-3">Môn Học</th>
-                  <th className="py-3 px-3">Thư Mục</th>
-                  <th className="py-3 px-3 text-center">Số Câu</th>
-                  <th className="py-3 px-3">Quyền</th>
-                  <th className="py-3 px-4 text-right">Thao Tác</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-w-border/60 text-xs font-[600]">
-                {filteredBanks.map(bank => {
-                  const qCount = bank.questions?.length || 0;
-                  return (
-                    <tr 
-                      key={bank.id}
-                      className="hover:bg-w-accent-light/40 transition-colors group cursor-pointer"
-                      onClick={() => onOpenQuickManager(bank.id)}
+        {/* ===================================================================== */}
+        {/* RIGHT MAIN CONTENT AREA                                               */}
+        {/* ===================================================================== */}
+        <div className="flex-1 w-full space-y-4">
+          
+          {/* Summary Stats Strip */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-w-bg-card border-2 border-w-border p-3.5 rounded-[22px] shadow-xs">
+            <div className="flex items-center gap-3 px-3 py-1.5 border-r border-w-border/60 last:border-0">
+              <div className="w-9 h-9 rounded-xl bg-w-accent-light text-w-primary-dark flex items-center justify-center font-[800] border border-w-accent-border">
+                📚
+              </div>
+              <div>
+                <div className="text-[11px] font-[700] text-w-text-muted">Tổng số bộ đề</div>
+                <div className="text-base font-[900] text-w-text-main">{repoStats.totalBanks} bộ</div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 px-3 py-1.5 border-r border-w-border/60 last:border-0">
+              <div className="w-9 h-9 rounded-xl bg-w-accent-light text-w-primary-dark flex items-center justify-center font-[800] border border-w-accent-border">
+                📝
+              </div>
+              <div>
+                <div className="text-[11px] font-[700] text-w-text-muted">Tổng số câu hỏi</div>
+                <div className="text-base font-[900] text-w-text-main">{repoStats.totalQuestions} câu</div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 px-3 py-1.5 border-r border-w-border/60 last:border-0">
+              <div className="w-9 h-9 rounded-xl bg-w-accent-light text-w-primary-dark flex items-center justify-center font-[800] border border-w-accent-border">
+                🎓
+              </div>
+              <div>
+                <div className="text-[11px] font-[700] text-w-text-muted">Khối lớp & Môn</div>
+                <div className="text-base font-[900] text-w-text-main">{repoStats.gradesCount} khối • {repoStats.subjectsCount} môn</div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 px-3 py-1.5">
+              <div className="w-9 h-9 rounded-xl bg-w-accent-light text-w-primary-dark flex items-center justify-center font-[800] border border-w-accent-border">
+                📁
+              </div>
+              <div>
+                <div className="text-[11px] font-[700] text-w-text-muted">Thư mục chuyên đề</div>
+                <div className="text-base font-[900] text-w-text-main">{availableFolders.length} thư mục</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Active Folder Filter Tag (if any) */}
+          {selectedFolder !== null && (
+            <div className="p-3 bg-w-accent-light border border-w-accent-border rounded-2xl flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-[800] text-w-primary-dark">
+                <Folder className="w-4 h-4" />
+                <span>
+                  Đang lọc theo thư mục:{' '}
+                  <strong>{selectedFolder === '__unorganized__' ? 'Chưa phân loại' : selectedFolder}</strong>
+                </span>
+                <span className="text-[11px] font-[700] px-2 py-0.5 rounded-full bg-w-bg-card border border-w-border text-w-text-main">
+                  {filteredBanks.length} bộ đề
+                </span>
+              </div>
+              <button
+                onClick={() => setSelectedFolder(null)}
+                className="text-xs font-[800] text-w-text-muted hover:text-w-text-main px-2 py-1 rounded-lg hover:bg-w-bg-card transition-colors flex items-center gap-1"
+              >
+                <X className="w-3.5 h-3.5" />
+                <span>Xem tất cả</span>
+              </button>
+            </div>
+          )}
+
+          {/* Search, Filter Dropdowns & View Mode Bar */}
+          <div className="bg-w-bg-card border-2 border-w-border p-3.5 rounded-[22px] shadow-sm flex flex-col gap-3">
+            {/* Row 1: Search & Filter Dropdowns */}
+            <div className="flex flex-col md:flex-row gap-3 items-center">
+              {/* Search Input */}
+              <div className="flex-1 relative w-full">
+                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-w-text-muted" />
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm theo tên bộ đề, bài học SGK, môn, khối lớp, tags..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-8 py-2.5 bg-w-input-bg border border-w-border rounded-[16px] text-xs sm:text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary transition-all shadow-xs"
+                />
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-[700] text-w-text-muted hover:text-w-text-main"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+
+              {/* Quick Selectors */}
+              <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full md:w-auto items-center">
+                {/* Grade Filter */}
+                <select
+                  value={gradeFilter}
+                  onChange={e => setGradeFilter(e.target.value)}
+                  className="flex-1 sm:flex-none px-3 py-2 bg-w-input-bg border border-w-border rounded-[14px] text-xs font-[700] text-w-primary-dark cursor-pointer shadow-xs focus:outline-none focus:border-w-primary"
+                >
+                  <option value="">🎓 Khối Lớp</option>
+                  {GRADES.map(gr => (
+                    <option key={gr} value={gr}>{gr}</option>
+                  ))}
+                </select>
+
+                {/* Subject Filter */}
+                <select 
+                  value={subjectFilter}
+                  onChange={e => setSubjectFilter(e.target.value)}
+                  className="flex-1 sm:flex-none px-3 py-2 bg-w-input-bg border border-w-border rounded-[14px] text-xs font-[700] text-w-primary-dark cursor-pointer shadow-xs focus:outline-none focus:border-w-primary"
+                >
+                  <option value="">📚 Môn Học</option>
+                  {ALL_SUBJECTS.map(subj => (
+                    <option key={subj} value={subj}>{subj}</option>
+                  ))}
+                </select>
+
+                {/* Question Count Filter */}
+                <select
+                  value={hasQuestionsFilter}
+                  onChange={e => setHasQuestionsFilter(e.target.value as any)}
+                  className="flex-1 sm:flex-none px-3 py-2 bg-w-input-bg border border-w-border rounded-[14px] text-xs font-[700] text-w-primary-dark cursor-pointer shadow-xs focus:outline-none focus:border-w-primary"
+                >
+                  <option value="all">📝 Mọi số lượng</option>
+                  <option value="has_questions">✅ Có câu hỏi (&gt;0)</option>
+                  <option value="empty">⚠️ Chưa có câu hỏi (0)</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Row 2: Select All, View Modes & Grouping Switcher */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-2 border-t border-w-border/60">
+              
+              {/* Batch Select Checkbox Toggle */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleSelectAll}
+                  className="px-3 py-1.5 rounded-xl bg-w-bg-alt hover:bg-w-accent-light text-w-text-main font-[800] text-xs border border-w-border transition-colors flex items-center gap-1.5 cursor-pointer"
+                >
+                  {selectedBankIds.size === filteredBanks.length && filteredBanks.length > 0 ? (
+                    <>
+                      <CheckSquare className="w-4 h-4 text-w-primary" />
+                      <span>Bỏ chọn tất cả</span>
+                    </>
+                  ) : (
+                    <>
+                      <Square className="w-4 h-4 text-w-text-muted" />
+                      <span>Chọn tất cả ({filteredBanks.length})</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* View Mode & Group Switchers */}
+              <div className="flex items-center gap-2 self-end sm:self-auto shrink-0 flex-wrap">
+                {viewMode === 'folders' && (
+                  <div className="flex items-center gap-1 bg-w-bg-alt p-1 rounded-xl border border-w-border">
+                    <span className="text-[10px] font-[800] text-w-text-muted px-1.5">Gom theo:</span>
+                    <button
+                      onClick={() => setGroupByMode('folder')}
+                      className={`text-[11px] font-[800] px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
+                        groupByMode === 'folder' ? 'bg-w-primary text-white shadow-xs' : 'text-w-text-main hover:bg-w-accent-light'
+                      }`}
                     >
-                      {/* Favorite star */}
-                      <td className="py-3 px-4 text-center" onClick={(e) => e.stopPropagation()}>
-                        <button 
-                          onClick={() => onUpdateBanks(questionBanks.map(b => b.id === bank.id ? {...b, favorite: !b.favorite} : b))}
-                          className="text-w-border hover:text-amber-400 transition-colors"
-                        >
-                          <Star className={`w-4 h-4 ${bank.favorite ? 'fill-amber-400 text-amber-400' : ''}`} />
-                        </button>
-                      </td>
+                      📁 Thư Mục
+                    </button>
+                    <button
+                      onClick={() => setGroupByMode('grade')}
+                      className={`text-[11px] font-[800] px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
+                        groupByMode === 'grade' ? 'bg-w-primary text-white shadow-xs' : 'text-w-text-main hover:bg-w-accent-light'
+                      }`}
+                    >
+                      🎓 Khối Lớp
+                    </button>
+                    <button
+                      onClick={() => setGroupByMode('subject')}
+                      className={`text-[11px] font-[800] px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
+                        groupByMode === 'subject' ? 'bg-w-primary text-white shadow-xs' : 'text-w-text-main hover:bg-w-accent-light'
+                      }`}
+                    >
+                      📚 Môn Học
+                    </button>
+                  </div>
+                )}
 
-                      {/* Name & Topic */}
-                      <td className="py-3 px-4">
-                        <div className="font-[800] text-w-text-main group-hover:text-w-primary-dark text-sm flex items-center gap-1.5">
-                          {bank.isPreset && (
-                            <span className="text-[9px] font-[800] px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 shrink-0">
-                              SGK Chuẩn
-                            </span>
-                          )}
-                          <span className="line-clamp-1">{bank.name}</span>
+                {/* View Mode Icons */}
+                <div className="flex items-center bg-w-bg-alt p-1 rounded-xl border border-w-border">
+                  <button
+                    onClick={() => setViewMode('folders')}
+                    title="Chế độ Kho & Thư mục phân cấp"
+                    className={`p-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-[800] ${
+                      viewMode === 'folders' ? 'bg-w-primary text-white shadow-xs' : 'text-w-text-muted hover:bg-w-accent-light'
+                    }`}
+                  >
+                    <Layers className="w-3.5 h-3.5" />
+                    <span className="hidden md:inline">Kho phân cấp</span>
+                  </button>
+
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    title="Chế độ Lưới thẻ trực quan"
+                    className={`p-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-[800] ${
+                      viewMode === 'grid' ? 'bg-w-primary text-white shadow-xs' : 'text-w-text-muted hover:bg-w-accent-light'
+                    }`}
+                  >
+                    <Grid className="w-3.5 h-3.5" />
+                    <span className="hidden md:inline">Thẻ lưới</span>
+                  </button>
+
+                  <button
+                    onClick={() => setViewMode('table')}
+                    title="Chế độ Bảng danh sách thu gọn"
+                    className={`p-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-[800] ${
+                      viewMode === 'table' ? 'bg-w-primary text-white shadow-xs' : 'text-w-text-muted hover:bg-w-accent-light'
+                    }`}
+                  >
+                    <List className="w-3.5 h-3.5" />
+                    <span className="hidden md:inline">Bảng gọn</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => setViewMode('questions')}
+                    title="Chế độ Tìm kiếm Câu hỏi"
+                    className={`p-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-[800] ${
+                      viewMode === 'questions' ? 'bg-w-primary text-white shadow-xs' : 'text-w-text-muted hover:bg-w-accent-light'
+                    }`}
+                  >
+                    <Search className="w-3.5 h-3.5" />
+                    <span className="hidden md:inline">Tìm câu</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ========================================================================= */}
+          {/* 1. FOLDERS / SHELVES HIERARCHICAL VIEW                                    */}
+          {/* ========================================================================= */}
+          {viewMode === 'folders' && (
+            <div className="space-y-4">
+              {groupedBanks.map(({ key, banks, totalQuestions }) => {
+                const isCollapsed = Boolean(collapsedGroups[key]);
+                const isFolderDropTarget = groupByMode === 'folder' && dragOverFolder === key;
+
+                return (
+                  <div 
+                    key={key} 
+                    onDragOver={(e) => {
+                      if (groupByMode === 'folder') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setDragOverFolder(key);
+                      }
+                    }}
+                    onDragLeave={(e) => {
+                      if (groupByMode === 'folder') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (dragOverFolder === key) setDragOverFolder(null);
+                      }
+                    }}
+                    onDrop={(e) => {
+                      if (groupByMode === 'folder') {
+                        handleDropOnFolder(e, key === 'Chưa phân loại' ? null : key);
+                      }
+                    }}
+                    className={`bg-w-bg-card border-2 rounded-[24px] shadow-xs overflow-hidden transition-all ${
+                      isFolderDropTarget 
+                        ? 'border-dashed border-w-primary ring-2 ring-w-primary/30 scale-[1.005]' 
+                        : 'border-w-border'
+                    }`}
+                  >
+                    {/* Group Accordion Header */}
+                    <div 
+                      onClick={() => toggleGroupCollapse(key)}
+                      className="flex items-center justify-between p-4 bg-w-bg-alt/70 hover:bg-w-accent-light cursor-pointer transition-colors select-none border-b border-w-border"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-xl bg-w-accent-light text-w-primary-dark border border-w-accent-border">
+                          <Folder className="w-5 h-5" />
                         </div>
-                        {bank.topic && (
-                          <div className="text-[11px] text-w-text-muted line-clamp-1 mt-0.5 font-[500]">
-                            {bank.topic}
+                        <div>
+                          <h3 className="font-[900] text-w-text-main text-base sm:text-lg flex items-center gap-2">
+                            {key}
+                            <span className="text-xs font-[800] px-2.5 py-0.5 rounded-full bg-w-primary text-white">
+                              {banks.length} bộ đề
+                            </span>
+                          </h3>
+                          <p className="text-[12px] font-[600] text-w-text-muted">
+                            Tổng cộng {totalQuestions} câu hỏi đã sẵn sàng
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        {isDragging && groupByMode === 'folder' && (
+                          <span className="text-xs font-[800] text-w-primary px-2.5 py-1 bg-w-bg-card rounded-lg border border-w-primary/40 animate-pulse">
+                            Thả vào nhóm này
+                          </span>
+                        )}
+                        <span className="text-xs font-[700] text-w-text-muted hidden sm:inline">
+                          {isCollapsed ? 'Mở rộng' : 'Thu gọn'}
+                        </span>
+                        <button className="p-1 rounded-lg text-w-text-muted">
+                          {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Group Content (List of Cards) */}
+                    {!isCollapsed && (
+                      <div className="p-4 sm:p-5">
+                        {banks.length > 0 ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {banks.map(bank => (
+                              <BankCardItem
+                                key={bank.id}
+                                bank={bank}
+                                activeTab={activeTab}
+                                isSelected={selectedBankIds.has(bank.id)}
+                                onToggleSelect={() => toggleSelectBank(bank.id)}
+                                onDragStart={(e) => handleDragStart(e, bank.id)}
+                                onDragEnd={handleDragEnd}
+                                onOpenQuickManager={onOpenQuickManager}
+                                onToggleFavorite={() => onUpdateBanks(questionBanks.map(b => b.id === bank.id ? {...b, favorite: !b.favorite} : b))}
+                                onEdit={() => {
+                                  setEditingBank(bank);
+                                  setIsCreateModalOpen(true);
+                                }}
+                                onDuplicate={() => {
+                                  const newBank: QuestionBank = {
+                                    ...bank,
+                                    id: `bank_${Date.now()}`,
+                                    name: `${bank.name} (Bản sao)`,
+                                    isPreset: false,
+                                    createdAt: new Date().toISOString(),
+                                  };
+                                  onUpdateBanks([...questionBanks, newBank]);
+                                }}
+                                onMoveFolder={() => {
+                                  setBankToMove(bank);
+                                  setSelectedTargetFolder(bank.folder || '');
+                                }}
+                                onDelete={() => {
+                                  onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: true } : b));
+                                }}
+                                onRestore={() => {
+                                  onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: false } : b));
+                                }}
+                                onPermanentDelete={() => {
+                                  if (safeConfirm('Bạn chắc chắn muốn xóa vĩnh viễn bộ câu hỏi này?')) {
+                                    onUpdateBanks(questionBanks.filter(b => b.id !== bank.id));
+                                  }
+                                }}
+                              />
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="py-8 text-center border-2 border-dashed border-w-border rounded-2xl bg-w-bg-alt/40 p-4">
+                            <p className="text-xs font-[700] text-w-text-muted">
+                              Thư mục này hiện đang trống.
+                            </p>
+                            <p className="text-[11px] text-w-text-muted/80 mt-1">
+                              Hãy kéo thả một bộ đề từ nhóm khác vào đây để phân loại!
+                            </p>
                           </div>
                         )}
-                      </td>
-
-                      {/* Grade */}
-                      <td className="py-3 px-3">
-                        <span className="px-2 py-0.5 rounded-md bg-w-accent-light text-w-primary-dark font-[700] text-[11px] whitespace-nowrap">
-                          {bank.grade}
-                        </span>
-                      </td>
-
-                      {/* Subject */}
-                      <td className="py-3 px-3 text-w-text-main whitespace-nowrap">
-                        {bank.subject}
-                      </td>
-
-                      {/* Folder */}
-                      <td className="py-3 px-3 whitespace-nowrap">
-                        {bank.folder ? (
-                          <span className="text-[11px] text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
-                            📁 {bank.folder}
-                          </span>
-                        ) : (
-                          <span className="text-[11px] text-w-text-muted/70 italic">-</span>
-                        )}
-                      </td>
-
-                      {/* Question count */}
-                      <td className="py-3 px-3 text-center">
-                        <span className={`px-2 py-0.5 rounded-full font-[800] text-[11px] ${
-                          qCount > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'
-                        }`}>
-                          {qCount} câu
-                        </span>
-                      </td>
-
-                      {/* Visibility */}
-                      <td className="py-3 px-3 whitespace-nowrap">
-                        <span className={`text-[10px] font-[700] px-2 py-0.5 rounded-full ${
-                          bank.visibility === 'private' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'
-                        }`}>
-                          {bank.visibility === 'private' ? 'Riêng tư' : 'Công khai'}
-                        </span>
-                      </td>
-
-                      {/* Actions */}
-                      <td className="py-3 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button
-                            onClick={() => onOpenQuickManager(bank.id)}
-                            className="px-3 py-1 bg-w-primary-dark hover:bg-w-primary-hover text-white font-[700] text-xs rounded-xl transition-all shadow-xs cursor-pointer"
-                          >
-                            Mở Soạn
-                          </button>
-                          
-                          <button
-                            onClick={() => {
-                              setEditingBank(bank);
-                              setIsCreateModalOpen(true);
-                            }}
-                            title="Sửa thông tin bộ"
-                            className="p-1.5 text-w-text-muted hover:bg-w-accent-light hover:text-w-text-main rounded-lg transition-colors cursor-pointer"
-                          >
-                            <FileText className="w-4 h-4" />
-                          </button>
-
-                          <button
-                            onClick={() => {
-                              setBankToMove(bank);
-                              setSelectedTargetFolder(bank.folder || '');
-                            }}
-                            title="Chuyển vào thư mục"
-                            className="p-1.5 text-w-text-muted hover:bg-w-accent-light hover:text-w-text-main rounded-lg transition-colors cursor-pointer"
-                          >
-                            <Folder className="w-4 h-4" />
-                          </button>
-
-                          <button
-                            onClick={() => {
-                              if (activeTab === 'trash') {
-                                if (safeConfirm('Bạn chắc chắn muốn xóa vĩnh viễn?')) {
-                                  onUpdateBanks(questionBanks.filter(b => b.id !== bank.id));
-                                }
-                              } else {
-                                onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: true } : b));
-                              }
-                            }}
-                            title={activeTab === 'trash' ? 'Xóa vĩnh viễn' : 'Xóa bộ đề'}
-                            className="p-1.5 text-[#8C3A50] hover:bg-[#FCE8EE] rounded-lg transition-colors cursor-pointer"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {filteredBanks.length === 0 && (
-            <div className="py-16 text-center text-w-text-muted font-medium">
-              <p className="text-base font-[700] text-w-text-main">Không tìm thấy bộ câu hỏi nào.</p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ========================================================================= */}
-      {/* 3. GRID CARDS VIEW                                                        */}
-      {/* ========================================================================= */}
-      {viewMode === 'grid' && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredBanks.map(bank => (
-            <BankCardItem
-              key={bank.id}
-              bank={bank}
-              activeTab={activeTab}
-              onOpenQuickManager={onOpenQuickManager}
-              onToggleFavorite={() => onUpdateBanks(questionBanks.map(b => b.id === bank.id ? {...b, favorite: !b.favorite} : b))}
-              onEdit={() => {
-                setEditingBank(bank);
-                setIsCreateModalOpen(true);
-              }}
-              onDuplicate={() => {
-                const newBank: QuestionBank = {
-                  ...bank,
-                  id: `bank_${Date.now()}`,
-                  name: `${bank.name} (Bản sao)`,
-                  isPreset: false,
-                  createdAt: new Date().toISOString(),
-                };
-                onUpdateBanks([...questionBanks, newBank]);
-              }}
-              onMoveFolder={() => {
-                setBankToMove(bank);
-                setSelectedTargetFolder(bank.folder || '');
-              }}
-              onDelete={() => {
-                onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: true } : b));
-              }}
-              onRestore={() => {
-                onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: false } : b));
-              }}
-              onPermanentDelete={() => {
-                if (safeConfirm('Bạn chắc chắn muốn xóa vĩnh viễn bộ câu hỏi này?')) {
-                  onUpdateBanks(questionBanks.filter(b => b.id !== bank.id));
-                }
-              }}
-            />
-          ))}
-
-          {filteredBanks.length === 0 && (
-            <div className="col-span-full py-16 text-center text-w-text-muted font-medium border-2 border-dashed border-w-border rounded-[24px] bg-w-bg-card">
-              <p className="text-base font-[700] text-w-text-main">Không tìm thấy bộ câu hỏi nào.</p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ========================================================================= */}
-      {/* 4. QUESTIONS FLAT VIEW                                                    */}
-      {/* ========================================================================= */}
-      {viewMode === 'questions' && (
-        <div className="bg-w-bg-card border border-w-border rounded-[22px] shadow-sm p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-w-border/60 pb-3">
-            <h3 className="text-lg font-[900] text-w-text-main flex items-center gap-2">
-              <Search className="w-5 h-5 text-w-primary" />
-              Tìm kiếm Câu hỏi ({filteredQuestionsList.length} kết quả)
-            </h3>
-          </div>
-          
-          <div className="space-y-3">
-            {filteredQuestionsList.slice(0, 100).map((item, idx) => (
-              <div 
-                key={`${item.question.id}-${idx}`}
-                className="bg-white border border-w-border p-4 rounded-2xl hover:border-w-accent-border hover:shadow-md transition-all cursor-pointer"
-                onClick={() => onOpenQuickManager(item.bank.id)}
-              >
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <div className="flex-1">
-                    <span className="inline-block px-2 py-0.5 bg-w-bg-main text-w-text-muted text-[10px] font-bold rounded mb-2">
-                      {item.question.type === 'mcq' ? 'Trắc nghiệm' : item.question.type === 'tf' ? 'Đúng/Sai' : 'Tự luận'}
-                    </span>
-                    <p className="text-sm font-[700] text-w-text-main leading-relaxed line-clamp-3">
-                      {item.question.content}
-                    </p>
+                      </div>
+                    )}
                   </div>
+                );
+              })}
+
+              {groupedBanks.length === 0 && (
+                <div className="py-16 text-center text-w-text-muted font-medium border-2 border-dashed border-w-border rounded-[24px] bg-w-bg-card">
+                  <p className="text-base font-[800] text-w-text-main">Không tìm thấy bộ câu hỏi nào phù hợp với bộ lọc hiện tại.</p>
+                  <p className="text-xs text-w-text-muted mt-1">Hãy thử xóa từ khóa tìm kiếm hoặc chọn "Tất cả ngân hàng" ở thanh bên trái.</p>
                 </div>
+              )}
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* 2. GRID VIEW (THẺ LƯỚI TRỰC QUAN VỚI DRAG & DROP + CHECKBOX)             */}
+          {/* ========================================================================= */}
+          {viewMode === 'grid' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredBanks.map(bank => (
+                <BankCardItem
+                  key={bank.id}
+                  bank={bank}
+                  activeTab={activeTab}
+                  isSelected={selectedBankIds.has(bank.id)}
+                  onToggleSelect={() => toggleSelectBank(bank.id)}
+                  onDragStart={(e) => handleDragStart(e, bank.id)}
+                  onDragEnd={handleDragEnd}
+                  onOpenQuickManager={onOpenQuickManager}
+                  onToggleFavorite={() => onUpdateBanks(questionBanks.map(b => b.id === bank.id ? {...b, favorite: !b.favorite} : b))}
+                  onEdit={() => {
+                    setEditingBank(bank);
+                    setIsCreateModalOpen(true);
+                  }}
+                  onDuplicate={() => {
+                    const newBank: QuestionBank = {
+                      ...bank,
+                      id: `bank_${Date.now()}`,
+                      name: `${bank.name} (Bản sao)`,
+                      isPreset: false,
+                      createdAt: new Date().toISOString(),
+                    };
+                    onUpdateBanks([...questionBanks, newBank]);
+                  }}
+                  onMoveFolder={() => {
+                    setBankToMove(bank);
+                    setSelectedTargetFolder(bank.folder || '');
+                  }}
+                  onDelete={() => {
+                    onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: true } : b));
+                  }}
+                  onRestore={() => {
+                    onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: false } : b));
+                  }}
+                  onPermanentDelete={() => {
+                    if (safeConfirm('Bạn chắc chắn muốn xóa vĩnh viễn bộ câu hỏi này?')) {
+                      onUpdateBanks(questionBanks.filter(b => b.id !== bank.id));
+                    }
+                  }}
+                />
+              ))}
+
+              {filteredBanks.length === 0 && (
+                <div className="col-span-full py-16 text-center text-w-text-muted font-medium border-2 border-dashed border-w-border rounded-[24px] bg-w-bg-card">
+                  <p className="text-base font-[800] text-w-text-main">Không tìm thấy bộ câu hỏi nào.</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* 3. COMPACT TABLE VIEW (SIÊU GỌN GÀNG, HỖ TRỢ CHỌN HÀNG LOẠT VÀ DRAG)     */}
+          {/* ========================================================================= */}
+          {viewMode === 'table' && (
+            <div className="bg-w-bg-card border-2 border-w-border rounded-[22px] shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-w-bg-alt border-b border-w-border font-[800] text-w-text-muted">
+                      <th className="py-3 px-3 w-10 text-center">
+                        <input 
+                          type="checkbox"
+                          checked={selectedBankIds.size === filteredBanks.length && filteredBanks.length > 0}
+                          onChange={handleSelectAll}
+                          className="rounded cursor-pointer"
+                        />
+                      </th>
+                      <th className="py-3 px-3 w-10 text-center">Kéo</th>
+                      <th className="py-3 px-3">Tên Bộ Đề</th>
+                      <th className="py-3 px-3">Môn & Khối</th>
+                      <th className="py-3 px-3">Thư Mục</th>
+                      <th className="py-3 px-3 text-center">Số Câu</th>
+                      <th className="py-3 px-3 text-center">Loại</th>
+                      <th className="py-3 px-3 text-right">Thao Tác</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-w-border/60">
+                    {filteredBanks.map(bank => {
+                      const isSelected = selectedBankIds.has(bank.id);
+                      return (
+                        <tr 
+                          key={bank.id}
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, bank.id)}
+                          onDragEnd={handleDragEnd}
+                          className={`hover:bg-w-accent-light transition-colors ${
+                            isSelected ? 'bg-w-accent-light/80' : ''
+                          }`}
+                        >
+                          <td className="py-2.5 px-3 text-center">
+                            <input 
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => toggleSelectBank(bank.id)}
+                              className="rounded cursor-pointer"
+                            />
+                          </td>
+                          <td className="py-2.5 px-3 text-center cursor-grab active:cursor-grabbing text-w-text-muted hover:text-w-primary">
+                            <GripVertical className="w-4 h-4 mx-auto" />
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <span 
+                              onClick={() => onOpenQuickManager(bank.id)}
+                              className="font-[800] text-w-text-main hover:text-w-primary cursor-pointer line-clamp-1"
+                            >
+                              {bank.name}
+                            </span>
+                            {bank.topic && (
+                              <span className="text-[10px] text-w-text-muted line-clamp-1">
+                                {bank.topic}
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-2.5 px-3 font-[600] text-w-text-muted whitespace-nowrap">
+                            {bank.subject || '—'} • {bank.grade || '—'}
+                          </td>
+                          <td className="py-2.5 px-3 whitespace-nowrap">
+                            {bank.folder ? (
+                              <span className="text-[10px] font-[700] px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200">
+                                📁 {bank.folder}
+                              </span>
+                            ) : (
+                              <span className="text-[10px] text-w-text-muted italic">
+                                Chung
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-2.5 px-3 text-center font-[800] text-w-text-main">
+                            {bank.questions?.length || 0}
+                          </td>
+                          <td className="py-2.5 px-3 text-center whitespace-nowrap">
+                            {bank.isPreset ? (
+                              <span className="text-[10px] font-[700] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                                SGK
+                              </span>
+                            ) : (
+                              <span className="text-[10px] font-[700] px-2 py-0.5 rounded-full bg-w-bg-alt text-w-text-muted">
+                                Tự tạo
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-2.5 px-3 text-right whitespace-nowrap">
+                            <button
+                              onClick={() => onOpenQuickManager(bank.id)}
+                              className="px-3 py-1 bg-w-primary-dark hover:bg-w-primary text-white font-[800] text-[11px] rounded-lg cursor-pointer"
+                            >
+                              Mở
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* 4. QUESTIONS FLAT VIEW                                                    */}
+          {/* ========================================================================= */}
+          {viewMode === 'questions' && (
+            <div className="bg-w-bg-card border-2 border-w-border rounded-[22px] shadow-sm p-5 space-y-4">
+              <div className="flex items-center justify-between border-b border-w-border pb-3">
+                <h3 className="text-lg font-[900] text-w-text-main flex items-center gap-2">
+                  <Search className="w-5 h-5 text-w-primary" />
+                  Tìm kiếm Câu hỏi ({filteredQuestionsList.length} kết quả)
+                </h3>
+              </div>
+              
+              <div className="space-y-3">
+                {filteredQuestionsList.slice(0, 100).map((item, idx) => (
+                  <div 
+                    key={`${item.question.id}-${idx}`}
+                    className="bg-w-bg-card border border-w-border p-4 rounded-2xl hover:border-w-accent-border hover:shadow-md transition-all cursor-pointer"
+                    onClick={() => onOpenQuickManager(item.bank.id)}
+                  >
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div className="flex-1">
+                        <span className="inline-block px-2 py-0.5 bg-w-bg-alt text-w-text-muted text-[10px] font-bold rounded mb-2">
+                          {item.question.type === 'mcq' ? 'Trắc nghiệm' : item.question.type === 'tf' ? 'Đúng/Sai' : 'Tự luận'}
+                        </span>
+                        <p className="text-sm font-[700] text-w-text-main leading-relaxed line-clamp-3">
+                          <MathChemRenderer text={item.question.content} />
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-w-border/40">
+                      <span className="text-[11px] font-[700] text-w-primary-dark bg-w-accent-light px-2 py-0.5 rounded-lg flex items-center gap-1">
+                        <Folder className="w-3 h-3" /> 
+                        {item.bank.name}
+                      </span>
+                      
+                      {item.bank.subject && (
+                        <span className="text-[11px] font-[700] text-w-text-main bg-w-bg-alt px-2 py-0.5 rounded-lg border border-w-border flex items-center gap-1">
+                          <BookOpen className="w-3 h-3" />
+                          {item.bank.subject} {item.bank.grade}
+                        </span>
+                      )}
+                      
+                      {item.bank.folder && (
+                        <span className="text-[11px] font-[700] text-amber-800 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">
+                          📁 {item.bank.folder}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
                 
-                <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-w-border/40">
-                  <span className="text-[11px] font-[700] text-w-primary-dark bg-w-accent-light px-2 py-0.5 rounded-lg flex items-center gap-1">
-                    <Folder className="w-3 h-3" /> 
-                    {item.bank.name}
-                  </span>
-                  
-                  {item.bank.subject && (
-                    <span className="text-[11px] font-[700] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200 flex items-center gap-1">
-                      <BookOpen className="w-3 h-3" />
-                      {item.bank.subject} {item.bank.grade}
-                    </span>
-                  )}
-                  
-                  {item.bank.topic && (
-                    <span className="text-[11px] font-[700] text-blue-700 bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-200">
-                      Chủ đề: {item.bank.topic}
-                    </span>
-                  )}
-                </div>
+                {filteredQuestionsList.length > 100 && (
+                  <div className="text-center py-4 text-xs font-[700] text-w-text-muted">
+                    Hiển thị 100 kết quả đầu tiên. Vui lòng sử dụng bộ lọc hoặc từ khóa chi tiết hơn.
+                  </div>
+                )}
+                
+                {filteredQuestionsList.length === 0 && (
+                  <div className="py-12 text-center text-w-text-muted font-medium border-2 border-dashed border-w-border rounded-[24px] bg-w-bg-card">
+                    <p className="text-base font-[700] text-w-text-main">Không tìm thấy câu hỏi nào.</p>
+                    <p className="text-xs mt-1">Hãy thử tìm theo từ khóa nội dung câu hỏi, chủ đề, hoặc tên bài học.</p>
+                  </div>
+                )}
               </div>
-            ))}
-            
-            {filteredQuestionsList.length > 100 && (
-              <div className="text-center py-4 text-xs font-[700] text-w-text-muted">
-                Hiển thị 100 kết quả đầu tiên. Vui lòng sử dụng bộ lọc hoặc từ khóa chi tiết hơn.
-              </div>
-            )}
-            
-            {filteredQuestionsList.length === 0 && (
-              <div className="py-12 text-center text-w-text-muted font-medium border-2 border-dashed border-w-border rounded-[24px] bg-w-bg-card">
-                <p className="text-base font-[700] text-w-text-main">Không tìm thấy câu hỏi nào.</p>
-                <p className="text-xs mt-1">Hãy thử tìm theo từ khóa nội dung câu hỏi, chủ đề, hoặc tên bài học.</p>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* ========================================================================= */}
       {/* MODALS: CREATE/EDIT BANK, CREATE FOLDER, MOVE TO FOLDER                   */}
@@ -905,7 +1531,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
               subject: newBankData.subject || '',
               grade: newBankData.grade || '',
               topic: newBankData.topic || '',
-              folder: newBankData.folder || undefined,
+              folder: newBankData.folder || (selectedFolder && selectedFolder !== '__unorganized__' ? selectedFolder : undefined),
               description: newBankData.description || '',
               tags: newBankData.tags || [],
               visibility: newBankData.visibility || 'private',
@@ -921,96 +1547,35 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
         }}
       />
 
-      {/* Create Folder Modal */}
-      {isFolderModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-w-text-main/40 backdrop-blur-xs">
-          <div className="bg-w-bg-card border border-w-border rounded-[24px] p-6 max-w-md w-full shadow-xl">
-            <h3 className="text-lg font-[900] text-w-text-main flex items-center gap-2 mb-2">
-              <FolderPlus className="w-5 h-5 text-w-primary" />
-              Tạo Thư Mục Lưu Trữ Mới
-            </h3>
-            <p className="text-xs text-w-text-muted font-[600] mb-4">
-              Thư mục giúp bạn gom nhóm các bộ đề thi (VD: "Đề kiểm tra 15 phút", "Đề thi Giữa Kì 1", "Chuyên đề Vật lí").
-            </p>
-            <input
-              type="text"
-              placeholder="Tên thư mục mới..."
-              value={newFolderName}
-              onChange={(e) => setNewFolderName(e.target.value)}
-              className="w-full px-4 py-2.5 bg-white border border-w-border rounded-[16px] text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary mb-5"
-              autoFocus
-            />
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => {
-                  setIsFolderModalOpen(false);
-                  setNewFolderName('');
-                }}
-                className="px-4 py-2 rounded-xl text-xs font-[700] text-w-text-muted hover:bg-w-accent-light"
-              >
-                Hủy
-              </button>
-              <button
-                onClick={() => {
-                  if (!newFolderName.trim()) {
-                    safeAlert('Vui lòng nhập tên thư mục!');
-                    return;
-                  }
-                  // Set active folder filter to the new folder
-                  setFolderFilter(newFolderName.trim());
-                  setIsFolderModalOpen(false);
-                  setNewFolderName('');
-                  safeAlert(`Đã tạo thư mục "${newFolderName.trim()}"! Bạn có thể chuyển các bộ đề vào thư mục này ngay.`);
-                }}
-                className="px-5 py-2 rounded-xl text-xs font-[800] bg-w-primary hover:bg-w-primary-hover text-white shadow-xs"
-              >
-                Tạo Thư Mục
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Move to Folder Modal */}
       {bankToMove && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-w-text-main/40 backdrop-blur-xs">
-          <div className="bg-w-bg-card border border-w-border rounded-[24px] p-6 max-w-md w-full shadow-xl">
-            <h3 className="text-lg font-[900] text-w-text-main flex items-center gap-2 mb-2">
-              <Folder className="w-5 h-5 text-w-primary" />
-              Chuyển Bộ Đề Vào Thư Mục
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="bg-w-bg-card border-2 border-w-border rounded-[24px] p-6 max-w-md w-full shadow-2xl space-y-4">
+            <h3 className="text-lg font-[900] text-w-text-main flex items-center gap-2">
+              <FolderPlus className="w-5 h-5 text-w-primary" />
+              Chuyển Vào Thư Mục
             </h3>
-            <p className="text-xs text-w-text-muted font-[600] mb-4">
-              Chọn thư mục cho bộ đề: <strong className="text-w-text-main">"{bankToMove.name}"</strong>
+            <p className="text-xs text-w-text-muted font-[600]">
+              Chọn thư mục phân loại cho bộ đề: <strong>"{bankToMove.name}"</strong>
             </p>
 
-            <div className="space-y-3 mb-5">
-              <div>
-                <label className="block text-[11px] font-[700] text-w-text-muted mb-1">Chọn từ danh sách thư mục:</label>
-                <select
-                  value={selectedTargetFolder}
-                  onChange={(e) => setSelectedTargetFolder(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-white border border-w-border rounded-[16px] text-xs sm:text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary"
-                >
-                  <option value="">(Không có thư mục / Thư mục chung)</option>
-                  {availableFolders.map(f => (
-                    <option key={f} value={f}>📁 {f}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-[700] text-w-text-muted mb-1">Hoặc nhập tên thư mục mới:</label>
-                <input
-                  type="text"
-                  placeholder="Nhập tên thư mục mới..."
-                  value={selectedTargetFolder}
-                  onChange={(e) => setSelectedTargetFolder(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-white border border-w-border rounded-[16px] text-xs sm:text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary"
-                />
-              </div>
+            <div className="space-y-2">
+              <label className="text-xs font-[800] text-w-text-main">
+                Chọn từ thư mục có sẵn:
+              </label>
+              <select
+                value={selectedTargetFolder}
+                onChange={(e) => setSelectedTargetFolder(e.target.value)}
+                className="w-full px-3.5 py-2.5 bg-w-input-bg border border-w-border rounded-[16px] text-xs sm:text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary"
+              >
+                <option value="">📂 Bỏ phân loại (Thư mục chung)</option>
+                {availableFolders.map(f => (
+                  <option key={f} value={f}>📁 {f}</option>
+                ))}
+              </select>
             </div>
 
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => {
                   setBankToMove(null);
@@ -1021,8 +1586,12 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                 Hủy
               </button>
               <button
-                onClick={() => handleMoveToFolder(selectedTargetFolder)}
-                className="px-5 py-2 rounded-xl text-xs font-[800] bg-w-primary hover:bg-w-primary-hover text-white shadow-xs"
+                onClick={() => {
+                  handleAssignBankToFolder(bankToMove.id, selectedTargetFolder);
+                  setBankToMove(null);
+                  setSelectedTargetFolder('');
+                }}
+                className="px-5 py-2 wey-btn-primary text-xs font-[800] shadow-xs cursor-pointer"
               >
                 Lưu Vào Thư Mục
               </button>
@@ -1035,11 +1604,15 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
 };
 
 // =============================================================================
-// SUB-COMPONENT: BANK CARD ITEM
+// SUB-COMPONENT: BANK CARD ITEM WITH DRAG HANDLE & BATCH CHECKBOX
 // =============================================================================
 interface BankCardItemProps {
   bank: QuestionBank;
   activeTab: TabType;
+  isSelected?: boolean;
+  onToggleSelect?: () => void;
+  onDragStart?: (e: React.DragEvent) => void;
+  onDragEnd?: () => void;
   onOpenQuickManager: (bankId: string) => void;
   onToggleFavorite: () => void;
   onEdit: () => void;
@@ -1053,6 +1626,10 @@ interface BankCardItemProps {
 const BankCardItem: React.FC<BankCardItemProps> = ({
   bank,
   activeTab,
+  isSelected = false,
+  onToggleSelect,
+  onDragStart,
+  onDragEnd,
   onOpenQuickManager,
   onToggleFavorite,
   onEdit,
@@ -1070,11 +1647,38 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
   const textCount = (bank.questions || []).filter(q => q.type === 'text').length;
 
   return (
-    <div className="bg-w-bg-card border border-w-border rounded-[22px] p-4 sm:p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between relative group hover:border-w-accent-border">
+    <div 
+      draggable
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+      className={`bg-w-bg-card border-2 rounded-[22px] p-4 sm:p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between relative group hover:border-w-accent-border ${
+        isSelected ? 'border-w-primary ring-2 ring-w-primary/30 bg-w-accent-light/40' : 'border-w-border'
+      }`}
+    >
       <div>
-        {/* Top Badges & Favorite */}
-        <div className="flex justify-between items-start mb-2.5">
-          <div className="flex flex-wrap items-center gap-1.5">
+        {/* Top Badges, Drag Handle, Checkbox & Favorite */}
+        <div className="flex justify-between items-start mb-2.5 gap-2">
+          
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Batch Selection Checkbox */}
+            {onToggleSelect && (
+              <input
+                type="checkbox"
+                checked={isSelected}
+                onChange={onToggleSelect}
+                className="rounded cursor-pointer w-4 h-4"
+                title="Chọn bộ đề này để thao tác hàng loạt"
+              />
+            )}
+
+            {/* Drag Handle Icon */}
+            <div 
+              className="cursor-grab active:cursor-grabbing p-1 text-w-text-muted hover:text-w-primary rounded hover:bg-w-bg-alt"
+              title="Kéo thả vào thư mục bên trái để phân loại"
+            >
+              <GripVertical className="w-4 h-4" />
+            </div>
+
             {bank.isPreset ? (
               <span className="text-[10px] font-[800] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
                 ⭐ SGK Chuẩn
@@ -1109,7 +1713,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
         {/* Title */}
         <h4 
           onClick={() => onOpenQuickManager(bank.id)}
-          className="font-[800] text-w-text-main text-base leading-snug mb-1.5 line-clamp-2 hover:text-w-primary-dark cursor-pointer"
+          className="font-[800] text-w-text-main text-base leading-snug mb-1.5 line-clamp-2 hover:text-w-primary cursor-pointer"
         >
           {bank.name}
         </h4>
@@ -1118,7 +1722,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
         <div className="space-y-1 text-xs font-[600] text-w-text-muted mb-3">
           <p className="flex items-center gap-1.5">
             <BookOpen className="w-3.5 h-3.5 text-w-primary" />
-            <span>{bank.subject} • {bank.grade}</span>
+            <span>{bank.subject || 'Tổng hợp'} • {bank.grade || 'Mọi khối'}</span>
           </p>
           {bank.topic && (
             <p className="flex items-center gap-1.5 line-clamp-1 text-[11px]">
@@ -1129,13 +1733,13 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
         </div>
 
         {/* Question Type Breakdown Pills */}
-        <div className="flex flex-wrap items-center gap-1.5 py-2 px-2.5 bg-w-bg-main rounded-xl border border-w-border/60 text-[11px] font-[700] text-w-primary-dark mb-3">
+        <div className="flex flex-wrap items-center gap-1.5 py-2 px-2.5 bg-w-bg-alt rounded-xl border border-w-border/60 text-[11px] font-[700] text-w-text-main mb-3">
           <span className="font-[800] text-w-text-main flex items-center gap-1">
             <FileText className="w-3.5 h-3.5" /> {questionsCount} câu hỏi:
           </span>
-          {mcqCount > 0 && <span className="text-[10px] px-1.5 py-0.2 bg-white rounded-md border border-w-border">{mcqCount} trắc nghiệm</span>}
-          {tfCount > 0 && <span className="text-[10px] px-1.5 py-0.2 bg-white rounded-md border border-w-border">{tfCount} đúng/sai</span>}
-          {textCount > 0 && <span className="text-[10px] px-1.5 py-0.2 bg-white rounded-md border border-w-border">{textCount} tự luận</span>}
+          {mcqCount > 0 && <span className="text-[10px] px-1.5 py-0.2 bg-w-bg-card rounded-md border border-w-border">{mcqCount} trắc nghiệm</span>}
+          {tfCount > 0 && <span className="text-[10px] px-1.5 py-0.2 bg-w-bg-card rounded-md border border-w-border">{tfCount} đúng/sai</span>}
+          {textCount > 0 && <span className="text-[10px] px-1.5 py-0.2 bg-w-bg-card rounded-md border border-w-border">{textCount} tự luận</span>}
           {questionsCount === 0 && <span className="text-amber-700 italic text-[10px]">Chưa có câu hỏi</span>}
         </div>
       </div>
@@ -1149,7 +1753,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
         <div className="flex items-center gap-1.5">
           <button 
             onClick={() => onOpenQuickManager(bank.id)}
-            className="px-3.5 py-1.5 bg-w-primary-dark hover:bg-w-primary-hover text-white font-[800] text-xs rounded-xl transition-all shadow-xs cursor-pointer"
+            className="px-3.5 py-1.5 wey-btn-primary text-xs cursor-pointer shadow-xs"
           >
             Mở Soạn
           </button>
@@ -1172,7 +1776,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
                   className="fixed inset-0 z-40" 
                   onClick={() => setDropdownOpen(false)}
                 />
-                <div className="absolute right-0 bottom-full mb-1 w-44 bg-w-bg-card border border-w-border rounded-[16px] shadow-[0_8px_24px_rgba(79,104,60,0.15)] z-50 overflow-hidden py-1">
+                <div className="absolute right-0 bottom-full mb-1 w-44 bg-w-bg-card border border-w-border rounded-[16px] shadow-xl z-50 overflow-hidden py-1">
                   {activeTab !== 'trash' ? (
                     <>
                       <button
@@ -1192,7 +1796,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
                         }}
                         className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2"
                       >
-                        <Folder className="w-3.5 h-3.5 text-w-primary" /> Chuyển thư mục
+                        <FolderPlus className="w-3.5 h-3.5 text-amber-500" /> Chuyển thư mục
                       </button>
 
                       <button
@@ -1202,19 +1806,19 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
                         }}
                         className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2"
                       >
-                        <Copy className="w-3.5 h-3.5 text-w-primary" /> Nhân bản bộ đề
+                        <Copy className="w-3.5 h-3.5" /> Nhân bản bộ này
                       </button>
 
-                      <div className="h-px bg-w-border/60 my-1"></div>
+                      <div className="border-t border-w-border/60 my-1" />
 
                       <button
                         onClick={() => {
                           onDelete();
                           setDropdownOpen(false);
                         }}
-                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-[#8C3A50] hover:bg-[#FCE8EE] flex items-center gap-2"
+                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-rose-600 hover:bg-rose-50 flex items-center gap-2"
                       >
-                        <Trash2 className="w-3.5 h-3.5" /> Đưa vào thùng rác
+                        <Trash2 className="w-3.5 h-3.5" /> Chuyển thùng rác
                       </button>
                     </>
                   ) : (
@@ -1224,16 +1828,17 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
                           onRestore();
                           setDropdownOpen(false);
                         }}
-                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2"
+                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-emerald-600 hover:bg-emerald-50 flex items-center gap-2"
                       >
-                        <History className="w-3.5 h-3.5 text-w-primary" /> Khôi phục
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Khôi phục
                       </button>
+
                       <button
                         onClick={() => {
                           onPermanentDelete();
                           setDropdownOpen(false);
                         }}
-                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-[#8C3A50] hover:bg-[#FCE8EE] flex items-center gap-2"
+                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-rose-600 hover:bg-rose-50 flex items-center gap-2"
                       >
                         <Trash2 className="w-3.5 h-3.5" /> Xóa vĩnh viễn
                       </button>

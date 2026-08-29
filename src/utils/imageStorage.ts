@@ -78,7 +78,7 @@ export async function compressImageToDataUrl(file: File, maxWidth = 800, quality
 /**
  * Upload image to Cloudinary if configured, or compress into lightweight DataURI
  */
-export async function uploadImageFile(file: File, userEmail?: string | null): Promise<string> {
+export async function uploadImageFile(file: File, userEmail?: string | null, maxWidth = 1200): Promise<string> {
   const config = getSavedCloudinaryConfig();
 
   // If user configured Cloudinary unsigned upload
@@ -108,5 +108,5 @@ export async function uploadImageFile(file: File, userEmail?: string | null): Pr
   }
 
   // 100% Free automatic fallback: in-browser compression to high quality lightweight WebP
-  return await compressImageToDataUrl(file);
+  return await compressImageToDataUrl(file, maxWidth);
 }

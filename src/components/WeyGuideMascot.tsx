@@ -28,7 +28,6 @@ import {
 import { soundFx } from '../utils/audio';
 
 interface WeyGuideMascotProps {
-  onOpenAiModal?: () => void;
   onOpenBankView?: () => void;
   onSelectGame?: (gameId: string) => void;
 }
@@ -888,7 +887,6 @@ const STOP_WORDS = new Set([
 ]);
 
 export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
-  onOpenAiModal,
   onOpenBankView,
   onSelectGame,
 }) => {
@@ -1036,7 +1034,7 @@ export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
                 </button>
                 <button
                   onClick={handleOpenHub}
-                  className="px-2 py-0.5 bg-w-accent-light text-w-primary-dark rounded-full font-bold hover:bg-[#D4E4C1] transition cursor-pointer"
+                  className="px-2 py-0.5 bg-w-accent-light text-w-primary-dark rounded-full font-bold hover:bg-w-accent-muted transition cursor-pointer"
                 >
                   Xem Cẩm Nang 📖
                 </button>
@@ -1056,7 +1054,7 @@ export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
 
             <button
               onClick={handleOpenHub}
-              className="group relative flex items-center gap-2 bg-gradient-to-r from-w-primary via-w-primary-dark to-w-primary-hover text-white p-2 sm:px-4 sm:py-2.5 rounded-full shadow-[0_6px_20px_rgba(79,104,60,0.35)] hover:shadow-[0_8px_25px_rgba(79,104,60,0.45)] hover:scale-105 transition-all duration-300 border-2 border-[#E9D58F]/80 cursor-pointer"
+              className="group relative flex items-center gap-2 bg-gradient-to-r from-w-primary via-w-primary-dark to-w-primary-hover text-white p-2 sm:px-4 sm:py-2.5 rounded-full shadow-[0_6px_20px_rgba(79,104,60,0.35)] hover:shadow-[0_8px_25px_rgba(79,104,60,0.45)] hover:scale-105 transition-all duration-300 border-2 border-w-border/80 cursor-pointer"
             >
               <div className="relative">
                 <img
@@ -1077,11 +1075,11 @@ export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
               <div className="hidden sm:block text-left pr-1">
                 <div className="text-xs font-black text-w-bg-card leading-none flex items-center gap-1">
                   <span>Linh Vật Wey</span>
-                  <span className="text-[9px] bg-[#E9D58F] text-w-text-main px-1.5 py-0.2 rounded-full font-bold">
+                  <span className="text-[9px] bg-amber-100 text-w-text-main px-1.5 py-0.2 rounded-full font-bold">
                     Trợ Lý
                   </span>
                 </div>
-                <div className="text-[10px] text-[#E9D58F] font-semibold mt-0.5">
+                <div className="text-[10px] text-amber-500 font-semibold mt-0.5">
                   Bấm để xem hướng dẫn
                 </div>
               </div>
@@ -1120,11 +1118,11 @@ export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
             onClick={() => setIsOpen(false)}
           />
 
-          <div className="bg-[#FFFDF7] rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.25)] border-4 border-w-border w-full max-w-4xl max-h-[92vh] flex flex-col relative z-10 overflow-hidden wey-paper-card">
+          <div className="bg-w-bg-card rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.25)] border-4 border-w-border w-full max-w-4xl max-h-[92vh] flex flex-col relative z-10 overflow-hidden wey-paper-card">
             {/* Modal Header */}
             <div className="px-5 sm:px-6 py-4 bg-gradient-to-r from-w-primary-dark via-w-primary-hover to-w-primary-dark text-white flex items-center justify-between border-b border-w-primary-hover">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-full bg-w-bg-card/20 border border-[#E9D58F]/50 flex items-center justify-center shadow-inner overflow-hidden">
+                <div className="w-11 h-11 rounded-full bg-w-bg-card/20 border border-w-border/50 flex items-center justify-center shadow-inner overflow-hidden">
                   <img
                     src="/assets/Picture2.png"
                     alt="Wey"
@@ -1140,7 +1138,7 @@ export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
                 <div>
                   <h2 className="text-base sm:text-lg font-[800] text-w-bg-card flex items-center gap-2">
                     <span>Cẩm Nang Hướng Dẫn - Trợ Lý Wey</span>
-                    <span className="text-[10px] bg-[#E9D58F] text-w-text-main px-2 py-0.5 rounded-full font-black">
+                    <span className="text-[10px] bg-amber-100 text-w-text-main px-2 py-0.5 rounded-full font-black">
                       V1.0
                     </span>
                   </h2>
@@ -1179,7 +1177,7 @@ export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition cursor-pointer ${
                           isActive
                             ? 'bg-w-primary-dark text-white shadow-md'
-                            : 'bg-white/80 text-w-primary-hover hover:bg-w-accent-light border border-[#D8CFAF]'
+                            : 'bg-white/80 text-w-primary-hover hover:bg-w-accent-light border border-w-border'
                         }`}
                       >
                         <span>{cat.icon}</span>
@@ -1197,7 +1195,7 @@ export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
                     placeholder="Tìm kiếm: cách tạo câu hỏi, luật chơi..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-white border border-[#D8CFAF] rounded-xl pl-9 pr-8 py-2 text-xs text-w-text-main font-semibold placeholder:text-slate-400 focus:outline-none focus:border-w-primary-dark focus:ring-2 focus:ring-w-primary-dark/30 shadow-inner"
+                    className="w-full bg-white border border-w-border rounded-xl pl-9 pr-8 py-2 text-xs text-w-text-main font-semibold placeholder:text-slate-400 focus:outline-none focus:border-w-primary-dark focus:ring-2 focus:ring-w-primary-dark/30 shadow-inner"
                   />
                   {searchQuery && (
                     <button
@@ -1225,7 +1223,7 @@ export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
                     className={`px-2.5 py-0.5 rounded-full border text-[10px] whitespace-nowrap transition cursor-pointer ${
                       searchQuery === chip
                         ? 'bg-w-primary-dark text-white border-w-primary-hover shadow-xs'
-                        : 'bg-white/70 hover:bg-w-accent-light text-w-primary-hover border-[#D8CFAF]'
+                        : 'bg-white/70 hover:bg-w-accent-light text-w-primary-hover border-w-border'
                     }`}
                   >
                     {chip}
@@ -1261,7 +1259,7 @@ export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
                         className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 ${
                           isSelected
                             ? 'bg-w-accent-light border-w-accent-border shadow-sm ring-1 ring-w-primary-dark/30'
-                            : 'bg-white/80 hover:bg-w-bg-main border-[#E5DEC7]'
+                            : 'bg-white/80 hover:bg-w-bg-main border-w-border'
                         }`}
                       >
                         <span className="text-xl shrink-0 mt-0.5">{guide.icon}</span>
@@ -1271,7 +1269,7 @@ export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
                               {guide.title}
                             </h4>
                             {guide.badge && (
-                              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-white border border-[#D8CFAF] text-w-primary-dark shrink-0">
+                              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-white border border-w-border text-w-primary-dark shrink-0">
                                 {guide.badge}
                               </span>
                             )}
@@ -1287,7 +1285,7 @@ export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
               </div>
 
               {/* Right Column: Active Guide Details */}
-              <div className="md:col-span-7 p-4 sm:p-6 overflow-y-auto bg-[#FFFDF7] flex flex-col justify-between space-y-4">
+              <div className="md:col-span-7 p-4 sm:p-6 overflow-y-auto bg-w-bg-card flex flex-col justify-between space-y-4">
                 {currentGuide && (
                   <div className="space-y-4">
                     {/* Title & Icon Header */}
@@ -1326,7 +1324,7 @@ export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
                     </div>
 
                     {/* Pro Tip Callout */}
-                    <div className="p-3 bg-[#FEF9E7] border border-[#E9D58F] rounded-xl flex items-start gap-2.5 text-xs text-[#7D5A14]">
+                    <div className="p-3 bg-w-bg-alt border border-w-border rounded-xl flex items-start gap-2.5 text-xs text-amber-700">
                       <Lightbulb className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                       <div className="leading-relaxed">
                         <span className="font-bold">Mẹo từ Wey:</span> Hãy nhấn phím <span className="font-bold text-amber-900 bg-amber-200 px-1 rounded">F11</span> trên bàn phím để bật Toàn Màn Hình, giúp học sinh toàn lớp theo dõi trọn vẹn trận đấu!
@@ -1338,26 +1336,13 @@ export const WeyGuideMascot: React.FC<WeyGuideMascotProps> = ({
                 {/* Footer Action Buttons */}
                 <div className="pt-3 border-t border-w-border flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    {onOpenAiModal && (
-                      <button
-                        onClick={() => {
-                          setIsOpen(false);
-                          onOpenAiModal();
-                        }}
-                        className="px-3 py-1.5 bg-[#F2B6C7] hover:bg-[#EEA3B7] text-w-text-main font-bold text-xs rounded-xl border border-[#E59EB2] shadow-xs flex items-center gap-1.5 transition cursor-pointer"
-                      >
-                        <Sparkles className="w-3.5 h-3.5 text-white" />
-                        <span>Tạo Câu Hỏi AI</span>
-                      </button>
-                    )}
-
                     {onOpenBankView && (
                       <button
                         onClick={() => {
                           setIsOpen(false);
                           onOpenBankView();
                         }}
-                        className="px-3 py-1.5 bg-w-accent-light hover:bg-[#D4E4C1] text-w-primary-hover font-bold text-xs rounded-xl border border-w-accent-border shadow-xs flex items-center gap-1.5 transition cursor-pointer"
+                        className="px-3 py-1.5 bg-w-accent-light hover:bg-w-accent-muted text-w-primary-hover font-bold text-xs rounded-xl border border-w-accent-border shadow-xs flex items-center gap-1.5 transition cursor-pointer"
                       >
                         <BookOpen className="w-3.5 h-3.5 text-w-primary-dark" />
                         <span>Xem Ngân Hàng</span>

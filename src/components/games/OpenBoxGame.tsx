@@ -202,44 +202,45 @@ export const OpenBoxGame: React.FC<OpenBoxGameProps> = ({ config, questions, onG
   };
 
   return (
-    <div className="flex-1 w-full p-3 sm:p-5 rounded-2xl shadow-xl flex flex-col justify-between border-2 border-amber-900/20 relative overflow-hidden max-w-full" style={getThemeBgStyle(config.theme)}>
+    <div className="game-fit-screen p-2 sm:p-4 rounded-2xl shadow-xl flex flex-col justify-between border-2 border-amber-900/20 relative overflow-hidden max-w-full" style={getThemeBgStyle(config.theme)}>
       {/* Background elements */}
       <div className="absolute inset-0 pointer-events-none opacity-20 bg-white/70 backdrop-blur-sm"></div>
+      
       {/* Game Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-w-bg-card backdrop-blur border border-white/20 p-3 sm:p-3.5 rounded-xl shadow-xl z-10">
-        <div className="flex items-center gap-2.5">
-          <span className="text-2xl sm:text-3xl filter drop-shadow">🎁</span>
+      <div className="flex flex-wrap items-center justify-between gap-2 bg-w-bg-card/95 backdrop-blur border border-w-border px-3 py-2 rounded-xl shadow-md z-10 shrink-0">
+        <div className="flex items-center gap-2">
+          <span className="text-xl sm:text-2xl filter drop-shadow">🎁</span>
           <div>
-            <h2 className="text-base sm:text-lg font-black text-w-text-main flex items-center gap-2 font-mono">
-              <span>TRÒ CHƠI MỞ HỘP BÍ MẬT</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/30 text-amber-600 font-sans border border-amber-400">
+            <h2 className="text-xs sm:text-sm font-black text-w-text-main flex items-center gap-2 font-mono">
+              <span>MỞ HỘP BÍ MẬT</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-600 font-sans border border-amber-400/30">
                 {themeInfo.icon} {themeInfo.name}
               </span>
             </h2>
-            <p className="text-[11px] text-w-primary-dark font-medium mt-0.5">
-              {config.mode === 'bank' ? 'Chế độ Ngân hàng câu hỏi' : 'Chế độ Số'} • Đã mở {openedBoxes.filter(Boolean).length}/{totalCount} hộp
+            <p className="text-[10px] text-w-text-muted font-medium">
+              {config.mode === 'bank' ? 'Ngân hàng câu hỏi' : 'Chế độ Số'} • Đã mở {openedBoxes.filter(Boolean).length}/{totalCount} hộp
             </p>
           </div>
         </div>
 
         {/* Teams Dashboard */}
         {config.teamMode && (
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5 flex-wrap">
             {teams.map((team, idx) => {
               const isCurrentTurn = idx === currentTurnTeamIdx;
               return (
                 <div
                   key={team.id}
-                  className={`px-3 py-1.5 rounded-xl border flex items-center gap-2 transition transform ${
+                  className={`px-2.5 py-1 rounded-xl border flex items-center gap-1.5 transition transform ${
                     isCurrentTurn
-                      ? 'bg-amber-500/30 border-amber-400 text-amber-200 ring-2 ring-amber-400/40 scale-105 shadow-md'
-                      : 'bg-w-bg-alt border-w-accent-border text-w-primary-dark'
+                      ? 'bg-amber-500/20 border-amber-400 text-amber-600 ring-2 ring-amber-400/40 shadow-xs'
+                      : 'bg-w-bg-alt border-w-border text-w-text-main'
                   }`}
                 >
-                  <span className="text-xl">{team.avatar}</span>
-                  <div className="text-xs">
+                  <span className="text-base">{team.avatar}</span>
+                  <div className="text-[11px]">
                     <div className="font-bold leading-none">{team.name}</div>
-                    <div className="font-mono text-amber-600 font-extrabold mt-0.5">{team.score}đ</div>
+                    <div className="font-mono text-amber-600 font-extrabold">{team.score}đ</div>
                   </div>
                 </div>
               );
@@ -249,14 +250,14 @@ export const OpenBoxGame: React.FC<OpenBoxGameProps> = ({ config, questions, onG
 
         <button
           onClick={() => onGameEnd(teams, answerLogs)}
-          className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-500 text-w-text-main font-bold text-xs rounded-xl transition shadow-md active:scale-95 cursor-pointer"
+          className="wey-btn-danger px-3 py-1.5 text-xs rounded-xl cursor-pointer shrink-0"
         >
           Kết Thúc Game
         </button>
       </div>
 
       {/* Grid of Theme Boxes */}
-      <div className="my-3 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2.5 sm:gap-3.5 z-10 justify-items-center max-w-5xl mx-auto w-full">
+      <div className="my-auto py-2 flex-1 min-h-0 overflow-y-auto grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-3 z-10 justify-items-center items-center max-w-5xl mx-auto w-full">
         {Array.from({ length: totalCount }).map((_, idx) => {
           const isOpened = openedBoxes[idx];
           const isCorrect = boxResults[idx];
@@ -265,7 +266,7 @@ export const OpenBoxGame: React.FC<OpenBoxGameProps> = ({ config, questions, onG
               key={idx}
               disabled={isOpened}
               onClick={() => handlePickBox(idx)}
-              className="w-full max-w-[130px] aspect-square flex items-center justify-center p-0.5 focus:outline-none cursor-pointer hover:scale-105 transition-transform"
+              className="w-full max-w-[110px] sm:max-w-[125px] aspect-square flex items-center justify-center p-0.5 focus:outline-none cursor-pointer hover:scale-105 transition-transform"
             >
               <ThemeBoxGraphic
                 theme={config.theme}
@@ -295,7 +296,7 @@ export const OpenBoxGame: React.FC<OpenBoxGameProps> = ({ config, questions, onG
       />
 
       {/* Footer Instructions */}
-      <div className="text-center text-xs font-extrabold tracking-wide text-w-text-muted bg-w-bg-card py-2 px-4 rounded-full border border-white/10 mx-auto z-10 shadow-lg">
+      <div className="text-center text-[11px] font-bold tracking-wide text-w-text-muted bg-w-bg-card/90 py-1.5 px-4 rounded-full border border-w-border mx-auto z-10 shadow-xs shrink-0">
         Mỗi đội chọn 1 hộp ➔ Trả lời câu hỏi ➔ Đúng nhận +10đ & mở hộp!
       </div>
     </div>

@@ -24,18 +24,18 @@ export const WerewolfVillageMap: React.FC<WerewolfVillageMapProps> = ({
   const getRoleBadge = (role: WerewolfRole) => {
     switch (role) {
       case 'werewolf':
-        return { label: 'Ma Sói', color: 'bg-red-600 text-w-text-main', icon: '🐺' };
+        return { label: 'Ma Sói', color: 'bg-red-600 text-white', icon: '🐺' };
       case 'seer':
-        return { label: 'Tiên Tri', color: 'bg-indigo-600 text-w-text-main', icon: '🔮' };
+        return { label: 'Tiên Tri', color: 'bg-indigo-600 text-white', icon: '🔮' };
       case 'guard':
-        return { label: 'Bảo Vệ', color: 'bg-emerald-600 text-w-text-main', icon: '🛡️' };
+        return { label: 'Bảo Vệ', color: 'bg-emerald-600 text-white', icon: '🛡️' };
       case 'witch':
-        return { label: 'Phù Thủy', color: 'bg-purple-600 text-w-text-main', icon: '🧪' };
+        return { label: 'Phù Thủy', color: 'bg-purple-600 text-white', icon: '🧪' };
       case 'hunter':
-        return { label: 'Thợ Săn', color: 'bg-amber-600 text-w-text-main', icon: '🏹' };
+        return { label: 'Thợ Săn', color: 'bg-amber-600 text-white', icon: '🏹' };
       case 'villager':
       default:
-        return { label: 'Dân Làng', color: 'bg-slate-600 text-w-text-main', icon: '🌿' };
+        return { label: 'Dân Làng', color: 'bg-slate-600 text-white', icon: '🌿' };
     }
   };
 
@@ -138,7 +138,7 @@ export const WerewolfVillageMap: React.FC<WerewolfVillageMapProps> = ({
                     </span>
                   )}
                   {isDead ? (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-red-600/80 text-w-text-main font-bold flex items-center gap-0.5">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-red-600/90 text-white font-bold flex items-center gap-0.5">
                       <Skull className="w-2.5 h-2.5" />
                       <span>TỬ NẠN</span>
                     </span>
@@ -193,7 +193,7 @@ export const WerewolfVillageMap: React.FC<WerewolfVillageMapProps> = ({
                 <div className={`my-1.5 p-2 rounded-xl text-[11px] leading-snug border transition-all ${
                   isNight
                     ? 'bg-w-bg-card border-indigo-900/60 text-slate-200'
-                    : 'bg-[#FBF8EF] border-[#E5DEC7] text-slate-800'
+                    : 'bg-[#FBF8EF] border-w-border text-slate-800'
                 }`}>
                   <div className="flex items-center gap-1 font-bold text-[10px] mb-0.5 text-amber-500">
                     <span>{npc.statement.icon}</span>

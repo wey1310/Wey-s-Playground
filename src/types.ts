@@ -649,3 +649,13 @@ export const PRESET_THEMES: { id: GameTheme; name: string; bgClass: string; card
   { id: 'galaxy', name: 'Vũ Trụ Huyền Diệu', bgClass: 'from-indigo-100 via-violet-100 to-purple-100 text-slate-800', cardClass: 'bg-white/95 border-purple-200 shadow-sm', icon: '🌌' },
   { id: 'forest', name: 'Khu Rừng Thơ Mộng', bgClass: 'from-emerald-100 via-teal-50 to-green-100 text-slate-800', cardClass: 'bg-white/95 border-emerald-200 shadow-sm', icon: '🌲' },
 ];
+
+export interface WebConfig {
+  siteTitle: string;
+  siteSubtitle: string;
+  bgImageUrl: string;
+  announcement: string;
+  primaryTheme: 'pastel' | 'brightclassroom' | 'deepspace' | 'matcha' | 'sakura' | 'sky' | 'mono';
+  gameAvatars?: Record<string, string>;
+}
+
