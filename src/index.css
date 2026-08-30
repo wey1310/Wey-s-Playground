@@ -464,7 +464,7 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .game-stage-container {
-  max-height: clamp(480px, calc(100vh - 130px), 880px);
+  max-height: clamp(480px, calc(100dvh - 120px), 960px);
   width: 100%;
 }
 

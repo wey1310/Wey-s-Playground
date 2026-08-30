@@ -26,10 +26,8 @@ import {
   Image as ImageIcon,
   BookOpen,
   AlertCircle,
-  Sparkles,
   ChevronRight,
   Database,
-  Bot,
   ExternalLink
 } from 'lucide-react';
 import type { QuestionBank, Question, QuestionType, CognitiveLevel } from '../types';
@@ -37,6 +35,7 @@ import { COGNITIVE_LEVELS_INFO } from '../data/curriculumData';
 import { uploadImageFile } from '../utils/imageStorage';
 import { MathChemRenderer } from '../utils/mathChemFormatter';
 import { ImportQuestionsModal } from './ImportQuestionsModal';
+import { CreateBankModal } from './CreateBankModal';
 import { safeAlert, safeConfirm } from '../utils/safeAlert';
 
 interface QuestionBankEditorProps {
@@ -80,24 +79,18 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
     return bankList.find(b => b.id === activeBankId) || bankList[0];
   }, [bankList, activeBankId]);
 
-  // Retrieve Gem AI Converter URL from saved web configuration
-  const gemConverterUrl = useMemo(() => {
-    try {
-      const saved = localStorage.getItem('wey_web_config');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return parsed.gemConverterUrl;
-      }
-    } catch (e) {}
-    return undefined;
-  }, []);
-
-  // Sidebar & Bank Search
+  // Sidebar & Bank Search & Bank Create/Edit Modal
   const [bankSearch, setBankSearch] = useState('');
-  const [showCreateBankModal, setShowCreateBankModal] = useState(false);
-  const [newBankName, setNewBankName] = useState('');
-  const [newBankSubject, setNewBankSubject] = useState('Toán');
-  const [newBankGrade, setNewBankGrade] = useState('Lớp 5');
+  const [isBankModalOpen, setIsBankModalOpen] = useState(false);
+  const [bankModalInitialData, setBankModalInitialData] = useState<QuestionBank | null>(null);
+
+  const availableFolders = useMemo(() => {
+    const set = new Set<string>();
+    bankList.forEach(b => {
+      if (b.folder && b.folder.trim()) set.add(b.folder.trim());
+    });
+    return Array.from(set);
+  }, [bankList]);
 
   // Question Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -496,24 +489,69 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
     URL.revokeObjectURL(url);
   };
 
-  const handleCreateBank = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newBankName.trim()) return;
-    const newB: QuestionBank = {
-      id: `bank_${Date.now()}`,
-      name: newBankName.trim(),
-      subject: newBankSubject,
-      grade: newBankGrade,
-      topic: 'Luyện tập',
-      questions: [],
-      isPreset: false,
-      createdAt: new Date().toISOString(),
-    };
-    if (onCreateBank) onCreateBank(newB);
-    onSelectBank(newB.id);
-    setNewBankName('');
-    setShowCreateBankModal(false);
-    safeAlert('✅ Đã tạo bộ câu hỏi mới!');
+  const handleOpenCreateBankModal = () => {
+    setBankModalInitialData(null);
+    setIsBankModalOpen(true);
+  };
+
+  const handleOpenEditBankModal = (bankToEdit?: QuestionBank) => {
+    const target = bankToEdit || currentBank;
+    if (!target) return;
+    setBankModalInitialData(target);
+    setIsBankModalOpen(true);
+  };
+
+  const handleSaveBankModal = (savedData: Partial<QuestionBank>) => {
+    if (bankModalInitialData) {
+      // Editing existing bank
+      const updatedBank: QuestionBank = {
+        ...bankModalInitialData,
+        ...savedData,
+        name: (savedData.name || bankModalInitialData.name).trim(),
+        subject: (savedData.subject || bankModalInitialData.subject).trim(),
+        grade: (savedData.grade || bankModalInitialData.grade).trim(),
+        topic: savedData.topic !== undefined ? savedData.topic.trim() : (bankModalInitialData.topic || 'Luyện tập'),
+        folder: savedData.folder !== undefined ? (savedData.folder?.trim() || undefined) : bankModalInitialData.folder,
+        description: savedData.description !== undefined ? savedData.description.trim() : (bankModalInitialData.description || ''),
+        tags: savedData.tags !== undefined ? savedData.tags : (bankModalInitialData.tags || []),
+        visibility: savedData.visibility || bankModalInitialData.visibility || 'private',
+        favorite: savedData.favorite !== undefined ? savedData.favorite : Boolean(bankModalInitialData.favorite),
+        isPreset: savedData.isPreset !== undefined ? savedData.isPreset : Boolean(bankModalInitialData.isPreset),
+        updatedAt: savedData.updatedAt || new Date().toISOString(),
+      };
+      if (handleUpdate) {
+        handleUpdate(updatedBank);
+      }
+      onSelectBank(updatedBank.id);
+      safeAlert(`✅ Đã cập nhật thông tin bộ đề "${updatedBank.name}" thành công!`);
+    } else {
+      // Creating new bank
+      const newB: QuestionBank = {
+        id: `bank_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        name: (savedData.name || 'Bộ câu hỏi mới').trim(),
+        subject: (savedData.subject || 'Toán').trim(),
+        grade: (savedData.grade || 'Lớp 7').trim(),
+        topic: (savedData.topic || 'Luyện tập').trim(),
+        folder: savedData.folder?.trim() || undefined,
+        description: (savedData.description || '').trim(),
+        tags: savedData.tags || [],
+        visibility: savedData.visibility || 'private',
+        favorite: Boolean(savedData.favorite),
+        isPreset: Boolean(savedData.isPreset),
+        questions: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      if (onCreateBank) {
+        onCreateBank(newB);
+      } else if (handleUpdate) {
+        handleUpdate(newB);
+      }
+      onSelectBank(newB.id);
+      safeAlert(`✅ Đã tạo bộ câu hỏi mới "${newB.name}"!`);
+    }
+    setIsBankModalOpen(false);
+    setBankModalInitialData(null);
   };
 
   const formulaChips = [
@@ -574,7 +612,7 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
               Bộ Đề ({bankList.length})
             </span>
             <button
-              onClick={() => setShowCreateBankModal(true)}
+              onClick={handleOpenCreateBankModal}
               className="flex items-center gap-1 px-2.5 py-1 rounded-xl wey-btn-primary text-xs font-bold transition shadow-xs cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -612,11 +650,28 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
                     <h4 className={`text-xs font-bold leading-snug line-clamp-1 ${isActive ? 'text-w-primary font-extrabold' : 'text-w-text-main'}`}>
                       {bank.name}
                     </h4>
-                    {bank.isPreset && (
-                      <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-100 text-amber-800 font-bold shrink-0">
-                        ⭐ Mẫu
-                      </span>
-                    )}
+                    <div className="flex items-center gap-1 shrink-0">
+                      {bank.favorite && (
+                        <span className="text-amber-500 text-xs font-bold" title="Bộ đề yêu thích">⭐</span>
+                      )}
+                      {bank.isPreset && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-100 text-amber-800 font-bold shrink-0">
+                          Mẫu
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSelectBank(bank.id);
+                          handleOpenEditBankModal(bank);
+                        }}
+                        className="p-1 rounded-md hover:bg-w-primary/10 text-w-text-muted hover:text-w-primary transition cursor-pointer"
+                        title="Chỉnh sửa thông tin bộ câu hỏi"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                   <div className="flex items-center justify-between mt-1.5 text-[11px] text-w-text-muted">
                     <span>
@@ -640,6 +695,17 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
                 <span>Bộ đang chọn:</span>
                 <span className="text-w-primary font-bold">{currentBank.questions?.length || 0} câu</span>
               </div>
+              
+              <button
+                type="button"
+                onClick={() => handleOpenEditBankModal(currentBank)}
+                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-w-accent-light/70 hover:bg-w-accent-light text-w-primary-dark border border-w-accent-border text-xs font-bold transition shadow-xs cursor-pointer"
+                title="Chỉnh sửa thông tin bộ câu hỏi (Tên, Môn, Khối, Chủ đề, Thư mục, Tags)"
+              >
+                <Edit3 className="w-3.5 h-3.5 text-w-primary" />
+                <span>Chỉnh sửa thông tin bộ câu hỏi</span>
+              </button>
+
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => setShowImportModal(true)}
@@ -679,33 +745,30 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
           {/* Active Bank Header & Add Question CTA */}
           <div className="bg-w-bg-card p-4 rounded-2xl border border-w-border shadow-xs flex flex-wrap items-center justify-between gap-3">
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="text-base sm:text-lg font-[800] text-w-text-main">
                   {currentBank?.name}
                 </h3>
                 <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
                   {currentBank?.questions?.length || 0} câu hỏi
                 </span>
+                <button
+                  type="button"
+                  onClick={() => handleOpenEditBankModal(currentBank)}
+                  className="flex items-center gap-1.5 px-3 py-1 bg-w-bg-alt hover:bg-w-accent-light text-w-primary-dark border border-w-border hover:border-w-primary/40 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer"
+                  title="Chỉnh sửa thông tin bộ câu hỏi"
+                >
+                  <Edit3 className="w-3.5 h-3.5 text-w-primary" />
+                  <span>Chỉnh sửa thông tin bộ</span>
+                </button>
               </div>
               <p className="text-xs text-w-text-muted mt-0.5">
                 Môn: <span className="font-bold text-w-text-main">{currentBank?.subject}</span> • Khối: <span className="font-bold text-w-text-main">{currentBank?.grade}</span> • Chủ đề: <span className="font-bold text-w-text-main">{currentBank?.topic || 'Luyện tập'}</span>
+                {currentBank?.folder && <span> • 📁 Thư mục: <span className="font-bold text-w-primary">{currentBank.folder}</span></span>}
               </p>
             </div>
 
             <div className="flex items-center gap-2">
-              {gemConverterUrl && (
-                <a
-                  href={gemConverterUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm shadow-xs transition hover:scale-105 cursor-pointer"
-                  title="Chuyển đổi văn bản câu hỏi thành format chuẩn bằng Gem AI"
-                >
-                  <Bot className="w-4 h-4" />
-                  <span>Chuyển Đổi Bằng Gem AI</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              )}
               <button
                 onClick={handleOpenAddQuestion}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-2xl wey-btn-primary text-xs sm:text-sm shadow-sm transition hover:-translate-y-0.5 cursor-pointer"
@@ -1547,68 +1610,19 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
       )}
 
       {/* ============================================================= */}
-      {/* CREATE NEW BANK MODAL                                          */}
+      {/* CREATE / EDIT BANK MODAL                                      */}
       {/* ============================================================= */}
-      {showCreateBankModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="bg-w-bg-card rounded-2xl border border-w-border p-5 max-w-md w-full shadow-xl space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-base font-bold text-w-text-main">Tạo Bộ Câu Hỏi Mới</h3>
-              <button onClick={() => setShowCreateBankModal(false)} className="text-w-text-muted hover:text-w-text-main">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <form onSubmit={handleCreateBank} className="space-y-3 text-xs">
-              <div>
-                <label className="block font-bold text-w-text-main mb-1">Tên bộ câu hỏi:</label>
-                <input
-                  type="text"
-                  value={newBankName}
-                  onChange={e => setNewBankName(e.target.value)}
-                  placeholder="Ví dụ: Ôn tập Hóa học HK1 Lớp 8..."
-                  className="w-full bg-w-input-bg border border-w-input-border rounded-xl p-2.5 text-w-text-main text-sm focus:outline-none focus:border-w-primary"
-                  required
-                  autoFocus
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block font-bold text-w-text-main mb-1">Môn học:</label>
-                  <input
-                    type="text"
-                    value={newBankSubject}
-                    onChange={e => setNewBankSubject(e.target.value)}
-                    className="w-full bg-w-input-bg border border-w-input-border rounded-xl p-2 text-w-text-main focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block font-bold text-w-text-main mb-1">Khối lớp:</label>
-                  <input
-                    type="text"
-                    value={newBankGrade}
-                    onChange={e => setNewBankGrade(e.target.value)}
-                    className="w-full bg-w-input-bg border border-w-input-border rounded-xl p-2 text-w-text-main focus:outline-none"
-                  />
-                </div>
-              </div>
-              <div className="pt-2 flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateBankModal(false)}
-                  className="px-3.5 py-1.5 bg-w-bg-alt text-w-text-main font-bold rounded-xl"
-                >
-                  Hủy
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 wey-btn-primary font-bold rounded-xl shadow-xs"
-                >
-                  Tạo Bộ Đề
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+      {isBankModalOpen && (
+        <CreateBankModal
+          isOpen={isBankModalOpen}
+          onClose={() => {
+            setIsBankModalOpen(false);
+            setBankModalInitialData(null);
+          }}
+          onSave={handleSaveBankModal}
+          initialData={bankModalInitialData}
+          availableFolders={availableFolders}
+        />
       )}
 
       {/* ============================================================= */}
@@ -1666,7 +1680,6 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
         <ImportQuestionsModal
           isOpen={showImportModal}
           onClose={() => setShowImportModal(false)}
-          gemConverterUrl={gemConverterUrl}
           onImportSuccess={(importedQuestions) => {
             if (handleUpdate) {
               handleUpdate({

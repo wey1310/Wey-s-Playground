@@ -196,7 +196,7 @@ export const BowlingGame: React.FC<BowlingGameProps> = ({
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-stone-950 via-zinc-950 to-stone-900 text-zinc-100 flex flex-col justify-between select-none relative overflow-x-hidden">
+    <div className="w-full flex-1 min-h-[100dvh] bg-gradient-to-b from-stone-950 via-zinc-950 to-stone-900 text-zinc-100 flex flex-col justify-between select-none relative overflow-y-auto overflow-x-hidden">
       {/* Top Navbar */}
       <header className="px-4 py-3 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800 flex items-center justify-between z-30">
         <div className="flex items-center gap-3">

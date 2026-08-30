@@ -77,22 +77,39 @@ export const ALL_SUBJECTS = Array.from(
   new Set([...PRIMARY_SUBJECTS, ...SECONDARY_SUBJECTS, ...HIGH_SCHOOL_SUBJECTS])
 );
 
-export function getSubjectsForGrade(grade: string): string[] {
-  const g = grade.toLowerCase();
-  if (g.includes('1') || g.includes('2') || g.includes('3') || g.includes('4') || g.includes('5')) {
-    if (g.includes('1') || g.includes('2')) {
-      return ['Tiếng Việt', 'Toán', 'Đạo đức', 'Tự nhiên và Xã hội', 'Tiếng Anh', 'Âm nhạc', 'Mĩ thuật', 'Giáo dục thể chất', 'Hoạt động trải nghiệm'];
+export function normalizeGrade(grade?: string): string {
+  if (!grade) return 'Lớp 7';
+  const trimmed = grade.trim();
+  const exact = GRADES.find(g => g.toLowerCase() === trimmed.toLowerCase());
+  if (exact) return exact;
+  const match = trimmed.match(/\b(1[0-2]|[1-9])\b/) || trimmed.match(/(\d+)/);
+  if (match) {
+    const num = parseInt(match[1], 10);
+    if (num >= 1 && num <= 12) {
+      return `Lớp ${num}`;
     }
-    if (g.includes('3')) {
-      return ['Tiếng Việt', 'Toán', 'Đạo đức', 'Tự nhiên và Xã hội', 'Tin học', 'Công nghệ', 'Tiếng Anh', 'Âm nhạc', 'Mĩ thuật', 'Giáo dục thể chất', 'Hoạt động trải nghiệm'];
-    }
-    return ['Tiếng Việt', 'Toán', 'Đạo đức', 'Khoa học', 'Lịch sử và Địa lí', 'Tin học', 'Công nghệ', 'Tiếng Anh', 'Âm nhạc', 'Mĩ thuật', 'Giáo dục thể chất', 'Hoạt động trải nghiệm'];
   }
-  if (g.includes('6') || g.includes('7') || g.includes('8') || g.includes('9')) {
+  return trimmed;
+}
+
+export function getSubjectsForGrade(grade: string): string[] {
+  const norm = normalizeGrade(grade);
+  const match = norm.match(/\d+/);
+  const num = match ? parseInt(match[0], 10) : 7;
+  if (num >= 10 && num <= 12) {
+    return HIGH_SCHOOL_SUBJECTS;
+  }
+  if (num >= 6 && num <= 9) {
     return SECONDARY_SUBJECTS;
   }
-  if (g.includes('10') || g.includes('11') || g.includes('12')) {
-    return HIGH_SCHOOL_SUBJECTS;
+  if (num === 1 || num === 2) {
+    return ['Tiếng Việt', 'Toán', 'Đạo đức', 'Tự nhiên và Xã hội', 'Tiếng Anh', 'Âm nhạc', 'Mĩ thuật', 'Giáo dục thể chất', 'Hoạt động trải nghiệm'];
+  }
+  if (num === 3) {
+    return ['Tiếng Việt', 'Toán', 'Đạo đức', 'Tự nhiên và Xã hội', 'Tin học', 'Công nghệ', 'Tiếng Anh', 'Âm nhạc', 'Mĩ thuật', 'Giáo dục thể chất', 'Hoạt động trải nghiệm'];
+  }
+  if (num >= 4 && num <= 5) {
+    return ['Tiếng Việt', 'Toán', 'Đạo đức', 'Khoa học', 'Lịch sử và Địa lí', 'Tin học', 'Công nghệ', 'Tiếng Anh', 'Âm nhạc', 'Mĩ thuật', 'Giáo dục thể chất', 'Hoạt động trải nghiệm'];
   }
   return ALL_SUBJECTS;
 }
@@ -1082,9 +1099,8 @@ export function getLessonsForSubjectAndGrade(grade: string, subject: string): st
   if (!grade || !subject) return [];
   
   // Normalize grade string (e.g. "Lớp 6" or "6")
-  const gradeKey = GRADES.find(g => g.toLowerCase() === grade.trim().toLowerCase()) || 
-                   GRADES.find(g => grade.includes(g.replace('Lớp ', ''))) || 
-                   'Lớp 6';
+  const normGrade = normalizeGrade(grade);
+  const gradeKey = (GRADES.find(g => g.toLowerCase() === normGrade.toLowerCase()) || 'Lớp 7') as keyof typeof KET_NOI_TRI_THUC_CURRICULUM;
                    
   const gradeData = KET_NOI_TRI_THUC_CURRICULUM[gradeKey];
   if (!gradeData) return [];

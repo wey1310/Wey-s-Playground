@@ -386,7 +386,7 @@ export const WerewolfGame: React.FC<WerewolfGameProps> = ({
   const currentQuestion = questionPool[questionIndex % questionPool.length];
 
   return (
-    <div className="min-h-screen bg-[#070b14] flex flex-col justify-between text-slate-100 select-none">
+    <div className="w-full flex-1 min-h-[100dvh] bg-[#070b14] flex flex-col justify-between text-slate-100 select-none overflow-y-auto">
       {/* 1. TOP SCOREBOARD */}
       <WerewolfScoreboard
         currentNight={currentNight}

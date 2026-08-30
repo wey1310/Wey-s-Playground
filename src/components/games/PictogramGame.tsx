@@ -2,7 +2,6 @@ import { safeAlert, safeConfirm } from "../../utils/safeAlert";
 import React, { useState, useEffect } from 'react';
 import { GameSetupConfig, Question, AnswerLog, Team } from '../../types';
 import { soundFx } from '../../utils/audio';
-import { fetchWithAuth } from '../../utils/api';
 import {
   Sparkles,
   Check,
@@ -156,95 +155,60 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
 
   const activeTeam = teamsState[activeTeamIndex] || teamsState[0];
 
-  // AI Topic Phrase Suggestion Handler
-  const handleSuggestPhrasesFromTopic = async () => {
+  // Topic Phrase Suggestion Handler (Curated educational dictionary)
+  const handleSuggestPhrasesFromTopic = () => {
     if (!topicInput.trim()) return;
-    setIsGeneratingTopicPhrases(true);
     soundFx.buttonClick();
-
-    try {
-      const data = await fetchWithAuth('/api/generate-pictogram-phrases', {
-        method: 'POST',
-        body: JSON.stringify({ topic: topicInput.trim() }),
-      });
-      if (data.success && Array.isArray(data.phrases) && data.phrases.length > 0) {
-        const text = data.phrases.join('\n');
-        setRawPhrasesInput(text);
-        setInputPhrase(data.phrases[0]);
-        setCustomInputTab('direct');
-      } else {
-        throw new Error(data.error || 'Không tạo được cụm từ');
-      }
-    } catch (err: any) {
-      safeAlert('Không thể tạo cụm từ theo chủ đề: ' + (err.message || 'Lỗi kết nối AI'));
-    } finally {
-      setIsGeneratingTopicPhrases(false);
+    const query = topicInput.trim().toLowerCase();
+    let suggestions = [
+      'NĂNG LƯỢNG MẶT TRỜI',
+      'QUANG HỢP Ở THỰC VẬT',
+      'HỆ SINH THÁI RỪNG',
+      'BẢO VỆ MÔI TRƯỜNG',
+      'VÒNG TUẦN HOÀN CỦA NƯỚC'
+    ];
+    if (query.includes('sử') || query.includes('history')) {
+      suggestions = ['CHIẾN THẮNG BẠCH ĐẰNG', 'ĐIỆN BIÊN PHỦ', 'CÁCH MẠNG THÁNG TÁM', 'BÌNH NGÔ ĐẠI CÁO', 'HỊCH TƯỚNG SĨ'];
+    } else if (query.includes('địa') || query.includes('geo')) {
+      suggestions = ['ĐỒNG BẰNG SÔNG HỒNG', 'DÃY HOÀNG LIÊN SƠN', 'VỊNH HẠ LONG', 'BIỂN ĐÔNG VIỆT NAM', 'KHÍ HẬU NHIỆT ĐỚI'];
+    } else if (query.includes('toán') || query.includes('math')) {
+      suggestions = ['TAM GIÁC VUÔNG CÂN', 'ĐỊNH LÝ PYTHAGORAS', 'HÀM SỐ BẬC HAI', 'SỐ NGUYÊN TỐ', 'HÌNH HỌC KHÔNG GIAN'];
+    } else if (query.includes('vật') || query.includes('động') || query.includes('animal')) {
+      suggestions = ['CHIM CÁNH CỤT NAM CỰC', 'GẤU TRÚC KHỔNG LỒ', 'CÁ HEO ĐẠI DƯƠNG', 'ĐẠI BÀNG ĐẦU TRẮNG', 'HỔ ĐÔNG DƯƠNG'];
     }
+    setRawPhrasesInput(suggestions.join('\n'));
+    setInputPhrase(suggestions[0]);
+    setCustomInputTab('direct');
   };
 
-  // Generate Hints API Call
-  const generateHintsForPhrase = async (targetPhrase: string, diffLevel: 'easy' | 'medium' | 'hard' = difficulty) => {
+  // Generate Hints Directly with Image Provider
+  const generateHintsForPhrase = (targetPhrase: string, diffLevel: 'easy' | 'medium' | 'hard' = difficulty) => {
     if (!targetPhrase.trim()) return;
     setIsGenerating(true);
+    const words = targetPhrase.trim().split(/\s+/);
+    const targetCount = diffLevel === 'easy' ? 3 : diffLevel === 'hard' ? 5 : 4;
+    
+    const hintsList: HintImage[] = Array.from({ length: targetCount }).map((_, idx) => {
+      const provider: ImageSourceType = idx % 2 === 0 ? 'SEARCH' : 'GENERATED';
+      const wordKey = words[idx % words.length] || targetPhrase;
+      const keyword = `${wordKey}_${idx + 1}`;
+      const searchImageUrl = ImageProvider.getSearchUrl(keyword, idx + 1);
+      const svgDataUri = ImageProvider.generateSvgDataUri(wordKey, idx);
 
-    try {
-      const data = await fetchWithAuth('/api/generate-pictogram', {
-        method: 'POST',
-        body: JSON.stringify({
-          phrase: targetPhrase.trim().toUpperCase(),
-          difficulty: diffLevel,
-        }),
-      });
-
-      if (data.success && Array.isArray(data.hints) && data.hints.length > 0) {
-        const formatted: HintImage[] = data.hints.map((h: any, idx: number) => {
-          const provider: ImageSourceType = h.provider === 'SEARCH' ? 'SEARCH' : 'GENERATED';
-          const keyword = h.searchKeyword || 'concept';
-          const searchImageUrl = h.searchImageUrl || ImageProvider.getSearchUrl(keyword, idx + 1);
-          const svgDataUri = h.svgDataUri || ImageProvider.generateSvgDataUri(h.conceptIdea || `Gợi ý ${idx + 1}`, idx);
-
-          return {
-            id: h.id || `hint_${Date.now()}_${idx}`,
-            conceptIdea: h.conceptIdea || `Ý tưởng gợi ý #${idx + 1}`,
-            provider,
-            searchKeyword: keyword,
-            searchImageUrl,
-            svgDataUri,
-            imageUrl: provider === 'SEARCH' ? searchImageUrl : svgDataUri,
-            isRevealed: idx === 0, // Unlock first hint initially
-          };
-        });
-        setHints(formatted);
-        setCurrentPhrase(targetPhrase.trim().toUpperCase());
-      } else {
-        throw new Error(data.error || 'Lỗi tạo gợi ý từ server');
-      }
-    } catch (err) {
-      console.warn('Fallback local hint generator:', err);
-      // Fallback local logic creating 3-5 hint cards
-      const targetCount = diffLevel === 'easy' ? 3 : diffLevel === 'hard' ? 5 : 4;
-      const fallbackHints: HintImage[] = Array.from({ length: targetCount }).map((_, idx) => {
-        const provider: ImageSourceType = idx % 2 === 0 ? 'SEARCH' : 'GENERATED';
-        const keyword = `${targetPhrase}_${idx + 1}`;
-        const searchImageUrl = ImageProvider.getSearchUrl(keyword, idx + 1);
-        const svgDataUri = ImageProvider.generateSvgDataUri(`Ý tưởng #${idx + 1}`, idx);
-
-        return {
-          id: `hint_fallback_${Date.now()}_${idx}`,
-          conceptIdea: `Ý tưởng gợi ý #${idx + 1} cho "${targetPhrase}"`,
-          provider,
-          searchKeyword: keyword,
-          searchImageUrl,
-          svgDataUri,
-          imageUrl: provider === 'SEARCH' ? searchImageUrl : svgDataUri,
-          isRevealed: idx === 0,
-        };
-      });
-      setHints(fallbackHints);
-      setCurrentPhrase(targetPhrase.trim().toUpperCase());
-    } finally {
-      setIsGenerating(false);
-    }
+      return {
+        id: `hint_${Date.now()}_${idx}`,
+        conceptIdea: `Gợi ý #${idx + 1}: ${wordKey}`,
+        provider,
+        searchKeyword: keyword,
+        searchImageUrl,
+        svgDataUri,
+        imageUrl: provider === 'SEARCH' ? searchImageUrl : svgDataUri,
+        isRevealed: idx === 0,
+      };
+    });
+    setHints(hintsList);
+    setCurrentPhrase(targetPhrase.trim().toUpperCase());
+    setIsGenerating(false);
   };
 
   // Load Bank Question
@@ -306,50 +270,22 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
     );
   };
 
-  const handleRegenerateHint = async (hintIndex: number) => {
+  const handleRegenerateHint = (hintIndex: number) => {
     soundFx.buttonClick();
-    const target = hints[hintIndex];
-    if (!target) return;
-
-    try {
-      const data = await fetchWithAuth('/api/generate-pictogram', {
-        method: 'POST',
-        body: JSON.stringify({
-          phrase: currentPhrase,
-          difficulty,
-          hintIndex,
-        }),
-      });
-      if (data.success && data.hints && data.hints.length > 0) {
-        const item = data.hints[0];
-        setHints((prev) =>
-          prev.map((h, idx) =>
-            idx === hintIndex
-              ? {
-                  ...h,
-                  conceptIdea: item.conceptIdea || h.conceptIdea,
-                  svgDataUri: item.svgDataUri || h.svgDataUri,
-                  searchImageUrl: item.searchImageUrl || h.searchImageUrl,
-                  imageUrl: h.provider === 'SEARCH' ? (item.searchImageUrl || h.searchImageUrl) : (item.svgDataUri || h.svgDataUri),
-                }
-              : h
-          )
-        );
-      }
-    } catch {
-      // Local refresh
-      setHints((prev) =>
-        prev.map((h, idx) =>
-          idx === hintIndex
-            ? {
-                ...h,
-                svgDataUri: ImageProvider.generateSvgDataUri(h.conceptIdea, idx + Date.now()),
-                imageUrl: ImageProvider.generateSvgDataUri(h.conceptIdea, idx + Date.now()),
-              }
-            : h
-        )
-      );
-    }
+    const seed = Date.now() + hintIndex;
+    setHints((prev) =>
+      prev.map((h, idx) => {
+        if (idx !== hintIndex) return h;
+        const newSvg = ImageProvider.generateSvgDataUri(h.conceptIdea, seed);
+        const newSearch = ImageProvider.getSearchUrl(h.searchKeyword || 'concept', (seed % 20) + 1);
+        return {
+          ...h,
+          svgDataUri: newSvg,
+          searchImageUrl: newSearch,
+          imageUrl: h.provider === 'SEARCH' ? newSearch : newSvg,
+        };
+      })
+    );
   };
 
   const handleUploadImage = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -527,7 +463,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
             <span className="text-4xl inline-block">👩‍🏫</span>
             <h3 className="text-2xl font-black text-amber-950">MÀN HÌNH GIÁO VIÊN – CẤU HÌNH CỤM TỪ & BỘ HÌNH GỢI Ý</h3>
             <p className="text-xs text-slate-600 font-medium">
-              Nhập cụm từ/câu, AI sẽ tự động phân tích và tạo bộ 3–6 hình gợi ý. Giáo viên có thể tùy chỉnh nguồn ảnh, tạo lại hoặc tải ảnh riêng.
+              Nhập cụm từ/câu, hệ thống sẽ tự động phân tích và tạo bộ 3–6 hình gợi ý trực quan. Giáo viên có thể tùy chỉnh nguồn ảnh, tạo lại hoặc tải ảnh riêng.
             </p>
           </div>
 
@@ -557,7 +493,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                         : 'text-slate-600 hover:text-amber-900'
                     }`}
                   >
-                    💡 AI Gợi Ý Theo Chủ Đề
+                    💡 Gợi Ý Theo Chủ Đề
                   </button>
                 </div>
               </div>
@@ -627,7 +563,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                       className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-w-text-main font-black text-xs rounded-xl shadow transition flex items-center gap-1.5 disabled:opacity-50"
                     >
                       <Sparkles className={`w-3.5 h-3.5 ${isGeneratingTopicPhrases ? 'animate-spin' : ''}`} />
-                      <span>{isGeneratingTopicPhrases ? 'Đang tạo...' : '✨ AI Gợi Ý Cụm Từ'}</span>
+                      <span>{isGeneratingTopicPhrases ? 'Đang tạo...' : 'Gợi Ý Cụm Từ'}</span>
                     </button>
                   </div>
                 </div>
@@ -669,7 +605,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="text-xs font-black text-amber-950 flex items-center gap-1.5 uppercase">
                   <Wand2 className="w-4 h-4 text-amber-600" />
-                  <span>3. BỘ HÌNH GỢI Ý BẰNG AI DÀNH CHO: "{inputPhrase}" ({hints.length} HÌNH)</span>
+                  <span>3. BỘ HÌNH GỢI Ý DÀNH CHO: "{inputPhrase}" ({hints.length} HÌNH)</span>
                 </span>
 
                 <div className="flex items-center gap-2">
@@ -716,7 +652,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
                                 ? 'bg-sky-500 text-w-text-main border-sky-600'
                                 : 'bg-purple-600 text-w-text-main border-purple-700'
                             }`}
-                            title="Click để chuyển đổi nguồn SEARCH (kho ảnh) ↔ GENERATED (AI vẽ)"
+                            title="Click để chuyển đổi nguồn SEARCH (kho ảnh) ↔ GENERATED (đồ họa)"
                           >
                             {h.provider === 'SEARCH' ? <Search className="w-3 h-3" /> : <Wand2 className="w-3 h-3" />}
                             <span>{h.provider}</span>
@@ -738,7 +674,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
 
                           <button
                             onClick={() => handleRegenerateHint(idx)}
-                            title="Yêu cầu AI vẽ lại hình này"
+                            title="Tạo lại hình gợi ý này"
                             className="p-1.5 bg-amber-500 text-w-text-main rounded-xl shadow hover:bg-amber-600 transition text-[11px] font-bold flex items-center gap-1"
                           >
                             <RefreshCw className="w-3.5 h-3.5" />
@@ -802,7 +738,7 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
               )}
               <span>
                 {isGenerating
-                  ? 'ĐANG TẠO HÌNH GỢI Ý BẰNG AI...'
+                  ? 'ĐANG TẠO HÌNH GỢI Ý...'
                   : '✓ DÙNG HÌNH NÀY & BẮT ĐẦU VÒNG THI (MÀN HÌNH HỌC SINH)'}
               </span>
             </button>
@@ -871,8 +807,8 @@ export function PictogramGame({ config, questions, onGameEnd }: PictogramGamePro
             {isGenerating ? (
               <div className="py-16 text-center space-y-3">
                 <RefreshCw className="w-10 h-10 text-amber-500 animate-spin mx-auto" />
-                <div className="text-base font-black text-amber-950">AI đang vẽ bộ hình gợi ý cho đáp án...</div>
-                <div className="text-xs text-slate-500">Vui lòng chờ giây lát trong khi AI phân tích ý tưởng</div>
+                <div className="text-base font-black text-amber-950">Đang vẽ bộ hình gợi ý cho đáp án...</div>
+                <div className="text-xs text-slate-500">Vui lòng chờ giây lát trong khi phân tích hình minh họa</div>
               </div>
             ) : (
               <>

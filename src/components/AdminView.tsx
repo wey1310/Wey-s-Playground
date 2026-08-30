@@ -276,7 +276,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
   const activeUsersCount = totalUsers - blockedUsersCount;
 
   return (
-    <div className="w-full min-h-[calc(100vh-80px)] space-y-6 animate-fade-in pb-12">
+    <div className="w-full min-h-[calc(100dvh-80px)] space-y-6 animate-fade-in pb-12 overflow-y-auto">
       {/* Top Header & Breadcrumb */}
       <div className="bg-w-bg-card border border-w-border rounded-[24px] p-5 sm:p-6 shadow-sm flex flex-wrap items-center justify-between gap-4 wey-paper-card">
         <div className="flex items-center gap-4">

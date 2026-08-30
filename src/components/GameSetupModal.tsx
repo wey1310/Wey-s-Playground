@@ -128,7 +128,6 @@ HỆ TUẦN HOÀN NGƯỜI`);
     }
   };
   const [wheelTopicInput, setWheelTopicInput] = useState<string>('Môi trường & Khoa học');
-  const [isGeneratingWheelPhrases, setIsGeneratingWheelPhrases] = useState<boolean>(false);
 
   // Random Call / Egg Call / Lucky Star states
   const isRandomCallGame = gameId === 'randomcall' || gameId === 'eggcall' || gameId === 'lucky_star' || gameId === 'luckystar';
@@ -147,6 +146,13 @@ HỆ TUẦN HOÀN NGƯỜI`);
     }
   });
   const [noRepeatStudents, setNoRepeatStudents] = useState<boolean>(true);
+  const [randomCallSkipQuestions, setRandomCallSkipQuestions] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('wey_randomcall_skip_questions') === 'true';
+    } catch {
+      return false;
+    }
+  });
 
   // 1. Whack-a-Mole Setup States
   const isWhackAMole = gameId === 'whack_a_mole' || gameId === 'whackamole';
@@ -395,34 +401,6 @@ CHÂN LÝ
     setTeamCountData(updated);
   };
 
-  const handleGenerateWheelPhrasesAI = async () => {
-    if (!wheelTopicInput.trim()) return;
-    
-    if (!apiManager.hasActiveApi()) {
-      safeAlert('Bạn chưa cấu hình API Key. Vui lòng thêm Gemini API Key trong phần "Quản Lý API" để sử dụng tính năng sinh dữ liệu AI tự động.');
-      return;
-    }
-
-    setIsGeneratingWheelPhrases(true);
-    try {
-      const res = await fetchWithAuth('/api/generate-wheel-phrase', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic: wheelTopicInput }),
-      });
-      const data = await res.json();
-      if (data.success && Array.isArray(data.phrases) && data.phrases.length > 0) {
-        setWheelCustomPhrasesText(data.phrases.map((p: string) => p.toUpperCase()).join('\n'));
-      } else {
-        throw new Error(data.error || 'AI fallback');
-      }
-    } catch (e: any) {
-      safeAlert(`Lỗi sinh dữ liệu AI: ${e.message || 'API không hoạt động'}. Vui lòng kiểm tra lại API Key trong cài đặt.`);
-    } finally {
-      setIsGeneratingWheelPhrases(false);
-    }
-  };
-
   const handleLaunch = () => {
     if (teamMode) {
       localStorage.setItem(`wey_teams_${gameId}`, JSON.stringify(teamData.slice(0, teamCount)));
@@ -558,9 +536,9 @@ CHÂN LÝ
 
     const config: GameSetupConfig = {
       gameId,
-      mode,
-      selectedBankId: mode === 'bank' ? (selectedBankId || activeBankId) : undefined,
-      totalQuestionsNumber: mode === 'bank' ? ((selectedBank?.questions || []).length || 10) : totalQuestionsNumber,
+      mode: (isRandomCallGame && randomCallSkipQuestions) ? 'none' : mode,
+      selectedBankId: (isRandomCallGame && randomCallSkipQuestions) ? undefined : (mode === 'bank' ? (selectedBankId || activeBankId) : undefined),
+      totalQuestionsNumber: (isRandomCallGame && randomCallSkipQuestions) ? 0 : (mode === 'bank' ? ((selectedBank?.questions || []).length || 10) : totalQuestionsNumber),
       teamMode,
       teams: teamMode ? teamData.slice(0, teamCount) : [
         { id: 'solo', name: 'Học Sinh', avatar: '🎓', color: '#3b82f6', score: 0 }
@@ -570,6 +548,8 @@ CHÂN LÝ
       theme,
       studentsList: isRandomCallGame ? parsedRandomCallStudents : (isBearPassing ? parsedBearStudents : undefined),
       raceVehicleType: gameId === 'race' ? raceVehicleType : undefined,
+      randomCallSkipQuestions: isRandomCallGame ? randomCallSkipQuestions : undefined,
+      skipQuestions: isRandomCallGame ? randomCallSkipQuestions : (gameId === 'werewolf' ? werewolfSkipQuestions : undefined),
 
       // 1. Whack a mole
       holeCount: whackHoleCount,
@@ -725,61 +705,101 @@ CHÂN LÝ
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
           {isRandomCallGame ? (
             <div className="space-y-5">
-              {/* 1. NGÂN HÀNG CÂU HỎI */}
+              {/* 1. NGÂN HÀNG CÂU HỎI & CHẾ ĐỘ BỎ QUA CÂU HỎI */}
               <div className="space-y-3 bg-w-accent-light p-4 rounded-2xl border border-w-accent-border">
-                <label className="block text-xs font-black uppercase tracking-wider text-w-text-main flex items-center gap-2">
-                  <Database className="w-4 h-4 text-w-primary-dark" />
-                  <span>1. Ngân Hàng Câu Hỏi (Bốc ngẫu nhiên cho học sinh trả lời)</span>
-                </label>
-                <select
-                  value={selectedBankId}
-                  onChange={(e) => setSelectedBankId(e.target.value)}
-                  className="w-full bg-white border border-w-accent-border text-slate-800 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:border-w-primary-dark shadow-sm cursor-pointer"
-                >
-                  <optgroup label="📝 ÔN TẬP HỌC KÌ (KHTN 8)">
-                    {(banks || []).filter(b => b.id.includes('on_tap')).map(b => (
-                      <option key={b.id} value={b.id}>
-                        ⭐ {b.name} ({(b.questions || []).length} câu)
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="⚗️ CHƯƠNG I & II: HÓA HỌC (Bài 1 - 12)">
-                    {(banks || []).filter(b => b.id.startsWith('bank_khtn8_b') && parseInt(b.id.replace('bank_khtn8_b', '')) <= 12).map(b => (
-                      <option key={b.id} value={b.id}>
-                        {b.name} ({(b.questions || []).length} câu)
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="⚙️ CHƯƠNG III - VI: VẬT LÝ (Bài 13 - 29)">
-                    {(banks || []).filter(b => {
-                      if (!b.id.startsWith('bank_khtn8_b')) return false;
-                      const num = parseInt(b.id.replace('bank_khtn8_b', ''));
-                      return num >= 13 && num <= 29;
-                    }).map(b => (
-                      <option key={b.id} value={b.id}>
-                        {b.name} ({(b.questions || []).length} câu)
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="🧬 CHƯƠNG VII & VIII: SINH HỌC & MÔI TRƯỜNG (Bài 30 - 47)">
-                    {(banks || []).filter(b => {
-                      if (!b.id.startsWith('bank_khtn8_b')) return false;
-                      const num = parseInt(b.id.replace('bank_khtn8_b', ''));
-                      return num >= 30 && num <= 47;
-                    }).map(b => (
-                      <option key={b.id} value={b.id}>
-                        {b.name} ({(b.questions || []).length} câu)
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="🎯 CÂU HỎI KHÁC / CỦA BẠN">
-                    {(banks || []).filter(b => !b.id.startsWith('bank_khtn8')).map(b => (
-                      <option key={b.id} value={b.id}>
-                        {b.name} ({(b.questions || []).length} câu)
-                      </option>
-                    ))}
-                  </optgroup>
-                </select>
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <label className="block text-xs font-black uppercase tracking-wider text-w-text-main flex items-center gap-2">
+                    <Database className="w-4 h-4 text-w-primary-dark" />
+                    <span>1. Ngân Hàng Câu Hỏi (Bốc ngẫu nhiên)</span>
+                  </label>
+
+                  {/* Checkbox Chế độ bỏ qua câu hỏi */}
+                  <label htmlFor="randomCallSkipQuestionsCheckbox" className="inline-flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-w-accent-border cursor-pointer shadow-2xs hover:bg-amber-50/70 transition">
+                    <input
+                      type="checkbox"
+                      id="randomCallSkipQuestionsCheckbox"
+                      checked={randomCallSkipQuestions}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setRandomCallSkipQuestions(checked);
+                        try {
+                          localStorage.setItem('wey_randomcall_skip_questions', String(checked));
+                        } catch {}
+                      }}
+                      className="w-4 h-4 rounded text-w-primary-dark accent-amber-600 focus:ring-w-primary-dark cursor-pointer"
+                    />
+                    <span className="text-xs font-black text-amber-900 flex items-center gap-1">
+                      <span>⚡ Chế độ bỏ qua câu hỏi</span>
+                    </span>
+                  </label>
+                </div>
+
+                {randomCallSkipQuestions ? (
+                  <div className="p-3.5 bg-amber-50/90 border border-amber-300 rounded-xl text-xs font-medium text-amber-900 flex items-start gap-2.5 shadow-2xs">
+                    <span className="text-lg leading-none">⚡</span>
+                    <div className="space-y-1">
+                      <p className="font-black text-amber-950">Đang kích hoạt: Chế độ bỏ qua câu hỏi (Chơi nhanh)</p>
+                      <p className="text-[11px] text-amber-800 leading-relaxed">
+                        Toàn bộ phần chọn ngân hàng câu hỏi và các tương tác bốc quiz đã được ẩn và vô hiệu hóa. Giáo viên sẽ gọi tên học sinh ngẫu nhiên trực tiếp và chấm điểm linh hoạt mà không bị gián đoạn bởi câu hỏi trắc nghiệm.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="relative space-y-1.5">
+                    <div className="text-[11px] font-bold text-w-text-muted flex items-center justify-between">
+                      <span>Chọn bộ câu hỏi cho trò chơi (nếu muốn bốc câu hỏi sau khi gọi tên):</span>
+                    </div>
+                    <select
+                      value={selectedBankId}
+                      onChange={(e) => setSelectedBankId(e.target.value)}
+                      className="w-full rounded-xl px-3 py-2 text-xs font-bold shadow-sm transition bg-white border border-w-accent-border text-slate-800 focus:outline-none focus:border-w-primary-dark cursor-pointer"
+                    >
+                      <optgroup label="📝 ÔN TẬP HỌC KÌ (KHTN 8)">
+                        {(banks || []).filter(b => b.id.includes('on_tap')).map(b => (
+                          <option key={b.id} value={b.id}>
+                            ⭐ {b.name} ({(b.questions || []).length} câu)
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="⚗️ CHƯƠNG I & II: HÓA HỌC (Bài 1 - 12)">
+                        {(banks || []).filter(b => b.id.startsWith('bank_khtn8_b') && parseInt(b.id.replace('bank_khtn8_b', '')) <= 12).map(b => (
+                          <option key={b.id} value={b.id}>
+                            {b.name} ({(b.questions || []).length} câu)
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="⚙️ CHƯƠNG III - VI: VẬT LÝ (Bài 13 - 29)">
+                        {(banks || []).filter(b => {
+                          if (!b.id.startsWith('bank_khtn8_b')) return false;
+                          const num = parseInt(b.id.replace('bank_khtn8_b', ''));
+                          return num >= 13 && num <= 29;
+                        }).map(b => (
+                          <option key={b.id} value={b.id}>
+                            {b.name} ({(b.questions || []).length} câu)
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="🧬 CHƯƠNG VII & VIII: SINH HỌC & MÔI TRƯỜNG (Bài 30 - 47)">
+                        {(banks || []).filter(b => {
+                          if (!b.id.startsWith('bank_khtn8_b')) return false;
+                          const num = parseInt(b.id.replace('bank_khtn8_b', ''));
+                          return num >= 30 && num <= 47;
+                        }).map(b => (
+                          <option key={b.id} value={b.id}>
+                            {b.name} ({(b.questions || []).length} câu)
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="🎯 CÂU HỎI KHÁC / CỦA BẠN">
+                        {(banks || []).filter(b => !b.id.startsWith('bank_khtn8')).map(b => (
+                          <option key={b.id} value={b.id}>
+                            {b.name} ({(b.questions || []).length} câu)
+                          </option>
+                        ))}
+                      </optgroup>
+                    </select>
+                  </div>
+                )}
               </div>
 
               {/* 2. DANH SÁCH HỌC SINH */}
@@ -1079,15 +1099,6 @@ CHÂN LÝ
                         >
                           Lưu Kho
                         </button>
-                        <button
-                          type="button"
-                          onClick={handleGenerateWheelPhrasesAI}
-                          disabled={isGeneratingWheelPhrases}
-                          className="px-3.5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg text-xs font-black shadow transition flex items-center gap-1 disabled:opacity-50"
-                        >
-                          <Sparkles className="w-3.5 h-3.5 text-amber-200" />
-                          <span>AI Sinh Từ</span>
-                        </button>
                       </div>
                     </div>
                   </div>
@@ -1299,7 +1310,7 @@ CHÂN LÝ
                       </optgroup>
                     </select>
                   </div>
-                ) : gameId !== 'pictogram' ? (
+                ) : mode === 'number' ? (
                   <div className="pt-2">
                     <label className="block text-xs font-semibold text-slate-700 mb-1">
                       Tổng Số Câu Hỏi / Số Ô (N):
@@ -1313,11 +1324,16 @@ CHÂN LÝ
                       className="w-full bg-white border border-slate-200 text-slate-800 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-indigo-400 shadow-sm"
                     />
                   </div>
-                ) : (
+                ) : mode === 'custom' && gameId === 'pictogram' ? (
                   <div className="pt-2 text-xs font-semibold text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
                     ✨ Số lượng hình gợi ý sẽ do AI tự động phân tích và tạo dựa theo cụm từ & mức độ do giáo viên thiết lập.
                   </div>
-                )}
+                ) : mode === 'none' ? (
+                  <div className="pt-2 text-xs font-bold text-emerald-800 bg-emerald-50 p-3 rounded-xl border border-emerald-200 flex items-center gap-2">
+                    <span className="text-base">⚡</span>
+                    <span>Chế độ <b>Bỏ qua câu hỏi</b>: Trò chơi sẽ vào thẳng màn chơi mà không yêu cầu ngân hàng câu hỏi hay số câu.</span>
+                  </div>
+                ) : null}
               </div>
             </div>
           )}

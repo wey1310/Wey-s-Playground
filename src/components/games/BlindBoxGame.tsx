@@ -280,7 +280,7 @@ export const BlindBoxGame: React.FC<GameProps> = ({ config, questions, onGameEnd
 
   return (
     <div 
-      className="w-full h-[100dvh] flex flex-col bg-w-bg-card text-slate-100 overflow-hidden font-sans relative select-none"
+      className="w-full flex-1 min-h-[min(650px,100dvh)] h-full flex flex-col bg-w-bg-card text-slate-100 overflow-y-auto font-sans relative select-none"
       style={{
         backgroundImage: `radial-gradient(circle at 50% 30%, rgba(30, 27, 75, 0.8), rgba(2, 6, 23, 0.95)), url('${themeConfig.bg}')`,
         backgroundSize: 'cover',

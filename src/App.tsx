@@ -809,7 +809,7 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen text-w-text-main flex flex-col justify-between selection:bg-w-accent-muted selection:text-w-text-main transition-all duration-700 ${
+      className={`min-h-[100dvh] text-w-text-main flex flex-col justify-between selection:bg-w-accent-muted selection:text-w-text-main transition-all duration-700 ${
         !activeGameConfig ? 'bg-w-bg-main/60' : ''
       }`}
       style={getAppBackgroundStyle()}

@@ -809,7 +809,7 @@ export const MonopolyGame: React.FC<MonopolyGameProps> = ({
   }, [questionPool, currentQuestionIdx]);
 
   return (
-    <div className="min-h-screen bg-[#F4EFE0] flex flex-col justify-between text-w-text-main select-none p-2 sm:p-4">
+    <div className="w-full flex-1 min-h-[100dvh] bg-[#F4EFE0] flex flex-col justify-between text-w-text-main select-none p-2 sm:p-4 overflow-y-auto">
       {/* 1. TOP NAVIGATION HEADER */}
       <header className="bg-w-bg-card border-2 border-w-border rounded-2xl sm:rounded-3xl p-2 sm:p-3.5 shadow-xs flex items-center justify-between mb-2 sm:mb-3">
         <div className="flex items-center gap-2 sm:gap-3">

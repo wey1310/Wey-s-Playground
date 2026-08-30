@@ -3,13 +3,55 @@ import { useState, useEffect } from 'react';
 let isLoading = false;
 let isLoaded = false;
 
+// MediaPipe package exact versions for stability
+const MEDIAPIPE_VERSION = '0.4.1675469240';
+const CAMERA_UTILS_VERSION = '0.3.1675466862';
+const DRAWING_UTILS_VERSION = '0.3.1675466124';
+const CONTROL_UTILS_VERSION = '0.6.1675466023';
+
+/**
+ * Ensures MediaPipe Emscripten data loader never throws 
+ * "Cannot read properties of undefined (reading 'https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands_solution_packed_assets.data')"
+ */
+function applyMediaPipeLoaderPatch() {
+  if (typeof window === 'undefined') return;
+
+  const globalScope = window as any;
+
+  // Safe fallback Proxy for data downloads tracking
+  const safeDataDownloads: Record<string, { loaded: number; total: number }> = new Proxy({}, {
+    get(target, prop: string) {
+      if (!(prop in target)) {
+        target[prop] = { loaded: 0, total: 0 };
+      }
+      return target[prop];
+    }
+  });
+
+  // Guard createMediapipeSolutionsPackedAssets
+  const existingPackedAssets = globalScope.createMediapipeSolutionsPackedAssets || {};
+  if (!existingPackedAssets.dataFileDownloads) {
+    Object.defineProperty(existingPackedAssets, 'dataFileDownloads', {
+      get: () => safeDataDownloads,
+      set: () => {},
+      configurable: true,
+      enumerable: true
+    });
+  }
+  globalScope.createMediapipeSolutionsPackedAssets = existingPackedAssets;
+}
+
 export const useMediapipe = () => {
   const [ready, setReady] = useState(isLoaded);
 
   useEffect(() => {
-    if (isLoaded) return;
+    applyMediaPipeLoaderPatch();
+
+    if (isLoaded) {
+      setReady(true);
+      return;
+    }
     if (isLoading) {
-      // Just poll until it's loaded if another component started it
       const interval = setInterval(() => {
         if (isLoaded) {
           setReady(true);
@@ -26,18 +68,26 @@ export const useMediapipe = () => {
         const script = document.createElement('script');
         script.src = src;
         script.crossOrigin = 'anonymous';
-        script.onload = resolve;
-        script.onerror = reject;
+        script.onload = () => {
+          applyMediaPipeLoaderPatch();
+          resolve(true);
+        };
+        script.onerror = (e) => {
+          console.warn(`Could not load script: ${src}`, e);
+          reject(e);
+        };
         document.head.appendChild(script);
       });
     };
 
     const init = async () => {
       try {
-        await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js');
-        await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js');
-        await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js');
-        await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js');
+        applyMediaPipeLoaderPatch();
+        await loadScript(`https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@${CAMERA_UTILS_VERSION}/camera_utils.js`);
+        await loadScript(`https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@${CONTROL_UTILS_VERSION}/control_utils.js`);
+        await loadScript(`https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@${DRAWING_UTILS_VERSION}/drawing_utils.js`);
+        await loadScript(`https://cdn.jsdelivr.net/npm/@mediapipe/hands@${MEDIAPIPE_VERSION}/hands.js`);
+        applyMediaPipeLoaderPatch();
         isLoaded = true;
         setReady(true);
       } catch (err) {

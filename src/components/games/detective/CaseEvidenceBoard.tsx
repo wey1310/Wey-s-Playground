@@ -47,7 +47,7 @@ export const CaseEvidenceBoard: React.FC<CaseEvidenceBoardProps> = ({
   };
 
   return (
-    <div className="w-full relative min-h-[calc(100vh-140px)] bg-[#271d18] text-amber-50 p-3 sm:p-6 select-none overflow-hidden">
+    <div className="w-full relative min-h-[calc(100dvh-140px)] bg-[#271d18] text-amber-50 p-3 sm:p-6 select-none overflow-y-auto">
       {/* Background Board Overlay / Wood Frame Texture */}
       <div 
         className="absolute inset-0 opacity-40 pointer-events-none"

@@ -798,7 +798,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
     <div
       ref={containerRef}
       id="lucky-star-game-container"
-      className="relative w-full h-[90vh] min-h-[640px] max-h-[1080px] bg-gradient-to-b from-[#060814] via-[#0B0F2A] to-[#040612] text-w-text-main rounded-3xl overflow-hidden shadow-2xl border border-indigo-950/60 select-none flex flex-col font-sans"
+      className="relative w-full flex-1 min-h-[min(650px,100dvh)] h-full max-h-[1080px] bg-gradient-to-b from-[#060814] via-[#0B0F2A] to-[#040612] text-w-text-main rounded-3xl overflow-y-auto shadow-2xl border border-indigo-950/60 select-none flex flex-col font-sans"
     >
       {/* Dynamic Cosmic Twinkling Stars Canvas */}
       <canvas

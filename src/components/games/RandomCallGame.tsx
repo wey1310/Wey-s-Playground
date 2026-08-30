@@ -65,6 +65,35 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
   const [noRepeat, setNoRepeat] = useState<boolean>(config.noRepeatStudents !== false);
   const [studentScores, setStudentScores] = useState<Record<string, number>>({});
 
+  // Skip Questions Mode State (Chế độ bỏ qua câu hỏi: chơi nhanh không cần trả lời câu hỏi)
+  const initialSkipQuestions = config.mode === 'none' || 
+    config.mode === 'no_questions' || 
+    config.mode === 'skip_questions' || 
+    config.randomCallSkipQuestions === true ||
+    (config as any).skipQuestions === true ||
+    (config as any).skipQuestion === true ||
+    (typeof window !== 'undefined' && localStorage.getItem('wey_randomcall_skip_questions') === 'true');
+  const [skipQuestions, setSkipQuestions] = useState<boolean>(initialSkipQuestions);
+
+  // Synchronize skipQuestions state when config changes
+  useEffect(() => {
+    if (config.randomCallSkipQuestions !== undefined) {
+      setSkipQuestions(Boolean(config.randomCallSkipQuestions));
+    } else if (config.skipQuestions !== undefined) {
+      setSkipQuestions(Boolean(config.skipQuestions));
+    } else if (config.mode === 'none' || config.mode === 'no_questions' || config.mode === 'skip_questions') {
+      setSkipQuestions(true);
+    }
+  }, [config.randomCallSkipQuestions, config.skipQuestions, config.mode]);
+
+  // When skipQuestions is active, enforce that question panels are closed
+  useEffect(() => {
+    if (skipQuestions) {
+      setIsQuestionActive(false);
+      setCurrentQuestion(null);
+    }
+  }, [skipQuestions]);
+
   // Session History Log States
   const [sessionHistory, setSessionHistory] = useState<SessionCallRecord[]>([]);
   const sessionRoundRef = useRef<number>(0);
@@ -216,6 +245,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
 
   // Step 2: Random Pick Question for Student(s)
   const handlePickRandomQuestion = (targetStudentIdx?: number) => {
+    if (skipQuestions) return;
     soundFx.play('whoosh');
     if (typeof targetStudentIdx === 'number') {
       setActiveStudentIndex(targetStudentIdx);
@@ -562,6 +592,41 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
             </button>
           </div>
 
+          {/* Toggle Skip Questions Mode (⚡ Bỏ qua câu hỏi) */}
+          <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-w-accent-muted shadow-xs">
+            <div>
+              <span className="text-xs font-bold text-w-text-main block">Chế độ bỏ qua câu hỏi:</span>
+              <span className="text-[10px] text-w-text-muted">
+                {skipQuestions ? 'Đang bật: Vô hiệu hóa bốc & trả lời câu hỏi' : 'Đang tắt: Bốc câu hỏi ngẫu nhiên'}
+              </span>
+            </div>
+            <button
+              type="button"
+              id="gameSidebarSkipQuestionsToggle"
+              onClick={() => {
+                const next = !skipQuestions;
+                setSkipQuestions(next);
+                try {
+                  localStorage.setItem('wey_randomcall_skip_questions', String(next));
+                } catch {}
+                if (next) {
+                  setIsQuestionActive(false);
+                  setCurrentQuestion(null);
+                }
+              }}
+              className={`w-11 h-6 rounded-full transition p-1 relative cursor-pointer ${
+                skipQuestions ? 'bg-amber-500' : 'bg-slate-300'
+              }`}
+              title="Bật/Tắt chế độ bỏ qua câu hỏi"
+            >
+              <div
+                className={`w-4 h-4 rounded-full bg-white transition transform ${
+                  skipQuestions ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+
           {/* Scrollable Editable Textarea */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between flex-wrap gap-1">
@@ -627,25 +692,55 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
       </div>
 
       {/* CỘT PHẢI: KHU VỰC QUAY TÊN BATCH & BỐC CÂU HỎI */}
-      <div className="flex-1 relative overflow-y-auto p-4 sm:p-8 flex flex-col items-center justify-center custom-scrollbar">
+      <div className="flex-1 relative overflow-y-auto p-4 sm:p-8 flex flex-col items-center justify-start custom-scrollbar">
         
         {/* Background gradient decorative glow */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#FEF9E7] via-w-bg-card to-white pointer-events-none" />
 
         {/* TOP HEADER & BATCH BADGE */}
-        <div className="relative z-10 text-center mb-6">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-w-accent-light text-w-primary-dark text-xs font-black rounded-full border border-w-accent-border mb-2 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Chế độ gọi: {batchCount > 1 ? `Đợt ${batchCount} Học Sinh Cùng Lúc` : '1 Học Sinh / Lượt'}</span>
+        <div className="relative z-10 text-center mb-6 max-w-2xl sm:max-w-3xl w-full">
+          <div className="flex items-center justify-center gap-2 flex-wrap mb-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-w-accent-light text-w-primary-dark text-xs font-black rounded-full border border-w-accent-border shadow-2xs">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Chế độ gọi: {batchCount > 1 ? `Đợt ${batchCount} Học Sinh Cùng Lúc` : '1 Học Sinh / Lượt'}</span>
+            </div>
+
+            {/* Quick Skip Questions Status & Toggle Badge */}
+            <button
+              type="button"
+              id="gameHeaderSkipQuestionsBadge"
+              onClick={() => {
+                const next = !skipQuestions;
+                setSkipQuestions(next);
+                try {
+                  localStorage.setItem('wey_randomcall_skip_questions', String(next));
+                } catch {}
+                if (next) {
+                  setIsQuestionActive(false);
+                  setCurrentQuestion(null);
+                }
+              }}
+              className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-black rounded-full border transition cursor-pointer shadow-2xs ${
+                skipQuestions
+                  ? 'bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200'
+                  : 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100'
+              }`}
+              title="Bấm để bật/tắt nhanh chế độ bỏ qua câu hỏi"
+            >
+              <span>{skipQuestions ? '⚡ Chế độ bỏ qua câu hỏi: ĐANG BẬT' : '❓ Bốc câu hỏi: ĐANG BẬT'}</span>
+            </button>
           </div>
+
           <h2 className="text-2xl sm:text-3xl font-black text-w-text-main tracking-tight">
             🎯 GỌI TÊN NGẪU NHIÊN
           </h2>
           <p className="text-xs sm:text-sm font-semibold text-w-text-muted mt-1">
             {pickedStudents.length > 0
-              ? (isQuestionActive 
-                  ? `Đang trả lời câu hỏi (${pickedStudents.length > 1 ? `Đang chọn: ${currentActiveStudent}` : currentActiveStudent})` 
-                  : `Đã chọn ${pickedStudents.length} học sinh! Giáo viên có thể chấm điểm nhanh hoặc bốc câu hỏi bên dưới.`)
+              ? (skipQuestions
+                  ? `Đã chọn ${pickedStudents.length} học sinh! Chế độ Bỏ qua câu hỏi đang BẬT: Bạn có thể chấm điểm nhanh hoặc quay tiếp lượt mới.`
+                  : (isQuestionActive 
+                      ? `Đang trả lời câu hỏi (${pickedStudents.length > 1 ? `Đang chọn: ${currentActiveStudent}` : currentActiveStudent})` 
+                      : `Đã chọn ${pickedStudents.length} học sinh! Giáo viên có thể chấm điểm nhanh hoặc bốc câu hỏi bên dưới.`))
               : `Bấm nút "QUAY GỌI ${batchCount} HỌC SINH" để bốc thăm ngẫu nhiên`}
           </p>
         </div>
@@ -878,14 +973,21 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                                   </button>
                                 </div>
 
-                                <button
-                                  type="button"
-                                  onClick={() => handlePickRandomQuestion(idx)}
-                                  className="px-2.5 py-1 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0"
-                                >
-                                  <span>Bốc câu hỏi</span>
-                                  <ChevronRight className="w-3 h-3" />
-                                </button>
+                                {!skipQuestions ? (
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePickRandomQuestion(idx)}
+                                    className="px-2.5 py-1 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0"
+                                    title="Bốc câu hỏi ngẫu nhiên cho học sinh này"
+                                  >
+                                    <span>Bốc câu hỏi</span>
+                                    <ChevronRight className="w-3 h-3" />
+                                  </button>
+                                ) : (
+                                  <span className="text-[10px] font-bold text-amber-900 bg-amber-100/90 border border-amber-300 px-2.5 py-1 rounded-lg shrink-0 flex items-center gap-1">
+                                    ✓ Đã gọi tên
+                                  </span>
+                                )}
                               </div>
                             </div>
                           );
@@ -896,27 +998,52 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
 
                   {/* Primary Action Buttons */}
                   <div className="flex flex-wrap gap-3 justify-center pt-2">
-                    <button
-                      type="button"
-                      onClick={() => handlePickRandomQuestion(activeStudentIndex)}
-                      className="px-8 py-3.5 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-base sm:text-lg rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
-                    >
-                      <Sparkles className="w-5 h-5 text-amber-500 fill-current" />
-                      <span>
-                        {pickedStudents.length === 1 
-                          ? `Bốc Câu Hỏi Cho ${pickedStudents[0]}` 
-                          : `Bốc Câu Hỏi Cho ${currentActiveStudent || 'Nhóm Học Sinh'}`}
-                      </span>
-                    </button>
+                    {skipQuestions ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={handleRollName}
+                          disabled={isRolling || remainingStudents.length === 0}
+                          className="px-8 py-3.5 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-base sm:text-lg rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
+                        >
+                          <Shuffle className="w-5 h-5 text-amber-500" />
+                          <span>⚡ QUAY ĐỢT TIẾP THEO ({batchCount} HS)</span>
+                        </button>
 
-                    <button
-                      type="button"
-                      onClick={handleRollName}
-                      className="px-6 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-2xl border-2 border-slate-300 shadow-sm transition cursor-pointer flex items-center gap-2"
-                    >
-                      <RotateCcw className="w-4 h-4" />
-                      <span>Quay Đợt Mới ({batchCount} HS)</span>
-                    </button>
+                        <button
+                          type="button"
+                          onClick={() => handleQuickAction('correct')}
+                          className="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md transition cursor-pointer flex items-center gap-2"
+                        >
+                          <CheckCircle className="w-4 h-4 text-emerald-200" />
+                          <span>✓ Chấm Đúng Cả Đợt (+10đ)</span>
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => handlePickRandomQuestion(activeStudentIndex)}
+                          className="px-8 py-3.5 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-base sm:text-lg rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
+                        >
+                          <Sparkles className="w-5 h-5 text-amber-500 fill-current" />
+                          <span>
+                            {pickedStudents.length === 1 
+                              ? `Bốc Câu Hỏi Cho ${pickedStudents[0]}` 
+                              : `Bốc Câu Hỏi Cho ${currentActiveStudent || 'Nhóm Học Sinh'}`}
+                          </span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={handleRollName}
+                          className="px-6 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-2xl border-2 border-slate-300 shadow-sm transition cursor-pointer flex items-center gap-2"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                          <span>Quay Đợt Mới ({batchCount} HS)</span>
+                        </button>
+                      </>
+                    )}
                   </div>
                 </motion.div>
               )}
@@ -1108,8 +1235,11 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                     <button
                       key={idx}
                       type="button"
-                      onClick={() => !showAnswer && setSelectedOption(idx)}
-                      className={`p-3.5 rounded-2xl border-2 text-left font-bold text-xs sm:text-sm transition flex items-center gap-3 cursor-pointer ${optStyle}`}
+                      disabled={skipQuestions || showAnswer}
+                      onClick={() => !showAnswer && !skipQuestions && setSelectedOption(idx)}
+                      className={`p-3.5 rounded-2xl border-2 text-left font-bold text-xs sm:text-sm transition flex items-center gap-3 ${
+                        skipQuestions ? 'cursor-not-allowed opacity-50 select-none' : 'cursor-pointer'
+                      } ${optStyle}`}
                     >
                       <span className="w-6 h-6 rounded-lg bg-white/70 backdrop-blur-sm flex items-center justify-center text-xs font-black shrink-0">
                         {['A', 'B', 'C', 'D'][idx]}
@@ -1135,8 +1265,11 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                 <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                   <button
                     type="button"
-                    onClick={() => setShowAnswer(!showAnswer)}
-                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-300 transition flex items-center gap-1.5 cursor-pointer"
+                    disabled={skipQuestions}
+                    onClick={() => !skipQuestions && setShowAnswer(!showAnswer)}
+                    className={`px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-300 transition flex items-center gap-1.5 ${
+                      skipQuestions ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                    }`}
                   >
                     <Eye className="w-4 h-4" />
                     <span>Hiện Đáp Án</span>
@@ -1144,8 +1277,11 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
 
                   <button
                     type="button"
-                    onClick={() => handleGrade(true)}
-                    className="px-5 py-2.5 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
+                    disabled={skipQuestions}
+                    onClick={() => !skipQuestions && handleGrade(true)}
+                    className={`px-5 py-2.5 bg-w-primary-dark hover:bg-w-primary-hover text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 ${
+                      skipQuestions ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                    }`}
                   >
                     <CheckCircle className="w-4 h-4 text-amber-500" />
                     <span>Chấm Đúng (+10đ)</span>
@@ -1153,8 +1289,11 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
 
                   <button
                     type="button"
-                    onClick={() => handleGrade(false)}
-                    className="px-5 py-2.5 bg-[#D86C70] hover:bg-[#C55A5E] text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
+                    disabled={skipQuestions}
+                    onClick={() => !skipQuestions && handleGrade(false)}
+                    className={`px-5 py-2.5 bg-[#D86C70] hover:bg-[#C55A5E] text-w-text-main font-black text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 ${
+                      skipQuestions ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                    }`}
                   >
                     <XCircle className="w-4 h-4" />
                     <span>Chưa Đúng</span>
@@ -1177,13 +1316,16 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
         )}
 
         {/* STAGE 3: SESSION HISTORY LOG (CHRONOLOGICAL CALLED STUDENTS LIST BELOW MAIN STAGE) */}
-        <SessionHistoryLog
-          history={sessionHistory}
-          onToggleStudentStatus={handleToggleStudentStatusInHistory}
-          onClearHistory={handleClearSessionHistory}
-          studentScores={studentScores}
-          totalCalledCount={calledStudents.length}
-        />
+        <div className="relative z-10 w-full max-w-2xl sm:max-w-3xl lg:max-w-4xl mt-8">
+          <SessionHistoryLog
+            history={sessionHistory}
+            onToggleStudentStatus={handleToggleStudentStatusInHistory}
+            onClearHistory={handleClearSessionHistory}
+            studentScores={studentScores}
+            totalCalledCount={sessionHistory.reduce((acc, h) => acc + h.students.length, 0)}
+            className="w-full max-w-none"
+          />
+        </div>
 
       </div>
     </div>

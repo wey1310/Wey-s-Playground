@@ -357,27 +357,53 @@ export const AICameraCallGame: React.FC<GameProps> = ({ config, questions = [], 
     };
   }, [students, mode, themeType]);
 
+  // Logic state ref to prevent stale closures and avoid recreating camera
+  const logicStateRef = useRef({
+    mode,
+    students,
+    selectedStudents,
+    currentQIndex,
+    isAnswering,
+    questions
+  });
+
+  useEffect(() => {
+    logicStateRef.current = {
+      mode,
+      students,
+      selectedStudents,
+      currentQIndex,
+      isAnswering,
+      questions
+    };
+  }, [mode, students, selectedStudents, currentQIndex, isAnswering, questions]);
+
+  const cameraRef = useRef<any>(null);
+  const handsRef = useRef<any>(null);
+
   // Handle Logic Trigger
   const handleLogic = (gesture: number) => {
-    if (mode === 'rollcall') {
+    const { mode: currentMode, students: currentStudents, selectedStudents: currentSelected, currentQIndex: currentQ, isAnswering: answering, questions: currentQuestions } = logicStateRef.current;
+
+    if (currentMode === 'rollcall') {
       if (gesture === 5 || gesture === 0) {
         setSelectedStudents([]); // Reset on full open or fist
-      } else if (gesture >= 1 && gesture <= 4 && selectedStudents.length === 0) {
+      } else if (gesture >= 1 && gesture <= 4 && currentSelected.length === 0) {
         playMagicSound('ting');
-        const count = Math.min(gesture, students.length);
-        const picked = [...students].sort(() => Math.random() - 0.5).slice(0, count);
+        const count = Math.min(gesture, currentStudents.length);
+        const picked = [...currentStudents].sort(() => Math.random() - 0.5).slice(0, count);
         setSelectedStudents(picked);
       }
     } else {
       if (gesture === 0) { // Next
-        if (!isAnswering) {
+        if (!answering) {
           playMagicSound('whoosh');
           setCurrentQIndex(prev => prev + 1);
           setIsAnswering(true);
         }
-      } else if ([1, 2, 3, 4].includes(gesture) && isAnswering) {
+      } else if ([1, 2, 3, 4].includes(gesture) && answering) {
         // Answer logic
-        const q = questions[currentQIndex];
+        const q = currentQuestions[currentQ];
         if (!q) return;
         const correctIndex = typeof q.correct === 'number' ? q.correct + 1 : 1;
         if (gesture === correctIndex) {
@@ -400,9 +426,15 @@ export const AICameraCallGame: React.FC<GameProps> = ({ config, questions = [], 
     const initCamera = async () => {
       try {
         const wnd = window as any;
+        if (!wnd.Hands || !wnd.Camera) {
+          setCameraStatus('Đang tải mô hình nhận diện tay...');
+          return;
+        }
+
         const hands = new wnd.Hands({
-          locateFile: (file: string) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+          locateFile: (file: string) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`
         });
+        handsRef.current = hands;
         
         hands.setOptions({
           maxNumHands: 1,
@@ -460,24 +492,42 @@ export const AICameraCallGame: React.FC<GameProps> = ({ config, questions = [], 
 
         const camera = new wnd.Camera(videoRef.current, {
           onFrame: async () => {
-            if (videoRef.current) {
-              await hands.send({ image: videoRef.current });
+            if (videoRef.current && handsRef.current) {
+              try {
+                await handsRef.current.send({ image: videoRef.current });
+              } catch (e) {
+                // Ignore transient frame drop
+              }
             }
           },
           width: 640,
           height: 480
         });
+        cameraRef.current = camera;
         
         await camera.start();
         setCameraStatus('Camera AI Đã Sẵn Sàng!');
       } catch (e) {
         console.error(e);
-        setCameraStatus('Lỗi khởi tạo Camera AI. Vui lòng cấp quyền.');
+        setCameraStatus('Lỗi khởi tạo Camera AI. Vui lòng cấp quyền camera.');
       }
     };
     
     initCamera();
-  }, [ready, isStarted, mode, students, selectedStudents, currentQIndex, isAnswering, questions]);
+
+    return () => {
+      if (cameraRef.current) {
+        try {
+          cameraRef.current.stop();
+        } catch (e) {}
+      }
+      if (handsRef.current) {
+        try {
+          handsRef.current.close();
+        } catch (e) {}
+      }
+    };
+  }, [ready]);
 
   // Window Resize
   useEffect(() => {

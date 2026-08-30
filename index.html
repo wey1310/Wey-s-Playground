@@ -8,6 +8,27 @@
     <meta property="og:title" content="Ôn Tập Tri Thức - Đấu Trường Game Show" />
     <meta property="og:description" content="Nền tảng trò chơi tương tác giáo dục toàn diện với 34+ trò chơi sinh động, hệ thống quản lý ngân hàng câu hỏi chuyên nghiệp chuẩn CT GDPT 2018, hiển thị công thức Toán Lý Hóa LaTeX / KaTeX, tương tác camera chuyển động và quản lý lớp học." />
     <link rel="icon" type="image/png" href="/assets/logo.png" />
+    <script>
+      (function() {
+        try {
+          var safeDataDownloads = new Proxy({}, {
+            get: function(target, prop) {
+              if (!(prop in target)) {
+                target[prop] = { loaded: 0, total: 0 };
+              }
+              return target[prop];
+            }
+          });
+          window.createMediapipeSolutionsPackedAssets = window.createMediapipeSolutionsPackedAssets || {};
+          Object.defineProperty(window.createMediapipeSolutionsPackedAssets, 'dataFileDownloads', {
+            get: function() { return safeDataDownloads; },
+            set: function() {},
+            configurable: true,
+            enumerable: true
+          });
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

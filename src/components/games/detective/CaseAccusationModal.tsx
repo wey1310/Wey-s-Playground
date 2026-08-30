@@ -124,7 +124,7 @@ export const CaseAccusationModal: React.FC<CaseAccusationModalProps> = ({
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 min-h-[calc(100vh-140px)]">
+    <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 min-h-[calc(100dvh-140px)] overflow-y-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

@@ -273,7 +273,7 @@ export const CaseInvestigationGame: React.FC<CaseInvestigationGameProps> = ({
   const isClueUnlocked = (clueId: string) => activeTeam.unlockedClueIds.includes(clueId);
 
   return (
-    <div className="w-full h-[100dvh] overflow-hidden bg-[#1f1a16] font-sans text-amber-50 flex flex-col detective-game select-none">
+    <div className="w-full flex-1 min-h-[min(650px,100dvh)] h-full overflow-y-auto bg-[#1f1a16] font-sans text-amber-50 flex flex-col detective-game select-none">
       
       {/* 1. COMPACT TOP BAR */}
       <div className="h-12 bg-[#120e0c] border-b border-[#3b2a1c] flex items-center justify-between px-4 shrink-0">

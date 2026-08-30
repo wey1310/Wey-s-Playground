@@ -79,7 +79,7 @@ export const GuestLimitModal: React.FC<GuestLimitModalProps> = ({
               </div>
               <div className="flex items-center gap-2.5 text-xs font-bold text-w-text-main">
                 <CheckCircle2 className="w-4 h-4 text-w-primary shrink-0" />
-                <span>Tạo câu hỏi tự động bằng AI siêu tốc</span>
+                <span>Quản lý và xuất ngân hàng đề thi tiện lợi</span>
               </div>
             </div>
           </div>

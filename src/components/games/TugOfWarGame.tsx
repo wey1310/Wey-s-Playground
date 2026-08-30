@@ -116,7 +116,7 @@ export const TugOfWarGame: React.FC<TugOfWarGameProps> = ({ config, questions, o
   };
 
   return (
-    <div className="w-full h-[100dvh] bg-w-bg-alt text-slate-100 flex flex-col font-sans select-none overflow-hidden">
+    <div className="w-full flex-1 min-h-[min(650px,100dvh)] h-full bg-w-bg-alt text-slate-100 flex flex-col font-sans select-none overflow-y-auto">
       
       {/* 1. TOP HEADER BAR (Like in reference photo) */}
       <header className="bg-w-bg-card px-4 py-2.5 flex items-center justify-between border-b border-white/10 z-30 shrink-0">

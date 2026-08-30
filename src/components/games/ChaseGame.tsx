@@ -153,7 +153,7 @@ export const ChaseGame: React.FC<ChaseGameProps> = ({
   const isHuntingReady = gameState.phase === 'idle' && answeredCorrectlyThisTurn === true;
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 p-3 sm:p-5 flex flex-col justify-between select-none">
+    <div className="w-full flex-1 min-h-[100dvh] bg-zinc-950 text-zinc-100 p-3 sm:p-5 flex flex-col justify-between select-none overflow-y-auto">
       
       {/* Top Header Bar */}
       <div className="w-full max-w-5xl mx-auto flex items-center justify-between gap-2 mb-2">

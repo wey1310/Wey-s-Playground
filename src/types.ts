@@ -257,6 +257,8 @@ export interface GameSetupConfig {
   raceVehicleType?: 'moto' | 'car' | 'snail' | 'space' | 'horse' | 'doramini' | string;
   studentsList?: string[];
   noRepeatStudents?: boolean;
+  randomCallSkipQuestions?: boolean;
+  skipQuestions?: boolean;
 
   // 1. Whack-A-Mole Config
   holeCount?: number; // 6, 8, 9, 12

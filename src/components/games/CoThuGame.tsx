@@ -417,7 +417,7 @@ export const CoThuGame: React.FC<CoThuGameProps> = ({
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto flex flex-col min-h-screen bg-[#F4F8F1] text-slate-800 select-none pb-12">
+    <div className="w-full max-w-6xl mx-auto flex flex-col min-h-[100dvh] bg-[#F4F8F1] text-slate-800 select-none pb-12 overflow-y-auto">
       {/* HEADER */}
       <header className="bg-white border-b-2 border-w-accent-muted px-4 py-3 shadow-xs sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">

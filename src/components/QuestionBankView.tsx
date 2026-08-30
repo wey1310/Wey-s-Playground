@@ -5,11 +5,14 @@ import {
   ArrowLeft, Folder, FolderPlus, Grid, List, Layers, 
   BookOpen, CheckCircle2, ChevronDown, ChevronRight,
   Tag, GripVertical, CheckSquare, Square, FolderCheck, X, Edit3,
-  FolderOpen, Sparkles, Bot, ExternalLink
+  FolderOpen, Sparkles, ExternalLink, Eye, Printer, ArrowUpDown, Filter
 } from 'lucide-react';
 import type { QuestionBank, Question } from "../types";
 import { useAuth } from '../contexts/AuthContext';
 import { CreateBankModal } from './CreateBankModal';
+import { BankQuickPreviewModal } from './BankQuickPreviewModal';
+import { MergeBanksModal } from './MergeBanksModal';
+import { PrintExamModal } from './PrintExamModal';
 import { GRADES, ALL_SUBJECTS } from '../data/curriculumData';
 import { MathChemRenderer } from '../utils/mathChemFormatter';
 import { soundFx } from '../utils/audio';
@@ -26,6 +29,7 @@ interface QuestionBankViewProps {
 type TabType = 'all' | 'presets' | 'mine' | 'public' | 'private' | 'favorite' | 'trash';
 type ViewMode = 'folders' | 'grid' | 'table' | 'questions';
 type GroupByMode = 'grade' | 'subject' | 'folder';
+type SortOption = 'newest' | 'oldest' | 'name_asc' | 'name_desc' | 'questions_desc' | 'questions_asc';
 
 const CUSTOM_FOLDERS_STORAGE_KEY = 'wey_custom_folders_list';
 
@@ -36,30 +40,19 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
   onOpenQuickManager,
 }) => {
   const { user } = useAuth();
-
-  // Retrieve Gem AI Converter URL from saved web configuration
-  const gemConverterUrl = useMemo(() => {
-    try {
-      const saved = localStorage.getItem('wey_web_config');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return parsed.gemConverterUrl;
-      }
-    } catch (e) {}
-    return undefined;
-  }, []);
   
   // Navigation & View States
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('folders');
   const [groupByMode, setGroupByMode] = useState<GroupByMode>('folder');
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
   
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
   const [subjectFilter, setSubjectFilter] = useState('');
   const [gradeFilter, setGradeFilter] = useState('');
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
-  const [hasQuestionsFilter, setHasQuestionsFilter] = useState<'all' | 'has_questions' | 'empty'>('all');
+  const [hasQuestionsFilter, setHasQuestionsFilter] = useState<'all' | 'has_questions' | 'empty' | 'ten_plus'>('all');
   
   // Custom Folders State (Persisted in localStorage & combined with existing banks)
   const [customFolders, setCustomFolders] = useState<string[]>(() => {
@@ -87,8 +80,9 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
   // Modals & Popups
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingBank, setEditingBank] = useState<QuestionBank | null>(null);
-  const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
-  const [newFolderName, setNewFolderName] = useState('');
+  const [previewBank, setPreviewBank] = useState<QuestionBank | null>(null);
+  const [printBank, setPrintBank] = useState<QuestionBank | null>(null);
+  const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
   const [inlineCreatingFolder, setInlineCreatingFolder] = useState(false);
   const [inlineFolderName, setInlineFolderName] = useState('');
   const [editingFolderOriginal, setEditingFolderOriginal] = useState<string | null>(null);
@@ -170,9 +164,9 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
     return questionBanks.filter(b => !b.isDeleted && (!b.folder || !b.folder.trim())).length;
   }, [questionBanks]);
 
-  // Filtered Banks
+  // Filtered & Sorted Banks
   const filteredBanks = useMemo(() => {
-    return questionBanks.filter(bank => {
+    const filtered = questionBanks.filter(bank => {
       // Trash handling
       if (activeTab === 'trash') return bank.isDeleted;
       if (bank.isDeleted) return false;
@@ -200,6 +194,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
       // Question count filter
       if (hasQuestionsFilter === 'has_questions' && (!bank.questions || bank.questions.length === 0)) return false;
       if (hasQuestionsFilter === 'empty' && bank.questions && bank.questions.length > 0) return false;
+      if (hasQuestionsFilter === 'ten_plus' && (!bank.questions || bank.questions.length < 10)) return false;
 
       // Search query
       if (viewMode !== 'questions' && searchQuery.trim()) {
@@ -218,7 +213,34 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
 
       return true;
     });
-  }, [questionBanks, activeTab, selectedFolder, subjectFilter, gradeFilter, hasQuestionsFilter, searchQuery, user, viewMode]);
+
+    // Sorting
+    return filtered.sort((a, b) => {
+      if (sortBy === 'newest') {
+        const timeA = new Date(a.updatedAt || a.createdAt || 0).getTime();
+        const timeB = new Date(b.updatedAt || b.createdAt || 0).getTime();
+        return timeB - timeA;
+      }
+      if (sortBy === 'oldest') {
+        const timeA = new Date(a.updatedAt || a.createdAt || 0).getTime();
+        const timeB = new Date(b.updatedAt || b.createdAt || 0).getTime();
+        return timeA - timeB;
+      }
+      if (sortBy === 'name_asc') {
+        return a.name.localeCompare(b.name, 'vi');
+      }
+      if (sortBy === 'name_desc') {
+        return b.name.localeCompare(a.name, 'vi');
+      }
+      if (sortBy === 'questions_desc') {
+        return (b.questions?.length || 0) - (a.questions?.length || 0);
+      }
+      if (sortBy === 'questions_asc') {
+        return (a.questions?.length || 0) - (b.questions?.length || 0);
+      }
+      return 0;
+    });
+  }, [questionBanks, activeTab, selectedFolder, subjectFilter, gradeFilter, hasQuestionsFilter, searchQuery, user, viewMode, sortBy]);
 
   // Filtered Questions (for 'questions' view mode)
   const filteredQuestionsList = useMemo(() => {
@@ -358,8 +380,6 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
     showToast(`Đã tạo thư mục mới: "${trimmed}"`);
     setInlineCreatingFolder(false);
     setInlineFolderName('');
-    setIsFolderModalOpen(false);
-    setNewFolderName('');
   };
 
   // Handle Rename Folder
@@ -501,20 +521,6 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2 flex-wrap">
-          {gemConverterUrl && (
-            <a
-              href={gemConverterUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-[800] text-xs sm:text-sm shadow-xs transition hover:scale-105 cursor-pointer"
-              title="Chuyển đổi văn bản/tài liệu câu hỏi sang format chuẩn bằng Gem AI"
-            >
-              <Bot className="w-4 h-4" />
-              <span>Chuyển Đổi Format Bằng Gem AI</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          )}
-
           <button
             onClick={() => {
               setInlineCreatingFolder(true);
@@ -843,6 +849,17 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                 </button>
               </div>
 
+              {/* Merge Action Button (if 2 or more selected) */}
+              {selectedBankIds.size >= 2 && (
+                <button
+                  onClick={() => setIsMergeModalOpen(true)}
+                  className="w-full py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-[800] rounded-xl flex items-center justify-center gap-1.5 cursor-pointer shadow-sm transition-all"
+                >
+                  <Layers className="w-4 h-4" />
+                  <span>Gộp {selectedBankIds.size} Bộ Đề Thành 1</span>
+                </button>
+              )}
+
               {/* Target Folder Selector for Batch Move */}
               <div className="space-y-1.5">
                 <label className="text-[11px] font-[800] text-w-text-muted">
@@ -871,14 +888,14 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
               <div className="grid grid-cols-2 gap-2 pt-1">
                 <button
                   onClick={handleBatchFavorite}
-                  className="py-1.5 px-2 bg-w-bg-alt hover:bg-w-accent-light text-w-text-main font-[700] text-[11px] rounded-xl border border-w-border transition-colors flex items-center justify-center gap-1"
+                  className="py-1.5 px-2 bg-w-bg-alt hover:bg-w-accent-light text-w-text-main font-[700] text-[11px] rounded-xl border border-w-border transition-colors flex items-center justify-center gap-1 cursor-pointer"
                 >
                   <Star className="w-3 h-3 text-amber-500" />
                   <span>Yêu thích</span>
                 </button>
                 <button
                   onClick={handleBatchDelete}
-                  className="py-1.5 px-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-[700] text-[11px] rounded-xl border border-rose-200 transition-colors flex items-center justify-center gap-1"
+                  className="py-1.5 px-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-[700] text-[11px] rounded-xl border border-rose-200 transition-colors flex items-center justify-center gap-1 cursor-pointer"
                 >
                   <Trash2 className="w-3 h-3" />
                   <span>Xóa</span>
@@ -951,7 +968,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
               </div>
               <button
                 onClick={() => setSelectedFolder(null)}
-                className="text-xs font-[800] text-w-text-muted hover:text-w-text-main px-2 py-1 rounded-lg hover:bg-w-bg-card transition-colors flex items-center gap-1"
+                className="text-xs font-[800] text-w-text-muted hover:text-w-text-main px-2 py-1 rounded-lg hover:bg-w-bg-card transition-colors flex items-center gap-1 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
                 <span>Xem tất cả</span>
@@ -1017,15 +1034,33 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                 >
                   <option value="all">📝 Mọi số lượng</option>
                   <option value="has_questions">✅ Có câu hỏi (&gt;0)</option>
+                  <option value="ten_plus">🔥 Nhiều câu (≥10)</option>
                   <option value="empty">⚠️ Chưa có câu hỏi (0)</option>
                 </select>
+
+                {/* Sort Option */}
+                <div className="flex items-center gap-1 bg-w-input-bg border border-w-border rounded-[14px] px-2 py-1.5">
+                  <ArrowUpDown className="w-3.5 h-3.5 text-w-text-muted shrink-0" />
+                  <select
+                    value={sortBy}
+                    onChange={e => setSortBy(e.target.value as SortOption)}
+                    className="bg-transparent text-xs font-[700] text-w-text-main cursor-pointer focus:outline-none"
+                  >
+                    <option value="newest">🕒 Mới nhất</option>
+                    <option value="oldest">🕰️ Cũ nhất</option>
+                    <option value="name_asc">🔤 Tên A → Z</option>
+                    <option value="name_desc">🔤 Tên Z → A</option>
+                    <option value="questions_desc">📊 Số câu nhiều nhất</option>
+                    <option value="questions_asc">📉 Số câu ít nhất</option>
+                  </select>
+                </div>
               </div>
             </div>
 
             {/* Row 2: Select All, View Modes & Grouping Switcher */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-2 border-t border-w-border/60">
               
-              {/* Batch Select Checkbox Toggle */}
+              {/* Batch Select Checkbox Toggle & Merge trigger */}
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleSelectAll}
@@ -1043,6 +1078,16 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                     </>
                   )}
                 </button>
+
+                {selectedBankIds.size >= 2 && (
+                  <button
+                    onClick={() => setIsMergeModalOpen(true)}
+                    className="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 font-[800] text-xs border border-purple-200 transition-colors flex items-center gap-1 cursor-pointer"
+                  >
+                    <Layers className="w-3.5 h-3.5" />
+                    <span>Gộp {selectedBankIds.size} bộ</span>
+                  </button>
+                )}
               </div>
 
               {/* View Mode & Group Switchers */}
@@ -1195,7 +1240,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                         <span className="text-xs font-[700] text-w-text-muted hidden sm:inline">
                           {isCollapsed ? 'Mở rộng' : 'Thu gọn'}
                         </span>
-                        <button className="p-1 rounded-lg text-w-text-muted">
+                        <button className="p-1 rounded-lg text-w-text-muted cursor-pointer">
                           {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                         </button>
                       </div>
@@ -1216,6 +1261,8 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                                 onDragStart={(e) => handleDragStart(e, bank.id)}
                                 onDragEnd={handleDragEnd}
                                 onOpenQuickManager={onOpenQuickManager}
+                                onPreview={() => setPreviewBank(bank)}
+                                onPrint={() => setPrintBank(bank)}
                                 onToggleFavorite={() => onUpdateBanks(questionBanks.map(b => b.id === bank.id ? {...b, favorite: !b.favorite} : b))}
                                 onEdit={() => {
                                   setEditingBank(bank);
@@ -1230,6 +1277,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                                     createdAt: new Date().toISOString(),
                                   };
                                   onUpdateBanks([...questionBanks, newBank]);
+                                  showToast(`Đã nhân bản bộ đề "${bank.name}"`);
                                 }}
                                 onMoveFolder={() => {
                                   setBankToMove(bank);
@@ -1237,9 +1285,11 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                                 }}
                                 onDelete={() => {
                                   onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: true } : b));
+                                  showToast(`Đã chuyển bộ đề "${bank.name}" vào thùng rác`);
                                 }}
                                 onRestore={() => {
                                   onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: false } : b));
+                                  showToast(`Đã khôi phục bộ đề "${bank.name}"`);
                                 }}
                                 onPermanentDelete={() => {
                                   if (safeConfirm('Bạn chắc chắn muốn xóa vĩnh viễn bộ câu hỏi này?')) {
@@ -1289,6 +1339,8 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                   onDragStart={(e) => handleDragStart(e, bank.id)}
                   onDragEnd={handleDragEnd}
                   onOpenQuickManager={onOpenQuickManager}
+                  onPreview={() => setPreviewBank(bank)}
+                  onPrint={() => setPrintBank(bank)}
                   onToggleFavorite={() => onUpdateBanks(questionBanks.map(b => b.id === bank.id ? {...b, favorite: !b.favorite} : b))}
                   onEdit={() => {
                     setEditingBank(bank);
@@ -1303,6 +1355,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                       createdAt: new Date().toISOString(),
                     };
                     onUpdateBanks([...questionBanks, newBank]);
+                    showToast(`Đã nhân bản bộ đề "${bank.name}"`);
                   }}
                   onMoveFolder={() => {
                     setBankToMove(bank);
@@ -1310,9 +1363,11 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                   }}
                   onDelete={() => {
                     onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: true } : b));
+                    showToast(`Đã chuyển bộ đề "${bank.name}" vào thùng rác`);
                   }}
                   onRestore={() => {
                     onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: false } : b));
+                    showToast(`Đã khôi phục bộ đề "${bank.name}"`);
                   }}
                   onPermanentDelete={() => {
                     if (safeConfirm('Bạn chắc chắn muốn xóa vĩnh viễn bộ câu hỏi này?')) {
@@ -1422,12 +1477,28 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                             )}
                           </td>
                           <td className="py-2.5 px-3 text-right whitespace-nowrap">
-                            <button
-                              onClick={() => onOpenQuickManager(bank.id)}
-                              className="px-3 py-1 bg-w-primary-dark hover:bg-w-primary text-white font-[800] text-[11px] rounded-lg cursor-pointer"
-                            >
-                              Mở
-                            </button>
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                onClick={() => setPreviewBank(bank)}
+                                title="Xem trước / Thi thử"
+                                className="p-1.5 bg-w-bg-card hover:bg-w-accent-light text-w-primary-dark border border-w-border rounded-lg cursor-pointer transition-colors"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => setPrintBank(bank)}
+                                title="In đề thi / Xuất Word"
+                                className="p-1.5 bg-w-bg-card hover:bg-w-accent-light text-w-text-main border border-w-border rounded-lg cursor-pointer transition-colors"
+                              >
+                                <Printer className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => onOpenQuickManager(bank.id)}
+                                className="px-3 py-1 bg-w-primary-dark hover:bg-w-primary text-white font-[800] text-[11px] rounded-lg cursor-pointer"
+                              >
+                                Soạn
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       );
@@ -1509,8 +1580,50 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
       </div>
 
       {/* ========================================================================= */}
-      {/* MODALS: CREATE/EDIT BANK, CREATE FOLDER, MOVE TO FOLDER                   */}
+      {/* MODALS: CREATE/EDIT BANK, QUICK PREVIEW, MERGE, PRINT, MOVE TO FOLDER      */}
       {/* ========================================================================= */}
+
+      {/* Quick Preview / Test Modal */}
+      {previewBank && (
+        <BankQuickPreviewModal
+          isOpen={Boolean(previewBank)}
+          onClose={() => setPreviewBank(null)}
+          bank={previewBank}
+          onOpenEditor={() => {
+            const bankId = previewBank.id;
+            setPreviewBank(null);
+            onOpenQuickManager(bankId);
+          }}
+          onOpenPrint={() => {
+            const bankToPrint = previewBank;
+            setPreviewBank(null);
+            setPrintBank(bankToPrint);
+          }}
+        />
+      )}
+
+      {/* Print / Export Word Exam Modal */}
+      {printBank && (
+        <PrintExamModal
+          isOpen={Boolean(printBank)}
+          onClose={() => setPrintBank(null)}
+          bank={printBank}
+        />
+      )}
+
+      {/* Merge Banks Modal */}
+      <MergeBanksModal
+        isOpen={isMergeModalOpen}
+        onClose={() => setIsMergeModalOpen(false)}
+        selectedBanks={questionBanks.filter(b => selectedBankIds.has(b.id))}
+        availableFolders={availableFolders}
+        onMergeSuccess={(newBank) => {
+          onUpdateBanks([newBank, ...questionBanks]);
+          setSelectedBankIds(new Set());
+          showToast(`Đã gộp thành công thành bộ đề "${newBank.name}" (${newBank.questions.length} câu)`);
+          onOpenQuickManager(newBank.id);
+        }}
+      />
 
       {/* Create / Edit Bank Modal */}
       <CreateBankModal
@@ -1581,7 +1694,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                   setBankToMove(null);
                   setSelectedTargetFolder('');
                 }}
-                className="px-4 py-2 rounded-xl text-xs font-[700] text-w-text-muted hover:bg-w-accent-light"
+                className="px-4 py-2 rounded-xl text-xs font-[700] text-w-text-muted hover:bg-w-accent-light cursor-pointer"
               >
                 Hủy
               </button>
@@ -1604,7 +1717,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
 };
 
 // =============================================================================
-// SUB-COMPONENT: BANK CARD ITEM WITH DRAG HANDLE & BATCH CHECKBOX
+// SUB-COMPONENT: BANK CARD ITEM WITH DRAG HANDLE, BATCH CHECKBOX & COGNITIVE BAR
 // =============================================================================
 interface BankCardItemProps {
   bank: QuestionBank;
@@ -1614,6 +1727,8 @@ interface BankCardItemProps {
   onDragStart?: (e: React.DragEvent) => void;
   onDragEnd?: () => void;
   onOpenQuickManager: (bankId: string) => void;
+  onPreview: () => void;
+  onPrint: () => void;
   onToggleFavorite: () => void;
   onEdit: () => void;
   onDuplicate: () => void;
@@ -1631,6 +1746,8 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
   onDragStart,
   onDragEnd,
   onOpenQuickManager,
+  onPreview,
+  onPrint,
   onToggleFavorite,
   onEdit,
   onDuplicate,
@@ -1641,10 +1758,18 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const questionsCount = bank.questions?.length || 0;
-  const mcqCount = (bank.questions || []).filter(q => q.type === 'mcq').length;
-  const tfCount = (bank.questions || []).filter(q => q.type === 'tf').length;
-  const textCount = (bank.questions || []).filter(q => q.type === 'text').length;
+  const questions = bank.questions || [];
+  const questionsCount = questions.length;
+  const mcqCount = questions.filter(q => q.type === 'mcq').length;
+  const tfCount = questions.filter(q => q.type === 'tf').length;
+  const textCount = questions.filter(q => q.type === 'text').length;
+
+  // Cognitive Level Counts
+  const nbCount = questions.filter(q => q.cognitiveLevel === 'NB' || q.cognitiveLevel === 'Nhận biết').length;
+  const thCount = questions.filter(q => q.cognitiveLevel === 'TH' || q.cognitiveLevel === 'Thông hiểu').length;
+  const vdCount = questions.filter(q => q.cognitiveLevel === 'VD' || q.cognitiveLevel === 'Vận dụng').length;
+  const vdcCount = questions.filter(q => q.cognitiveLevel === 'VDC' || q.cognitiveLevel === 'Vận dụng cao').length;
+  const hasCognitive = questionsCount > 0 && (nbCount > 0 || thCount > 0 || vdCount > 0 || vdcCount > 0);
 
   return (
     <div 
@@ -1704,7 +1829,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
               e.stopPropagation();
               onToggleFavorite();
             }}
-            className="text-w-border hover:text-amber-400 transition-colors p-1"
+            className="text-w-border hover:text-amber-400 transition-colors p-1 cursor-pointer"
           >
             <Star className={`w-4 h-4 ${bank.favorite ? 'fill-amber-400 text-amber-400' : ''}`} />
           </button>
@@ -1733,7 +1858,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
         </div>
 
         {/* Question Type Breakdown Pills */}
-        <div className="flex flex-wrap items-center gap-1.5 py-2 px-2.5 bg-w-bg-alt rounded-xl border border-w-border/60 text-[11px] font-[700] text-w-text-main mb-3">
+        <div className="flex flex-wrap items-center gap-1.5 py-2 px-2.5 bg-w-bg-alt rounded-xl border border-w-border/60 text-[11px] font-[700] text-w-text-main mb-2">
           <span className="font-[800] text-w-text-main flex items-center gap-1">
             <FileText className="w-3.5 h-3.5" /> {questionsCount} câu hỏi:
           </span>
@@ -1742,6 +1867,24 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
           {textCount > 0 && <span className="text-[10px] px-1.5 py-0.2 bg-w-bg-card rounded-md border border-w-border">{textCount} tự luận</span>}
           {questionsCount === 0 && <span className="text-amber-700 italic text-[10px]">Chưa có câu hỏi</span>}
         </div>
+
+        {/* Cognitive Matrix Mini-Bar (if available) */}
+        {hasCognitive && (
+          <div className="mb-3">
+            <div className="flex items-center justify-between text-[10px] font-[700] text-w-text-muted mb-1">
+              <span>Ma trận nhận thức:</span>
+              <span className="text-w-primary-dark font-[800]">
+                {nbCount} NB • {thCount} TH • {vdCount} VD {vdcCount > 0 ? `• ${vdcCount} VDC` : ''}
+              </span>
+            </div>
+            <div className="h-1.5 w-full bg-w-bg-alt rounded-full overflow-hidden flex border border-w-border/40">
+              {nbCount > 0 && <div style={{ width: `${(nbCount / questionsCount) * 100}%` }} className="bg-sky-400" title={`Nhận biết: ${nbCount}`} />}
+              {thCount > 0 && <div style={{ width: `${(thCount / questionsCount) * 100}%` }} className="bg-emerald-400" title={`Thông hiểu: ${thCount}`} />}
+              {vdCount > 0 && <div style={{ width: `${(vdCount / questionsCount) * 100}%` }} className="bg-amber-400" title={`Vận dụng: ${vdCount}`} />}
+              {vdcCount > 0 && <div style={{ width: `${(vdcCount / questionsCount) * 100}%` }} className="bg-purple-400" title={`Vận dụng cao: ${vdcCount}`} />}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Card Footer & Actions */}
@@ -1751,11 +1894,29 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
         </span>
 
         <div className="flex items-center gap-1.5">
+          {/* Quick Preview / Test Button */}
+          <button
+            onClick={onPreview}
+            title="Xem trước & Thi thử"
+            className="p-1.5 bg-w-bg-card hover:bg-w-accent-light text-w-primary-dark border border-w-border rounded-lg cursor-pointer transition-colors shadow-2xs"
+          >
+            <Eye className="w-3.5 h-3.5" />
+          </button>
+
+          {/* Quick Print Button */}
+          <button
+            onClick={onPrint}
+            title="In đề & Đáp án"
+            className="p-1.5 bg-w-bg-card hover:bg-w-accent-light text-w-text-main border border-w-border rounded-lg cursor-pointer transition-colors shadow-2xs"
+          >
+            <Printer className="w-3.5 h-3.5" />
+          </button>
+
           <button 
             onClick={() => onOpenQuickManager(bank.id)}
-            className="px-3.5 py-1.5 wey-btn-primary text-xs cursor-pointer shadow-xs"
+            className="px-3.5 py-1.5 wey-btn-primary text-xs cursor-pointer shadow-xs font-[800]"
           >
-            Mở Soạn
+            Soạn Đề
           </button>
 
           {/* More Actions Dropdown */}
@@ -1781,10 +1942,32 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
                     <>
                       <button
                         onClick={() => {
+                          onPreview();
+                          setDropdownOpen(false);
+                        }}
+                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 cursor-pointer"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-w-primary" /> Xem trước / Thi thử
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          onPrint();
+                          setDropdownOpen(false);
+                        }}
+                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 cursor-pointer"
+                      >
+                        <Printer className="w-3.5 h-3.5 text-w-primary" /> In đề / Xuất Word
+                      </button>
+
+                      <div className="border-t border-w-border/60 my-1" />
+
+                      <button
+                        onClick={() => {
                           onEdit();
                           setDropdownOpen(false);
                         }}
-                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2"
+                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 cursor-pointer"
                       >
                         <FileText className="w-3.5 h-3.5" /> Sửa thông tin bộ
                       </button>
@@ -1794,7 +1977,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
                           onMoveFolder();
                           setDropdownOpen(false);
                         }}
-                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2"
+                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 cursor-pointer"
                       >
                         <FolderPlus className="w-3.5 h-3.5 text-amber-500" /> Chuyển thư mục
                       </button>
@@ -1804,7 +1987,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
                           onDuplicate();
                           setDropdownOpen(false);
                         }}
-                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2"
+                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 cursor-pointer"
                       >
                         <Copy className="w-3.5 h-3.5" /> Nhân bản bộ này
                       </button>
@@ -1816,7 +1999,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
                           onDelete();
                           setDropdownOpen(false);
                         }}
-                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-rose-600 hover:bg-rose-50 flex items-center gap-2"
+                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-rose-600 hover:bg-rose-50 flex items-center gap-2 cursor-pointer"
                       >
                         <Trash2 className="w-3.5 h-3.5" /> Chuyển thùng rác
                       </button>
@@ -1828,7 +2011,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
                           onRestore();
                           setDropdownOpen(false);
                         }}
-                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-emerald-600 hover:bg-emerald-50 flex items-center gap-2"
+                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-emerald-600 hover:bg-emerald-50 flex items-center gap-2 cursor-pointer"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" /> Khôi phục
                       </button>
@@ -1838,7 +2021,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
                           onPermanentDelete();
                           setDropdownOpen(false);
                         }}
-                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-rose-600 hover:bg-rose-50 flex items-center gap-2"
+                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-rose-600 hover:bg-rose-50 flex items-center gap-2 cursor-pointer"
                       >
                         <Trash2 className="w-3.5 h-3.5" /> Xóa vĩnh viễn
                       </button>

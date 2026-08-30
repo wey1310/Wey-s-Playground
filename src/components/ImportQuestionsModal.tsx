@@ -17,9 +17,7 @@ import {
   ListOrdered, 
   CheckSquare, 
   Edit3, 
-  Layers,
-  Bot,
-  ExternalLink
+  Layers
 } from 'lucide-react';
 import { safeAlert } from '../utils/safeAlert';
 import { 
@@ -34,7 +32,6 @@ interface ImportQuestionsModalProps {
   isOpen: boolean;
   onClose: () => void;
   onImportSuccess: (questions: Question[]) => void;
-  gemConverterUrl?: string;
 }
 
 const SAMPLE_TEMPLATES = {
@@ -118,8 +115,7 @@ type TemplateKey = keyof typeof SAMPLE_TEMPLATES;
 export const ImportQuestionsModal: React.FC<ImportQuestionsModalProps> = ({
   isOpen,
   onClose,
-  onImportSuccess,
-  gemConverterUrl
+  onImportSuccess
 }) => {
   const [mode, setMode] = useState<'file' | 'text'>('file');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -132,18 +128,6 @@ export const ImportQuestionsModal: React.FC<ImportQuestionsModalProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
-
-  // Resolve gem converter URL from prop or fallback to localStorage config if available
-  const effectiveGemUrl = gemConverterUrl || (() => {
-    try {
-      const saved = localStorage.getItem('wey_web_config');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return parsed.gemConverterUrl;
-      }
-    } catch (e) {}
-    return undefined;
-  })();
 
   const copyTemplateToClipboard = (type: TemplateKey) => {
     navigator.clipboard.writeText(SAMPLE_TEMPLATES[type]);
@@ -252,39 +236,11 @@ export const ImportQuestionsModal: React.FC<ImportQuestionsModalProps> = ({
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-base sm:text-lg font-bold text-w-text-main">Nạp Câu Hỏi Tự Động Với AI</h2>
-                {effectiveGemUrl && (
-                  <a
-                    href={effectiveGemUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-black rounded-xl shadow-xs transition hover:scale-105 cursor-pointer animate-pulse"
-                    title="Mở Gem AI chuyển đổi câu hỏi thành định dạng chuẩn của Wey"
-                  >
-                    <Bot className="w-3.5 h-3.5" />
-                    <span>🤖 Chuyển Đổi Format Bằng Gem AI</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                )}
-              </div>
+              <h2 className="text-base sm:text-lg font-bold text-w-text-main">Nạp Câu Hỏi & Đề Thi (Import File)</h2>
               <p className="text-xs text-w-text-muted">Hỗ trợ trắc nghiệm (MCQ A-D), JSON chuẩn, đúng/sai (TF) & trả lời ngắn</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {effectiveGemUrl && (
-              <a
-                href={effectiveGemUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 text-xs font-bold rounded-xl transition cursor-pointer"
-                title="Mở công cụ Gem AI Converter đã cài đặt trong Admin"
-              >
-                <Bot className="w-4 h-4 text-purple-600" />
-                <span>Mở Link Gem Converter</span>
-                <ExternalLink className="w-3 h-3 text-purple-500" />
-              </a>
-            )}
             <button 
               id="close-import-modal-btn"
               onClick={onClose} 
@@ -325,47 +281,6 @@ export const ImportQuestionsModal: React.FC<ImportQuestionsModalProps> = ({
             >
               <FileText className="w-4 h-4" /> Dán Trực Tiếp Văn Bản / JSON
             </button>
-          </div>
-
-          {/* Dedicated Gem AI / Web Converter Link Banner */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 p-3 sm:p-3.5 bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-pink-500/10 border border-purple-200/80 rounded-2xl shadow-xs">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-sm">
-                <Bot className="w-5 h-5" />
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-xs sm:text-sm font-black text-slate-800">
-                    Công Cụ Chuyển Đổi Format Câu Hỏi Bằng Gem AI
-                  </span>
-                  <span className="text-[10px] font-black bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full border border-purple-200">
-                    Cập nhật từ Admin
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-500 line-clamp-1">
-                  {effectiveGemUrl 
-                    ? "Bấm nút để mở liên kết Gem / Web chuyển đổi tài liệu đề thi sang format chuẩn nhanh chóng." 
-                    : "Mở công cụ AI để chuẩn hóa câu hỏi thành định dạng Wey Playground (Cập nhật link trong Admin)."}
-                </p>
-              </div>
-            </div>
-
-            <a
-              id="open-gem-converter-banner-btn"
-              href={effectiveGemUrl || "https://gemini.google.com"}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => {
-                if (!effectiveGemUrl) {
-                  safeAlert("💡 Đang mở Gemini AI. Quản trị viên có thể vào trang Quản Trị (Admin) -> Cài đặt Web để thay đổi liên kết Gem chuyển đổi này!");
-                }
-              }}
-              className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-black rounded-xl shadow-sm transition hover:scale-[1.02] cursor-pointer"
-            >
-              <Bot className="w-4 h-4" />
-              <span>Chuyển Đổi Bằng Gem AI</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
           </div>
 
           {/* Diagnostics Error Notification Box */}
@@ -422,10 +337,10 @@ export const ImportQuestionsModal: React.FC<ImportQuestionsModalProps> = ({
                     {isProcessing ? <Loader2 className="w-7 h-7 animate-spin" /> : <Upload className="w-7 h-7" />}
                   </div>
                   <h3 className="text-w-text-main font-bold text-sm mb-1">
-                    {isProcessing ? 'AI Đang đọc & phân tích đề...' : 'Tải file Word (.docx), PowerPoint (.pptx), TXT, JSON, CSV'}
+                    {isProcessing ? 'Đang đọc & phân tích đề...' : 'Tải file Word (.docx), PowerPoint (.pptx), TXT, JSON, CSV'}
                   </h3>
                   <p className="text-xs text-w-text-muted max-w-[280px] mb-4">
-                    AI sẽ tự động đọc slide PPTX, trích xuất trắc nghiệm, đúng/sai, tự luận & nhận diện đáp án chuẩn
+                    Hệ thống tự động đọc slide PPTX, trích xuất trắc nghiệm, đúng/sai, tự luận & nhận diện đáp án chuẩn
                   </p>
                   <button className="px-5 py-2 wey-btn-primary text-xs font-bold rounded-xl transition cursor-pointer">
                     Chọn File Từ Máy Tính
@@ -465,7 +380,7 @@ export const ImportQuestionsModal: React.FC<ImportQuestionsModalProps> = ({
                       className="px-5 py-2.5 wey-btn-primary text-xs sm:text-sm font-bold rounded-xl transition disabled:opacity-50 flex items-center gap-2 cursor-pointer shadow-xs"
                     >
                       {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                      <span>{isProcessing ? 'Đang Phân Tích...' : 'AI Phân Tích & Nạp Đề'}</span>
+                      <span>{isProcessing ? 'Đang Phân Tích...' : 'Phân Tích & Nạp Đề'}</span>
                     </button>
                   </div>
                 </div>
@@ -481,19 +396,6 @@ export const ImportQuestionsModal: React.FC<ImportQuestionsModalProps> = ({
                     <span>Mẫu Định Dạng Chuẩn</span>
                   </h4>
                   <div className="flex items-center gap-1.5">
-                    {effectiveGemUrl && (
-                      <a
-                        href={effectiveGemUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-2 py-1 bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-200 rounded-lg text-[10.5px] font-bold flex items-center gap-1 transition cursor-pointer"
-                        title="Mở Gem AI chuyển đổi câu hỏi"
-                      >
-                        <Bot className="w-3 h-3 text-purple-600" />
-                        <span>Gem AI</span>
-                        <ExternalLink className="w-2.5 h-2.5" />
-                      </a>
-                    )}
                     <button
                       type="button"
                       onClick={() => copyTemplateToClipboard(selectedGuideTab)}

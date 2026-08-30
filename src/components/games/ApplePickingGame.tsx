@@ -4,7 +4,8 @@ import confetti from 'canvas-confetti';
 import { 
   Trophy, RotateCcw, Volume2, VolumeX, Eye, EyeOff, 
   HelpCircle, Clock, ChevronRight, CheckCircle, XCircle, 
-  Sparkles, Dices, ArrowRight, ShieldAlert, Award, AlertTriangle, Users
+  Sparkles, Dices, ArrowRight, ShieldAlert, Award, AlertTriangle, Users,
+  Trees, Lock, Unlock, Key, Footprints, ShieldCheck, Star, Search, Info, X
 } from 'lucide-react';
 import { GameSetupConfig, Question, AnswerLog, Team } from '../../types';
 import { soundFx } from '../../utils/audio';
@@ -102,11 +103,17 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
   // Sound
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
 
+  // Interactive Map Inspector & Rules
+  const [inspectedTile, setInspectedTile] = useState<TileData | null>(null);
+  const [showRulesModal, setShowRulesModal] = useState<boolean>(false);
+
   // Board generation with some golden / booster tiles
   const boardTiles = React.useMemo<TileData[]>(() => {
     const tiles: TileData[] = [];
     for (let i = 1; i <= totalTiles; i++) {
-      if (i % 7 === 0 && i !== totalTiles) {
+      if (i === 1) {
+        tiles.push({ number: 1, type: 'safe_spot', label: 'Cổng Vườn' });
+      } else if (i % 7 === 0 && i !== totalTiles) {
         tiles.push({ number: i, type: 'golden', label: 'Táo Vàng (+2)' });
       } else if (i % 11 === 0) {
         tiles.push({ number: i, type: 'spring', label: 'Lò Xo (+2 Ô)' });
@@ -411,7 +418,7 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
   const winningTeam = teams.find(t => t.isWinner);
 
   return (
-    <div className="w-full max-w-7xl mx-auto flex flex-col min-h-screen bg-w-bg-alt text-slate-800 select-none pb-12">
+    <div className="w-full max-w-7xl mx-auto flex flex-col min-h-[100dvh] bg-w-bg-alt text-slate-800 select-none pb-12 overflow-y-auto">
       
       {/* HEADER BAR */}
       <header className="bg-white border-b-2 border-[#E3DCBA] px-4 py-3 sm:px-6 shadow-xs sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3">
@@ -569,65 +576,223 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
       <div className="flex-1 px-4 sm:px-6 py-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* LEFT COLUMN: THE APPLE ORCHARD BOARD TRACK (7 Cols) */}
-        <div className="lg:col-span-7 bg-white rounded-3xl p-5 border-2 border-[#E3DCBA] shadow-sm flex flex-col">
-          <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#E3DCBA]">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">🌳</span>
+        <div className="lg:col-span-7 bg-gradient-to-b from-[#f7fdf9] via-[#f0fdf4] to-[#f5fbf2] rounded-3xl p-3.5 sm:p-5 border-4 border-[#8D5B4C]/70 shadow-xl flex flex-col relative overflow-hidden">
+          {/* Subtle Ambient Meadow Glow */}
+          <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-200/40 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-amber-200/40 rounded-full blur-2xl pointer-events-none" />
+
+          {/* Top Orchard Signboard Header */}
+          <div className="flex flex-wrap items-center justify-between pb-3 mb-3 border-b-2 border-[#E3DCBA] gap-2 relative z-10">
+            <div className="flex items-center gap-2.5">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-600 to-green-700 text-white flex items-center justify-center text-xl shadow-md border-2 border-emerald-300">
+                🌳
+              </div>
               <div>
-                <h3 className="text-sm font-black text-w-text-main uppercase tracking-wide">
-                  Đường Đi Vườn Táo ({totalTiles} Ô Bàn Cờ)
+                <h3 className="text-sm sm:text-base font-black text-[#2B3B1E] uppercase tracking-wide flex items-center gap-1.5">
+                  <span>Bản Đồ Vườn Táo Ông Smith</span>
+                  <span className="text-[10px] px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full font-extrabold border border-emerald-300">
+                    {totalTiles} Ô
+                  </span>
                 </h3>
-                <p className="text-[11px] text-w-text-muted font-semibold">
-                  Cẩn thận: Ô chia hết cho số bí mật của Ông Smith sẽ bị bắt!
+                <p className="text-[11px] text-slate-600 font-semibold">
+                  Mục tiêu: Đua hái đủ <strong className="text-rose-600 font-black">{targetApples} 🍎</strong> • Né các ô chia hết cho số bí mật!
                 </p>
               </div>
             </div>
-            <div className="text-xs font-bold px-2.5 py-1 bg-w-bg-alt text-amber-800 rounded-xl border border-w-border">
-              Đích: {totalTiles} Ô
+
+            {/* Top Right Map Controls */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => setShowRulesModal(true)}
+                className="px-2.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl border border-slate-300 shadow-2xs transition flex items-center gap-1 cursor-pointer"
+                title="Xem hướng dẫn luật chơi"
+              >
+                <HelpCircle className="w-3.5 h-3.5 text-amber-600" />
+                <span>Luật Chơi</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowSmithSecret(!showSmithSecret)}
+                className={`px-3 py-1.5 text-xs font-black rounded-xl border transition flex items-center gap-1.5 shadow-2xs cursor-pointer ${
+                  showSmithSecret
+                    ? 'bg-rose-50 border-rose-300 text-rose-700 hover:bg-rose-100'
+                    : 'bg-amber-50 border-amber-300 text-amber-900 hover:bg-amber-100'
+                }`}
+                title={showSmithSecret ? "Ẩn số bí mật" : "Soi số bí mật & các ô bẫy (Dành cho Giáo Viên)"}
+              >
+                {showSmithSecret ? (
+                  <>
+                    <EyeOff className="w-3.5 h-3.5 text-rose-600" />
+                    <span>Ẩn Bẫy</span>
+                  </>
+                ) : (
+                  <>
+                    <Search className="w-3.5 h-3.5 text-amber-700" />
+                    <span>Soi Bẫy (GV)</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
 
-          {/* Interactive Winding Grid */}
-          <div className="flex-1 w-full h-full p-1 sm:p-2 flex flex-col justify-center overflow-hidden">
+          {/* Interactive Winding Grid Board */}
+          <div className="flex-1 w-full p-1 sm:p-2 flex flex-col justify-center overflow-x-auto custom-scrollbar relative z-10">
             <div 
-              className="w-full grid grid-rows-6 gap-1 sm:gap-1.5 relative mx-auto max-w-full"
+              className="min-w-[640px] sm:min-w-0 w-full grid grid-rows-6 gap-1 sm:gap-1.5 relative mx-auto max-w-full"
               style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
             >
-              {/* Mr. Smith's Secret Blocks (Center Area) */}
+              {/* MR. SMITH'S PATROL STATION & SECRET CRATES (Center Area) */}
               <div 
-                className="col-start-3 col-end-13 row-start-2 row-end-6 flex items-center justify-center gap-1.5 sm:gap-3 bg-slate-50/50 rounded-2xl border-2 border-dashed border-[#E3DCBA] p-1.5 sm:p-3"
+                className="col-start-2 col-end-14 row-start-2 row-end-6 rounded-2xl bg-gradient-to-b from-[#ecfdf5]/95 via-[#fffbeb]/85 to-[#dcfce7]/90 border-2 border-emerald-300/90 shadow-inner p-2.5 sm:p-3.5 flex flex-col justify-between relative overflow-hidden"
               >
-                {[2, 3, 4, 5, 6].map(num => {
-                  const isActive = smithSecretNumber === num && showSmithSecret;
-                  return (
-                    <div 
-                      key={num}
-                      className={`w-10 h-10 sm:w-12 sm:h-12 flex flex-col items-center justify-center rounded-xl shadow-xs border-2 transition-all duration-300
-                        ${isActive ? 'bg-w-primary-dark border-w-primary-hover text-w-text-main scale-105 shadow-md' : 'bg-white border-[#E3DCBA] text-w-text-muted opacity-70'}
-                      `}
-                    >
-                      <span className="text-[8px] font-black uppercase">Smith</span>
-                      <span className="text-sm sm:text-base font-black">{num}</span>
+                {/* Floating Scenic Leaves / Apples in Center Background */}
+                <div className="absolute top-2 right-4 text-xs opacity-50 select-none animate-pulse pointer-events-none">🍃</div>
+                <div className="absolute bottom-2 left-4 text-xs opacity-40 select-none pointer-events-none">🌸</div>
+
+                {/* Section 1: Farmer Smith Mascot & Live Status Alert */}
+                <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-emerald-200/80">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white border-2 border-emerald-300 shadow-sm flex items-center justify-center text-xl sm:text-2xl shrink-0">
+                      {lastActionStatus === 'caught' ? '🚨' : lastActionStatus === 'bonus' ? '🌟' : turnStage === 'moving' ? '👀' : '👨‍🌾'}
                     </div>
-                  );
-                })}
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-black text-emerald-950">Ông Smith (Chủ Vườn)</span>
+                        <span className={`text-[9px] font-black px-2 py-0.5 rounded-full shadow-2xs uppercase tracking-wider ${
+                          lastActionStatus === 'caught'
+                            ? 'bg-rose-500 text-white animate-pulse'
+                            : lastActionStatus === 'bonus'
+                            ? 'bg-amber-500 text-white'
+                            : 'bg-emerald-700 text-white'
+                        }`}>
+                          {lastActionStatus === 'caught' ? 'Bắt Được!' : lastActionStatus === 'bonus' ? 'Bội Thu!' : 'Đang Tuần Tra'}
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-bold text-emerald-900 truncate">
+                        {lastActionStatus === 'caught'
+                          ? `Ha ha! Ô chia hết cho số bí mật rồi! Nhốt vào chuồng!`
+                          : lastActionStatus === 'bonus'
+                          ? `Oa! Trúng ô Táo Vàng bội thu thơm ngọt!`
+                          : turnStage === 'moving'
+                          ? `Đang tiến bước... Cẩn thận dẫm phải bẫy chia hết!`
+                          : `Né các ô chia hết cho số bí mật của ta nhé!`}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Secret Divisor Teacher Status Pill */}
+                  <div className="shrink-0 text-right">
+                    <div className="text-[10px] font-black text-emerald-800 uppercase tracking-wide">
+                      Số bí mật:
+                    </div>
+                    <div className={`text-xs font-black px-2 py-0.5 rounded-lg border ${
+                      showSmithSecret 
+                        ? 'bg-rose-100 text-rose-800 border-rose-300' 
+                        : 'bg-amber-100 text-amber-900 border-amber-300'
+                    }`}>
+                      {showSmithSecret ? `Bẫy chia hết cho ${smithSecretNumber}` : '❓ Đang ẩn bí mật'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 2: The 5 Mystery Crates (Barrels [2, 3, 4, 5, 6]) */}
+                <div className="my-auto py-1">
+                  <div className="text-[10px] sm:text-[11px] font-black text-emerald-950 uppercase tracking-wide flex items-center justify-center gap-1.5 mb-1.5">
+                    <span>📦 5 HÒM SỐ BÍ MẬT TIỀM NĂNG:</span>
+                    <span className="text-emerald-800 font-extrabold text-[10px]">(Bẫy chia hết cho 1 trong các số này)</span>
+                  </div>
+
+                  <div className="grid grid-cols-5 gap-1.5 sm:gap-2.5 max-w-md mx-auto">
+                    {[2, 3, 4, 5, 6].map(num => {
+                      const isSecret = smithSecretNumber === num && showSmithSecret;
+                      return (
+                        <div 
+                          key={num}
+                          onClick={() => {
+                            if (!showSmithSecret) {
+                              soundFx.play('click');
+                            }
+                          }}
+                          className={`flex flex-col items-center justify-center p-1.5 sm:p-2 rounded-xl transition-all duration-300 select-none ${
+                            isSecret
+                              ? 'bg-gradient-to-b from-amber-400 via-yellow-400 to-amber-500 border-2 border-amber-600 text-amber-950 font-black shadow-lg ring-4 ring-yellow-300 scale-105 animate-pulse'
+                              : showSmithSecret
+                              ? 'bg-white/80 border border-slate-300 text-slate-400 opacity-60'
+                              : 'bg-gradient-to-b from-[#fef3c7] via-[#fde68a] to-[#fde047]/30 border-2 border-amber-500/70 text-amber-950 shadow-xs hover:-translate-y-0.5 hover:shadow-md cursor-pointer'
+                          }`}
+                        >
+                          {isSecret ? (
+                            <>
+                              <span className="text-[10px] sm:text-xs">🗝️✨</span>
+                              <span className="text-sm sm:text-base font-black">÷ {num}</span>
+                              <span className="text-[8px] font-black uppercase bg-yellow-200/90 text-amber-950 px-1 rounded mt-0.5">BẪY CHIA</span>
+                            </>
+                          ) : showSmithSecret ? (
+                            <>
+                              <span className="text-[10px]">✓</span>
+                              <span className="text-xs sm:text-sm font-bold text-slate-500">{num}</span>
+                              <span className="text-[8px] font-semibold text-slate-400">An toàn</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="text-[10px] sm:text-xs">🔒</span>
+                              <span className="text-sm sm:text-base font-black">{num}</span>
+                              <span className="text-[8px] font-bold text-amber-800">Bí mật ?</span>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Section 3: Bottom Live Status & Click Hint */}
+                <div className="flex items-center justify-between pt-1.5 border-t border-emerald-200/80 text-xs">
+                  <div className="flex items-center gap-1.5 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-xl border border-emerald-300 shadow-2xs font-bold text-emerald-950">
+                    <span className="text-amber-500">👉</span>
+                    <span>Lượt đi:</span>
+                    <span className="text-slate-900 font-black flex items-center gap-1">
+                      <span>{currentTeam.avatar}</span>
+                      <span>{currentTeam.name}</span>
+                    </span>
+                    <span className="text-[10px] text-emerald-800 bg-emerald-100 font-extrabold px-1.5 py-0.5 rounded">
+                      Ô {currentTeam.position}
+                    </span>
+                  </div>
+
+                  <div className="hidden sm:flex items-center gap-1 text-[11px] font-bold text-emerald-800">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Chạm vào ô bất kỳ để soi phép chia!</span>
+                  </div>
+                </div>
               </div>
 
+              {/* 36 STEPPING STONES (Perimeter Path) */}
               {boardTiles.map(tile => {
                 const isDivisiblePreview = showSmithSecret && tile.number % smithSecretNumber === 0;
                 // Pawns on this tile
                 const pawnsOnTile = teams.filter(t => t.position === tile.number && !t.isCaught);
                 const caughtOnTile = teams.filter(t => t.position === tile.number && t.isCaught);
+                const isActiveTeamHere = pawnsOnTile.some(p => p.id === currentTeam.id);
 
-                let tileBg = 'bg-w-bg-alt border-[#E3DCBA] text-slate-700';
-                if (tile.type === 'golden') {
-                  tileBg = 'bg-amber-50 border-amber-300 text-amber-900';
+                let tileBg = 'bg-gradient-to-b from-white via-[#fafaf9] to-[#f4f2ee] border-2 border-[#e7e5e4] border-b-4 border-b-[#d6d3d1] hover:border-emerald-400 text-slate-800';
+                
+                if (tile.number === 1) {
+                  tileBg = 'bg-gradient-to-b from-emerald-100 via-green-50 to-emerald-200 border-2 border-emerald-500 border-b-4 border-b-emerald-700 text-emerald-950 shadow-xs';
+                } else if (tile.type === 'golden') {
+                  tileBg = 'bg-gradient-to-b from-amber-100 via-yellow-50 to-amber-200 border-2 border-amber-400 border-b-4 border-b-amber-600 shadow-[0_0_10px_rgba(245,158,11,0.35)] text-amber-950';
                 } else if (tile.type === 'spring') {
-                  tileBg = 'bg-sky-50 border-sky-300 text-sky-900';
+                  tileBg = 'bg-gradient-to-b from-sky-100 via-cyan-50 to-blue-200 border-2 border-sky-400 border-b-4 border-b-sky-600 shadow-[0_0_10px_rgba(14,165,233,0.3)] text-sky-950';
                 }
 
                 if (isDivisiblePreview) {
-                  tileBg += ' ring-2 ring-rose-400 bg-rose-50/80 shadow-xs';
+                  tileBg = 'bg-gradient-to-b from-rose-100 via-red-50 to-rose-200 border-2 border-rose-500 border-b-4 border-b-rose-700 ring-2 ring-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.4)] animate-pulse text-rose-950';
+                }
+
+                if (isActiveTeamHere) {
+                  tileBg += ' ring-4 ring-amber-500 ring-offset-2 ring-offset-emerald-50 scale-[1.04] z-20 shadow-xl';
                 }
 
                 // Only render tiles 1-36 for the ring
@@ -636,75 +801,108 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
                 return (
                   <div
                     key={tile.number}
-                    className={`min-h-[44px] sm:min-h-[50px] lg:min-h-[54px] p-1 rounded-xl border-2 flex flex-col justify-between relative transition-all ${tileBg}`}
+                    onClick={() => {
+                      soundFx.play('click');
+                      setInspectedTile(tile);
+                    }}
+                    className={`min-h-[46px] sm:min-h-[52px] lg:min-h-[56px] p-1 rounded-xl sm:rounded-2xl flex flex-col justify-between relative transition-all duration-200 cursor-pointer ${tileBg}`}
                     style={{ gridArea: getGridArea(tile.number) }}
+                    title={`Ô số ${tile.number} - Bấm để soi chi tiết`}
                   >
+                    {/* Active Turn Floating Marker */}
+                    {isActiveTeamHere && (
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-amber-500 text-slate-950 text-[8px] font-black px-1.5 py-0.2 rounded-full uppercase tracking-wider shadow-md whitespace-nowrap animate-bounce z-30">
+                        LƯỢT ĐI
+                      </div>
+                    )}
+
                     {/* Top Tile Info */}
                     <div className="flex items-center justify-between text-[10px] font-black">
-                      <span className="w-4 h-4 rounded bg-white/70 backdrop-blur-sm flex items-center justify-center text-[9px]">
-                        {tile.number}
+                      <span className="px-1 py-0.2 rounded-md bg-white/80 backdrop-blur-xs flex items-center justify-center text-[9px] shadow-2xs font-black">
+                        {tile.number === 1 ? '🚩' : tile.number}
                       </span>
-                      {tile.type === 'golden' && (
-                        <span className="text-[10px]" title="Táo Vàng (+2 Táo)">⭐</span>
-                      )}
-                      {tile.type === 'spring' && (
+
+                      {tile.number === 1 ? (
+                        <span className="text-[8px] font-black text-emerald-800">START</span>
+                      ) : tile.type === 'golden' ? (
+                        <span className="text-[10px]" title="Táo Vàng (+2 Táo)">⭐🍎</span>
+                      ) : tile.type === 'spring' ? (
                         <span className="text-[10px]" title="Lò Xo (+2 Ô)">🌀</span>
-                      )}
-                      {isDivisiblePreview && (
-                        <span className="text-[9px] text-rose-500 font-extrabold" title="Ô Nguy Hiểm Của Ông Smith">⚠️</span>
+                      ) : isDivisiblePreview ? (
+                        <span className="text-[10px] text-rose-600 font-extrabold animate-bounce" title="Bẫy Ông Smith">🏮⚠️</span>
+                      ) : (
+                        <span className="text-[8px] opacity-40">🍏</span>
                       )}
                     </div>
 
                     {/* Pawns Display */}
-                    <div className="flex flex-wrap gap-0.5 items-center justify-center my-0.5">
+                    <div className="flex flex-wrap gap-1 items-center justify-center my-0.5">
                       {pawnsOnTile.map(pawn => (
                         <motion.div
                           key={pawn.id}
                           layoutId={`pawn_${pawn.id}`}
-                          className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] shadow-sm border border-white font-black"
+                          className={`w-6 h-6 sm:w-7 sm:h-7 rounded-xl flex items-center justify-center text-xs shadow-md border-2 border-white font-black ${
+                            pawn.id === currentTeam.id ? 'scale-110 shadow-lg ring-2 ring-amber-400 animate-bounce' : ''
+                          }`}
                           style={{ backgroundColor: pawn.color }}
-                          title={`${pawn.name} (Vị trí: ${tile.number})`}
+                          title={`${pawn.name} (Vị trí: ${tile.number} - Đang có ${pawn.apples} 🍎)`}
                         >
-                          <span className="text-[9px]">{pawn.avatar}</span>
+                          <span>{pawn.avatar}</span>
                         </motion.div>
                       ))}
 
                       {caughtOnTile.map(cp => (
                         <div
                           key={cp.id}
-                          className="w-4 h-4 rounded-full bg-rose-600 text-w-text-main flex items-center justify-center text-[8px] shadow-xs border border-white"
-                          title={`${cp.name} (Bị bắt)`}
+                          className="w-5 h-5 rounded-lg bg-rose-600 text-white flex items-center justify-center text-[10px] shadow-xs border border-white"
+                          title={`${cp.name} (Đang bị Ông Smith nhốt)`}
                         >
                           ⛓️
                         </div>
                       ))}
                     </div>
 
-                    {/* Bottom Label if special */}
-                    {tile.label && (
-                      <div className="text-[7px] font-extrabold text-center truncate opacity-80 leading-tight">
-                        {tile.label}
-                      </div>
-                    )}
+                    {/* Bottom Label */}
+                    <div className="text-[7px] sm:text-[8px] font-black text-center truncate leading-tight opacity-90">
+                      {tile.number === 1
+                        ? 'Cổng Vào'
+                        : isDivisiblePreview
+                        ? `Bẫy ÷${smithSecretNumber}!`
+                        : tile.label || '+1 Táo'}
+                    </div>
                   </div>
                 );
               })}
             </div>
           </div>
 
-          {/* Board Legend */}
-          <div className="mt-3 pt-3 border-t border-[#E3DCBA] flex flex-wrap gap-4 text-xs font-semibold text-w-text-muted">
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-md bg-w-bg-alt border border-[#E3DCBA]" />
-              <span>Ô Thường (+1 🍏 nếu an toàn)</span>
+          {/* Board Legend & Click Hint */}
+          <div className="mt-3 pt-3 border-t-2 border-[#E3DCBA] flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-slate-600 relative z-10">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-1">
+                <span className="w-3 h-3 rounded-md bg-emerald-100 border border-emerald-400" />
+                <span className="text-[11px]">🚩 Cổng Vào</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-3 h-3 rounded-md bg-white border border-slate-300" />
+                <span className="text-[11px]">🍏 Ô Thường (+1 🍎)</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-3 h-3 rounded-md bg-amber-100 border border-amber-400" />
+                <span className="text-[11px]">⭐ Táo Vàng (+2 🍎)</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-3 h-3 rounded-md bg-sky-100 border border-sky-400" />
+                <span className="text-[11px]">🌀 Lò Xo (+2 Ô)</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-3 h-3 rounded-md bg-rose-100 border border-rose-500" />
+                <span className="text-[11px]">🏮 Bẫy Chia Hết</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-md bg-amber-100 border border-amber-300" />
-              <span>Ô Táo Vàng (+2 🍎)</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-md bg-sky-100 border border-sky-300" />
-              <span>Ô Lò Xo (+2 Ô)</span>
+
+            <div className="text-[11px] text-emerald-800 font-black bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200 flex items-center gap-1">
+              <span>💡 Bấm vào ô để soi phép chia!</span>
             </div>
           </div>
         </div>
@@ -989,6 +1187,277 @@ export const ApplePickingGame: React.FC<ApplePickingGameProps> = ({
 
         </div>
       </div>
+
+      {/* TILE INSPECTOR MODAL */}
+      <AnimatePresence>
+        {inspectedTile && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="bg-white w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl border-4 border-[#8D5B4C]/80 relative overflow-hidden"
+            >
+              {/* Header */}
+              <div className="flex items-start justify-between pb-3 border-b-2 border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl font-black shadow-inner border-2 ${
+                    inspectedTile.number === 1
+                      ? 'bg-emerald-100 border-emerald-400 text-emerald-800'
+                      : inspectedTile.type === 'golden'
+                      ? 'bg-amber-100 border-amber-400 text-amber-900'
+                      : inspectedTile.type === 'spring'
+                      ? 'bg-sky-100 border-sky-400 text-sky-900'
+                      : 'bg-slate-100 border-slate-300 text-slate-800'
+                  }`}>
+                    {inspectedTile.number === 1 ? '🚩' : inspectedTile.number}
+                  </div>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-1.5">
+                      <span>Ô Số {inspectedTile.number}</span>
+                      <span className="text-xs px-2 py-0.5 rounded-full font-bold bg-slate-100 text-slate-700">
+                        {inspectedTile.number === 1
+                          ? 'Cổng Vườn'
+                          : inspectedTile.type === 'golden'
+                          ? '⭐ Táo Vàng'
+                          : inspectedTile.type === 'spring'
+                          ? '🌀 Lò Xo'
+                          : '🍏 Ô Thường'}
+                      </span>
+                    </h3>
+                    <p className="text-xs text-slate-500 font-semibold">
+                      {inspectedTile.number === 1
+                        ? 'Vạch xuất phát xuất quân của các đội chơi'
+                        : inspectedTile.type === 'golden'
+                        ? 'Đội đứng vào nhận ngay +2 quả táo ngọt!'
+                        : inspectedTile.type === 'spring'
+                        ? 'Đội dẫm vào lò xo sẽ bay vọt thêm +2 ô!'
+                        : 'Thu hoạch an toàn +1 quả táo vào giỏ!'}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setInspectedTile(null)}
+                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Divisibility Inspector Table */}
+              <div className="mt-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black text-slate-800 uppercase tracking-wide flex items-center gap-1">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Bảng Kiểm Tra Tính Chia Hết:</span>
+                  </span>
+                  {showSmithSecret && (
+                    <span className="text-[10px] font-black text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
+                      Số bí mật: {smithSecretNumber}
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-5 gap-1.5">
+                  {[2, 3, 4, 5, 6].map(divisor => {
+                    const isDivisible = inspectedTile.number % divisor === 0;
+                    const isSmithDivisor = showSmithSecret && smithSecretNumber === divisor;
+                    return (
+                      <div
+                        key={divisor}
+                        className={`p-2 rounded-xl text-center border-2 transition ${
+                          isSmithDivisor && isDivisible
+                            ? 'bg-rose-500 border-rose-600 text-white font-black shadow-md ring-2 ring-rose-300 scale-105'
+                            : isDivisible
+                            ? 'bg-amber-50 border-amber-300 text-amber-900 font-black'
+                            : 'bg-slate-50 border-slate-200 text-slate-500'
+                        }`}
+                      >
+                        <div className="text-[10px] font-bold">÷ {divisor}</div>
+                        <div className="text-xs font-black mt-0.5">
+                          {isDivisible ? 'Chia hết' : `dư ${inspectedTile.number % divisor}`}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Status Message */}
+                <div className={`p-3 rounded-2xl border-2 text-xs font-bold ${
+                  showSmithSecret && inspectedTile.number % smithSecretNumber === 0
+                    ? 'bg-rose-50 border-rose-300 text-rose-800'
+                    : 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                }`}>
+                  {showSmithSecret ? (
+                    inspectedTile.number % smithSecretNumber === 0 ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">⚠️</span>
+                        <div>
+                          <strong className="block font-black text-rose-900">CẢNH BÁO: ĐÂY LÀ Ô BẪY!</strong>
+                          Số {inspectedTile.number} chia hết cho {smithSecretNumber} ({inspectedTile.number} = {smithSecretNumber} × {inspectedTile.number / smithSecretNumber}). Đội nào dừng ở đây sẽ bị Ông Smith bắt!
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">✅</span>
+                        <div>
+                          <strong className="block font-black text-emerald-900">Ô NÀY HOÀN TOÀN AN TOÀN!</strong>
+                          Số {inspectedTile.number} không chia hết cho {smithSecretNumber} ({inspectedTile.number} ÷ {smithSecretNumber} dư {inspectedTile.number % smithSecretNumber}). Thu hoạch táo an toàn!
+                        </div>
+                      </div>
+                    )
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">🔍</span>
+                      <div>
+                        Nếu số {inspectedTile.number} chia hết cho số bí mật của Ông Smith, ô này sẽ biến thành bẫy! Hãy cẩn trọng phán đoán!
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Current Pawns on This Tile */}
+                {teams.filter(t => t.position === inspectedTile.number).length > 0 && (
+                  <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200">
+                    <div className="text-[11px] font-black text-slate-700 uppercase mb-1.5">
+                      Đội đang đứng ở ô này:
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {teams.filter(t => t.position === inspectedTile.number).map(t => (
+                        <div
+                          key={t.id}
+                          className="px-2.5 py-1 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center gap-1.5 text-xs font-bold"
+                        >
+                          <span>{t.avatar}</span>
+                          <span>{t.name}</span>
+                          {t.isCaught && <span className="text-[10px] text-rose-600 font-black">(Đang bị nhốt)</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Close Button */}
+              <div className="mt-5 pt-3 border-t border-slate-100 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setInspectedTile(null)}
+                  className="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-black rounded-xl transition cursor-pointer"
+                >
+                  Đóng
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* RULES MODAL */}
+      <AnimatePresence>
+        {showRulesModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="bg-white w-full max-w-lg rounded-3xl p-5 sm:p-6 shadow-2xl border-4 border-[#8D5B4C]/80 relative max-h-[90vh] overflow-y-auto custom-scrollbar"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between pb-3 border-b-2 border-slate-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-2xl bg-amber-100 border-2 border-amber-300 text-amber-900 flex items-center justify-center text-xl shadow-xs">
+                    📜
+                  </div>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-black text-slate-900">
+                      Luật Chơi Vườn Táo Ông Smith
+                    </h3>
+                    <p className="text-xs text-slate-500 font-semibold">
+                      Toán học dấu hiệu chia hết & Đua hái táo tiếp sức
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowRulesModal(false)}
+                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Rule Details */}
+              <div className="mt-4 space-y-3 text-xs sm:text-sm text-slate-700">
+                <div className="p-3 bg-emerald-50 rounded-2xl border border-emerald-200">
+                  <h4 className="font-black text-emerald-950 flex items-center gap-1.5 text-xs sm:text-sm mb-1">
+                    <span>🎯</span>
+                    <span>1. Mục Tiêu Ván Chơi</span>
+                  </h4>
+                  <p className="text-xs text-emerald-900">
+                    Đội đầu tiên tích lũy đủ <strong>{targetApples} Quả Táo (🍎)</strong> trong giỏ sẽ giành chiến thắng chung cuộc!
+                  </p>
+                </div>
+
+                <div className="p-3 bg-amber-50 rounded-2xl border border-amber-200">
+                  <h4 className="font-black text-amber-950 flex items-center gap-1.5 text-xs sm:text-sm mb-1">
+                    <span>🎲</span>
+                    <span>2. Lượt Chơi & Di Chuyển</span>
+                  </h4>
+                  <p className="text-xs text-amber-900">
+                    Mỗi lượt, đội sẽ trả lời 1 câu hỏi. Trả lời đúng nhận quyền tung xúc xắc để bước tới trên đường đi gồm {totalTiles} ô quanh vườn táo. (Nếu bật chế độ bỏ qua câu hỏi, đội sẽ tung xúc xắc ngay).
+                  </p>
+                </div>
+
+                <div className="p-3 bg-rose-50 rounded-2xl border border-rose-200">
+                  <h4 className="font-black text-rose-950 flex items-center gap-1.5 text-xs sm:text-sm mb-1">
+                    <span>👨‍🌾</span>
+                    <span>3. Bẫy Chia Hết Của Ông Smith</span>
+                  </h4>
+                  <p className="text-xs text-rose-900 leading-relaxed">
+                    Ông Smith giữ 1 số bí mật trong nhóm <strong>[2, 3, 4, 5, 6]</strong>. Nếu bạn dừng ở ô có số <strong>chia hết cho số bí mật</strong>, Ông Smith sẽ xuất hiện và nhốt bạn vào chuồng! Đội bị nhốt phải trả lời đúng câu hỏi ở lượt sau để được giải cứu.
+                  </p>
+                </div>
+
+                <div className="p-3 bg-sky-50 rounded-2xl border border-sky-200">
+                  <h4 className="font-black text-sky-950 flex items-center gap-1.5 text-xs sm:text-sm mb-1">
+                    <span>⭐</span>
+                    <span>4. Các Ô Đặc Biệt Trên Bản Đồ</span>
+                  </h4>
+                  <ul className="text-xs text-sky-900 space-y-1 list-disc list-inside mt-1">
+                    <li><strong>🚩 Ô 1 (Cổng vào):</strong> Vị trí an toàn bắt đầu cuộc đua.</li>
+                    <li><strong>🍏 Ô Thường:</strong> Nhận +1 Quả Táo khi dừng chân an toàn.</li>
+                    <li><strong>⭐ Ô Táo Vàng:</strong> Thưởng lớn +2 Quả Táo ngọt lịm!</li>
+                    <li><strong>🌀 Ô Lò Xo Thần Tốc:</strong> Lò xo bật nảy giúp bạn tiến thêm +2 ô!</li>
+                  </ul>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200">
+                  <h4 className="font-black text-slate-800 flex items-center gap-1.5 text-xs sm:text-sm mb-1">
+                    <span>💡</span>
+                    <span>5. Chức Năng Soi Bẫy (Dành Cho Giáo Viên)</span>
+                  </h4>
+                  <p className="text-xs text-slate-600">
+                    Bấm vào nút <strong>"Soi Bẫy (GV)"</strong> trên bản đồ để xem trước số bí mật và các ô bẫy màu đỏ nhấp nháy, giúp giáo viên điều phối và gợi ý cho học sinh một cách sinh động!
+                  </p>
+                </div>
+              </div>
+
+              {/* Close Button */}
+              <div className="mt-5 pt-3 border-t border-slate-100 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowRulesModal(false)}
+                  className="px-6 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs sm:text-sm rounded-xl transition cursor-pointer"
+                >
+                  Đã Hiểu, Bắt Đầu Thôi!
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

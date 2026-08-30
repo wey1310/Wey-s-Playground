@@ -142,7 +142,7 @@ export const TeaBattleGame: React.FC<TeaBattleGameProps> = ({
 
   return (
     <div 
-      className="relative min-h-screen text-w-text-main p-3 sm:p-6 flex flex-col justify-between select-none"
+      className="relative w-full flex-1 min-h-[100dvh] text-w-text-main p-3 sm:p-6 flex flex-col justify-between select-none overflow-y-auto"
       style={{ backgroundImage: 'url(/assets/games/tea_battle/background.webp)', backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       <div className="absolute inset-0 bg-white/70 backdrop-blur-sm z-0"></div>
