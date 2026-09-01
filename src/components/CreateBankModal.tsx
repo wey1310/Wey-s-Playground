@@ -1,8 +1,9 @@
 import { safeAlert } from "../utils/safeAlert";
 import React, { useState, useMemo, useEffect } from 'react';
-import { X, BookOpen, Tag, Star, Globe, Lock, Folder, FolderPlus, Plus, Check } from 'lucide-react';
+import { X, BookOpen, Tag, Star, Globe, Lock, Folder, FolderPlus, Plus, Check, User } from 'lucide-react';
 import type { QuestionBank } from "../types";
 import { GRADES, getSubjectsForGrade, getLessonsForSubjectAndGrade, normalizeGrade } from '../data/curriculumData';
+import { useAuth } from '../contexts/AuthContext';
 
 interface CreateBankModalProps {
   isOpen: boolean;
@@ -17,12 +18,11 @@ interface CreateBankModalProps {
  */
 export function parseBankTags(tagsRaw: any): string[] {
   if (!tagsRaw) return [];
+  let rawList: any[] = [];
+
   if (Array.isArray(tagsRaw)) {
-    return tagsRaw
-      .map(t => (typeof t === 'string' ? t.trim() : String(t).trim()))
-      .filter(Boolean);
-  }
-  if (typeof tagsRaw === 'string') {
+    rawList = tagsRaw;
+  } else if (typeof tagsRaw === 'string') {
     const trimmed = tagsRaw.trim();
     if (!trimmed) return [];
     // Check if JSON array string e.g. '["Toán 7", "Hình học"]'
@@ -30,16 +30,42 @@ export function parseBankTags(tagsRaw: any): string[] {
       try {
         const parsed = JSON.parse(trimmed);
         if (Array.isArray(parsed)) {
-          return parsed.map(t => String(t).trim().replace(/^["']|["']$/g, '')).filter(Boolean);
+          rawList = parsed;
+        } else {
+          rawList = [trimmed];
         }
-      } catch (e) {}
+      } catch (e) {
+        rawList = [trimmed];
+      }
+    } else {
+      rawList = trimmed.split(/[,;\n]+/);
     }
-    return trimmed
-      .split(/[,;\n]+/)
-      .map(t => t.trim().replace(/^["']|["']$/g, ''))
-      .filter(Boolean);
+  } else if (typeof tagsRaw === 'object') {
+    rawList = Object.values(tagsRaw);
   }
-  return [];
+
+  const result: string[] = [];
+  rawList.forEach(item => {
+    if (item === null || item === undefined) return;
+    const str = String(item).trim();
+    if (!str) return;
+    // If the string contains inner comma or semicolon, split further
+    if (str.includes(',') || str.includes(';')) {
+      str.split(/[,;]+/).forEach(sub => {
+        const cleaned = sub.trim().replace(/^["'\[\]]+|["'\[\]]+$/g, '');
+        if (cleaned && !result.some(r => r.toLowerCase() === cleaned.toLowerCase())) {
+          result.push(cleaned);
+        }
+      });
+    } else {
+      const cleaned = str.replace(/^["'\[\]]+|["'\[\]]+$/g, '');
+      if (cleaned && !result.some(r => r.toLowerCase() === cleaned.toLowerCase())) {
+        result.push(cleaned);
+      }
+    }
+  });
+
+  return result;
 }
 
 const POPULAR_TAGS = [
@@ -62,79 +88,119 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({
   initialData,
   availableFolders = []
 }) => {
-  // Form State
-  const [name, setName] = useState('');
-  const [grade, setGrade] = useState('Lớp 7');
-  const [subject, setSubject] = useState('Khoa học tự nhiên');
-  const [topic, setTopic] = useState('');
-  const [folderSelection, setFolderSelection] = useState<string>('');
+  const { user, isAdmin } = useAuth();
+
+  // Pre-calculated default values from initialData
+  const initialGrade = normalizeGrade(initialData?.grade) || 'Lớp 7';
+  const initialSubject = initialData?.subject?.trim() || 'Khoa học tự nhiên';
+  const initialFolder = initialData?.folder ? initialData.folder.trim() : '';
+
+  // Form State initialized directly from initialData
+  const [name, setName] = useState<string>(() => initialData?.name || '');
+  const [grade, setGrade] = useState<string>(() => initialGrade);
+  const [subject, setSubject] = useState<string>(() => initialSubject);
+  const [topic, setTopic] = useState<string>(() => initialData?.topic || '');
+  const [folderSelection, setFolderSelection] = useState<string>(() => initialFolder);
   const [customFolder, setCustomFolder] = useState<string>('');
-  const [description, setDescription] = useState('');
-  const [tagList, setTagList] = useState<string[]>([]);
-  const [newTagInput, setNewTagInput] = useState('');
+  const [description, setDescription] = useState<string>(() => initialData?.description || '');
+  const [creatorNameInput, setCreatorNameInput] = useState<string>(() => 
+    initialData?.creatorName || (isAdmin ? 'Admin' : (user?.displayName || user?.email?.split('@')[0] || 'Giáo viên'))
+  );
+  const [tagList, setTagList] = useState<string[]>(() => parseBankTags(initialData?.tags));
+  const [newTagInput, setNewTagInput] = useState<string>('');
   
   // Checkboxes
-  const [favorite, setFavorite] = useState<boolean>(false);
-  const [isPublic, setIsPublic] = useState<boolean>(false);
-  const [isPreset, setIsPreset] = useState<boolean>(false);
+  const [favorite, setFavorite] = useState<boolean>(() => 
+    Boolean(initialData?.favorite === true || (initialData?.favorite as any) === 'true' || (initialData?.favorite as any) === 1)
+  );
+  const [isPublic, setIsPublic] = useState<boolean>(() => 
+    initialData?.visibility === 'public' || (initialData as any)?.isPublic === true
+  );
+  const [isPreset, setIsPreset] = useState<boolean>(() => 
+    Boolean(initialData?.isPreset === true || (initialData as any)?.isPreset === 'true')
+  );
   const [updateTimestamp, setUpdateTimestamp] = useState<boolean>(true);
+
+  // Track the last loaded bank ID to avoid resetting user edits on unrelated parent re-renders
+  const lastLoadedBankIdRef = React.useRef<string | null>(null);
 
   // Sync and pre-fill when opening modal or when initialData changes
   useEffect(() => {
-    if (isOpen) {
-      const parsedGrade = normalizeGrade(initialData?.grade) || 'Lớp 7';
-      const parsedSubject = initialData?.subject?.trim() || 'Khoa học tự nhiên';
-      const parsedTags = parseBankTags(initialData?.tags);
-      const existingFolder = initialData?.folder ? initialData.folder.trim() : '';
-
-      setName(initialData?.name || '');
-      setGrade(parsedGrade);
-      setSubject(parsedSubject);
-      setTopic(initialData?.topic || '');
-      setDescription(initialData?.description || '');
-      setTagList(parsedTags);
-      setNewTagInput('');
-
-      // Folder dropdown pre-fill logic
-      if (existingFolder) {
-        if (availableFolders.includes(existingFolder)) {
-          setFolderSelection(existingFolder);
-          setCustomFolder('');
-        } else {
-          setFolderSelection('__custom__');
-          setCustomFolder(existingFolder);
-        }
-      } else {
-        setFolderSelection('');
-        setCustomFolder('');
-      }
-
-      // Checkboxes pre-fill
-      setFavorite(Boolean(initialData?.favorite));
-      setIsPublic(initialData?.visibility === 'public');
-      setIsPreset(Boolean(initialData?.isPreset));
-      setUpdateTimestamp(true);
+    if (!isOpen) {
+      lastLoadedBankIdRef.current = null;
+      return;
     }
-  }, [isOpen, initialData, availableFolders]);
+
+    const currentBankId = initialData?.id || '__new__';
+    if (lastLoadedBankIdRef.current === currentBankId) {
+      return;
+    }
+    lastLoadedBankIdRef.current = currentBankId;
+
+    const parsedGrade = normalizeGrade(initialData?.grade) || 'Lớp 7';
+    const parsedSubject = initialData?.subject?.trim() || 'Khoa học tự nhiên';
+    const parsedTags = parseBankTags(initialData?.tags);
+    const existingFolder = initialData?.folder ? initialData.folder.trim() : '';
+
+    setName(initialData?.name || '');
+    setGrade(parsedGrade);
+    setSubject(parsedSubject);
+    setTopic(initialData?.topic || '');
+    setDescription(initialData?.description || '');
+    setCreatorNameInput(initialData?.creatorName || (isAdmin ? 'Admin' : (user?.displayName || user?.email?.split('@')[0] || 'Giáo viên')));
+    setTagList(parsedTags);
+    setNewTagInput('');
+
+    // Folder dropdown pre-fill logic
+    if (existingFolder) {
+      setFolderSelection(existingFolder);
+      setCustomFolder('');
+    } else {
+      setFolderSelection('');
+      setCustomFolder('');
+    }
+
+    // Checkboxes pre-fill
+    setFavorite(Boolean(initialData?.favorite === true || (initialData?.favorite as any) === 'true' || (initialData?.favorite as any) === 1));
+    setIsPublic(initialData?.visibility === 'public' || (initialData as any)?.isPublic === true);
+    setIsPreset(Boolean(initialData?.isPreset === true || (initialData as any)?.isPreset === 'true'));
+    setUpdateTimestamp(true);
+  }, [isOpen, initialData]);
 
   // Dynamic Grade Options
   const allGrades = useMemo(() => {
     const defaultGrades = [...GRADES];
-    if (grade && !defaultGrades.includes(grade as any)) {
-      return [grade, ...defaultGrades];
+    const targetGrade = grade || (initialData?.grade ? normalizeGrade(initialData.grade) : '');
+    if (targetGrade && !defaultGrades.includes(targetGrade as any)) {
+      return [targetGrade, ...defaultGrades];
     }
     return defaultGrades;
-  }, [grade]);
+  }, [grade, initialData?.grade]);
 
   // Dynamic Subject Options for current Grade
   const availableSubjects = useMemo(() => {
     const list = getSubjectsForGrade(grade);
-    // If the bank's existing subject is not in the standard list, ensure it is preserved
-    if (subject && subject.trim() && !list.includes(subject.trim())) {
-      return [subject.trim(), ...list];
+    const set = new Set<string>(list);
+    if (subject && subject.trim()) {
+      set.add(subject.trim());
     }
-    return list;
-  }, [grade, subject]);
+    if (initialData?.subject && initialData.subject.trim()) {
+      set.add(initialData.subject.trim());
+    }
+    return Array.from(set);
+  }, [grade, subject, initialData?.subject]);
+
+  // Combined Folder Options ensuring the bank's existing folder is always selectable
+  const allFolderOptions = useMemo(() => {
+    const set = new Set<string>();
+    (availableFolders || []).forEach(f => {
+      if (f && f.trim()) set.add(f.trim());
+    });
+    if (initialData?.folder && initialData.folder.trim()) {
+      set.add(initialData.folder.trim());
+    }
+    return Array.from(set);
+  }, [availableFolders, initialData?.folder]);
 
   // Dynamic SGK lesson suggestions
   const suggestedLessons = useMemo(() => {
@@ -211,6 +277,8 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({
       });
     }
 
+    const resolvedCreatorName = creatorNameInput.trim() || (initialData?.creatorName || (isAdmin ? 'Admin' : (user?.displayName || user?.email?.split('@')[0] || 'Giáo viên')));
+
     onSave({
       name: name.trim(),
       subject: subject.trim(),
@@ -222,9 +290,15 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({
       visibility: isPublic ? 'public' : 'private',
       favorite: favorite,
       isPreset: isPreset,
+      creatorName: resolvedCreatorName,
+      ownerId: initialData?.ownerId || user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+      userId: initialData?.userId || user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+      userEmail: initialData?.userEmail || user?.email,
       ...(updateTimestamp ? { updatedAt: new Date().toISOString() } : {}),
     });
   };
+
+  const currentCreatorName = creatorNameInput.trim() || initialData?.creatorName || (isAdmin ? 'Admin' : (user?.displayName || 'Giáo viên'));
 
   return (
     <div 
@@ -242,9 +316,18 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({
               <Folder className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-[800] text-w-text-main">
-                {initialData ? 'Chỉnh Sửa Thông Tin Bộ Câu Hỏi' : 'Tạo Bộ Câu Hỏi Mới'}
-              </h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-[800] text-w-text-main">
+                  {initialData ? 'Chỉnh Sửa Thông Tin Bộ Câu Hỏi' : 'Tạo Bộ Câu Hỏi Mới'}
+                </h2>
+                <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold border ${
+                  currentCreatorName === 'Admin' || isAdmin
+                    ? 'bg-amber-500/15 text-amber-600 border-amber-500/30'
+                    : 'bg-indigo-500/15 text-indigo-600 border-indigo-500/30'
+                }`}>
+                  👤 Người tạo: {currentCreatorName}
+                </span>
+              </div>
               <p className="text-xs text-w-text-muted">
                 {initialData ? `Mã bộ đề: ${initialData.id}` : 'Điền thông tin giáo án và cấu hình bộ đề'}
               </p>
@@ -381,11 +464,16 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({
               <select
                 id="bank-folder-dropdown"
                 value={folderSelection}
-                onChange={e => setFolderSelection(e.target.value)}
+                onChange={e => {
+                  setFolderSelection(e.target.value);
+                  if (e.target.value !== '__custom__') {
+                    setCustomFolder('');
+                  }
+                }}
                 className="w-full bg-w-input-bg border border-w-input-border rounded-[16px] px-3.5 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary cursor-pointer shadow-xs"
               >
                 <option value="">(Thư mục gốc - Không phân loại)</option>
-                {availableFolders.map(f => (
+                {allFolderOptions.map(f => (
                   <option key={f} value={f}>📁 {f}</option>
                 ))}
                 <option value="__custom__">➕ Tạo thư mục mới / Nhập tùy chỉnh...</option>
@@ -419,6 +507,26 @@ export const CreateBankModal: React.FC<CreateBankModalProps> = ({
               onChange={e => setDescription(e.target.value)}
               placeholder="Ghi chú thêm về nội dung bộ đề, thang điểm, lưu ý khi tổ chức trò chơi..."
               className="w-full bg-w-input-bg border border-w-input-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary min-h-[68px] shadow-xs"
+            />
+          </div>
+
+          {/* TÊN NGƯỜI TẠO BỘ ĐỀ (creatorName) */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-xs font-[700] text-w-text-muted flex items-center gap-1.5">
+                <User className="w-3.5 h-3.5 text-w-primary" />
+                Tên tác giả / Người tạo (creatorName)
+              </label>
+              <span className="text-[11px] text-w-text-muted">
+                {isAdmin ? 'Mặc định: Admin' : 'Mặc định: Tên tài khoản của bạn'}
+              </span>
+            </div>
+            <input 
+              id="bank-creator-name-input"
+              value={creatorNameInput} 
+              onChange={e => setCreatorNameInput(e.target.value)}
+              placeholder="VD: Admin, Thầy Nam, Cô Hương..."
+              className="w-full bg-w-input-bg border border-w-input-border rounded-[16px] px-4 py-2.5 text-sm font-[600] text-w-text-main focus:outline-none focus:border-w-primary shadow-xs"
             />
           </div>
 

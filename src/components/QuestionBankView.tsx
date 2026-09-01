@@ -39,7 +39,52 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
   onUpdateBanks,
   onOpenQuickManager,
 }) => {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
+  
+  // Helpers for Author and Edit Permissions
+  const getBankCreator = (bank: QuestionBank): string => {
+    if (bank.creatorName) return bank.creatorName;
+    if (bank.authorName) return bank.authorName;
+    if (bank.isPreset) return 'Admin';
+    return 'Giáo viên';
+  };
+
+  const canEditBank = (bank: QuestionBank): boolean => {
+    if (isAdmin) return true;
+    if (bank.isPreset) return false;
+    if (!bank.ownerId && !bank.userId) return true; // legacy unassigned
+    return Boolean(user && (bank.ownerId === user.uid || bank.userId === user.uid));
+  };
+
+  const handleDuplicateAndEdit = (bank: QuestionBank) => {
+    const creator = isAdmin ? 'Admin' : (user?.displayName || user?.email?.split('@')[0] || 'Giáo viên');
+    const newBank: QuestionBank = {
+      ...bank,
+      id: `bank_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      name: `${bank.name} (Bản sao)`,
+      isPreset: false,
+      ownerId: user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+      userId: user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+      userEmail: user?.email,
+      creatorName: creator,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    onUpdateBanks([newBank, ...questionBanks]);
+    showToast(`Đã tạo bản sao riêng "${newBank.name}"!`);
+    onOpenQuickManager(newBank.id);
+  };
+
+  const handleOpenBankManager = (bank: QuestionBank) => {
+    if (canEditBank(bank)) {
+      onOpenQuickManager(bank.id);
+    } else {
+      const creator = getBankCreator(bank);
+      if (safeConfirm(`Bộ câu hỏi này do tác giả "${creator}" tạo công khai. Bạn không thể sửa trực tiếp bản gốc.\n\nBạn có muốn hệ thống tạo ngay một BẢN SAO RIÊNG để bạn tự do chỉnh sửa không?`)) {
+        handleDuplicateAndEdit(bank);
+      }
+    }
+  };
   
   // Navigation & View States
   const [activeTab, setActiveTab] = useState<TabType>('all');
@@ -1251,53 +1296,65 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                       <div className="p-4 sm:p-5">
                         {banks.length > 0 ? (
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {banks.map(bank => (
-                              <BankCardItem
-                                key={bank.id}
-                                bank={bank}
-                                activeTab={activeTab}
-                                isSelected={selectedBankIds.has(bank.id)}
-                                onToggleSelect={() => toggleSelectBank(bank.id)}
-                                onDragStart={(e) => handleDragStart(e, bank.id)}
-                                onDragEnd={handleDragEnd}
-                                onOpenQuickManager={onOpenQuickManager}
-                                onPreview={() => setPreviewBank(bank)}
-                                onPrint={() => setPrintBank(bank)}
-                                onToggleFavorite={() => onUpdateBanks(questionBanks.map(b => b.id === bank.id ? {...b, favorite: !b.favorite} : b))}
-                                onEdit={() => {
-                                  setEditingBank(bank);
-                                  setIsCreateModalOpen(true);
-                                }}
-                                onDuplicate={() => {
-                                  const newBank: QuestionBank = {
-                                    ...bank,
-                                    id: `bank_${Date.now()}`,
-                                    name: `${bank.name} (Bản sao)`,
-                                    isPreset: false,
-                                    createdAt: new Date().toISOString(),
-                                  };
-                                  onUpdateBanks([...questionBanks, newBank]);
-                                  showToast(`Đã nhân bản bộ đề "${bank.name}"`);
-                                }}
-                                onMoveFolder={() => {
-                                  setBankToMove(bank);
-                                  setSelectedTargetFolder(bank.folder || '');
-                                }}
-                                onDelete={() => {
-                                  onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: true } : b));
-                                  showToast(`Đã chuyển bộ đề "${bank.name}" vào thùng rác`);
-                                }}
-                                onRestore={() => {
-                                  onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: false } : b));
-                                  showToast(`Đã khôi phục bộ đề "${bank.name}"`);
-                                }}
-                                onPermanentDelete={() => {
-                                  if (safeConfirm('Bạn chắc chắn muốn xóa vĩnh viễn bộ câu hỏi này?')) {
-                                    onUpdateBanks(questionBanks.filter(b => b.id !== bank.id));
-                                  }
-                                }}
-                              />
-                            ))}
+                            {banks.map(bank => {
+                              const canEdit = canEditBank(bank);
+                              const creator = getBankCreator(bank);
+                              return (
+                                <BankCardItem
+                                  key={bank.id}
+                                  bank={bank}
+                                  activeTab={activeTab}
+                                  canEdit={canEdit}
+                                  creatorName={creator}
+                                  isSelected={selectedBankIds.has(bank.id)}
+                                  onToggleSelect={() => toggleSelectBank(bank.id)}
+                                  onDragStart={(e) => handleDragStart(e, bank.id)}
+                                  onDragEnd={handleDragEnd}
+                                  onOpenQuickManager={(id) => handleOpenBankManager(bank)}
+                                  onPreview={() => setPreviewBank(bank)}
+                                  onPrint={() => setPrintBank(bank)}
+                                  onToggleFavorite={() => onUpdateBanks(questionBanks.map(b => b.id === bank.id ? {...b, favorite: !b.favorite} : b))}
+                                  onEdit={() => {
+                                    setEditingBank(bank);
+                                    setIsCreateModalOpen(true);
+                                  }}
+                                  onDuplicate={() => {
+                                    const newBank: QuestionBank = {
+                                      ...bank,
+                                      id: `bank_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+                                      name: `${bank.name} (Bản sao)`,
+                                      isPreset: false,
+                                      ownerId: user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+                                      userId: user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+                                      userEmail: user?.email,
+                                      creatorName: isAdmin ? 'Admin' : (user?.displayName || user?.email?.split('@')[0] || 'Giáo viên'),
+                                      createdAt: new Date().toISOString(),
+                                      updatedAt: new Date().toISOString(),
+                                    };
+                                    onUpdateBanks([...questionBanks, newBank]);
+                                    showToast(`Đã nhân bản bộ đề "${bank.name}"`);
+                                  }}
+                                  onDuplicateAndEdit={() => handleDuplicateAndEdit(bank)}
+                                  onMoveFolder={() => {
+                                    setBankToMove(bank);
+                                    setSelectedTargetFolder(bank.folder || '');
+                                  }}
+                                  onDelete={() => {
+                                    onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: true } : b));
+                                    showToast(`Đã chuyển bộ đề "${bank.name}" vào thùng rác`);
+                                  }}
+                                  onRestore={() => {
+                                    onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: false } : b));
+                                    showToast(`Đã khôi phục bộ đề "${bank.name}"`);
+                                  }}
+                                  onPermanentDelete={() => {
+                                    if (safeConfirm('Bạn chắc chắn muốn xóa vĩnh viễn bộ câu hỏi này?')) {
+                                      onUpdateBanks(questionBanks.filter(b => b.id !== bank.id));
+                                    }
+                                  }}
+                                />
+                              );
+                            })}
                           </div>
                         ) : (
                           <div className="py-8 text-center border-2 border-dashed border-w-border rounded-2xl bg-w-bg-alt/40 p-4">
@@ -1329,53 +1386,65 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
           {/* ========================================================================= */}
           {viewMode === 'grid' && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredBanks.map(bank => (
-                <BankCardItem
-                  key={bank.id}
-                  bank={bank}
-                  activeTab={activeTab}
-                  isSelected={selectedBankIds.has(bank.id)}
-                  onToggleSelect={() => toggleSelectBank(bank.id)}
-                  onDragStart={(e) => handleDragStart(e, bank.id)}
-                  onDragEnd={handleDragEnd}
-                  onOpenQuickManager={onOpenQuickManager}
-                  onPreview={() => setPreviewBank(bank)}
-                  onPrint={() => setPrintBank(bank)}
-                  onToggleFavorite={() => onUpdateBanks(questionBanks.map(b => b.id === bank.id ? {...b, favorite: !b.favorite} : b))}
-                  onEdit={() => {
-                    setEditingBank(bank);
-                    setIsCreateModalOpen(true);
-                  }}
-                  onDuplicate={() => {
-                    const newBank: QuestionBank = {
-                      ...bank,
-                      id: `bank_${Date.now()}`,
-                      name: `${bank.name} (Bản sao)`,
-                      isPreset: false,
-                      createdAt: new Date().toISOString(),
-                    };
-                    onUpdateBanks([...questionBanks, newBank]);
-                    showToast(`Đã nhân bản bộ đề "${bank.name}"`);
-                  }}
-                  onMoveFolder={() => {
-                    setBankToMove(bank);
-                    setSelectedTargetFolder(bank.folder || '');
-                  }}
-                  onDelete={() => {
-                    onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: true } : b));
-                    showToast(`Đã chuyển bộ đề "${bank.name}" vào thùng rác`);
-                  }}
-                  onRestore={() => {
-                    onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: false } : b));
-                    showToast(`Đã khôi phục bộ đề "${bank.name}"`);
-                  }}
-                  onPermanentDelete={() => {
-                    if (safeConfirm('Bạn chắc chắn muốn xóa vĩnh viễn bộ câu hỏi này?')) {
-                      onUpdateBanks(questionBanks.filter(b => b.id !== bank.id));
-                    }
-                  }}
-                />
-              ))}
+              {filteredBanks.map(bank => {
+                const canEdit = canEditBank(bank);
+                const creator = getBankCreator(bank);
+                return (
+                  <BankCardItem
+                    key={bank.id}
+                    bank={bank}
+                    activeTab={activeTab}
+                    canEdit={canEdit}
+                    creatorName={creator}
+                    isSelected={selectedBankIds.has(bank.id)}
+                    onToggleSelect={() => toggleSelectBank(bank.id)}
+                    onDragStart={(e) => handleDragStart(e, bank.id)}
+                    onDragEnd={handleDragEnd}
+                    onOpenQuickManager={(id) => handleOpenBankManager(bank)}
+                    onPreview={() => setPreviewBank(bank)}
+                    onPrint={() => setPrintBank(bank)}
+                    onToggleFavorite={() => onUpdateBanks(questionBanks.map(b => b.id === bank.id ? {...b, favorite: !b.favorite} : b))}
+                    onEdit={() => {
+                      setEditingBank(bank);
+                      setIsCreateModalOpen(true);
+                    }}
+                    onDuplicate={() => {
+                      const newBank: QuestionBank = {
+                        ...bank,
+                        id: `bank_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+                        name: `${bank.name} (Bản sao)`,
+                        isPreset: false,
+                        ownerId: user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+                        userId: user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+                        userEmail: user?.email,
+                        creatorName: isAdmin ? 'Admin' : (user?.displayName || user?.email?.split('@')[0] || 'Giáo viên'),
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                      };
+                      onUpdateBanks([...questionBanks, newBank]);
+                      showToast(`Đã nhân bản bộ đề "${bank.name}"`);
+                    }}
+                    onDuplicateAndEdit={() => handleDuplicateAndEdit(bank)}
+                    onMoveFolder={() => {
+                      setBankToMove(bank);
+                      setSelectedTargetFolder(bank.folder || '');
+                    }}
+                    onDelete={() => {
+                      onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: true } : b));
+                      showToast(`Đã chuyển bộ đề "${bank.name}" vào thùng rác`);
+                    }}
+                    onRestore={() => {
+                      onUpdateBanks(questionBanks.map(b => b.id === bank.id ? { ...b, isDeleted: false } : b));
+                      showToast(`Đã khôi phục bộ đề "${bank.name}"`);
+                    }}
+                    onPermanentDelete={() => {
+                      if (safeConfirm('Bạn chắc chắn muốn xóa vĩnh viễn bộ câu hỏi này?')) {
+                        onUpdateBanks(questionBanks.filter(b => b.id !== bank.id));
+                      }
+                    }}
+                  />
+                );
+              })}
 
               {filteredBanks.length === 0 && (
                 <div className="col-span-full py-16 text-center text-w-text-muted font-medium border-2 border-dashed border-w-border rounded-[24px] bg-w-bg-card">
@@ -1404,6 +1473,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                       </th>
                       <th className="py-3 px-3 w-10 text-center">Kéo</th>
                       <th className="py-3 px-3">Tên Bộ Đề</th>
+                      <th className="py-3 px-3">Người Tạo</th>
                       <th className="py-3 px-3">Môn & Khối</th>
                       <th className="py-3 px-3">Thư Mục</th>
                       <th className="py-3 px-3 text-center">Số Câu</th>
@@ -1414,6 +1484,8 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                   <tbody className="divide-y divide-w-border/60">
                     {filteredBanks.map(bank => {
                       const isSelected = selectedBankIds.has(bank.id);
+                      const canEdit = canEditBank(bank);
+                      const creator = getBankCreator(bank);
                       return (
                         <tr 
                           key={bank.id}
@@ -1437,8 +1509,9 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                           </td>
                           <td className="py-2.5 px-3">
                             <span 
-                              onClick={() => onOpenQuickManager(bank.id)}
+                              onClick={() => handleOpenBankManager(bank)}
                               className="font-[800] text-w-text-main hover:text-w-primary cursor-pointer line-clamp-1"
+                              title={canEdit ? 'Nhấn để soạn đề' : `Bộ đề do ${creator} tạo (Nhấn để sao chép & sửa)`}
                             >
                               {bank.name}
                             </span>
@@ -1447,6 +1520,15 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                                 {bank.topic}
                               </span>
                             )}
+                          </td>
+                          <td className="py-2.5 px-3 whitespace-nowrap">
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                              creator === 'Admin' 
+                                ? 'bg-amber-100 text-amber-900 border-amber-300' 
+                                : 'bg-indigo-50 text-indigo-800 border-indigo-200'
+                            }`}>
+                              👤 {creator}
+                            </span>
                           </td>
                           <td className="py-2.5 px-3 font-[600] text-w-text-muted whitespace-nowrap">
                             {bank.subject || '—'} • {bank.grade || '—'}
@@ -1492,12 +1574,23 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                               >
                                 <Printer className="w-3.5 h-3.5" />
                               </button>
-                              <button
-                                onClick={() => onOpenQuickManager(bank.id)}
-                                className="px-3 py-1 bg-w-primary-dark hover:bg-w-primary text-white font-[800] text-[11px] rounded-lg cursor-pointer"
-                              >
-                                Soạn
-                              </button>
+                              {canEdit ? (
+                                <button
+                                  onClick={() => onOpenQuickManager(bank.id)}
+                                  className="px-3 py-1 bg-w-primary-dark hover:bg-w-primary text-white font-[800] text-[11px] rounded-lg cursor-pointer"
+                                >
+                                  Soạn
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleDuplicateAndEdit(bank)}
+                                  className="px-2.5 py-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-white font-[800] text-[11px] rounded-lg cursor-pointer flex items-center gap-1"
+                                  title="Sao chép để chỉnh sửa"
+                                >
+                                  <Copy className="w-3 h-3" />
+                                  <span>Sao chép</span>
+                                </button>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -1722,6 +1815,8 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
 interface BankCardItemProps {
   bank: QuestionBank;
   activeTab: TabType;
+  canEdit?: boolean;
+  creatorName?: string;
   isSelected?: boolean;
   onToggleSelect?: () => void;
   onDragStart?: (e: React.DragEvent) => void;
@@ -1732,6 +1827,7 @@ interface BankCardItemProps {
   onToggleFavorite: () => void;
   onEdit: () => void;
   onDuplicate: () => void;
+  onDuplicateAndEdit?: () => void;
   onMoveFolder: () => void;
   onDelete: () => void;
   onRestore: () => void;
@@ -1741,6 +1837,8 @@ interface BankCardItemProps {
 const BankCardItem: React.FC<BankCardItemProps> = ({
   bank,
   activeTab,
+  canEdit = true,
+  creatorName = 'Admin',
   isSelected = false,
   onToggleSelect,
   onDragStart,
@@ -1751,6 +1849,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
   onToggleFavorite,
   onEdit,
   onDuplicate,
+  onDuplicateAndEdit,
   onMoveFolder,
   onDelete,
   onRestore,
@@ -1784,7 +1883,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
         {/* Top Badges, Drag Handle, Checkbox & Favorite */}
         <div className="flex justify-between items-start mb-2.5 gap-2">
           
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5 flex-wrap">
             {/* Batch Selection Checkbox */}
             {onToggleSelect && (
               <input
@@ -1804,12 +1903,21 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
               <GripVertical className="w-4 h-4" />
             </div>
 
+            {/* Creator Badge */}
+            <span className={`text-[10px] font-[800] px-2 py-0.5 rounded-full flex items-center gap-1 border ${
+              creatorName === 'Admin' 
+                ? 'bg-amber-100/90 text-amber-900 border-amber-300' 
+                : 'bg-indigo-50 text-indigo-800 border-indigo-200'
+            }`} title={`Người tạo: ${creatorName}`}>
+              👤 {creatorName}
+            </span>
+
             {bank.isPreset ? (
-              <span className="text-[10px] font-[800] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+              <span className="text-[10px] font-[800] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
                 ⭐ SGK Chuẩn
               </span>
             ) : (
-              <span className={`text-[10px] font-[800] px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
+              <span className={`text-[10px] font-[800] px-2 py-0.5 rounded-full flex items-center gap-1 ${
                 bank.visibility === 'private' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'
               }`}>
                 {bank.visibility === 'private' ? <Lock className="w-2.5 h-2.5" /> : <Globe className="w-2.5 h-2.5" />}
@@ -1837,8 +1945,13 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
 
         {/* Title */}
         <h4 
-          onClick={() => onOpenQuickManager(bank.id)}
+          onClick={() => {
+            if (canEdit) onOpenQuickManager(bank.id);
+            else if (onDuplicateAndEdit) onDuplicateAndEdit();
+            else onOpenQuickManager(bank.id);
+          }}
           className="font-[800] text-w-text-main text-base leading-snug mb-1.5 line-clamp-2 hover:text-w-primary cursor-pointer"
+          title={canEdit ? 'Nhấn để soạn đề' : `Bộ đề do ${creatorName} tạo công khai (Nhấn để tạo bản sao và sửa)`}
         >
           {bank.name}
         </h4>
@@ -1912,12 +2025,23 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
             <Printer className="w-3.5 h-3.5" />
           </button>
 
-          <button 
-            onClick={() => onOpenQuickManager(bank.id)}
-            className="px-3.5 py-1.5 wey-btn-primary text-xs cursor-pointer shadow-xs font-[800]"
-          >
-            Soạn Đề
-          </button>
+          {canEdit ? (
+            <button 
+              onClick={() => onOpenQuickManager(bank.id)}
+              className="px-3.5 py-1.5 wey-btn-primary text-xs cursor-pointer shadow-xs font-[800]"
+            >
+              Soạn Đề
+            </button>
+          ) : (
+            <button 
+              onClick={() => onDuplicateAndEdit ? onDuplicateAndEdit() : onDuplicate()}
+              className="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-[800] text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1"
+              title="Bộ câu hỏi do người khác tạo công khai. Nhấn để tạo bản sao và tự do chỉnh sửa!"
+            >
+              <Copy className="w-3.5 h-3.5" />
+              <span>Sao Chép & Sửa</span>
+            </button>
+          )}
 
           {/* More Actions Dropdown */}
           <div className="relative">
@@ -1937,7 +2061,7 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
                   className="fixed inset-0 z-40" 
                   onClick={() => setDropdownOpen(false)}
                 />
-                <div className="absolute right-0 bottom-full mb-1 w-44 bg-w-bg-card border border-w-border rounded-[16px] shadow-xl z-50 overflow-hidden py-1">
+                <div className="absolute right-0 bottom-full mb-1 w-48 bg-w-bg-card border border-w-border rounded-[16px] shadow-xl z-50 overflow-hidden py-1">
                   {activeTab !== 'trash' ? (
                     <>
                       <button
@@ -1962,47 +2086,62 @@ const BankCardItem: React.FC<BankCardItemProps> = ({
 
                       <div className="border-t border-w-border/60 my-1" />
 
-                      <button
-                        onClick={() => {
-                          onEdit();
-                          setDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 cursor-pointer"
-                      >
-                        <FileText className="w-3.5 h-3.5" /> Sửa thông tin bộ
-                      </button>
+                      {canEdit ? (
+                        <>
+                          <button
+                            onClick={() => {
+                              onEdit();
+                              setDropdownOpen(false);
+                            }}
+                            className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 cursor-pointer"
+                          >
+                            <FileText className="w-3.5 h-3.5" /> Sửa thông tin bộ
+                          </button>
 
-                      <button
-                        onClick={() => {
-                          onMoveFolder();
-                          setDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 cursor-pointer"
-                      >
-                        <FolderPlus className="w-3.5 h-3.5 text-amber-500" /> Chuyển thư mục
-                      </button>
+                          <button
+                            onClick={() => {
+                              onMoveFolder();
+                              setDropdownOpen(false);
+                            }}
+                            className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 cursor-pointer"
+                          >
+                            <FolderPlus className="w-3.5 h-3.5 text-amber-500" /> Chuyển thư mục
+                          </button>
 
-                      <button
-                        onClick={() => {
-                          onDuplicate();
-                          setDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 cursor-pointer"
-                      >
-                        <Copy className="w-3.5 h-3.5" /> Nhân bản bộ này
-                      </button>
+                          <button
+                            onClick={() => {
+                              onDuplicate();
+                              setDropdownOpen(false);
+                            }}
+                            className="w-full text-left px-3.5 py-2 text-xs font-[700] text-w-text-main hover:bg-w-accent-light flex items-center gap-2 cursor-pointer"
+                          >
+                            <Copy className="w-3.5 h-3.5" /> Nhân bản bộ này
+                          </button>
 
-                      <div className="border-t border-w-border/60 my-1" />
+                          <div className="border-t border-w-border/60 my-1" />
 
-                      <button
-                        onClick={() => {
-                          onDelete();
-                          setDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-3.5 py-2 text-xs font-[700] text-rose-600 hover:bg-rose-50 flex items-center gap-2 cursor-pointer"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" /> Chuyển thùng rác
-                      </button>
+                          <button
+                            onClick={() => {
+                              onDelete();
+                              setDropdownOpen(false);
+                            }}
+                            className="w-full text-left px-3.5 py-2 text-xs font-[700] text-rose-600 hover:bg-rose-50 flex items-center gap-2 cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" /> Chuyển thùng rác
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            if (onDuplicateAndEdit) onDuplicateAndEdit();
+                            else onDuplicate();
+                            setDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-3.5 py-2 text-xs font-[700] text-amber-800 hover:bg-amber-50 flex items-center gap-2 cursor-pointer"
+                        >
+                          <Copy className="w-3.5 h-3.5 text-amber-500" /> Tạo bản sao để sửa
+                        </button>
+                      )}
                     </>
                   ) : (
                     <>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GameSetupConfig, Question, AnswerLog, PRESET_THEMES, GameTheme } from '../../types';
 import { soundFx } from '../../utils/audio';
 import { QuestionDisplayModal } from '../QuestionDisplayModal';
+import { GameUIElement } from '../gameUI/GameUIElement';
 
 interface OpenBoxGameProps {
   config: GameSetupConfig;
@@ -207,7 +208,12 @@ export const OpenBoxGame: React.FC<OpenBoxGameProps> = ({ config, questions, onG
       <div className="absolute inset-0 pointer-events-none opacity-20 bg-white/70 backdrop-blur-sm"></div>
       
       {/* Game Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 bg-w-bg-card/95 backdrop-blur border border-w-border px-3 py-2 rounded-xl shadow-md z-10 shrink-0">
+      <GameUIElement
+        id="gameHeader"
+        gameId="openbox"
+        defaultName="Thanh tiêu đề"
+        className="flex flex-wrap items-center justify-between gap-2 bg-w-bg-card/95 backdrop-blur border border-w-border px-3 py-2 rounded-xl shadow-md z-10 shrink-0"
+      >
         <div className="flex items-center gap-2">
           <span className="text-xl sm:text-2xl filter drop-shadow">🎁</span>
           <div>
@@ -254,10 +260,15 @@ export const OpenBoxGame: React.FC<OpenBoxGameProps> = ({ config, questions, onG
         >
           Kết Thúc Game
         </button>
-      </div>
+      </GameUIElement>
 
       {/* Grid of Theme Boxes */}
-      <div className="my-auto py-2 flex-1 min-h-0 overflow-y-auto grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-3 z-10 justify-items-center items-center max-w-5xl mx-auto w-full">
+      <GameUIElement
+        id="boxGrid"
+        gameId="openbox"
+        defaultName="Lưới các hộp quà bí ẩn"
+        className="my-auto py-2 flex-1 min-h-0 overflow-y-auto grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-3 z-10 justify-items-center items-center max-w-5xl mx-auto w-full"
+      >
         {Array.from({ length: totalCount }).map((_, idx) => {
           const isOpened = openedBoxes[idx];
           const isCorrect = boxResults[idx];
@@ -277,7 +288,7 @@ export const OpenBoxGame: React.FC<OpenBoxGameProps> = ({ config, questions, onG
             </button>
           );
         })}
-      </div>
+      </GameUIElement>
 
       {/* Question Display Modal */}
       <QuestionDisplayModal

@@ -5,6 +5,7 @@ import confetti from 'canvas-confetti';
 import { soundFx } from '../../utils/audio';
 import { StudentImportButton } from '../StudentImportButton';
 import { MathChemRenderer } from '../../utils/mathChemFormatter';
+import { GameUIElement } from '../gameUI/GameUIElement';
 import { 
   Users, 
   Shuffle, 
@@ -506,7 +507,12 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
         <div className="absolute inset-0 bg-radial from-amber-100/40 via-orange-50/20 to-transparent pointer-events-none" />
 
         {/* Header Title */}
-        <div className="relative z-10 text-center mb-6 max-w-2xl">
+        <GameUIElement
+          id="gameHeader"
+          gameId="egg_call"
+          defaultName="Thanh tiêu đề"
+          className="relative z-10 text-center mb-6 max-w-2xl"
+        >
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100/80 border border-amber-300/80 text-amber-900 text-xs font-extrabold shadow-2xs mb-2">
             <Wand2 className="w-3.5 h-3.5 text-amber-600" />
             <span>Vườn Trứng Khởi Động Sôi Nổi</span>
@@ -519,11 +525,16 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
               ? `Học sinh may mắn: ${eggs[selectedEggIndex].studentName}`
               : `Còn lại ${remainingCount} quả trứng bí mật đang chờ được gọi tên!`}
           </p>
-        </div>
+        </GameUIElement>
 
         {/* MA TRẬN TRỨNG (EGG GRID) */}
         {selectedEggIndex === null && (
-          <div className="relative z-10 w-full max-w-5xl">
+          <GameUIElement
+            id="eggGrid"
+            gameId="egg_call"
+            defaultName="Khu vực tổ trứng thần kỳ"
+            className="relative z-10 w-full max-w-5xl"
+          >
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-3.5 sm:gap-4.5">
               {eggs.map((egg, idx) => {
                 const isCracking = crackingEggIndex === idx;
@@ -632,7 +643,7 @@ export const EggCallGame: React.FC<GameProps> = ({ config, questions = [], onGam
                 </button>
               </div>
             )}
-          </div>
+          </GameUIElement>
         )}
 
         {/* REVEALED STUDENT CARD & QUESTION FLOW */}

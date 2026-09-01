@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import confetti from 'canvas-confetti';
 import {
   ShieldCheck,
   Users,
@@ -22,7 +23,9 @@ import {
   Check,
   AlertTriangle,
   Play,
-  Upload
+  Upload,
+  ChevronRight,
+  PartyPopper
 } from 'lucide-react';
 import { type QuestionBank, type AppUser, ADMIN_EMAILS, type UserActivityLog } from "../types";
 import { getAllUsers, setUserBlockStatus, getActivityLogs } from '../lib/db';
@@ -30,6 +33,7 @@ import { safeAlert, safeConfirm } from '../utils/safeAlert';
 import { uploadImageFile } from '../utils/imageStorage';
 import { GAMES_LIST } from '../data/gamesList';
 import { APP_THEMES, applyThemeToDom } from '../theme/themeConfig';
+import { useGameUI } from '../contexts/GameUIContext';
 
 export interface WebConfig {
   siteTitle: string;
@@ -39,6 +43,7 @@ export interface WebConfig {
   gemConverterUrl?: string;
   primaryTheme: 'pastel' | 'brightclassroom' | 'deepspace' | 'matcha' | 'sakura' | 'sky' | 'mono';
   gameAvatars?: Record<string, string>;
+  randomCallConfetti?: boolean;
 }
 
 interface AdminViewProps {
@@ -72,6 +77,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
   const [searchUserQuery, setSearchUserQuery] = useState('');
   const [logSearchQuery, setLogSearchQuery] = useState('');
   const [userStatusFilter, setUserStatusFilter] = useState<'all' | 'active' | 'blocked'>('all');
+  const { openEditor } = useGameUI();
 
   // Web config state
   const [localConfig, setLocalConfig] = useState<WebConfig>(webConfig);
@@ -91,6 +97,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
         prev.announcement !== webConfig.announcement ||
         prev.gemConverterUrl !== webConfig.gemConverterUrl ||
         prev.primaryTheme !== webConfig.primaryTheme ||
+        prev.randomCallConfetti !== webConfig.randomCallConfetti ||
         JSON.stringify(prev.gameAvatars) !== JSON.stringify(webConfig.gameAvatars)
       ) {
         return webConfig;
@@ -310,6 +317,16 @@ export const AdminView: React.FC<AdminViewProps> = ({
             <span>Tổng người dùng:</span>
             <span className="px-2 py-0.5 rounded-md bg-w-accent-light text-w-primary">{totalUsers}</span>
           </div>
+
+          <button
+            type="button"
+            onClick={() => openEditor('lucky_star')}
+            className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-extrabold text-xs rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5 border border-amber-400"
+            title="Mở Trình Chỉnh Sửa Giao Diện Trò Chơi Trực Tiếp"
+          >
+            <Palette className="w-3.5 h-3.5" />
+            <span>Chỉnh Giao Diện Game (Live UI Editor)</span>
+          </button>
 
           <button
             type="button"
@@ -570,8 +587,62 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
           {/* TAB 3: WEB CONFIG & BACKGROUND */}
           {activeTab === 'web' && (
-            <form onSubmit={handleSaveWebConfig} className="space-y-6 max-w-3xl">
-              <div className="space-y-6">
+            <div className="space-y-6 max-w-3xl">
+              {/* Admin Game UI Editor Launch Card */}
+              <div className="p-5 bg-gradient-to-br from-amber-500/10 via-yellow-500/5 to-transparent rounded-2xl border-2 border-amber-400/40 shadow-sm space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs">
+                      <Palette className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-w-text-main">
+                        Trình Thiết Kế Giao Diện Trò Chơi Trực Tiếp (Admin Live Game UI Editor)
+                      </h3>
+                      <p className="text-xs text-w-text-muted">
+                        Chỉnh sửa trực quan mọi thành phần: kích thước, màu chữ, nền, viền, bo góc, nút bấm, đổ bóng, hiệu ứng và theme.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => openEditor('lucky_star')}
+                    className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-extrabold text-xs rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5 border border-amber-400 shrink-0"
+                  >
+                    <Sliders className="w-3.5 h-3.5" />
+                    <span>Mở Trình Thiết Kế Trực Tiếp</span>
+                  </button>
+                </div>
+
+                <div className="pt-2 border-t border-amber-200/60">
+                  <div className="text-[11px] font-extrabold text-slate-600 mb-2">Chọn nhanh game để chỉnh sửa giao diện:</div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {[
+                      { id: 'lucky_star', title: '⭐ Ngôi Sao May Mắn' },
+                      { id: 'random_call', title: '🎲 Quay Gọi Ngẫu Nhiên' },
+                      { id: 'egg_call', title: '🥚 Đập Trứng Gọi Tên' },
+                      { id: 'openbox', title: '📦 Mở Hộp May Mắn' },
+                      { id: 'wheel', title: '🎡 Vòng Quay May Mắn' },
+                      { id: 'bingo', title: '🎯 Bingo Đấu Trí' },
+                      { id: 'territory', title: '🚩 Chiếm Lãnh Thổ' },
+                      { id: 'tug_of_war', title: '🪢 Kéo Co Tri Thức' },
+                    ].map(g => (
+                      <button
+                        key={g.id}
+                        type="button"
+                        onClick={() => openEditor(g.id)}
+                        className="px-2.5 py-1.5 rounded-lg bg-white/90 hover:bg-white border border-amber-300 text-[11px] font-bold text-slate-800 hover:text-amber-700 shadow-2xs hover:shadow-xs transition text-left truncate cursor-pointer flex items-center justify-between"
+                      >
+                        <span className="truncate">{g.title}</span>
+                        <ChevronRight className="w-3 h-3 text-amber-500 shrink-0" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <form onSubmit={handleSaveWebConfig} className="space-y-6">
+                <div className="space-y-6">
                 {/* Theme Selector */}
                 <div className="p-4 bg-w-bg-alt rounded-2xl border border-w-border space-y-3">
                   <div className="flex items-center gap-2">
@@ -833,6 +904,82 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     Khi nhập link này, nút <strong>"🤖 Chuyển Đổi Bằng Gem AI"</strong> sẽ xuất hiện trực tiếp tại cửa sổ nạp & soạn câu hỏi để thầy cô bấm vào chuyển đổi định dạng tài liệu nhanh chóng.
                   </p>
                 </div>
+
+                {/* Game Effects & Teacher Controls: Confetti Explosion for Random Call */}
+                <div className="p-4 bg-gradient-to-br from-rose-500/10 via-amber-500/5 to-transparent rounded-2xl border-2 border-rose-300/60 shadow-xs space-y-3.5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 to-amber-500 text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5">
+                        <PartyPopper className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-sm font-black text-w-text-main">
+                            Hiệu Ứng Pháo Hoa Khi Gọi Tên (Random Call Confetti Explosion)
+                          </h3>
+                          <span
+                            className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full border ${
+                              localConfig.randomCallConfetti !== false
+                                ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                                : 'bg-slate-100 text-slate-600 border-slate-300'
+                            }`}
+                          >
+                            {localConfig.randomCallConfetti !== false ? 'Đang Bật' : 'Đã Tắt'}
+                          </span>
+                        </div>
+                        <p className="text-xs text-w-text-muted mt-1 leading-relaxed">
+                          Tự động kích hoạt hiệu ứng nổ pháo hoa hạt kim tuyến rực rỡ (Confetti Particle Explosion) khi vòng quay dừng lại và chọn trúng học sinh trong trò chơi <strong>Quay Gọi Ngẫu Nhiên (Random Call)</strong>. Thầy cô có thể tắt hiệu ứng này để không khí lớp học nghiêm túc hơn hoặc giảm tải đồ họa cho thiết bị yếu.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      id="adminRandomCallConfettiToggle"
+                      onClick={() => {
+                        const nextVal = localConfig.randomCallConfetti === false ? true : false;
+                        const updated = { ...localConfig, randomCallConfetti: nextVal };
+                        setLocalConfig(updated);
+                        onUpdateWebConfig(updated);
+                        try {
+                          localStorage.setItem('wey_web_config', JSON.stringify(updated));
+                          localStorage.setItem('wey_randomcall_confetti', String(nextVal));
+                        } catch (err) {}
+                      }}
+                      className={`w-14 h-7 rounded-full transition-colors p-1 relative cursor-pointer shrink-0 ${
+                        localConfig.randomCallConfetti !== false ? 'bg-rose-500' : 'bg-slate-300'
+                      }`}
+                      title="Bật/Tắt hiệu ứng pháo hoa khi gọi tên học sinh"
+                    >
+                      <div
+                        className={`w-5 h-5 rounded-full bg-white shadow-xs transition-transform transform ${
+                          localConfig.randomCallConfetti !== false ? 'translate-x-7' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  <div className="pt-2 border-t border-rose-200/60 flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-[11px] font-bold text-slate-600">
+                      Thử nghiệm hiệu ứng pháo hoa trực tiếp:
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        confetti({
+                          particleCount: 150,
+                          spread: 90,
+                          origin: { y: 0.6 },
+                          colors: ['#E08283', '#E9D58F', '#F59E0B', '#3B82F6', '#EC4899']
+                        });
+                      }}
+                      className="px-3.5 py-1.5 bg-white hover:bg-rose-50 text-rose-700 font-extrabold text-xs rounded-xl border border-rose-300 shadow-2xs hover:shadow-xs transition cursor-pointer flex items-center gap-1.5"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Bắn thử Pháo Hoa 🎉</span>
+                    </button>
+                  </div>
+                </div>
                 
                 {/* Game Avatars & Icons */}
                 <div className="pt-6 border-t border-w-border space-y-3">
@@ -970,7 +1117,8 @@ export const AdminView: React.FC<AdminViewProps> = ({
                 </button>
               </div>
             </form>
-          )}
+          </div>
+        )}
 
           {/* TAB 4: QUESTION BANKS */}
           {activeTab === 'banks' && (

@@ -550,6 +550,30 @@ CHÂN LÝ
       raceVehicleType: gameId === 'race' ? raceVehicleType : undefined,
       randomCallSkipQuestions: isRandomCallGame ? randomCallSkipQuestions : undefined,
       skipQuestions: isRandomCallGame ? randomCallSkipQuestions : (gameId === 'werewolf' ? werewolfSkipQuestions : undefined),
+      randomCallConfetti: isRandomCallGame ? (() => {
+        try {
+          const savedCfg = localStorage.getItem('wey_web_config');
+          if (savedCfg) {
+            const parsed = JSON.parse(savedCfg);
+            if (typeof parsed.randomCallConfetti === 'boolean') return parsed.randomCallConfetti;
+          }
+          const localSetting = localStorage.getItem('wey_randomcall_confetti');
+          if (localSetting !== null) return localSetting !== 'false';
+        } catch {}
+        return true;
+      })() : undefined,
+      confettiEnabled: isRandomCallGame ? (() => {
+        try {
+          const savedCfg = localStorage.getItem('wey_web_config');
+          if (savedCfg) {
+            const parsed = JSON.parse(savedCfg);
+            if (typeof parsed.randomCallConfetti === 'boolean') return parsed.randomCallConfetti;
+          }
+          const localSetting = localStorage.getItem('wey_randomcall_confetti');
+          if (localSetting !== null) return localSetting !== 'false';
+        } catch {}
+        return true;
+      })() : undefined,
 
       // 1. Whack a mole
       holeCount: whackHoleCount,

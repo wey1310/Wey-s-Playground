@@ -23,11 +23,15 @@ import {
   Check,
   Trash2,
   ArrowDownUp,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Megaphone,
+  PartyPopper
 } from 'lucide-react';
 import { StudentImportButton } from '../StudentImportButton';
 import { MathChemRenderer } from '../../utils/mathChemFormatter';
 import { SessionHistoryLog, type SessionCallRecord } from '../SessionHistoryLog';
+import { announceStudentWinner, announceMultipleWinners, speechService } from '../../utils/speech';
+import { GameUIElement } from '../gameUI/GameUIElement';
 
 export type { SessionCallRecord };
 
@@ -115,6 +119,23 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
   const [questionIndex, setQuestionIndex] = useState<number>(0);
   const [usedQuestionIndices, setUsedQuestionIndices] = useState<number[]>([]);
   const [answerLogs, setAnswerLogs] = useState<AnswerLog[]>([]);
+  const [speechEnabled, setSpeechEnabled] = useState<boolean>(() => !speechService.getIsMuted());
+
+  // Confetti Explosion Effect State (synced with admin config & localStorage)
+  const [confettiEnabled, setConfettiEnabled] = useState<boolean>(() => {
+    if (typeof config.randomCallConfetti === 'boolean') return config.randomCallConfetti;
+    if (typeof config.confettiEnabled === 'boolean') return config.confettiEnabled;
+    try {
+      const savedCfg = localStorage.getItem('wey_web_config');
+      if (savedCfg) {
+        const parsed = JSON.parse(savedCfg);
+        if (typeof parsed.randomCallConfetti === 'boolean') return parsed.randomCallConfetti;
+      }
+      const localSetting = localStorage.getItem('wey_randomcall_confetti');
+      if (localSetting !== null) return localSetting !== 'false';
+    } catch (e) {}
+    return true;
+  });
 
   // Timer
   const [timeLeft, setTimeLeft] = useState<number>(config.timeLimitSeconds || 30);
@@ -213,6 +234,15 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
         setDisplayRollNames(finalWinners);
         soundFx.play('correct');
 
+        // Announce winner name(s) naturally using Speech Synthesis
+        if (speechEnabled) {
+          if (finalWinners.length === 1) {
+            announceStudentWinner(finalWinners[0], 'invite');
+          } else if (finalWinners.length > 1) {
+            announceMultipleWinners(finalWinners);
+          }
+        }
+
         if (noRepeat) {
           setCalledStudents(prev => [...prev, ...finalWinners]);
         }
@@ -233,12 +263,14 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
         };
         setSessionHistory(prev => [...prev, newRecord]);
 
-        confetti({
-          particleCount: 120 + effectiveCount * 25,
-          spread: 80 + effectiveCount * 10,
-          origin: { y: 0.6 },
-          colors: ['#E08283', '#E9D58F', '#F59E0B', '#3B82F6', '#EC4899']
-        });
+        if (confettiEnabled) {
+          confetti({
+            particleCount: 120 + effectiveCount * 25,
+            spread: 80 + effectiveCount * 10,
+            origin: { y: 0.6 },
+            colors: ['#E08283', '#E9D58F', '#F59E0B', '#3B82F6', '#EC4899']
+          });
+        }
       }
     }, speed);
   };
@@ -301,7 +333,9 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
 
     if (status === 'correct') {
       soundFx.play('correct');
-      confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+      if (confettiEnabled) {
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+      }
       setStudentScores(prev => ({
         ...prev,
         [studentToScore]: (prev[studentToScore] || 0) + 10
@@ -627,6 +661,77 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
             </button>
           </div>
 
+          {/* Toggle Voice Reading Mode (🔊 Đọc tên học sinh) */}
+          <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-w-accent-muted shadow-xs">
+            <div>
+              <span className="text-xs font-bold text-w-text-main flex items-center gap-1">
+                <Megaphone className="w-3.5 h-3.5 text-w-primary-dark" />
+                <span>Đọc tên học sinh:</span>
+              </span>
+              <span className="text-[10px] text-w-text-muted">
+                {speechEnabled ? 'Đang bật: Phát âm tự nhiên tên HS' : 'Đang tắt: Không phát âm thanh'}
+              </span>
+            </div>
+            <button
+              type="button"
+              id="gameSidebarSpeechToggle"
+              onClick={() => {
+                const muted = speechService.toggleMute();
+                setSpeechEnabled(!muted);
+              }}
+              className={`w-11 h-6 rounded-full transition p-1 relative cursor-pointer ${
+                speechEnabled ? 'bg-w-primary-dark' : 'bg-slate-300'
+              }`}
+              title="Bật/Tắt phát âm đọc tên học sinh"
+            >
+              <div
+                className={`w-4 h-4 rounded-full bg-white transition transform ${
+                  speechEnabled ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Toggle Confetti Explosion Effect (🎉 Pháo hoa chúc mừng) */}
+          <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-w-accent-muted shadow-xs">
+            <div>
+              <span className="text-xs font-bold text-w-text-main flex items-center gap-1">
+                <PartyPopper className="w-3.5 h-3.5 text-rose-500" />
+                <span>Hiệu ứng pháo hoa:</span>
+              </span>
+              <span className="text-[10px] text-w-text-muted">
+                {confettiEnabled ? 'Đang bật: Bắn pháo hoa khi chọn HS' : 'Đang tắt: Không bắn pháo hoa'}
+              </span>
+            </div>
+            <button
+              type="button"
+              id="gameSidebarConfettiToggle"
+              onClick={() => {
+                const next = !confettiEnabled;
+                setConfettiEnabled(next);
+                try {
+                  localStorage.setItem('wey_randomcall_confetti', String(next));
+                  const savedCfg = localStorage.getItem('wey_web_config');
+                  if (savedCfg) {
+                    const parsed = JSON.parse(savedCfg);
+                    parsed.randomCallConfetti = next;
+                    localStorage.setItem('wey_web_config', JSON.stringify(parsed));
+                  }
+                } catch {}
+              }}
+              className={`w-11 h-6 rounded-full transition p-1 relative cursor-pointer ${
+                confettiEnabled ? 'bg-rose-500' : 'bg-slate-300'
+              }`}
+              title="Bật/Tắt hiệu ứng nổ pháo hoa khi gọi tên học sinh"
+            >
+              <div
+                className={`w-4 h-4 rounded-full bg-white transition transform ${
+                  confettiEnabled ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+
           {/* Scrollable Editable Textarea */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between flex-wrap gap-1">
@@ -698,7 +803,12 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#FEF9E7] via-w-bg-card to-white pointer-events-none" />
 
         {/* TOP HEADER & BATCH BADGE */}
-        <div className="relative z-10 text-center mb-6 max-w-2xl sm:max-w-3xl w-full">
+        <GameUIElement
+          id="gameHeader"
+          gameId="random_call"
+          defaultName="Thanh tiêu đề"
+          className="relative z-10 text-center mb-6 max-w-2xl sm:max-w-3xl w-full"
+        >
           <div className="flex items-center justify-center gap-2 flex-wrap mb-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-w-accent-light text-w-primary-dark text-xs font-black rounded-full border border-w-accent-border shadow-2xs">
               <Sparkles className="w-3.5 h-3.5" />
@@ -743,14 +853,19 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                       : `Đã chọn ${pickedStudents.length} học sinh! Giáo viên có thể chấm điểm nhanh hoặc bốc câu hỏi bên dưới.`))
               : `Bấm nút "QUAY GỌI ${batchCount} HỌC SINH" để bốc thăm ngẫu nhiên`}
           </p>
-        </div>
+        </GameUIElement>
 
         {/* STAGE 1: NAME SPINNER ROULETTE & WINNERS BANNER */}
         {!isQuestionActive && (
           <div className="relative z-10 flex flex-col items-center max-w-2xl w-full">
             
             {/* Roulette Multi-Slot Board */}
-            <div className="w-full bg-w-text-main p-6 sm:p-8 rounded-3xl border-4 border-w-border shadow-[0_15px_40px_rgba(53,69,46,0.35)] text-center relative overflow-hidden">
+            <GameUIElement
+              id="rouletteBox"
+              gameId="random_call"
+              defaultName="Khung gọi tên học sinh"
+              className="w-full bg-w-text-main p-6 sm:p-8 rounded-3xl border-4 border-w-border shadow-[0_15px_40px_rgba(53,69,46,0.35)] text-center relative overflow-hidden"
+            >
               <div className="absolute top-3 left-4 text-xs font-black text-amber-500 uppercase tracking-wider flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Bảng Quay Gọi Tên ({isRolling ? `Đang quay ${displayRollNames.length} bạn...` : `${displayRollNames.length} Học Sinh`})</span>
@@ -759,34 +874,45 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
               {/* Single Student View or Multi-Student Roll View */}
               {displayRollNames.length <= 1 ? (
                 <div className="py-6 sm:py-8">
-                  <motion.div
-                    id="displayName"
-                    data-state={isRolling ? 'rolling' : (pickedStudents.length > 0 ? 'selected' : 'idle')}
-                    key={isRolling ? "rolling" : (displayRollNames[0] || "empty")}
-                    initial={
-                      pickedStudents.length > 0
-                        ? { y: 24, scale: 0.92, opacity: 0 }
-                        : { y: -12, opacity: 0.7 }
-                    }
-                    animate={
-                      pickedStudents.length > 0
-                        ? { y: [24, -8, 4, -2, 0], scale: [0.92, 1.05, 0.98, 1.01, 1], opacity: 1 }
-                        : { y: 0, scale: 1, opacity: 1 }
-                    }
-                    transition={
-                      pickedStudents.length > 0
-                        ? { duration: 0.55, times: [0, 0.55, 0.72, 0.86, 1], ease: "easeOut" }
-                        : { duration: 0.12 }
-                    }
-                    className={`text-3xl sm:text-5xl font-black tracking-tight ${
-                      isRolling ? 'text-amber-500' : (pickedStudents.length > 0 ? 'text-w-bg-card drop-shadow-[0_4px_12px_rgba(233,213,143,0.5)]' : 'text-w-text-muted')
-                    }`}
+                  <GameUIElement
+                    id="nameSlot"
+                    gameId="random_call"
+                    defaultName="Thẻ tên học sinh hiển thị"
                   >
-                    {displayRollNames[0] || '---'}
-                  </motion.div>
+                    <motion.div
+                      id="displayName"
+                      data-state={isRolling ? 'rolling' : (pickedStudents.length > 0 ? 'selected' : 'idle')}
+                      key={isRolling ? "rolling" : (displayRollNames[0] || "empty")}
+                      initial={
+                        pickedStudents.length > 0
+                          ? { y: 24, scale: 0.92, opacity: 0 }
+                          : { y: -12, opacity: 0.7 }
+                      }
+                      animate={
+                        pickedStudents.length > 0
+                          ? { y: [24, -8, 4, -2, 0], scale: [0.92, 1.05, 0.98, 1.01, 1], opacity: 1 }
+                          : { y: 0, scale: 1, opacity: 1 }
+                      }
+                      transition={
+                        pickedStudents.length > 0
+                          ? { duration: 0.55, times: [0, 0.55, 0.72, 0.86, 1], ease: "easeOut" }
+                          : { duration: 0.12 }
+                      }
+                      className={`text-3xl sm:text-5xl font-black tracking-tight ${
+                        isRolling ? 'text-amber-500' : (pickedStudents.length > 0 ? 'text-w-bg-card drop-shadow-[0_4px_12px_rgba(233,213,143,0.5)]' : 'text-w-text-muted')
+                      }`}
+                    >
+                      {displayRollNames[0] || '---'}
+                    </motion.div>
+                  </GameUIElement>
                 </div>
               ) : (
-                <div className="pt-6 pb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                <GameUIElement
+                  id="nameSlot"
+                  gameId="random_call"
+                  defaultName="Thẻ tên học sinh hiển thị"
+                  className="pt-6 pb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"
+                >
                   {displayRollNames.map((name, idx) => (
                     <motion.div
                       key={isRolling ? `rolling_${idx}` : `final_${idx}_${name}`}
@@ -806,9 +932,22 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                         <div className="text-[10px] text-w-accent-muted font-extrabold uppercase">Học sinh {idx + 1}</div>
                         <div className="text-base sm:text-lg font-black truncate">{name}</div>
                       </div>
+                      {!isRolling && name && name !== '---' && name !== '...' && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            announceStudentWinner(name, 'invite');
+                          }}
+                          className="p-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-amber-200 hover:text-white transition cursor-pointer shrink-0"
+                          title={`Đọc tên ${name}`}
+                        >
+                          <Megaphone className="w-4 h-4" />
+                        </button>
+                      )}
                     </motion.div>
                   ))}
-                </div>
+                </GameUIElement>
               )}
 
               {/* Rolling Animation Indicator */}
@@ -819,7 +958,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
                   <span className="w-2 h-2 rounded-full bg-amber-100 animate-bounce [animation-delay:0.4s]" />
                 </div>
               )}
-            </div>
+            </GameUIElement>
 
             {/* Winner Action Options (Single or Multi-Student Cards) */}
             <AnimatePresence>
@@ -1052,19 +1191,25 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
             {/* Initial Roll Button */}
             {pickedStudents.length === 0 && (
               <div className="mt-8 flex flex-col items-center gap-3">
-                <button 
-                  type="button"
-                  onClick={handleRollName}
-                  disabled={isRolling || remainingStudents.length === 0}
-                  className="px-10 py-4 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-xl sm:text-2xl rounded-2xl shadow-xl transition transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer uppercase tracking-wider flex items-center gap-3"
+                <GameUIElement
+                  id="callBtn"
+                  gameId="random_call"
+                  defaultName="Nút QUAY TÊN"
                 >
-                  <Shuffle className="w-6 h-6 text-amber-500" />
-                  <span>
-                    {isRolling 
-                      ? `Đang Quay ${batchCount} Học Sinh...` 
-                      : `QUAY GỌI ${batchCount} HỌC SINH`}
-                  </span>
-                </button>
+                  <button 
+                    type="button"
+                    onClick={handleRollName}
+                    disabled={isRolling || remainingStudents.length === 0}
+                    className="px-10 py-4 bg-gradient-to-r from-w-primary-dark to-w-primary-hover hover:from-w-primary-hover hover:to-[#2B3B1E] text-w-text-main font-black text-xl sm:text-2xl rounded-2xl shadow-xl transition transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer uppercase tracking-wider flex items-center gap-3"
+                  >
+                    <Shuffle className="w-6 h-6 text-amber-500" />
+                    <span>
+                      {isRolling 
+                        ? `Đang Quay ${batchCount} Học Sinh...` 
+                        : `QUAY GỌI ${batchCount} HỌC SINH`}
+                    </span>
+                  </button>
+                </GameUIElement>
 
                 {/* Inline batch size hint & quick picker */}
                 <div className="flex items-center gap-2 bg-w-bg-tag px-3.5 py-1.5 rounded-full border border-w-accent-muted text-xs font-bold text-w-text-muted">
@@ -1101,11 +1246,17 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
 
         {/* STAGE 2: QUESTION & ANSWER PANEL (ENHANCED FOR BATCH PARTICIPATION) */}
         {isQuestionActive && currentQuestion && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="relative z-10 w-full max-w-2xl bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-w-accent-muted space-y-6"
+          <GameUIElement
+            id="questionPanel"
+            gameId="random_call"
+            defaultName="Bảng câu hỏi kiểm tra"
+            className="relative z-10 w-full max-w-2xl"
           >
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              className="w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-w-accent-muted space-y-6"
+            >
             {/* Header: Student Info / Batch Selector & Timer */}
             <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-w-accent-muted">
               <div className="flex items-center gap-3">
@@ -1313,18 +1464,26 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
               )}
             </div>
           </motion.div>
+          </GameUIElement>
         )}
 
         {/* STAGE 3: SESSION HISTORY LOG (CHRONOLOGICAL CALLED STUDENTS LIST BELOW MAIN STAGE) */}
         <div className="relative z-10 w-full max-w-2xl sm:max-w-3xl lg:max-w-4xl mt-8">
-          <SessionHistoryLog
-            history={sessionHistory}
-            onToggleStudentStatus={handleToggleStudentStatusInHistory}
-            onClearHistory={handleClearSessionHistory}
-            studentScores={studentScores}
-            totalCalledCount={sessionHistory.reduce((acc, h) => acc + h.students.length, 0)}
-            className="w-full max-w-none"
-          />
+          <GameUIElement
+            id="sessionHistory"
+            gameId="random_call"
+            defaultName="Nhật ký gọi tên phiên này"
+            className="w-full"
+          >
+            <SessionHistoryLog
+              history={sessionHistory}
+              onToggleStudentStatus={handleToggleStudentStatusInHistory}
+              onClearHistory={handleClearSessionHistory}
+              studentScores={studentScores}
+              totalCalledCount={sessionHistory.reduce((acc, h) => acc + h.students.length, 0)}
+              className="w-full max-w-none"
+            />
+          </GameUIElement>
         </div>
 
       </div>

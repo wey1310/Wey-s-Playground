@@ -29,6 +29,8 @@ export interface QuestionBank {
   ownerId?: string;
   userId?: string;
   userEmail?: string;
+  creatorName?: string; // Tên người tạo bộ câu hỏi (Mặc định 'Admin' nếu tài khoản Admin tạo)
+  authorName?: string;
   questions: Question[];
   isPreset?: boolean;
   createdAt: string;
@@ -259,6 +261,8 @@ export interface GameSetupConfig {
   noRepeatStudents?: boolean;
   randomCallSkipQuestions?: boolean;
   skipQuestions?: boolean;
+  randomCallConfetti?: boolean;
+  confettiEnabled?: boolean;
 
   // 1. Whack-A-Mole Config
   holeCount?: number; // 6, 8, 9, 12

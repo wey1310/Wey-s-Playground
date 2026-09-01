@@ -37,6 +37,7 @@ import { MathChemRenderer } from '../utils/mathChemFormatter';
 import { ImportQuestionsModal } from './ImportQuestionsModal';
 import { CreateBankModal } from './CreateBankModal';
 import { safeAlert, safeConfirm } from '../utils/safeAlert';
+import { useAuth } from '../contexts/AuthContext';
 
 interface QuestionBankEditorProps {
   isOpen?: boolean;
@@ -72,12 +73,64 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
   onSaveBank,
   onDeleteBank,
 }) => {
+  const { user, isAdmin } = useAuth();
   const bankList = banks || questionBanks || [];
   const handleUpdate = onUpdateBank || onSaveBank;
 
   const currentBank = useMemo(() => {
     return bankList.find(b => b.id === activeBankId) || bankList[0];
   }, [bankList, activeBankId]);
+
+  // Ownership & Edit Permissions
+  const creatorName = useMemo(() => {
+    if (!currentBank) return 'Admin';
+    return currentBank.creatorName || currentBank.authorName || (currentBank.isPreset ? 'Admin' : 'Giáo viên');
+  }, [currentBank]);
+
+  const isOwner = useMemo(() => {
+    if (!currentBank || !user) return false;
+    return currentBank.ownerId === user.uid || currentBank.userId === user.uid;
+  }, [currentBank, user]);
+
+  const canEditCurrentBank = useMemo(() => {
+    if (!currentBank) return false;
+    if (isAdmin) return true;
+    if (currentBank.isPreset) return false;
+    if (!currentBank.ownerId && !currentBank.userId) return true; // Legacy unassigned
+    return isOwner;
+  }, [currentBank, isAdmin, isOwner]);
+
+  const handleCloneCurrentBankToEdit = () => {
+    if (!currentBank) return;
+    const myCreatorName = isAdmin ? 'Admin' : (user?.displayName || user?.email?.split('@')[0] || 'Giáo viên');
+    const clonedBank: QuestionBank = {
+      ...currentBank,
+      id: `bank_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      name: `${currentBank.name} (Bản sao)`,
+      isPreset: false,
+      ownerId: user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+      userId: user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+      userEmail: user?.email,
+      creatorName: myCreatorName,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    if (onCreateBank) {
+      onCreateBank(clonedBank);
+    } else if (handleUpdate) {
+      handleUpdate(clonedBank);
+    }
+    onSelectBank(clonedBank.id);
+    safeAlert(`✅ Đã tạo bản sao riêng "${clonedBank.name}"! Giờ đây bạn có thể thoải mái chỉnh sửa và thêm bớt câu hỏi.`);
+  };
+
+  const requireEditPermission = (): boolean => {
+    if (canEditCurrentBank) return true;
+    if (safeConfirm(`Bộ câu hỏi này do tác giả "${creatorName}" tạo công khai. Bạn không có quyền sửa trực tiếp bộ câu hỏi của người khác.\n\nBạn có muốn hệ thống tạo ngay một BẢN SAO RIÊNG để bạn tự do chỉnh sửa không?`)) {
+      handleCloneCurrentBankToEdit();
+    }
+    return false;
+  };
 
   // Sidebar & Bank Search & Bank Create/Edit Modal
   const [bankSearch, setBankSearch] = useState('');
@@ -502,6 +555,8 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
   };
 
   const handleSaveBankModal = (savedData: Partial<QuestionBank>) => {
+    const defaultCreatorName = isAdmin ? 'Admin' : (user?.displayName || user?.email?.split('@')[0] || 'Giáo viên');
+
     if (bankModalInitialData) {
       // Editing existing bank
       const updatedBank: QuestionBank = {
@@ -517,6 +572,10 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
         visibility: savedData.visibility || bankModalInitialData.visibility || 'private',
         favorite: savedData.favorite !== undefined ? savedData.favorite : Boolean(bankModalInitialData.favorite),
         isPreset: savedData.isPreset !== undefined ? savedData.isPreset : Boolean(bankModalInitialData.isPreset),
+        creatorName: savedData.creatorName || bankModalInitialData.creatorName || defaultCreatorName,
+        ownerId: bankModalInitialData.ownerId || user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+        userId: bankModalInitialData.userId || user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+        userEmail: bankModalInitialData.userEmail || user?.email,
         updatedAt: savedData.updatedAt || new Date().toISOString(),
       };
       if (handleUpdate) {
@@ -538,6 +597,10 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
         visibility: savedData.visibility || 'private',
         favorite: Boolean(savedData.favorite),
         isPreset: Boolean(savedData.isPreset),
+        creatorName: savedData.creatorName || defaultCreatorName,
+        ownerId: user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+        userId: user?.uid || (isAdmin ? 'admin_system' : 'guest'),
+        userEmail: user?.email,
         questions: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -742,6 +805,35 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
 
         {/* RIGHT COLUMN: Question List & Tools */}
         <div className="flex-1 flex flex-col p-4 sm:p-6 overflow-y-auto space-y-4">
+          {/* NON-OWNER READ-ONLY BANNER */}
+          {!canEditCurrentBank && currentBank && (
+            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-amber-200 text-amber-900 rounded-xl mt-0.5">
+                  <AlertCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-[800] text-amber-950 flex items-center gap-2">
+                    <span>Chế độ Xem & Đọc (Chỉ đọc)</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-200 text-amber-900 border border-amber-400">
+                      Tác giả: {creatorName}
+                    </span>
+                  </h4>
+                  <p className="text-xs text-amber-800 font-[600] mt-0.5 leading-relaxed">
+                    Bộ câu hỏi này được chia sẻ công khai. Để thêm, sửa hoặc xóa câu hỏi, hãy tạo một bản sao riêng thuộc về tài khoản của bạn.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={handleCloneCurrentBankToEdit}
+                className="px-4 py-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-[800] text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 shrink-0 cursor-pointer"
+              >
+                <Copy className="w-4 h-4" />
+                <span>Sao Chép Để Chỉnh Sửa</span>
+              </button>
+            </div>
+          )}
+
           {/* Active Bank Header & Add Question CTA */}
           <div className="bg-w-bg-card p-4 rounded-2xl border border-w-border shadow-xs flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -749,18 +841,27 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
                 <h3 className="text-base sm:text-lg font-[800] text-w-text-main">
                   {currentBank?.name}
                 </h3>
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                  creatorName === 'Admin' 
+                    ? 'bg-amber-100 text-amber-900 border-amber-300' 
+                    : 'bg-indigo-50 text-indigo-800 border-indigo-200'
+                }`}>
+                  👤 {creatorName}
+                </span>
                 <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
                   {currentBank?.questions?.length || 0} câu hỏi
                 </span>
-                <button
-                  type="button"
-                  onClick={() => handleOpenEditBankModal(currentBank)}
-                  className="flex items-center gap-1.5 px-3 py-1 bg-w-bg-alt hover:bg-w-accent-light text-w-primary-dark border border-w-border hover:border-w-primary/40 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer"
-                  title="Chỉnh sửa thông tin bộ câu hỏi"
-                >
-                  <Edit3 className="w-3.5 h-3.5 text-w-primary" />
-                  <span>Chỉnh sửa thông tin bộ</span>
-                </button>
+                {canEditCurrentBank && (
+                  <button
+                    type="button"
+                    onClick={() => handleOpenEditBankModal(currentBank)}
+                    className="flex items-center gap-1.5 px-3 py-1 bg-w-bg-alt hover:bg-w-accent-light text-w-primary-dark border border-w-border hover:border-w-primary/40 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer"
+                    title="Chỉnh sửa thông tin bộ câu hỏi"
+                  >
+                    <Edit3 className="w-3.5 h-3.5 text-w-primary" />
+                    <span>Chỉnh sửa thông tin bộ</span>
+                  </button>
+                )}
               </div>
               <p className="text-xs text-w-text-muted mt-0.5">
                 Môn: <span className="font-bold text-w-text-main">{currentBank?.subject}</span> • Khối: <span className="font-bold text-w-text-main">{currentBank?.grade}</span> • Chủ đề: <span className="font-bold text-w-text-main">{currentBank?.topic || 'Luyện tập'}</span>
@@ -769,13 +870,23 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
             </div>
 
             <div className="flex items-center gap-2">
-              <button
-                onClick={handleOpenAddQuestion}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-2xl wey-btn-primary text-xs sm:text-sm shadow-sm transition hover:-translate-y-0.5 cursor-pointer"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Thêm Câu Hỏi Mới</span>
-              </button>
+              {canEditCurrentBank ? (
+                <button
+                  onClick={handleOpenAddQuestion}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-2xl wey-btn-primary text-xs sm:text-sm shadow-sm transition hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Thêm Câu Hỏi Mới</span>
+                </button>
+              ) : (
+                <button
+                  onClick={handleCloneCurrentBankToEdit}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white font-[800] text-xs sm:text-sm shadow-sm transition hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <Copy className="w-4 h-4" />
+                  <span>Sao Chép Để Chỉnh Sửa</span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -1614,6 +1725,7 @@ export const QuestionBankEditor: React.FC<QuestionBankEditorProps> = ({
       {/* ============================================================= */}
       {isBankModalOpen && (
         <CreateBankModal
+          key={bankModalInitialData ? `edit_${bankModalInitialData.id}` : 'create_new_bank'}
           isOpen={isBankModalOpen}
           onClose={() => {
             setIsBankModalOpen(false);

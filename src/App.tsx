@@ -67,6 +67,8 @@ import { QuestionBankView } from './components/QuestionBankView';
 import { GameQuickGuideModal } from './components/GameQuickGuideModal';
 import { WeyGuideMascot } from './components/WeyGuideMascot';
 import { useAuth } from './contexts/AuthContext';
+import { useGameUI } from './contexts/GameUIContext';
+import { AdminGameUIEditor } from './components/gameUI/AdminGameUIEditor';
 import { saveQuestionBankToCloud, deleteCloudQuestionBank, getCloudQuestionBanks, getWebConfigCloud, saveWebConfigCloud } from './lib/db';
 import { getPlayLimitStatus, consumePlayCount, PlayLimitStatus } from './utils/playLimit';
 
@@ -100,6 +102,7 @@ import {
   Sun,
   Moon,
   Plus,
+  Palette,
 } from 'lucide-react';
 
 import { GameInfo, GAMES_LIST } from './data/gamesList';
@@ -123,6 +126,107 @@ export default function App() {
     showUnauthorizedModal,
     setShowUnauthorizedModal,
   } = useAuth();
+
+  // Live Game UI Editor Context
+  const { isEditorOpen, activeEditorGameId, openEditor, closeEditor } = useGameUI();
+
+  // Render game instance for Admin Live Game UI Editor preview canvas
+  const renderEditorGameContent = (gameId: string) => {
+    const mockTeams: Team[] = [
+      { id: '1', name: 'Đội 1', score: 0, avatar: '🦁', color: '#3B82F6' },
+      { id: '2', name: 'Đội 2', score: 0, avatar: '🐯', color: '#EF4444' },
+    ];
+    const baseMockConfig: GameSetupConfig = {
+      gameId: 'lucky_star',
+      mode: 'bank',
+      teamMode: true,
+      teams: mockTeams,
+      timerEnabled: true,
+      timeLimitSeconds: 30,
+      theme: 'basic',
+      totalQuestionsNumber: currentQuestions.length || 10,
+      studentsList: ['Nguyễn Văn A', 'Trần Thị B', 'Lê Hoàng C', 'Phạm Minh D', 'Vũ Quỳnh E', 'Hoàng Gia F', 'Đặng Thảo G', 'Bùi Đức H'],
+    };
+
+    if (gameId === 'lucky_star' || gameId === 'luckystar') {
+      return (
+        <LuckyStarGame
+          config={{ ...baseMockConfig, gameId: 'lucky_star' }}
+          questions={currentQuestions}
+          onGameEnd={() => {}}
+        />
+      );
+    }
+    if (gameId === 'random_call' || gameId === 'randomcall') {
+      return (
+        <RandomCallGame
+          config={{ ...baseMockConfig, gameId: 'randomcall' }}
+          questions={currentQuestions}
+          onGameEnd={() => {}}
+        />
+      );
+    }
+    if (gameId === 'egg_call' || gameId === 'eggcall') {
+      return (
+        <EggCallGame
+          config={{ ...baseMockConfig, gameId: 'eggcall' }}
+          questions={currentQuestions}
+          onGameEnd={() => {}}
+        />
+      );
+    }
+    if (gameId === 'openbox') {
+      return (
+        <OpenBoxGame
+          config={{ ...baseMockConfig, gameId: 'openbox' }}
+          questions={currentQuestions}
+          onGameEnd={() => {}}
+        />
+      );
+    }
+    if (gameId === 'wheel') {
+      return (
+        <WheelGame
+          config={{ ...baseMockConfig, gameId: 'wheel' }}
+          questions={currentQuestions}
+          onGameEnd={() => {}}
+        />
+      );
+    }
+    if (gameId === 'bingo') {
+      return (
+        <BingoGame
+          config={{ ...baseMockConfig, gameId: 'bingo' }}
+          questions={currentQuestions}
+          onGameEnd={() => {}}
+        />
+      );
+    }
+    if (gameId === 'territory') {
+      return (
+        <TerritoryGame
+          config={{ ...baseMockConfig, gameId: 'territory' }}
+          questions={currentQuestions}
+          onGameEnd={() => {}}
+        />
+      );
+    }
+    if (gameId === 'tug_of_war' || gameId === 'tugofwar') {
+      return (
+        <TugOfWarGame
+          config={{ ...baseMockConfig, gameId: 'tugofwar' }}
+          questions={currentQuestions}
+          onGameEnd={() => {}}
+        />
+      );
+    }
+    return (
+      <div className="h-full flex flex-col items-center justify-center p-8 text-center bg-slate-900 text-white rounded-2xl">
+        <h3 className="text-xl font-bold mb-2">Đang xem trước trò chơi {gameId}</h3>
+        <p className="text-sm text-slate-400">Chọn các thành phần giao diện trên thanh công cụ để chỉnh sửa trực tiếp.</p>
+      </div>
+    );
+  };
 
   // Play limit state for guests (3 plays/day)
   const [playLimitStatus, setPlayLimitStatus] = useState<PlayLimitStatus>(() =>
@@ -235,6 +339,7 @@ export default function App() {
       bgImageUrl: "/assets/home-bg.webp",
       announcement: "",
       primaryTheme: "pastel",
+      randomCallConfetti: true,
     };
   });
 
@@ -877,6 +982,20 @@ export default function App() {
               </button>
             )}
 
+            {isAdmin && (
+              <button
+                onClick={() => {
+                  soundFx.buttonClick();
+                  openEditor(activeGameConfig?.gameId || 'lucky_star');
+                }}
+                className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-[800] rounded-[18px] shadow-sm hover:-translate-y-0.5 transition-all cursor-pointer border border-amber-400"
+                title="Mở trình chỉnh sửa giao diện trò chơi trực tiếp (Admin Game UI Editor)"
+              >
+                <Palette className="w-3.5 h-3.5 text-white" />
+                <span>UI Editor</span>
+              </button>
+            )}
+
             <LoginButton
               onCloudBanksLoaded={banks => {
                 const allBanks = [...DEFAULT_QUESTION_BANKS];
@@ -1011,6 +1130,18 @@ export default function App() {
               </div>
 
               <div className="flex items-center gap-1.5 sm:gap-2">
+                {isAdmin && (
+                  <button
+                    type="button"
+                    onClick={() => openEditor(activeGameConfig.gameId)}
+                    className="wey-btn-secondary flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg cursor-pointer bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-900 border border-amber-300 hover:from-amber-200 hover:to-yellow-200"
+                    title="Chỉnh sửa giao diện trò chơi hiện tại (Admin UI Editor)"
+                  >
+                    <Palette className="w-3.5 h-3.5 text-amber-600" />
+                    <span className="hidden sm:inline">Chỉnh UI</span>
+                  </button>
+                )}
+
                 <button
                   type="button"
                   onClick={toggleFullscreen}
@@ -1146,7 +1277,14 @@ export default function App() {
               />
             )}
             {activeGameConfig.gameId === 'randomcall' && (
-              <RandomCallGame config={activeGameConfig} questions={currentQuestions} onGameEnd={handleEndGame} />
+              <RandomCallGame
+                config={{
+                  ...activeGameConfig,
+                  randomCallConfetti: activeGameConfig.randomCallConfetti ?? webConfig.randomCallConfetti ?? true
+                }}
+                questions={currentQuestions}
+                onGameEnd={handleEndGame}
+              />
             )}
             {activeGameConfig.gameId === 'eggcall' && (
               <EggCallGame config={activeGameConfig} questions={currentQuestions} onGameEnd={handleEndGame} />
@@ -1834,6 +1972,14 @@ export default function App() {
           }
         }}
       />
+
+      {/* Admin Live Game UI Editor */}
+      {isAdmin && isEditorOpen && (
+        <AdminGameUIEditor
+          onClose={closeEditor}
+          renderGameContent={renderEditorGameContent}
+        />
+      )}
     </div>
   );
 }

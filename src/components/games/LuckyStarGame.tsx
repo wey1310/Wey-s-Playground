@@ -23,10 +23,18 @@ import {
   Award,
   Star,
   ListOrdered,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Palette,
+  Megaphone,
+  Zap,
+  History
 } from 'lucide-react';
 import { Question } from '../../types';
 import { StudentImportButton } from '../StudentImportButton';
+import { announceStudentWinner, announceMultipleWinners, speechService } from '../../utils/speech';
+import { useGameUI } from '../../contexts/GameUIContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { GameUIElement } from '../gameUI/GameUIElement';
 
 interface LuckyStarGameProps {
   config: any;
@@ -292,6 +300,21 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
       };
     });
   });
+
+  // Keep students in a ref so stopping effect does not restart every animation frame
+  const studentsRef = useRef<StudentStar[]>(students);
+  useEffect(() => {
+    studentsRef.current = students;
+  }, [students]);
+
+  const { isAdmin } = useAuth();
+  const { openEditor } = useGameUI();
+  const [speechEnabled, setSpeechEnabled] = useState<boolean>(() => !speechService.getIsMuted());
+
+  const toggleSpeech = () => {
+    const muted = speechService.toggleMute();
+    setSpeechEnabled(!muted);
+  };
 
   // Calculate layout coordinates so stars don't clump or overlap
   const generateNonOverlappingPositions = useCallback((count: number) => {
@@ -566,13 +589,55 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
     };
   }, [gameState, speedMultiplier, audio]);
 
+  // Selected star for direct modal/action
+  const [activeStarAction, setActiveStarAction] = useState<StudentStar | null>(null);
+  const [showHistoryModal, setShowHistoryModal] = useState<boolean>(false);
+
+  // Unified winner selection executor
+  const executeWinnerSelection = (pickedWinners: StudentStar[]) => {
+    if (!pickedWinners || pickedWinners.length === 0) return;
+
+    const winnerIds = new Set(pickedWinners.map(w => w.id));
+
+    // Mark winners as selected in student roster while preserving their active state
+    setStudents(prev => prev.map(s => winnerIds.has(s.id) ? { ...s, selected: true } : s));
+    setWinners(pickedWinners);
+    setGameState('RESULT');
+    audio.playVictory();
+
+    // Voice announcement using speech synthesis
+    if (speechEnabled) {
+      if (pickedWinners.length === 1) {
+        announceStudentWinner(pickedWinners[0].name);
+      } else if (pickedWinners.length > 1) {
+        announceMultipleWinners(pickedWinners.map(w => w.name));
+      }
+    }
+
+    try {
+      confetti({
+        particleCount: 130,
+        spread: 90,
+        origin: { y: 0.5 },
+        colors: ['#FDE047', '#FCD34D', '#FB923C', '#38BDF8', '#A78BFA', '#34D399', '#FFFFFF'],
+      });
+    } catch {}
+  };
+
   // Handle Stop timer and multi-winner determination based on pickCount
   useEffect(() => {
     if (gameState === 'STOPPING') {
       stopStartTimeRef.current = performance.now();
 
       const timer = setTimeout(() => {
-        const eligiblePool = students.filter(s => !s.selected && s.activeInPool);
+        const currentPool = studentsRef.current;
+        let eligiblePool = currentPool.filter(s => !s.selected && s.activeInPool);
+
+        if (eligiblePool.length === 0) {
+          // If all students were called, auto refresh eligible pool
+          eligiblePool = currentPool.map(s => ({ ...s, selected: false, activeInPool: true }));
+          setStudents(eligiblePool);
+        }
 
         if (eligiblePool.length === 0) {
           setGameState('ROUND_COMPLETE');
@@ -585,27 +650,13 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
         // True Cryptographic/Secure Random Selection of N distinct students
         const shuffled = [...eligiblePool].sort(() => Math.random() - 0.5);
         const pickedWinners = shuffled.slice(0, actualCountToPick);
-        const winnerIds = new Set(pickedWinners.map(w => w.id));
 
-        // Mark winners as selected
-        setStudents(prev => prev.map(s => winnerIds.has(s.id) ? { ...s, selected: true } : s));
-        setWinners(pickedWinners);
-        setGameState('RESULT');
-        audio.playVictory();
-
-        try {
-          confetti({
-            particleCount: 120,
-            spread: 90,
-            origin: { y: 0.5 },
-            colors: ['#FDE047', '#FCD34D', '#FB923C', '#38BDF8', '#A78BFA', '#34D399', '#FFFFFF'],
-          });
-        } catch {}
+        executeWinnerSelection(pickedWinners);
       }, 1600);
 
       return () => clearTimeout(timer);
     }
-  }, [gameState, students, audio, pickCount]);
+  }, [gameState, audio, pickCount, speechEnabled]);
 
   // Statistics
   const totalStudents = students.length;
@@ -613,11 +664,41 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
   const remainingCount = students.filter(s => !s.selected && s.activeInPool).length;
   const isAllCalled = totalStudents > 0 && remainingCount === 0;
 
+  // Instant Quick Random Selection (without waiting for spin)
+  const handleQuickPick = () => {
+    if (gameState === 'SPINNING' || gameState === 'STOPPING') return;
+    const currentPool = studentsRef.current;
+    let eligiblePool = currentPool.filter(s => !s.selected && s.activeInPool);
+
+    if (eligiblePool.length === 0) {
+      eligiblePool = currentPool.map(s => ({ ...s, selected: false, activeInPool: true }));
+      setStudents(eligiblePool);
+    }
+
+    if (eligiblePool.length === 0) {
+      setGameState('ROUND_COMPLETE');
+      return;
+    }
+
+    const actualCountToPick = Math.min(Math.max(1, pickCount), eligiblePool.length);
+    const shuffled = [...eligiblePool].sort(() => Math.random() - 0.5);
+    const pickedWinners = shuffled.slice(0, actualCountToPick);
+
+    executeWinnerSelection(pickedWinners);
+  };
+
+  // Directly select and reveal a specific single student as the lucky winner
+  const handleDirectSelectStudent = (star: StudentStar) => {
+    setActiveStarAction(null);
+    executeWinnerSelection([star]);
+  };
+
   // Actions
   const handleStart = () => {
     if (gameState === 'SPINNING' || gameState === 'STOPPING') return;
     if (remainingCount === 0) {
-      setGameState('ROUND_COMPLETE');
+      // Auto start new round if all were called
+      handleNewRound();
       return;
     }
 
@@ -814,19 +895,56 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
       <div className="absolute top-1/2 right-1/3 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Top Header Bar & Grand Game-Show Title */}
-      <div className="relative z-10 pt-3 pb-2 px-4 sm:px-6 flex flex-col items-center justify-center">
+      <GameUIElement
+        id="gameHeader"
+        gameId="lucky_star"
+        defaultName="Thanh tiêu đề game"
+        className="relative z-10 pt-3 pb-2 px-4 sm:px-6 flex flex-col items-center justify-center"
+      >
         {/* Quick status chips */}
         <div className="w-full flex items-center justify-between text-xs sm:text-sm font-medium text-amber-200/90 mb-1">
           <div className="flex items-center gap-2 bg-w-bg-alt border border-amber-500/30 px-3 py-1.5 rounded-full backdrop-blur-md shadow-lg">
             <Sparkles className="w-4 h-4 text-amber-600 animate-spin" style={{ animationDuration: '6s' }} />
             <span>Vòng {roundNumber}</span>
             <span className="text-w-text-main/40">•</span>
-            <span>Đã gọi: <strong className="text-amber-600 font-bold">{calledStudentsCount}</strong> / {totalStudents}</span>
+            <button
+              onClick={() => setShowHistoryModal(true)}
+              className="hover:text-amber-300 underline font-bold cursor-pointer"
+              title="Nhấn để xem danh sách và quản lý các em đã được gọi"
+            >
+              Đã gọi: <strong className="text-amber-600 font-bold">{calledStudentsCount}</strong> / {totalStudents}
+            </button>
             <span className="text-w-text-main/40">•</span>
             <span>Còn lại: <strong className="text-emerald-400 font-bold">{remainingCount}</strong></span>
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Speech synthesis toggle */}
+            <button
+              onClick={toggleSpeech}
+              className={`p-2 rounded-xl border transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-1 text-xs font-semibold ${
+                speechEnabled 
+                  ? 'bg-amber-500/20 border-amber-400/60 text-amber-300 hover:bg-amber-500/30' 
+                  : 'bg-w-bg-alt border-slate-700/60 text-slate-400 hover:bg-slate-800'
+              }`}
+              title={speechEnabled ? 'Đang bật đọc tên học sinh (nhấn để tắt)' : 'Đang tắt đọc tên (nhấn để bật)'}
+            >
+              <Megaphone className="w-4 h-4" />
+              <span className="hidden md:inline">{speechEnabled ? 'Giọng đọc: BẬT' : 'Giọng đọc: TẮT'}</span>
+            </button>
+
+            {/* Admin Game UI Live Editor */}
+            {isAdmin && (
+              <button
+                onClick={() => openEditor('lucky_star')}
+                className="p-2 rounded-xl bg-gradient-to-r from-amber-500/25 to-yellow-500/25 hover:from-amber-500/40 hover:to-yellow-500/40 border border-amber-400/60 text-amber-200 transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-1.5 text-xs font-bold"
+                title="Mở bộ thiết kế giao diện trực tiếp (Admin UI Editor)"
+              >
+                <Palette className="w-4 h-4 text-amber-400" />
+                <span className="hidden sm:inline">Chỉnh giao diện</span>
+              </button>
+            )}
+
             <button
               onClick={() => setSoundEnabled(!soundEnabled)}
               className="p-2 rounded-xl bg-w-bg-alt hover:bg-indigo-50 border border-amber-500/30 text-amber-600 transition-all shadow-md active:scale-95 cursor-pointer"
@@ -845,7 +963,12 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
         </div>
 
         {/* Grand Title */}
-        <div className="text-center mt-1">
+        <GameUIElement
+          id="gameTitle"
+          gameId="lucky_star"
+          defaultName="Dòng chữ Tiêu đề game"
+          className="text-center mt-1"
+        >
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-wider bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-300 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(251,191,36,0.7)] flex items-center justify-center gap-2 sm:gap-3">
             <Star className="w-6 h-6 sm:w-10 sm:h-10 text-yellow-300 fill-yellow-300 animate-pulse drop-shadow-[0_0_12px_#FDE047]" />
             <span>NGÔI SAO MAY MẮN LÀ AI?</span>
@@ -857,11 +980,17 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
             {gameState === 'IDLE' && `⭐ Chọn số lượng ${pickCount} sao và bấm BẮT ĐẦU để quay thưởng!`}
             {gameState === 'ROUND_COMPLETE' && '🎉 Tất cả học sinh trong lớp đã được gọi! Bấm "Vòng mới" để chơi lại.'}
           </p>
-        </div>
-      </div>
+        </GameUIElement>
+      </GameUIElement>
 
       {/* Main Celestial Arena (The Starry Sky) */}
-      <div className="relative flex-1 w-full overflow-hidden z-10">
+      <GameUIElement
+        id="starStage"
+        gameId="lucky_star"
+        defaultName="Vũ trụ / Sàn sao lượn sóng"
+        className="relative flex-1 w-full overflow-hidden z-10"
+      >
+        <div className="relative w-full h-full overflow-hidden">
         {students.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center p-6">
             <Star className="w-16 h-16 text-yellow-400/50 mb-3 animate-bounce" />
@@ -888,17 +1017,17 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                 key={star.id}
                 onClick={() => {
                   if (gameState === 'SPINNING' || gameState === 'STOPPING') return;
-                  setStudents(prev => prev.map(s => s.id === star.id ? { ...s, selected: !s.selected } : s));
+                  setActiveStarAction(star);
                   audio.playShuffleTick();
                 }}
-                title={star.selected ? `Đã gọi: ${star.name} (Nhấn để mở lại)` : `Chưa gọi: ${star.name} (Nhấn để đánh dấu đã gọi)`}
+                title={star.selected ? `Đã gọi: ${star.name} (Nhấn để tùy chọn / gọi lại)` : `Chưa gọi: ${star.name} (Nhấn để chọn ngay hoặc đổi trạng thái)`}
                 style={{
                   position: 'absolute',
                   left: `${star.x}%`,
                   top: `${star.y}%`,
                   transform: 'translate(-50%, -50%)',
                   transition: isSpinning || isStopping ? 'none' : 'transform 0.4s ease-out, opacity 0.4s ease',
-                  opacity: isDimmed ? (gameState === 'RESULT' ? 0.15 : 0.35) : 1,
+                  opacity: isDimmed ? (gameState === 'RESULT' ? 0.2 : 0.4) : 1,
                   zIndex: isWinnerStar ? 40 : star.selected ? 5 : 20,
                 }}
                 className="flex flex-col items-center justify-center cursor-pointer group select-none"
@@ -907,26 +1036,30 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                 <div
                   className={`relative transition-all duration-300 ${
                     isWinnerStar
-                      ? 'scale-150 animate-bounce'
+                      ? 'scale-150 animate-bounce ring-4 ring-yellow-300 rounded-full'
                       : isSpinning
                       ? 'scale-110'
-                      : 'hover:scale-125'
+                      : 'hover:scale-130'
                   }`}
                 >
                   <svg
                     viewBox="0 0 24 24"
                     className="w-9 h-9 sm:w-12 sm:h-12 drop-shadow-[0_0_15px_rgba(253,224,71,0.9)]"
                     style={{
-                      filter: `drop-shadow(0 0 ${isSpinning ? '18px' : '10px'} ${star.glowColor})`,
+                      filter: `drop-shadow(0 0 ${isSpinning || isWinnerStar ? '18px' : '10px'} ${isWinnerStar ? '#FDE047' : star.glowColor})`,
                     }}
                   >
                     <path
                       d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-                      fill={star.selected ? '#64748B' : star.color}
-                      stroke={star.selected ? '#94A3B8' : '#FFFFFF'}
-                      strokeWidth={isSpinning ? 1.5 : 1}
+                      fill={isWinnerStar ? '#FACC15' : star.selected ? '#64748B' : star.color}
+                      stroke={isWinnerStar ? '#FFFFFF' : star.selected ? '#94A3B8' : '#FFFFFF'}
+                      strokeWidth={isSpinning || isWinnerStar ? 2 : 1}
                     />
                   </svg>
+
+                  {isWinnerStar && (
+                    <span className="absolute -top-3 -right-1 text-sm animate-pulse">👑</span>
+                  )}
 
                   {isSpinning && (
                     <span className="absolute -inset-1 rounded-full border border-amber-300/60 animate-ping pointer-events-none" />
@@ -936,15 +1069,15 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                 {/* Student Name Pill */}
                 <div
                   className={`mt-1 px-2.5 py-0.5 rounded-full text-center whitespace-nowrap text-xs sm:text-sm font-bold tracking-wide backdrop-blur-md border shadow-lg transition-all ${
-                    star.selected
+                    isWinnerStar
+                      ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 border-white shadow-[0_0_20px_#FDE047] scale-115 ring-2 ring-amber-400 font-black'
+                      : star.selected
                       ? 'bg-w-bg-alt text-w-text-muted border-w-accent-border line-through'
-                      : isWinnerStar
-                      ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 border-white shadow-[0_0_20px_#FDE047] scale-110'
                       : 'bg-w-bg-card text-amber-100 border-amber-400 group-hover:border-amber-300 group-hover:text-w-text-main'
                   }`}
                 >
                   {star.name}
-                  {star.selected && (
+                  {star.selected && !isWinnerStar && (
                     <span className="ml-1 text-[10px] uppercase font-normal text-emerald-400">✓ Đã gọi</span>
                   )}
                 </div>
@@ -1129,10 +1262,16 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+        </div>
+      </GameUIElement>
 
       {/* Bottom Interactive Command Dock */}
-      <div className="relative z-20 px-4 sm:px-6 py-3.5 bg-w-bg-card backdrop-blur-xl border-t border-amber-500/25 flex flex-wrap items-center justify-between gap-3 shadow-2xl">
+      <GameUIElement
+        id="controlBar"
+        gameId="lucky_star"
+        defaultName="Thanh điều khiển nút bấm"
+        className="relative z-20 px-4 sm:px-6 py-3.5 bg-w-bg-card backdrop-blur-xl border-t border-amber-500/25 flex flex-wrap items-center justify-between gap-3 shadow-2xl"
+      >
         {/* Left Action Buttons */}
         <div className="flex items-center gap-2 flex-wrap">
           <button
@@ -1202,17 +1341,35 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
         </div>
 
         {/* Center Primary Game Action Button (START / STOP) */}
-        <div className="flex items-center gap-3 mx-auto">
+        <GameUIElement
+          id="startBtn"
+          gameId="lucky_star"
+          defaultName="Nút QUAY / BẮT ĐẦU"
+          className="flex items-center gap-3 mx-auto"
+        >
           {gameState !== 'SPINNING' ? (
-            <button
-              id="lucky-star-start-btn"
-              onClick={handleStart}
-              disabled={gameState === 'STOPPING' || remainingCount === 0}
-              className="group relative flex items-center gap-2.5 px-8 sm:px-12 py-3 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 font-black text-lg sm:text-xl rounded-2xl shadow-[0_0_30px_rgba(251,191,36,0.6)] hover:shadow-[0_0_45px_rgba(251,191,36,0.9)] hover:scale-105 active:scale-95 transition-all uppercase tracking-wider disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-            >
-              <Play className="w-6 h-6 fill-slate-950 group-hover:animate-ping" />
-              <span>BẮT ĐẦU</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                id="lucky-star-start-btn"
+                onClick={handleStart}
+                disabled={gameState === 'STOPPING' || remainingCount === 0}
+                className="group relative flex items-center gap-2.5 px-6 sm:px-10 py-3 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 font-black text-base sm:text-xl rounded-2xl shadow-[0_0_30px_rgba(251,191,36,0.6)] hover:shadow-[0_0_45px_rgba(251,191,36,0.9)] hover:scale-105 active:scale-95 transition-all uppercase tracking-wider disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+              >
+                <Play className="w-5 h-5 fill-slate-950 group-hover:animate-ping" />
+                <span>BẮT ĐẦU</span>
+              </button>
+
+              <button
+                id="lucky-star-quick-pick-btn"
+                onClick={handleQuickPick}
+                disabled={gameState === 'STOPPING' || remainingCount === 0}
+                className="flex items-center gap-1.5 px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs sm:text-sm rounded-2xl shadow-lg hover:scale-105 active:scale-95 transition-all uppercase tracking-wide cursor-pointer disabled:opacity-40"
+                title="Chọn và xướng tên ngẫu nhiên ngay lập tức không cần chờ quay"
+              >
+                <Zap className="w-4 h-4 fill-slate-950" />
+                <span className="hidden sm:inline">GỌI NGAY</span>
+              </button>
+            </div>
           ) : (
             <button
               id="lucky-star-stop-btn"
@@ -1234,7 +1391,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
             <RotateCcw className="w-4 h-4" />
             <span className="hidden md:inline">Vòng mới</span>
           </button>
-        </div>
+        </GameUIElement>
 
         {/* Right Speed Multiplier Controls */}
         <div className="flex items-center gap-2 bg-w-bg-alt border border-amber-500/30 px-3 py-1.5 rounded-xl">
@@ -1256,7 +1413,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
             ))}
           </div>
         </div>
-      </div>
+      </GameUIElement>
 
       {/* Multiple Winners Celebration Modal */}
       <AnimatePresence>
@@ -1267,13 +1424,19 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
             exit={{ opacity: 0 }}
             className="absolute inset-0 z-50 bg-w-bg-card backdrop-blur-md flex items-center justify-center p-4 select-none"
           >
-            <motion.div
-              initial={{ scale: 0.5, y: 50, rotate: -3 }}
-              animate={{ scale: 1, y: 0, rotate: 0 }}
-              exit={{ scale: 0.5, y: 50 }}
-              transition={{ type: 'spring', damping: 15, stiffness: 200 }}
-              className="relative max-w-2xl w-full bg-gradient-to-b from-[#1E1B4B] via-[#0F172A] to-[#020617] border-3 border-amber-400 p-6 sm:p-8 rounded-3xl shadow-[0_0_80px_rgba(251,191,36,0.85)] text-center flex flex-col items-center max-h-[90vh] overflow-y-auto"
+            <GameUIElement
+              id="resultCard"
+              gameId="lucky_star"
+              defaultName="Bảng chúc mừng học sinh may mắn"
+              className="relative max-w-2xl w-full"
             >
+              <motion.div
+                initial={{ scale: 0.5, y: 50, rotate: -3 }}
+                animate={{ scale: 1, y: 0, rotate: 0 }}
+                exit={{ scale: 0.5, y: 50 }}
+                transition={{ type: 'spring', damping: 15, stiffness: 200 }}
+                className="w-full bg-gradient-to-b from-[#1E1B4B] via-[#0F172A] to-[#020617] border-3 border-amber-400 p-6 sm:p-8 rounded-3xl shadow-[0_0_80px_rgba(251,191,36,0.85)] text-center flex flex-col items-center max-h-[90vh] overflow-y-auto"
+              >
               {/* Close icon */}
               <button
                 onClick={() => setShowResultModal(false)}
@@ -1324,9 +1487,25 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                       </svg>
                     </div>
 
-                    <h4 className="text-lg sm:text-2xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-yellow-100 drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] mt-2">
-                      {winner.name}
-                    </h4>
+                    <GameUIElement
+                      id="winnerName"
+                      gameId="lucky_star"
+                      defaultName="Tên học sinh trúng giải"
+                    >
+                      <h4 className="text-lg sm:text-2xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-yellow-100 drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] mt-2">
+                        {winner.name}
+                      </h4>
+                    </GameUIElement>
+
+                    {/* Quick Speak button for individual winner */}
+                    <button
+                      onClick={() => announceStudentWinner(winner.name)}
+                      className="mt-2 text-xs flex items-center gap-1 text-amber-300/80 hover:text-amber-200 bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-full border border-amber-400/30 transition-all cursor-pointer"
+                      title="Đọc tên học sinh này"
+                    >
+                      <Megaphone className="w-3 h-3 text-amber-400" />
+                      <span>Đọc tên</span>
+                    </button>
                   </motion.div>
                 ))}
               </div>
@@ -1347,6 +1526,22 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                   <span>GỌI TIẾP</span>
                 </button>
 
+                {/* Speak all winners button */}
+                <button
+                  onClick={() => {
+                    if (winners.length === 1) {
+                      announceStudentWinner(winners[0].name);
+                    } else {
+                      announceMultipleWinners(winners.map(w => w.name));
+                    }
+                  }}
+                  className="px-4 py-3 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-200 font-bold rounded-2xl transition-all text-sm sm:text-base flex items-center gap-2 cursor-pointer"
+                  title="Đọc lại toàn bộ danh sách trúng thưởng"
+                >
+                  <Megaphone className="w-4 h-4 text-amber-400" />
+                  <span>Đọc lại</span>
+                </button>
+
                 <button
                   onClick={() => setShowResultModal(false)}
                   className="px-6 py-3 bg-w-accent-light hover:bg-slate-700 text-w-text-main font-bold rounded-2xl transition-all text-sm sm:text-base cursor-pointer"
@@ -1355,6 +1550,7 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
                 </button>
               </div>
             </motion.div>
+            </GameUIElement>
           </motion.div>
         )}
       </AnimatePresence>
@@ -1645,6 +1841,147 @@ export const LuckyStarGame: React.FC<LuckyStarGameProps> = ({ config, onGameEnd 
               >
                 Đóng
               </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Direct Single Star Action Modal */}
+      <AnimatePresence>
+        {activeStarAction && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 select-none"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-slate-900 border-2 border-amber-400 w-full max-w-sm rounded-3xl p-6 shadow-2xl text-slate-100 text-center"
+            >
+              <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center">
+                <Star className="w-8 h-8 text-yellow-300 fill-yellow-400" />
+              </div>
+
+              <h3 className="text-xl font-black text-amber-300 mb-1">{activeStarAction.name}</h3>
+              <p className="text-xs text-slate-400 mb-5">
+                Trạng thái hiện tại: {activeStarAction.selected ? '✅ Đã được gọi' : '⭐ Chưa được gọi'}
+              </p>
+
+              <div className="space-y-2.5">
+                <button
+                  onClick={() => handleDirectSelectStudent(activeStarAction)}
+                  className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black rounded-xl text-sm shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 fill-slate-950" />
+                  <span>Xướng tên Ngôi sao may mắn ngay!</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    const targetId = activeStarAction.id;
+                    setStudents(prev => prev.map(s => s.id === targetId ? { ...s, selected: !s.selected } : s));
+                    setActiveStarAction(null);
+                  }}
+                  className="w-full py-2.5 bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 font-bold rounded-xl text-xs transition-all cursor-pointer"
+                >
+                  {activeStarAction.selected ? '🔄 Đổi về: Chưa gọi' : '✓ Đánh dấu: Đã gọi (không xướng tên)'}
+                </button>
+
+                <button
+                  onClick={() => setActiveStarAction(null)}
+                  className="w-full py-2 bg-transparent text-slate-400 hover:text-slate-200 text-xs font-semibold cursor-pointer"
+                >
+                  Đóng
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Called Students History Modal */}
+      <AnimatePresence>
+        {showHistoryModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4 select-none"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-slate-900 border border-amber-500/40 w-full max-w-lg rounded-3xl p-6 shadow-2xl text-slate-100 flex flex-col max-h-[85vh]"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+                <div className="flex items-center gap-2 text-amber-400 font-black text-base sm:text-lg">
+                  <Sparkles className="w-5 h-5" />
+                  <span>Danh sách học sinh đã gọi ({calledStudentsCount}/{totalStudents})</span>
+                </div>
+                <button
+                  onClick={() => setShowHistoryModal(false)}
+                  className="p-1.5 text-slate-400 hover:text-white rounded-full cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto pr-1 space-y-2 mb-4">
+                {students.filter(s => s.selected).length === 0 ? (
+                  <div className="text-center py-8 text-slate-400 text-sm">
+                    Chưa có học sinh nào được gọi trong vòng này.
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {students
+                      .filter(s => s.selected)
+                      .map((student, idx) => (
+                        <div
+                          key={student.id}
+                          className="flex items-center justify-between p-2.5 bg-slate-800/80 rounded-xl border border-slate-700/60"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 font-bold text-xs flex items-center justify-center shrink-0">
+                              {idx + 1}
+                            </span>
+                            <span className="text-xs sm:text-sm font-bold text-slate-200 truncate">{student.name}</span>
+                          </div>
+                          <button
+                            onClick={() => {
+                              setStudents(prev => prev.map(s => s.id === student.id ? { ...s, selected: false } : s));
+                            }}
+                            className="text-[11px] text-amber-400 hover:text-amber-300 font-semibold px-2 py-1 bg-amber-500/10 hover:bg-amber-500/20 rounded-lg transition-all cursor-pointer shrink-0"
+                            title="Gọi lại em này"
+                          >
+                            Gọi lại
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between pt-3 border-t border-slate-800 gap-2">
+                <button
+                  onClick={() => {
+                    handleNewRound();
+                    setShowHistoryModal(false);
+                  }}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold rounded-xl border border-amber-500/30 cursor-pointer"
+                >
+                  🔄 Đặt lại tất cả (Vòng mới)
+                </button>
+                <button
+                  onClick={() => setShowHistoryModal(false)}
+                  className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black rounded-xl cursor-pointer"
+                >
+                  Đóng
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
