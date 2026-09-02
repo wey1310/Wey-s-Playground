@@ -44,6 +44,7 @@ export interface WebConfig {
   primaryTheme: 'pastel' | 'brightclassroom' | 'deepspace' | 'matcha' | 'sakura' | 'sky' | 'mono';
   gameAvatars?: Record<string, string>;
   randomCallConfetti?: boolean;
+  randomCallConfettiIntensity?: number;
 }
 
 interface AdminViewProps {
@@ -620,12 +621,12 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     {[
                       { id: 'lucky_star', title: '⭐ Ngôi Sao May Mắn' },
                       { id: 'random_call', title: '🎲 Quay Gọi Ngẫu Nhiên' },
-                      { id: 'egg_call', title: '🥚 Đập Trứng Gọi Tên' },
+                      { id: 'eggcall', title: '🥚 Đập Trứng Gọi Tên' },
                       { id: 'openbox', title: '📦 Mở Hộp May Mắn' },
                       { id: 'wheel', title: '🎡 Vòng Quay May Mắn' },
                       { id: 'bingo', title: '🎯 Bingo Đấu Trí' },
                       { id: 'territory', title: '🚩 Chiếm Lãnh Thổ' },
-                      { id: 'tug_of_war', title: '🪢 Kéo Co Tri Thức' },
+                      { id: 'tugofwar', title: '🪢 Kéo Co Tri Thức' },
                     ].map(g => (
                       <button
                         key={g.id}
@@ -959,6 +960,29 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     </button>
                   </div>
 
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-rose-100">
+                    <div className="flex flex-col gap-1 w-full max-w-sm">
+                      <div className="flex justify-between items-center w-full">
+                        <span className="text-xs font-bold text-slate-700">Cường độ pháo hoa (Số lượng hạt)</span>
+                        <span className="text-xs font-black text-rose-600 bg-rose-100 px-2 py-0.5 rounded-lg">{localConfig.randomCallConfettiIntensity ?? 50}</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="20"
+                        max="300"
+                        step="10"
+                        value={localConfig.randomCallConfettiIntensity ?? 50}
+                        onChange={(e) => {
+                          const nextVal = parseInt(e.target.value, 10);
+                          const updated = { ...localConfig, randomCallConfettiIntensity: nextVal };
+                          setLocalConfig(updated);
+                          onUpdateWebConfig(updated);
+                        }}
+                        className="w-full accent-rose-500 h-2 bg-rose-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                    </div>
+                  </div>
+
                   <div className="pt-2 border-t border-rose-200/60 flex flex-wrap items-center justify-between gap-2">
                     <span className="text-[11px] font-bold text-slate-600">
                       Thử nghiệm hiệu ứng pháo hoa trực tiếp:
@@ -967,7 +991,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       type="button"
                       onClick={() => {
                         confetti({
-                          particleCount: 150,
+                          particleCount: localConfig.randomCallConfettiIntensity ?? 50,
                           spread: 90,
                           origin: { y: 0.6 },
                           colors: ['#E08283', '#E9D58F', '#F59E0B', '#3B82F6', '#EC4899']

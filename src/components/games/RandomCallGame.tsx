@@ -265,7 +265,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
 
         if (confettiEnabled) {
           confetti({
-            particleCount: 120 + effectiveCount * 25,
+            particleCount: config.randomCallConfettiIntensity ?? 50,
             spread: 80 + effectiveCount * 10,
             origin: { y: 0.6 },
             colors: ['#E08283', '#E9D58F', '#F59E0B', '#3B82F6', '#EC4899']
@@ -334,7 +334,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
     if (status === 'correct') {
       soundFx.play('correct');
       if (confettiEnabled) {
-        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+        confetti({ particleCount: config.randomCallConfettiIntensity ?? 50, spread: 60, origin: { y: 0.7 } });
       }
       setStudentScores(prev => ({
         ...prev,
@@ -436,7 +436,7 @@ export const RandomCallGame: React.FC<GameProps> = ({ config, questions = [], on
 
     if (status === 'correct') {
       soundFx.play('correct');
-      confetti({ particleCount: 80, spread: 70, origin: { y: 0.7 } });
+      confetti({ particleCount: config.randomCallConfettiIntensity ?? 50, spread: 70, origin: { y: 0.7 } });
     } else if (status === 'help') {
       soundFx.play('bonus');
     } else {

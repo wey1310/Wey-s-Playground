@@ -84,13 +84,49 @@ interface AdminGameUIEditorProps {
 
 const AVAILABLE_GAMES = [
   { id: 'lucky_star', name: 'Ngôi Sao May Mắn (Lucky Star)' },
-  { id: 'random_call', name: 'Gọi Tên Ngẫu Nhiên (Random Call)' },
-  { id: 'egg_call', name: 'Đập Trứng Gọi Tên (Egg Call)' },
+  { id: 'randomcall', name: 'Gọi Tên Ngẫu Nhiên (Random Call)' },
+  { id: 'eggcall', name: 'Đập Trứng Gọi Tên (Egg Call)' },
   { id: 'openbox', name: 'Mở Hộp Bí Mật (Open Box)' },
   { id: 'wheel', name: 'Vòng Quay May Mắn (Wheel)' },
   { id: 'bingo', name: 'Đấu Trường Bingo' },
   { id: 'territory', name: 'Chiếm Lĩnh Lãnh Thổ' },
-  { id: 'tug_of_war', name: 'Kéo Co Tri Thức' },
+  { id: 'tugofwar', name: 'Kéo Co Tri Thức' },
+  { id: 'tower', name: 'Xây Tháp' },
+  { id: 'puzzle', name: 'Ghép Hình' },
+  { id: 'race', name: 'Đua Xe' },
+  { id: 'blindbox', name: 'Hộp Mù' },
+  { id: 'pokemon', name: 'Bắt Pokemon' },
+  { id: 'battleship', name: 'Bắn Tàu' },
+  { id: 'pictogram', name: 'Đuổi Hình Bắt Chữ' },
+  { id: 'magic_wheel', name: 'Vòng Quay Phép Thuật' },
+  { id: 'posechallenge', name: 'Thử Thách Tạo Dáng' },
+  { id: 'caro', name: 'Cờ Ca-rô' },
+  { id: 'whackamole', name: 'Đập Chuột' },
+  { id: 'classification', name: 'Phân Loại' },
+  { id: 'flagcapture', name: 'Cướp Cờ' },
+  { id: 'sackrace', name: 'Nhảy Bao Bố' },
+  { id: 'snailwordsearch', name: 'Ốc Sên Tìm Chữ' },
+  { id: 'mineboom', name: 'Dò Mìn' },
+  { id: 'chess', name: 'Cờ Vua' },
+  { id: 'goldminer', name: 'Đào Vàng' },
+  { id: 'bearpass', name: 'Truyền Gấu' },
+  { id: 'letterarrange', name: 'Sắp Xếp Chữ' },
+  { id: 'applepick', name: 'Hái Táo' },
+  { id: 'sontinhthuytinh', name: 'Sơn Tinh Thủy Tinh' },
+  { id: 'cothu', name: 'Cờ Thú' },
+  { id: 'monopoly', name: 'Cờ Tỷ Phú' },
+  { id: 'werewolf', name: 'Ma Sói' },
+  { id: 'case_investigation', name: 'Hồ Sơ Vụ Án' },
+  { id: 'teabattle', name: 'Trận Chiến Trà' },
+  { id: 'bowling', name: 'Bowling' },
+  { id: 'chase', name: 'Cuộc Đuổi Bắt' },
+  { id: 'mancala', name: 'Ô Ăn Quan' },
+  { id: 'ai_star_call', name: 'Gọi Tên Ngôi Sao AI' },
+  { id: 'ai_galaxy_call', name: 'Gọi Tên Ngân Hà AI' },
+  { id: 'ai_nebula_call', name: 'Gọi Tên Tinh Vân AI' },
+  { id: 'ai_bubble_call', name: 'Gọi Tên Bong Bóng AI' },
+  { id: 'ludo', name: 'Cờ Cá Ngựa' },
+  { id: 'betting', name: 'Đặt Cược' }
 ];
 
 interface ThemePack {
@@ -372,7 +408,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
   return (
     <div className="space-y-1.5 p-2.5 bg-slate-850/60 rounded-xl border border-slate-750/70">
       <div className="flex items-center justify-between">
-        <label className="text-slate-300 font-bold text-xs flex items-center gap-1.5">
+        <label className="text-slate-600 font-bold text-xs flex items-center gap-1.5">
           <Palette className="w-3.5 h-3.5 text-amber-400 shrink-0" />
           <span>{label}</span>
         </label>
@@ -408,7 +444,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
       <div className="flex items-center gap-1.5">
         {/* Color preview swatch + native picker trigger */}
         <div
-          className="relative shrink-0 w-9 h-9 rounded-xl border border-slate-700 overflow-hidden cursor-pointer shadow-xs hover:border-amber-400 transition"
+          className="relative shrink-0 w-9 h-9 rounded-xl border border-slate-300 overflow-hidden cursor-pointer shadow-xs hover:border-amber-400 transition"
           style={{
             backgroundImage:
               'linear-gradient(45deg, #334155 25%, transparent 25%), linear-gradient(-45deg, #334155 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #334155 75%), linear-gradient(-45deg, transparent 75%, #334155 75%)',
@@ -440,7 +476,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
             value={currentColor}
             placeholder="#000000 hoặc theme:..."
             onChange={(e) => onChange(e.target.value)}
-            className="w-full bg-slate-800 text-slate-100 px-3 py-1.5 rounded-xl border border-slate-700 font-mono text-xs focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/40"
+            className="w-full bg-slate-100 text-slate-800 px-3 py-1.5 rounded-xl border border-slate-300 font-mono text-xs focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/40"
           />
         </div>
 
@@ -449,7 +485,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
           <button
             type="button"
             onClick={handleEyeDropper}
-            className="p-2 bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-amber-300 border border-slate-700 rounded-xl transition cursor-pointer shrink-0"
+            className="p-2 bg-slate-100 hover:bg-slate-50 text-slate-600 hover:text-amber-300 border border-slate-300 rounded-xl transition cursor-pointer shrink-0"
             title="Chấm màu từ màn hình (EyeDropper)"
           >
             <Pipette className="w-3.5 h-3.5" />
@@ -460,7 +496,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
         <button
           type="button"
           onClick={handleCopy}
-          className="p-2 bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-amber-300 border border-slate-700 rounded-xl transition cursor-pointer shrink-0"
+          className="p-2 bg-slate-100 hover:bg-slate-50 text-slate-600 hover:text-amber-300 border border-slate-300 rounded-xl transition cursor-pointer shrink-0"
           title="Sao chép mã màu"
         >
           {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
@@ -473,7 +509,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
           className={`px-2.5 py-1.5 text-xs font-bold rounded-xl border transition cursor-pointer flex items-center gap-1 shrink-0 ${
             showPalettes
               ? 'bg-amber-500 text-slate-950 border-amber-400 font-extrabold shadow-xs'
-              : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-750'
+              : 'bg-slate-100 text-slate-600 border-slate-300 hover:bg-slate-50'
           }`}
           title="Xem kho màu chuẩn, chủ đề & công cụ"
         >
@@ -492,14 +528,14 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
             className="pt-2 border-t border-slate-750/80 space-y-2 overflow-hidden"
           >
             {/* Palette Navigation Tabs */}
-            <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-slate-750 text-[10px]">
+            <div className="flex items-center gap-1 bg-white/80 p-1 rounded-xl border border-slate-750 text-[10px]">
               <button
                 type="button"
                 onClick={() => setPaletteTab('tokens')}
                 className={`flex-1 py-1 rounded-lg font-bold transition text-center ${
                   paletteTab === 'tokens'
                     ? 'bg-amber-500 text-slate-950 shadow-xs'
-                    : 'text-slate-400 hover:text-slate-200'
+                    : 'text-slate-400 hover:text-slate-700'
                 }`}
               >
                 🏷️ Chủ Đề
@@ -510,7 +546,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
                 className={`flex-1 py-1 rounded-lg font-bold transition text-center ${
                   paletteTab === 'accessible'
                     ? 'bg-amber-500 text-slate-950 shadow-xs'
-                    : 'text-slate-400 hover:text-slate-200'
+                    : 'text-slate-400 hover:text-slate-700'
                 }`}
               >
                 🛡️ Tương Phản
@@ -521,7 +557,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
                 className={`flex-1 py-1 rounded-lg font-bold transition text-center ${
                   paletteTab === 'vibrant'
                     ? 'bg-amber-500 text-slate-950 shadow-xs'
-                    : 'text-slate-400 hover:text-slate-200'
+                    : 'text-slate-400 hover:text-slate-700'
                 }`}
               >
                 ✨ Sôi Nổi
@@ -532,7 +568,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
                 className={`flex-1 py-1 rounded-lg font-bold transition text-center ${
                   paletteTab === 'tools'
                     ? 'bg-amber-500 text-slate-950 shadow-xs'
-                    : 'text-slate-400 hover:text-slate-200'
+                    : 'text-slate-400 hover:text-slate-700'
                 }`}
               >
                 ⚙️ Công Cụ
@@ -556,7 +592,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
                         className={`px-2 py-1.5 rounded-lg text-[10px] font-medium border transition cursor-pointer flex items-center justify-between text-left ${
                           isSelected
                             ? 'bg-amber-500/25 border-amber-400 text-amber-200 font-bold'
-                            : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750'
+                            : 'bg-slate-100 border-slate-300 text-slate-600 hover:bg-slate-50'
                         }`}
                         title={token.name}
                       >
@@ -586,7 +622,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
                         className={`h-7 rounded-lg border flex items-center justify-center transition cursor-pointer ${
                           isSelected
                             ? 'ring-2 ring-amber-400 border-white scale-105 shadow-md'
-                            : 'border-slate-700/80 hover:scale-105'
+                            : 'border-slate-300/80 hover:scale-105'
                         }`}
                         style={{ backgroundColor: swatch.hex }}
                         title={`${swatch.name} (${swatch.hex})`}
@@ -618,7 +654,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
                         key={swatch.hex}
                         type="button"
                         onClick={() => onChange(swatch.hex)}
-                        className="h-7 rounded-lg border border-slate-700/80 hover:scale-105 transition cursor-pointer"
+                        className="h-7 rounded-lg border border-slate-300/80 hover:scale-105 transition cursor-pointer"
                         style={{ backgroundColor: swatch.hex }}
                         title={`${swatch.name} (${swatch.hex})`}
                       />
@@ -634,7 +670,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
                         key={swatch.hex}
                         type="button"
                         onClick={() => onChange(swatch.hex)}
-                        className="h-7 rounded-lg border border-slate-700/80 hover:scale-105 transition cursor-pointer"
+                        className="h-7 rounded-lg border border-slate-300/80 hover:scale-105 transition cursor-pointer"
                         style={{ backgroundColor: swatch.hex }}
                         title={`${swatch.name} (${swatch.hex})`}
                       />
@@ -653,7 +689,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
                 
                 {/* Opacity quick chips */}
                 <div className="space-y-1">
-                  <span className="text-[9px] text-slate-500 font-bold uppercase">Độ trong suốt:</span>
+                  <span className="text-[9px] text-slate-400 font-bold uppercase">Độ trong suốt:</span>
                   <div className="grid grid-cols-6 gap-1">
                     {OPACITY_PRESETS.map((op) => (
                       <button
@@ -671,7 +707,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
                             onChange('transparent');
                           }
                         }}
-                        className="py-1 bg-slate-800 hover:bg-slate-750 text-slate-300 text-[10px] font-bold rounded-lg border border-slate-700 transition"
+                        className="py-1 bg-slate-100 hover:bg-slate-50 text-slate-600 text-[10px] font-bold rounded-lg border border-slate-300 transition"
                       >
                         {op.label}
                       </button>
@@ -685,7 +721,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
                     <button
                       type="button"
                       onClick={() => onChange(adjustHexLightness(currentColor, 15))}
-                      className="flex-1 py-1 px-2 bg-slate-800 hover:bg-slate-750 text-amber-300 text-[10px] font-semibold rounded-lg border border-slate-700 transition flex items-center justify-center gap-1"
+                      className="flex-1 py-1 px-2 bg-slate-100 hover:bg-slate-50 text-amber-300 text-[10px] font-semibold rounded-lg border border-slate-300 transition flex items-center justify-center gap-1"
                     >
                       <Sun className="w-3 h-3" />
                       <span>Sáng hơn (+15%)</span>
@@ -694,7 +730,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
                     <button
                       type="button"
                       onClick={() => onChange(adjustHexLightness(currentColor, -15))}
-                      className="flex-1 py-1 px-2 bg-slate-800 hover:bg-slate-750 text-sky-300 text-[10px] font-semibold rounded-lg border border-slate-700 transition flex items-center justify-center gap-1"
+                      className="flex-1 py-1 px-2 bg-slate-100 hover:bg-slate-50 text-sky-300 text-[10px] font-semibold rounded-lg border border-slate-300 transition flex items-center justify-center gap-1"
                     >
                       <Moon className="w-3 h-3" />
                       <span>Tối hơn (-15%)</span>
@@ -703,7 +739,7 @@ const AccessibleColorPicker: React.FC<AccessibleColorPickerProps> = ({
                     <button
                       type="button"
                       onClick={() => onChange(invertHexColor(currentColor))}
-                      className="p-1 px-2 bg-slate-800 hover:bg-slate-750 text-slate-300 text-[10px] font-semibold rounded-lg border border-slate-700 transition flex items-center gap-1"
+                      className="p-1 px-2 bg-slate-100 hover:bg-slate-50 text-slate-600 text-[10px] font-semibold rounded-lg border border-slate-300 transition flex items-center gap-1"
                       title="Đảo ngược màu sắc"
                     >
                       <Contrast className="w-3 h-3" />
@@ -922,7 +958,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
   };
 
   // Save handler
-  const handleSave不成 = async () => {
+  const handleSave = async () => {
     const ok = await saveNow();
     if (ok) {
       setSaveToast('Đã lưu thành công cấu hình giao diện!');
@@ -933,7 +969,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
     }
   };
 
-  const handleSave = handleSave不成;
+  
 
   // Close with dirty-check
   const handleClose = () => {
@@ -1013,7 +1049,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
     const availableW = Math.max(300, containerDimensions.width - 48);
     const availableH = Math.max(300, containerDimensions.height - 48);
 
-    let scale = Math.min(1, availableW / targetW, availableH / targetH);
+    let scale = Math.min(availableW / targetW, availableH / targetH);
     if (typeof customZoom === 'number') {
       scale = customZoom;
     }
@@ -1031,9 +1067,9 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col bg-slate-950 text-slate-100 select-none overflow-hidden font-sans">
+    <div className="fixed inset-0 z-[9999] flex flex-col bg-slate-50 text-slate-800 select-none overflow-hidden font-sans">
       {/* TOPBAR */}
-      <header className="h-14 border-b border-slate-800 bg-slate-900/95 backdrop-blur-md px-3 sm:px-4 flex items-center justify-between gap-2 sm:gap-3 shrink-0 z-50">
+      <header className="h-14 border-b border-slate-200 bg-white/95 backdrop-blur-md px-3 sm:px-4 flex items-center justify-between gap-2 sm:gap-3 shrink-0 z-50">
         {/* Left: Brand & Game Switcher & Tree Toggle */}
         <div className="flex items-center gap-2 sm:gap-3">
           <button
@@ -1041,7 +1077,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
             className={`p-2 rounded-xl border transition cursor-pointer flex items-center gap-1.5 ${
               showLeftTree
                 ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30'
-                : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200'
+                : 'bg-slate-100 text-slate-400 border-slate-300 hover:text-slate-700'
             }`}
             title="Bật/Tắt Danh Sách Thành Phần & Lớp Giao Diện"
           >
@@ -1054,14 +1090,14 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
             <span className="hidden lg:inline">LIVE GAME DESIGNER</span>
           </div>
 
-          <div className="h-5 w-[1px] bg-slate-700 mx-0.5 hidden md:block" />
+          <div className="h-5 w-[1px] bg-slate-200 mx-0.5 hidden md:block" />
 
           {/* Game Switcher Dropdown */}
           <div className="relative">
             <select
               value={activeEditorGameId}
               onChange={(e) => openEditor(e.target.value)}
-              className="bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs sm:text-sm font-bold rounded-xl px-3 py-1.5 border border-slate-700 focus:outline-none focus:border-amber-500 cursor-pointer pr-7 max-w-[180px] sm:max-w-[240px] truncate shadow-xs"
+              className="bg-slate-100 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl px-3 py-1.5 border border-slate-300 focus:outline-none focus:border-amber-500 cursor-pointer pr-7 max-w-[180px] sm:max-w-[240px] truncate shadow-xs"
             >
               {AVAILABLE_GAMES.map((g) => (
                 <option key={g.id} value={g.id}>
@@ -1077,7 +1113,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border cursor-pointer shadow-xs ${
               showThemeBar
                 ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 border-amber-400 shadow-sm'
-                : 'bg-slate-800 text-amber-300 border-amber-500/30 hover:bg-slate-750'
+                : 'bg-slate-100 text-amber-300 border-amber-500/30 hover:bg-slate-50'
             }`}
             title="Mở Bộ Sưu Tập Chủ Đề Game Toàn Diện"
           >
@@ -1087,7 +1123,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
         </div>
 
         {/* Center: Viewport Switcher */}
-        <div className="hidden xl:flex items-center bg-slate-800/80 p-1 rounded-xl border border-slate-700/60 gap-1">
+        <div className="hidden xl:flex items-center bg-slate-100/80 p-1 rounded-xl border border-slate-300/60 gap-1">
           {VIEWPORT_SIZES.map((vp) => {
             const isActive = viewportMode === vp.id;
             return (
@@ -1097,7 +1133,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                 className={`px-2.5 py-1 text-xs rounded-lg font-medium transition flex items-center gap-1.5 cursor-pointer ${
                   isActive
                     ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+                    : 'text-slate-400 hover:text-slate-700 hover:bg-slate-200/50'
                 }`}
                 title={`${vp.deviceLabel} (${vp.label})`}
               >
@@ -1116,12 +1152,12 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
         {/* Right: Undo/Redo, Preview, Auto-Save Status, Save & Close */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Undo / Redo */}
-          <div className="flex items-center bg-slate-800 rounded-xl p-0.5 border border-slate-700">
+          <div className="flex items-center bg-slate-100 rounded-xl p-0.5 border border-slate-300">
             <button
               onClick={undo}
               disabled={!canUndo}
               className={`p-1.5 rounded-lg transition cursor-pointer ${
-                canUndo ? 'text-slate-200 hover:bg-slate-700' : 'text-slate-600 cursor-not-allowed'
+                canUndo ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-600 cursor-not-allowed'
               }`}
               title="Hoàn tác (Ctrl+Z)"
             >
@@ -1131,7 +1167,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
               onClick={redo}
               disabled={!canRedo}
               className={`p-1.5 rounded-lg transition cursor-pointer ${
-                canRedo ? 'text-slate-200 hover:bg-slate-700' : 'text-slate-600 cursor-not-allowed'
+                canRedo ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-600 cursor-not-allowed'
               }`}
               title="Làm lại (Ctrl+Y)"
             >
@@ -1145,7 +1181,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
             className={`px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border cursor-pointer ${
               isPreviewMode
                 ? 'bg-sky-500/20 text-sky-300 border-sky-500/40 hover:bg-sky-500/30'
-                : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                : 'bg-slate-100 text-slate-600 border-slate-300 hover:bg-slate-200'
             }`}
             title={isPreviewMode ? 'Chuyển sang chế độ Sửa (hiện khung chọn)' : 'Chuyển sang chế độ Xem thử thực tế'}
           >
@@ -1154,7 +1190,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
           </button>
 
           {/* Auto-save status indicator */}
-          <div className="hidden lg:flex items-center gap-1 text-[11px] text-slate-400 px-2 py-1 bg-slate-800/60 rounded-lg border border-slate-750">
+          <div className="hidden lg:flex items-center gap-1 text-[11px] text-slate-400 px-2 py-1 bg-slate-100/60 rounded-lg border border-slate-750">
             {isSaving ? (
               <>
                 <RefreshCw className="w-3 h-3 animate-spin text-amber-400" />
@@ -1180,7 +1216,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
             className={`px-3 sm:px-4 py-1.5 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-md cursor-pointer ${
               hasUnsavedChanges
                 ? 'bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-extrabold shadow-amber-500/20 animate-pulse'
-                : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+                : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-300'
             }`}
             title="Lưu tất cả thay đổi (Ctrl+S)"
           >
@@ -1191,7 +1227,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
           {/* Close Button */}
           <button
             onClick={handleClose}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition cursor-pointer"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer"
             title="Đóng trình chỉnh sửa"
           >
             <X className="w-5 h-5" />
@@ -1206,12 +1242,12 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="border-b border-slate-800 bg-slate-900/98 backdrop-blur-md px-4 py-3 z-40 shrink-0 overflow-hidden shadow-2xl"
+            className="border-b border-slate-200 bg-white/98 backdrop-blur-md px-4 py-3 z-40 shrink-0 overflow-hidden shadow-2xl"
           >
             <div className="flex items-center justify-between mb-2.5">
               <div className="flex items-center gap-2">
                 <Wand2 className="w-4 h-4 text-amber-400" />
-                <h3 className="text-xs sm:text-sm font-bold text-slate-100">
+                <h3 className="text-xs sm:text-sm font-bold text-slate-800">
                   Bộ Sưu Tập Chủ Đề Game Toàn Diện (1-Click Theme Packs)
                 </h3>
                 <span className="text-[11px] text-slate-400 hidden md:inline">
@@ -1220,7 +1256,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
               </div>
               <button
                 onClick={() => setShowThemeBar(false)}
-                className="text-slate-400 hover:text-slate-200 text-xs font-semibold cursor-pointer"
+                className="text-slate-400 hover:text-slate-700 text-xs font-semibold cursor-pointer"
               >
                 Đóng
               </button>
@@ -1231,11 +1267,11 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                 <div
                   key={pack.id}
                   onClick={() => handleApplyThemePack(pack)}
-                  className="p-2.5 rounded-xl border border-slate-750 bg-slate-850 hover:bg-slate-800 hover:border-amber-400/70 transition cursor-pointer group flex flex-col justify-between space-y-1.5 shadow-sm"
+                  className="p-2.5 rounded-xl border border-slate-750 bg-slate-850 hover:bg-slate-100 hover:border-amber-400/70 transition cursor-pointer group flex flex-col justify-between space-y-1.5 shadow-sm"
                 >
                   <div className="flex items-center gap-1.5">
                     {pack.icon}
-                    <span className="font-bold text-slate-200 text-xs group-hover:text-amber-300">
+                    <span className="font-bold text-slate-700 text-xs group-hover:text-amber-300">
                       {pack.name}
                     </span>
                   </div>
@@ -1270,9 +1306,9 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
       <div className="flex-1 flex overflow-hidden relative min-h-0">
         {/* LEFT COLUMN: ELEMENT TREE & HIERARCHY EXPLORER */}
         {showLeftTree && (
-          <aside className="w-72 sm:w-80 border-r border-slate-800 bg-slate-900/98 flex flex-col h-full shrink-0 z-40 shadow-xl transition-all duration-200 min-h-0">
+          <aside className="w-72 sm:w-80 border-r border-slate-200 bg-white/98 flex flex-col h-full shrink-0 z-40 shadow-xl transition-all duration-200 min-h-0">
             {/* Tree Header */}
-            <div className="p-3 border-b border-slate-800 bg-slate-850/80 space-y-2.5 shrink-0">
+            <div className="p-3 border-b border-slate-200 bg-slate-850/80 space-y-2.5 shrink-0">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-extrabold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
                   <FolderTree className="w-4 h-4" />
@@ -1293,12 +1329,12 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                   value={elementSearch}
                   onChange={(e) => setElementSearch(e.target.value)}
                   placeholder="Tìm thành phần theo tên..."
-                  className="w-full bg-slate-800 text-slate-200 pl-8.5 pr-8 py-1.5 rounded-xl border border-slate-700 text-xs focus:outline-none focus:border-amber-400"
+                  className="w-full bg-slate-100 text-slate-700 pl-8.5 pr-8 py-1.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-amber-400"
                 />
                 {elementSearch && (
                   <button
                     onClick={() => setElementSearch('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-100 p-0.5"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-800 p-0.5"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -1313,7 +1349,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                   className={`px-2.5 py-1 rounded-lg font-bold transition whitespace-nowrap cursor-pointer ${
                     selectedCategoryFilter === 'all'
                       ? 'bg-amber-500 text-slate-950 shadow-xs'
-                      : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                      : 'bg-slate-100 text-slate-400 hover:text-slate-700'
                   }`}
                 >
                   Tất cả ({elementsList.length})
@@ -1330,7 +1366,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                       className={`px-2 py-1 rounded-lg font-medium transition whitespace-nowrap cursor-pointer flex items-center gap-1 ${
                         isActive
                           ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
-                          : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                          : 'bg-slate-100 text-slate-400 hover:text-slate-700'
                       }`}
                       title={item.label}
                     >
@@ -1353,12 +1389,12 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                 const isCollapsed = collapsedCategories[catKey];
 
                 return (
-                  <div key={catKey} className="bg-slate-850/40 rounded-xl border border-slate-800/80 overflow-hidden">
+                  <div key={catKey} className="bg-slate-850/40 rounded-xl border border-slate-200/80 overflow-hidden">
                     {/* Category Header with Toggle Collapse */}
                     <button
                       type="button"
                       onClick={() => toggleCategoryCollapsed(catKey)}
-                      className="w-full px-2.5 py-1.5 bg-slate-800/50 hover:bg-slate-800 text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center justify-between transition cursor-pointer"
+                      className="w-full px-2.5 py-1.5 bg-slate-100/50 hover:bg-slate-100 text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center justify-between transition cursor-pointer"
                     >
                       <span className="flex items-center gap-1.5">
                         <span>{catInfo.icon}</span>
@@ -1392,8 +1428,8 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                 isSelected
                                   ? 'bg-amber-500/25 text-amber-200 border border-amber-400 shadow-xs ring-1 ring-amber-400/40 font-bold'
                                   : isHovered
-                                  ? 'bg-slate-800 text-slate-100 border border-slate-700'
-                                  : 'bg-slate-850/60 text-slate-300 hover:bg-slate-800 border border-transparent'
+                                  ? 'bg-slate-100 text-slate-800 border border-slate-300'
+                                  : 'bg-slate-850/60 text-slate-600 hover:bg-slate-100 border border-transparent'
                               }`}
                             >
                               <div className="flex items-center gap-2 truncate">
@@ -1415,7 +1451,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                     Đã sửa
                                   </span>
                                 )}
-                                <span className="text-[10px] text-slate-500 font-mono opacity-0 group-hover:opacity-100 transition">
+                                <span className="text-[10px] text-slate-400 font-mono opacity-0 group-hover:opacity-100 transition">
                                   #{elem.id}
                                 </span>
                               </div>
@@ -1429,19 +1465,19 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
               })}
 
               {filteredElements.length === 0 && (
-                <div className="p-6 text-center text-slate-500 text-xs">
+                <div className="p-6 text-center text-slate-400 text-xs">
                   Không tìm thấy thành phần nào phù hợp.
                 </div>
               )}
             </div>
 
             {/* Tree Footer */}
-            <div className="p-2.5 border-t border-slate-800 bg-slate-850 flex items-center justify-between text-[11px] text-slate-400 shrink-0">
+            <div className="p-2.5 border-t border-slate-200 bg-slate-850 flex items-center justify-between text-[11px] text-slate-400 shrink-0">
               <span>Trò chơi: <strong className="text-amber-400">{activeEditorGameId}</strong></span>
               <button
                 type="button"
                 onClick={() => setShowLeftTree(false)}
-                className="text-slate-400 hover:text-slate-200 flex items-center gap-1 cursor-pointer"
+                className="text-slate-400 hover:text-slate-700 flex items-center gap-1 cursor-pointer"
               >
                 <PanelLeftClose className="w-3.5 h-3.5" />
                 <span>Thu gọn</span>
@@ -1453,7 +1489,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
         {/* CENTER COLUMN: LIVE INTERACTIVE CANVAS */}
         <div
           ref={viewportWrapperRef}
-          className="flex-1 bg-slate-950 flex flex-col items-center justify-center p-4 overflow-hidden relative min-h-0"
+          className="flex-1 bg-slate-50 flex flex-col items-center justify-center p-4 overflow-hidden relative min-h-0"
         >
           {/* Background subtle grid pattern */}
           {showGrid && (
@@ -1467,10 +1503,10 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
           )}
 
           {/* Floating Canvas Controls Overlay */}
-          <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md p-1 rounded-xl border border-slate-800 shadow-xl text-xs">
+          <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 bg-white/90 backdrop-blur-md p-1 rounded-xl border border-slate-200 shadow-xl text-xs">
             <button
               onClick={() => setCustomZoom(typeof customZoom === 'number' ? Math.max(0.4, customZoom - 0.1) : 0.9)}
-              className="p-1.5 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-lg transition cursor-pointer"
+              className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition cursor-pointer"
               title="Thu nhỏ"
             >
               <ZoomOut className="w-3.5 h-3.5" />
@@ -1482,7 +1518,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
             <button
               onClick={() => setCustomZoom(typeof customZoom === 'number' ? Math.min(1.5, customZoom + 0.1) : 1.1)}
-              className="p-1.5 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-lg transition cursor-pointer"
+              className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition cursor-pointer"
               title="Phóng to"
             >
               <ZoomIn className="w-3.5 h-3.5" />
@@ -1491,18 +1527,18 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
             <button
               onClick={() => setCustomZoom('fit')}
               className={`px-2 py-1 rounded-lg text-[10px] font-bold transition cursor-pointer ${
-                customZoom === 'fit' ? 'bg-amber-500 text-slate-950' : 'text-slate-400 hover:bg-slate-800'
+                customZoom === 'fit' ? 'bg-amber-500 text-slate-950' : 'text-slate-400 hover:bg-slate-100'
               }`}
               title="Tự động vừa màn hình"
             >
               Vừa Khung
             </button>
 
-            <div className="h-4 w-[1px] bg-slate-750 mx-1" />
+            <div className="h-4 w-[1px] bg-slate-50 mx-1" />
 
             <button
               onClick={() => setShowGrid(!showGrid)}
-              className={`p-1.5 rounded-lg transition cursor-pointer ${showGrid ? 'text-amber-400 bg-amber-500/10' : 'text-slate-500 hover:text-slate-300'}`}
+              className={`p-1.5 rounded-lg transition cursor-pointer ${showGrid ? 'text-amber-400 bg-amber-500/10' : 'text-slate-400 hover:text-slate-600'}`}
               title="Bật/Tắt Lưới Tọa Độ"
             >
               <Grid className="w-3.5 h-3.5" />
@@ -1510,7 +1546,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
             <button
               onClick={() => setShowSafeArea(!showSafeArea)}
-              className={`p-1.5 rounded-lg transition cursor-pointer ${showSafeArea ? 'text-emerald-400 bg-emerald-500/10' : 'text-slate-500 hover:text-slate-300'}`}
+              className={`p-1.5 rounded-lg transition cursor-pointer ${showSafeArea ? 'text-emerald-400 bg-emerald-500/10' : 'text-slate-400 hover:text-slate-600'}`}
               title="Bật/Tắt Vùng An Toàn Máy Chiếu Lớp Học (Safe Area)"
             >
               <Square className="w-3.5 h-3.5" />
@@ -1519,7 +1555,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
           {/* Active Highlight Info Toast */}
           {activeElement && !isPreviewMode && (
-            <div className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-amber-500/40 text-xs shadow-xl">
+            <div className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-amber-500/40 text-xs shadow-xl">
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
               <span className="text-slate-400">Đang chọn:</span>
               <span className="font-bold text-amber-300">{activeElement.name}</span>
@@ -1528,20 +1564,20 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
           {/* Viewport Frame */}
           <div
-            className={`relative flex flex-col bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden transition-all duration-200 ${
+            className={`relative flex flex-col bg-white border border-slate-300/80 rounded-2xl shadow-2xl overflow-hidden transition-all duration-200 ${
               viewportMode !== 'responsive' ? 'ring-4 ring-slate-800/60' : ''
             }`}
             style={viewportStyle}
           >
             {/* Viewport Header Bar (for devices) */}
             {viewportMode !== 'responsive' && (
-              <div className="h-6 bg-slate-850 border-b border-slate-700/60 px-3 flex items-center justify-between text-[11px] text-slate-400 shrink-0">
+              <div className="h-6 bg-slate-850 border-b border-slate-300/60 px-3 flex items-center justify-between text-[11px] text-slate-400 shrink-0">
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-rose-500/70" />
                   <span className="w-2 h-2 rounded-full bg-amber-500/70" />
                   <span className="w-2 h-2 rounded-full bg-emerald-500/70" />
                 </div>
-                <span className="font-mono font-bold text-slate-300">{currentViewport.deviceLabel}</span>
+                <span className="font-mono font-bold text-slate-600">{currentViewport.deviceLabel}</span>
                 <span className="font-mono text-[10px]">{currentViewport.width} × {currentViewport.height}</span>
               </div>
             )}
@@ -1564,9 +1600,9 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
         {/* RIGHT COLUMN: INSPECTOR PROPERTY PANELS (ACCORDION STYLE) */}
         {!isPreviewMode && (
-          <aside className="w-84 sm:w-96 border-l border-slate-800 bg-slate-900/98 flex flex-col h-full shrink-0 z-40 shadow-2xl min-h-0">
+          <aside className="w-84 sm:w-96 border-l border-slate-200 bg-white/98 flex flex-col h-full shrink-0 z-40 shadow-2xl min-h-0">
             {/* Inspector Header: Element Selector & Action Bar */}
-            <div className="p-3 border-b border-slate-800 bg-slate-850 space-y-2.5 shrink-0">
+            <div className="p-3 border-b border-slate-200 bg-slate-850 space-y-2.5 shrink-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
                   <SlidersHorizontal className="w-4 h-4 text-amber-400" />
@@ -1580,7 +1616,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                   <button
                     onClick={handleCopyStyle}
                     disabled={!activeElement}
-                    className="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-750 rounded-lg text-xs transition cursor-pointer"
+                    className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-50 rounded-lg text-xs transition cursor-pointer"
                     title="Sao chép kiểu dáng phần tử này"
                   >
                     <Copy className="w-3.5 h-3.5" />
@@ -1590,7 +1626,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                     disabled={!copiedStyle || !activeElement}
                     className={`p-1.5 rounded-lg text-xs transition cursor-pointer ${
                       copiedStyle
-                        ? 'text-amber-400 hover:bg-slate-750'
+                        ? 'text-amber-400 hover:bg-slate-50'
                         : 'text-slate-600 cursor-not-allowed'
                     }`}
                     title="Dán kiểu dáng đã sao chép"
@@ -1600,7 +1636,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                   <button
                     onClick={() => activeElement && resetElementStyle(activeElement.id)}
                     disabled={!activeElement}
-                    className="p-1.5 text-rose-400 hover:bg-slate-750 rounded-lg text-xs transition cursor-pointer"
+                    className="p-1.5 text-rose-400 hover:bg-slate-50 rounded-lg text-xs transition cursor-pointer"
                     title="Khôi phục phần tử này về mặc định"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
@@ -1613,7 +1649,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                 <select
                   value={selectedElementId || ''}
                   onChange={(e) => setSelectedElementId(e.target.value)}
-                  className="w-full bg-slate-800 text-slate-200 text-xs font-bold rounded-xl px-3 py-2 border border-slate-700 focus:outline-none focus:border-amber-400 cursor-pointer shadow-xs truncate"
+                  className="w-full bg-slate-100 text-slate-700 text-xs font-bold rounded-xl px-3 py-2 border border-slate-300 focus:outline-none focus:border-amber-400 cursor-pointer shadow-xs truncate"
                 >
                   {elementsList.map((elem) => (
                     <option key={elem.id} value={elem.id}>
@@ -1633,14 +1669,14 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                   <button
                     type="button"
                     onClick={() => handleExpandAll(true)}
-                    className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-750 text-slate-300 text-[10px] font-medium border border-slate-750 transition"
+                    className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-50 text-slate-600 text-[10px] font-medium border border-slate-750 transition"
                   >
                     Mở tất cả
                   </button>
                   <button
                     type="button"
                     onClick={() => handleExpandAll(false)}
-                    className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-750 text-slate-300 text-[10px] font-medium border border-slate-750 transition"
+                    className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-50 text-slate-600 text-[10px] font-medium border border-slate-750 transition"
                   >
                     Thu gọn
                   </button>
@@ -1653,11 +1689,11 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
               {activeElement ? (
                 <>
                   {/* ACCORDION 1: LAYOUT & SPACING */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-850/50 overflow-hidden shadow-xs">
+                  <div className="rounded-xl border border-slate-200 bg-slate-850/50 overflow-hidden shadow-xs">
                     <button
                       type="button"
                       onClick={() => toggleSection('layout')}
-                      className="w-full px-3 py-2.5 bg-slate-800/80 hover:bg-slate-800 text-slate-200 font-bold flex items-center justify-between transition cursor-pointer"
+                      className="w-full px-3 py-2.5 bg-slate-100/80 hover:bg-slate-100 text-slate-700 font-bold flex items-center justify-between transition cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
                         <Layout className="w-4 h-4 text-amber-400 shrink-0" />
@@ -1676,10 +1712,10 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                     </button>
 
                     {expandedSections.layout && (
-                      <div className="p-3.5 space-y-4 border-t border-slate-800">
+                      <div className="p-3.5 space-y-4 border-t border-slate-200">
                         {/* Width Presets */}
                         <div>
-                          <label className="block text-slate-300 font-semibold mb-1.5">
+                          <label className="block text-slate-600 font-semibold mb-1.5">
                             Chiều rộng (Width)
                           </label>
                           <div className="grid grid-cols-4 gap-1.5">
@@ -1690,7 +1726,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                 className={`py-1.5 rounded-xl border text-[11px] font-medium transition cursor-pointer ${
                                   (activeElement.width || 'auto') === w
                                     ? 'bg-amber-500 text-slate-950 border-amber-400 font-extrabold shadow-xs'
-                                    : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750'
+                                    : 'bg-slate-100 border-slate-300 text-slate-600 hover:bg-slate-50'
                                 }`}
                               >
                                 {w === 'auto' ? 'Tự động' : w}
@@ -1701,7 +1737,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
                         {/* Padding Slider + Stepper */}
                         <div>
-                          <div className="flex justify-between items-center text-slate-300 mb-1.5">
+                          <div className="flex justify-between items-center text-slate-600 mb-1.5">
                             <span className="font-semibold">Khoảng đệm trong (Padding)</span>
                             <div className="flex items-center gap-1">
                               <button
@@ -1711,7 +1747,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                     padding: Math.max(0, (activeElement.padding ?? 16) - 2),
                                   })
                                 }
-                                className="p-1 bg-slate-800 hover:bg-slate-750 text-slate-300 rounded border border-slate-700 cursor-pointer"
+                                className="p-1 bg-slate-100 hover:bg-slate-50 text-slate-600 rounded border border-slate-300 cursor-pointer"
                               >
                                 <Minus className="w-2.5 h-2.5" />
                               </button>
@@ -1725,7 +1761,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                     padding: Math.min(64, (activeElement.padding ?? 16) + 2),
                                   })
                                 }
-                                className="p-1 bg-slate-800 hover:bg-slate-750 text-slate-300 rounded border border-slate-700 cursor-pointer"
+                                className="p-1 bg-slate-100 hover:bg-slate-50 text-slate-600 rounded border border-slate-300 cursor-pointer"
                               >
                                 <Plus className="w-2.5 h-2.5" />
                               </button>
@@ -1742,7 +1778,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                             }
                             className="w-full accent-amber-400 cursor-pointer"
                           />
-                          <div className="flex justify-between text-[10px] text-slate-500 mt-1">
+                          <div className="flex justify-between text-[10px] text-slate-400 mt-1">
                             <span>Gọn 0px</span>
                             <span>Chuẩn 16px</span>
                             <span>Rộng 32px</span>
@@ -1752,7 +1788,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
                         {/* Margin Slider + Stepper */}
                         <div>
-                          <div className="flex justify-between items-center text-slate-300 mb-1.5">
+                          <div className="flex justify-between items-center text-slate-600 mb-1.5">
                             <span className="font-semibold">Khoảng cách ngoài (Margin)</span>
                             <div className="flex items-center gap-1">
                               <button
@@ -1762,7 +1798,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                     margin: Math.max(0, (activeElement.margin ?? 0) - 2),
                                   })
                                 }
-                                className="p-1 bg-slate-800 hover:bg-slate-750 text-slate-300 rounded border border-slate-700 cursor-pointer"
+                                className="p-1 bg-slate-100 hover:bg-slate-50 text-slate-600 rounded border border-slate-300 cursor-pointer"
                               >
                                 <Minus className="w-2.5 h-2.5" />
                               </button>
@@ -1776,7 +1812,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                     margin: Math.min(48, (activeElement.margin ?? 0) + 2),
                                   })
                                 }
-                                className="p-1 bg-slate-800 hover:bg-slate-750 text-slate-300 rounded border border-slate-700 cursor-pointer"
+                                className="p-1 bg-slate-100 hover:bg-slate-50 text-slate-600 rounded border border-slate-300 cursor-pointer"
                               >
                                 <Plus className="w-2.5 h-2.5" />
                               </button>
@@ -1797,7 +1833,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
                         {/* Gap Slider */}
                         <div>
-                          <div className="flex justify-between items-center text-slate-300 mb-1.5">
+                          <div className="flex justify-between items-center text-slate-600 mb-1.5">
                             <span className="font-semibold">Khoảng cách mục con (Gap)</span>
                             <span className="font-mono text-amber-400 font-bold">{activeElement.gap ?? 8}px</span>
                           </div>
@@ -1816,7 +1852,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
                         {/* Scale Slider */}
                         <div>
-                          <div className="flex justify-between items-center text-slate-300 mb-1.5">
+                          <div className="flex justify-between items-center text-slate-600 mb-1.5">
                             <span className="font-semibold">Tỉ lệ phóng to (Scale)</span>
                             <span className="font-mono text-amber-400 font-bold">
                               {Math.round((activeElement.scale ?? 1.0) * 100)}%
@@ -1836,7 +1872,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                         </div>
 
                         {/* Visibility Toggles */}
-                        <div className="pt-3 border-t border-slate-800 space-y-2">
+                        <div className="pt-3 border-t border-slate-200 space-y-2">
                           <span className="text-slate-400 font-semibold block text-[11px]">
                             📱 Khả Năng Hiển Thị:
                           </span>
@@ -1849,7 +1885,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                               }
                               className="rounded accent-amber-400 w-4 h-4"
                             />
-                            <span className="text-slate-200">Hiển thị trên Máy tính / Máy chiếu</span>
+                            <span className="text-slate-700">Hiển thị trên Máy tính / Máy chiếu</span>
                           </label>
 
                           <label className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-850 border border-slate-750 cursor-pointer">
@@ -1861,7 +1897,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                               }
                               className="rounded accent-amber-400 w-4 h-4"
                             />
-                            <span className="text-slate-200">Hiển thị trên Điện thoại / Di động</span>
+                            <span className="text-slate-700">Hiển thị trên Điện thoại / Di động</span>
                           </label>
                         </div>
                       </div>
@@ -1869,11 +1905,11 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                   </div>
 
                   {/* ACCORDION 2: TYPOGRAPHY & TEXT */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-850/50 overflow-hidden shadow-xs">
+                  <div className="rounded-xl border border-slate-200 bg-slate-850/50 overflow-hidden shadow-xs">
                     <button
                       type="button"
                       onClick={() => toggleSection('typography')}
-                      className="w-full px-3 py-2.5 bg-slate-800/80 hover:bg-slate-800 text-slate-200 font-bold flex items-center justify-between transition cursor-pointer"
+                      className="w-full px-3 py-2.5 bg-slate-100/80 hover:bg-slate-100 text-slate-700 font-bold flex items-center justify-between transition cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
                         <Type className="w-4 h-4 text-amber-400 shrink-0" />
@@ -1892,10 +1928,10 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                     </button>
 
                     {expandedSections.typography && (
-                      <div className="p-3.5 space-y-4 border-t border-slate-800">
+                      <div className="p-3.5 space-y-4 border-t border-slate-200">
                         {/* Custom Text Override */}
                         <div>
-                          <label className="block text-slate-300 font-semibold mb-1.5">
+                          <label className="block text-slate-600 font-semibold mb-1.5">
                             Nội dung chữ hiển thị (Tùy chỉnh tiêu đề/nhãn)
                           </label>
                           <input
@@ -1905,13 +1941,13 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                             onChange={(e) =>
                               updateElementStyle(activeElement.id, { customText: e.target.value })
                             }
-                            className="w-full bg-slate-800 text-slate-100 px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:border-amber-400 shadow-xs"
+                            className="w-full bg-slate-100 text-slate-800 px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-amber-400 shadow-xs"
                           />
                         </div>
 
                         {/* Font Size Slider + Stepper */}
                         <div>
-                          <div className="flex justify-between items-center text-slate-300 mb-1.5">
+                          <div className="flex justify-between items-center text-slate-600 mb-1.5">
                             <span className="font-semibold">Cỡ chữ (Font Size)</span>
                             <div className="flex items-center gap-1">
                               <button
@@ -1921,7 +1957,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                     fontSize: Math.max(10, (activeElement.fontSize ?? 16) - 1),
                                   })
                                 }
-                                className="p-1 bg-slate-800 hover:bg-slate-750 text-slate-300 rounded border border-slate-700 cursor-pointer"
+                                className="p-1 bg-slate-100 hover:bg-slate-50 text-slate-600 rounded border border-slate-300 cursor-pointer"
                               >
                                 <Minus className="w-2.5 h-2.5" />
                               </button>
@@ -1935,7 +1971,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                     fontSize: Math.min(64, (activeElement.fontSize ?? 16) + 1),
                                   })
                                 }
-                                className="p-1 bg-slate-800 hover:bg-slate-750 text-slate-300 rounded border border-slate-700 cursor-pointer"
+                                className="p-1 bg-slate-100 hover:bg-slate-50 text-slate-600 rounded border border-slate-300 cursor-pointer"
                               >
                                 <Plus className="w-2.5 h-2.5" />
                               </button>
@@ -1956,7 +1992,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
                         {/* Font Weight */}
                         <div>
-                          <label className="block text-slate-300 font-semibold mb-1.5">
+                          <label className="block text-slate-600 font-semibold mb-1.5">
                             Độ đậm của chữ (Font Weight)
                           </label>
                           <div className="grid grid-cols-3 gap-1.5">
@@ -1973,7 +2009,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                 className={`py-1.5 rounded-xl border text-[11px] transition cursor-pointer ${
                                   (activeElement.fontWeight || 'normal') === fw.val
                                     ? 'bg-amber-500 text-slate-950 font-extrabold border-amber-400 shadow-xs'
-                                    : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750'
+                                    : 'bg-slate-100 border-slate-300 text-slate-600 hover:bg-slate-50'
                                 }`}
                               >
                                 {fw.label}
@@ -1984,7 +2020,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
                         {/* Text Alignment */}
                         <div>
-                          <label className="block text-slate-300 font-semibold mb-1.5">
+                          <label className="block text-slate-600 font-semibold mb-1.5">
                             Căn lề chữ (Alignment)
                           </label>
                           <div className="grid grid-cols-3 gap-1.5">
@@ -1999,7 +2035,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                 className={`py-1.5 rounded-xl border text-[11px] transition cursor-pointer flex items-center justify-center gap-1 ${
                                   (activeElement.textAlign || 'left') === ta.val
                                     ? 'bg-amber-500 text-slate-950 font-extrabold border-amber-400 shadow-xs'
-                                    : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750'
+                                    : 'bg-slate-100 border-slate-300 text-slate-600 hover:bg-slate-50'
                                 }`}
                               >
                                 {ta.icon}
@@ -2022,11 +2058,11 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                   </div>
 
                   {/* ACCORDION 3: BACKGROUND & GLASSMORPHISM */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-850/50 overflow-hidden shadow-xs">
+                  <div className="rounded-xl border border-slate-200 bg-slate-850/50 overflow-hidden shadow-xs">
                     <button
                       type="button"
                       onClick={() => toggleSection('color')}
-                      className="w-full px-3 py-2.5 bg-slate-800/80 hover:bg-slate-800 text-slate-200 font-bold flex items-center justify-between transition cursor-pointer"
+                      className="w-full px-3 py-2.5 bg-slate-100/80 hover:bg-slate-100 text-slate-700 font-bold flex items-center justify-between transition cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
                         <Palette className="w-4 h-4 text-amber-400 shrink-0" />
@@ -2045,7 +2081,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                     </button>
 
                     {expandedSections.color && (
-                      <div className="p-3.5 space-y-4 border-t border-slate-800">
+                      <div className="p-3.5 space-y-4 border-t border-slate-200">
                         {/* Background Color via AccessibleColorPicker */}
                         <AccessibleColorPicker
                           label="Màu Nền (Background Color)"
@@ -2057,7 +2093,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
                         {/* Background Image URL */}
                         <div>
-                          <label className="block text-slate-300 font-semibold mb-1.5">
+                          <label className="block text-slate-600 font-semibold mb-1.5">
                             Ảnh nền (Background Image URL)
                           </label>
                           <div className="flex gap-2">
@@ -2068,7 +2104,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                               onChange={(e) =>
                                 updateElementStyle(activeElement.id, { backgroundImage: e.target.value })
                               }
-                              className="flex-1 bg-slate-800 text-slate-100 px-3 py-2 rounded-xl border border-slate-700 text-xs focus:outline-none focus:border-amber-400"
+                              className="flex-1 bg-slate-100 text-slate-800 px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-amber-400"
                             />
                             {activeElement.backgroundImage && (
                               <button
@@ -2083,7 +2119,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
                         {/* Glassmorphism & Backdrop Blur */}
                         <div>
-                          <label className="block text-slate-300 font-semibold mb-1.5">
+                          <label className="block text-slate-600 font-semibold mb-1.5">
                             Kính mờ xuyên thấu (Glassmorphism Blur)
                           </label>
                           <div className="grid grid-cols-4 gap-1.5">
@@ -2101,7 +2137,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                     backgroundColor: activeElement.backgroundColor || 'rgba(15, 23, 42, 0.75)',
                                   })
                                 }
-                                className="py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-750 text-slate-300 text-[10px] font-medium transition cursor-pointer"
+                                className="py-1.5 rounded-xl border border-slate-300 bg-slate-100 hover:bg-slate-50 text-slate-600 text-[10px] font-medium transition cursor-pointer"
                               >
                                 {gl.label}
                               </button>
@@ -2111,7 +2147,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
                         {/* Element Opacity Slider */}
                         <div>
-                          <div className="flex justify-between items-center text-slate-300 mb-1.5">
+                          <div className="flex justify-between items-center text-slate-600 mb-1.5">
                             <span className="font-semibold">Độ mờ đục toàn phần tử (Opacity)</span>
                             <span className="font-mono text-amber-400 font-bold">{activeElement.opacity ?? 100}%</span>
                           </div>
@@ -2132,11 +2168,11 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                   </div>
 
                   {/* ACCORDION 4: BORDER & SHADOW */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-850/50 overflow-hidden shadow-xs">
+                  <div className="rounded-xl border border-slate-200 bg-slate-850/50 overflow-hidden shadow-xs">
                     <button
                       type="button"
                       onClick={() => toggleSection('border')}
-                      className="w-full px-3 py-2.5 bg-slate-800/80 hover:bg-slate-800 text-slate-200 font-bold flex items-center justify-between transition cursor-pointer"
+                      className="w-full px-3 py-2.5 bg-slate-100/80 hover:bg-slate-100 text-slate-700 font-bold flex items-center justify-between transition cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
                         <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
@@ -2155,10 +2191,10 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                     </button>
 
                     {expandedSections.border && (
-                      <div className="p-3.5 space-y-4 border-t border-slate-800">
+                      <div className="p-3.5 space-y-4 border-t border-slate-200">
                         {/* Border Radius Slider + Quick Presets */}
                         <div>
-                          <div className="flex justify-between items-center text-slate-300 mb-1.5">
+                          <div className="flex justify-between items-center text-slate-600 mb-1.5">
                             <span className="font-semibold">Bo góc (Border Radius)</span>
                             <span className="font-mono text-amber-400 font-bold">{activeElement.borderRadius ?? 0}px</span>
                           </div>
@@ -2182,7 +2218,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                 className={`py-1 rounded-lg border text-[10px] font-bold transition cursor-pointer ${
                                   (activeElement.borderRadius ?? 0) === rad
                                     ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-xs'
-                                    : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750'
+                                    : 'bg-slate-100 border-slate-300 text-slate-600 hover:bg-slate-50'
                                 }`}
                               >
                                 {rad === 9999 ? 'Tròn' : `${rad}px`}
@@ -2193,7 +2229,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
                         {/* Border Width */}
                         <div>
-                          <div className="flex justify-between items-center text-slate-300 mb-1.5">
+                          <div className="flex justify-between items-center text-slate-600 mb-1.5">
                             <span className="font-semibold">Độ dày viền (Border Width)</span>
                             <span className="font-mono text-amber-400 font-bold">{activeElement.borderWidth ?? 0}px</span>
                           </div>
@@ -2212,7 +2248,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
                         {/* Border Style */}
                         <div>
-                          <label className="block text-slate-300 font-semibold mb-1.5">Kiểu đường viền</label>
+                          <label className="block text-slate-600 font-semibold mb-1.5">Kiểu đường viền</label>
                           <div className="grid grid-cols-4 gap-1.5">
                             {['solid', 'dashed', 'dotted', 'none'].map((st) => (
                               <button
@@ -2221,7 +2257,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                 className={`py-1.5 rounded-xl border text-[11px] transition cursor-pointer ${
                                   (activeElement.borderStyle || 'solid') === st
                                     ? 'bg-amber-500 text-slate-950 font-extrabold border-amber-400 shadow-xs'
-                                    : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750'
+                                    : 'bg-slate-100 border-slate-300 text-slate-600 hover:bg-slate-50'
                                 }`}
                               >
                                 {st === 'solid' ? 'Nét liền' : st === 'dashed' ? 'Nét đứt' : st === 'dotted' ? 'Chấm bi' : 'Không viền'}
@@ -2241,7 +2277,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
 
                         {/* Box Shadow Presets */}
                         <div>
-                          <label className="block text-slate-300 font-semibold mb-1.5">
+                          <label className="block text-slate-600 font-semibold mb-1.5">
                             Đổ bóng & Phát sáng (Shadow & Glow)
                           </label>
                           <div className="grid grid-cols-2 gap-2">
@@ -2260,7 +2296,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                                 className={`p-2 rounded-xl border text-left text-xs transition cursor-pointer ${
                                   (activeElement.boxShadow || 'none') === sh.id
                                     ? 'bg-amber-500/20 border-amber-400 text-amber-300 font-bold shadow-xs'
-                                    : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750'
+                                    : 'bg-slate-100 border-slate-300 text-slate-600 hover:bg-slate-50'
                                 }`}
                               >
                                 {sh.label}
@@ -2273,11 +2309,11 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                   </div>
 
                   {/* ACCORDION 5: QUICK PRESETS */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-850/50 overflow-hidden shadow-xs">
+                  <div className="rounded-xl border border-slate-200 bg-slate-850/50 overflow-hidden shadow-xs">
                     <button
                       type="button"
                       onClick={() => toggleSection('presets')}
-                      className="w-full px-3 py-2.5 bg-slate-800/80 hover:bg-slate-800 text-slate-200 font-bold flex items-center justify-between transition cursor-pointer"
+                      className="w-full px-3 py-2.5 bg-slate-100/80 hover:bg-slate-100 text-slate-700 font-bold flex items-center justify-between transition cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
                         <Layers className="w-4 h-4 text-amber-400 shrink-0" />
@@ -2293,7 +2329,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                     </button>
 
                     {expandedSections.presets && (
-                      <div className="p-3.5 space-y-3 border-t border-slate-800">
+                      <div className="p-3.5 space-y-3 border-t border-slate-200">
                         <p className="text-slate-400 text-[11px] leading-relaxed">
                           Áp dụng nhanh các phong cách thiết kế đã tối ưu sẵn cho phần tử{' '}
                           <strong className="text-amber-400">{activeElement.name}</strong>:
@@ -2303,14 +2339,14 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                           <div
                             key={preset.id}
                             onClick={() => applyPresetToElement(activeElement.id, preset.id)}
-                            className="p-3 bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-amber-400/60 rounded-xl cursor-pointer transition group shadow-sm"
+                            className="p-3 bg-slate-100 hover:bg-slate-50 border border-slate-300 hover:border-amber-400/60 rounded-xl cursor-pointer transition group shadow-sm"
                           >
                             <div className="flex items-center gap-2 mb-1">
                               <span
                                 className="w-3 h-3 rounded-full shrink-0"
                                 style={{ backgroundColor: preset.previewColor }}
                               />
-                              <h4 className="font-bold text-slate-200 group-hover:text-amber-300 text-xs">
+                              <h4 className="font-bold text-slate-700 group-hover:text-amber-300 text-xs">
                                 {preset.name}
                               </h4>
                             </div>
@@ -2322,14 +2358,14 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                   </div>
                 </>
               ) : (
-                <div className="p-8 text-center text-slate-500">
+                <div className="p-8 text-center text-slate-400">
                   <p>Chọn một phần tử từ danh sách bên trái hoặc bấm trực tiếp trên màn hình game để bắt đầu chỉnh sửa.</p>
                 </div>
               )}
             </div>
 
             {/* Bottom Actions: Reset Game / Export JSON */}
-            <div className="p-3 border-t border-slate-800 bg-slate-850 flex items-center justify-between text-xs shrink-0">
+            <div className="p-3 border-t border-slate-200 bg-slate-850 flex items-center justify-between text-xs shrink-0">
               <button
                 onClick={() => setShowConfirmResetAll(true)}
                 className="px-2.5 py-1.5 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-xl transition cursor-pointer flex items-center gap-1.5"
@@ -2344,7 +2380,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                   setJsonExportText(JSON.stringify(currentConfig, null, 2));
                   setShowExportModal(true);
                 }}
-                className="px-3 py-1.5 text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-750 rounded-xl transition cursor-pointer flex items-center gap-1.5 border border-slate-700"
+                className="px-3 py-1.5 text-slate-600 hover:text-white bg-slate-100 hover:bg-slate-50 rounded-xl transition cursor-pointer flex items-center gap-1.5 border border-slate-300"
                 title="Xuất / Nhập mã cấu hình JSON"
               >
                 <Download className="w-3.5 h-3.5" />
@@ -2373,9 +2409,9 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
       {/* CONFIRM RESET ALL MODAL */}
       {showConfirmResetAll && (
         <div className="fixed inset-0 z-[10001] bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-slate-900 border border-slate-700 p-6 rounded-2xl shadow-2xl text-center space-y-4">
+          <div className="max-w-md w-full bg-white border border-slate-300 p-6 rounded-2xl shadow-2xl text-center space-y-4">
             <AlertTriangle className="w-12 h-12 text-rose-500 mx-auto" />
-            <h3 className="text-base font-bold text-slate-100">Khôi phục toàn bộ giao diện?</h3>
+            <h3 className="text-base font-bold text-slate-800">Khôi phục toàn bộ giao diện?</h3>
             <p className="text-xs text-slate-400 leading-relaxed">
               Thao tác này sẽ xóa toàn bộ các tùy chỉnh kích thước, màu sắc, phông chữ của game này và trở về
               giao diện chuẩn ban đầu. Bạn có chắc chắn không?
@@ -2383,7 +2419,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
             <div className="flex gap-3 justify-center pt-2">
               <button
                 onClick={() => setShowConfirmResetAll(false)}
-                className="px-4 py-2 bg-slate-800 text-slate-300 font-semibold rounded-xl text-xs hover:bg-slate-700 cursor-pointer"
+                className="px-4 py-2 bg-slate-100 text-slate-600 font-semibold rounded-xl text-xs hover:bg-slate-200 cursor-pointer"
               >
                 Hủy bỏ
               </button>
@@ -2406,9 +2442,9 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
       {/* EXPORT / IMPORT JSON MODAL */}
       {showExportModal && (
         <div className="fixed inset-0 z-[10001] bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="max-w-xl w-full bg-slate-900 border border-slate-700 p-6 rounded-2xl shadow-2xl space-y-4">
+          <div className="max-w-xl w-full bg-white border border-slate-300 p-6 rounded-2xl shadow-2xl space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+              <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                 <Download className="w-4 h-4 text-amber-400" />
                 Cấu hình giao diện JSON (Xuất & Nhập)
               </h3>
@@ -2417,7 +2453,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                   setShowExportModal(false);
                   setImportError(null);
                 }}
-                className="p-1 text-slate-400 hover:text-slate-100 rounded cursor-pointer"
+                className="p-1 text-slate-400 hover:text-slate-800 rounded cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -2434,7 +2470,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                 setImportError(null);
               }}
               rows={12}
-              className="w-full bg-slate-950 text-slate-300 font-mono text-xs p-3 rounded-xl border border-slate-800 focus:outline-none focus:border-amber-500"
+              className="w-full bg-slate-50 text-slate-600 font-mono text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500"
             />
 
             {importError && (
@@ -2451,7 +2487,7 @@ export const AdminGameUIEditor: React.FC<AdminGameUIEditorProps> = ({
                     setSaveToast('Đã chép mã JSON vào bộ nhớ đệm!');
                     setTimeout(() => setSaveToast(null), 2000);
                   }}
-                  className="px-3 py-1.5 bg-slate-800 hover:bg-slate-750 text-slate-200 font-semibold rounded-xl text-xs cursor-pointer flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-slate-100 hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-xs cursor-pointer flex items-center gap-1.5"
                 >
                   <Copy className="w-3.5 h-3.5" />
                   <span>Sao chép JSON</span>

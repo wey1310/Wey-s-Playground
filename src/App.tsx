@@ -132,12 +132,12 @@ export default function App() {
 
   // Render game instance for Admin Live Game UI Editor preview canvas
   const renderEditorGameContent = (gameId: string) => {
-    const mockTeams: Team[] = [
+    const mockTeams = [
       { id: '1', name: 'Đội 1', score: 0, avatar: '🦁', color: '#3B82F6' },
       { id: '2', name: 'Đội 2', score: 0, avatar: '🐯', color: '#EF4444' },
     ];
-    const baseMockConfig: GameSetupConfig = {
-      gameId: 'lucky_star',
+    const baseMockConfig = {
+      gameId: gameId,
       mode: 'bank',
       teamMode: true,
       teams: mockTeams,
@@ -148,82 +148,145 @@ export default function App() {
       studentsList: ['Nguyễn Văn A', 'Trần Thị B', 'Lê Hoàng C', 'Phạm Minh D', 'Vũ Quỳnh E', 'Hoàng Gia F', 'Đặng Thảo G', 'Bùi Đức H'],
     };
 
-    if (gameId === 'lucky_star' || gameId === 'luckystar') {
-      return (
-        <LuckyStarGame
-          config={{ ...baseMockConfig, gameId: 'lucky_star' }}
-          questions={currentQuestions}
-          onGameEnd={() => {}}
-        />
-      );
+    switch (gameId) {
+      case 'lucky_star':
+        // @ts-ignore
+        return <LuckyStarGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'randomcall':
+        // @ts-ignore
+        return <RandomCallGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'eggcall':
+        // @ts-ignore
+        return <EggCallGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'openbox':
+        // @ts-ignore
+        return <OpenBoxGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'wheel':
+        // @ts-ignore
+        return <WheelGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'bingo':
+        // @ts-ignore
+        return <BingoGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'territory':
+        // @ts-ignore
+        return <TerritoryGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'tugofwar':
+        // @ts-ignore
+        return <TugOfWarGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'tower':
+        // @ts-ignore
+        return <TowerGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'puzzle':
+        // @ts-ignore
+        return <PuzzleGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'race':
+        // @ts-ignore
+        return <RaceGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'blindbox':
+        // @ts-ignore
+        return <BlindBoxGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'pokemon':
+        // @ts-ignore
+        return <PokemonGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'battleship':
+        // @ts-ignore
+        return <BattleshipGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'pictogram':
+        // @ts-ignore
+        return <PictogramGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'magic_wheel':
+        // @ts-ignore
+        return <MagicWheelGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'posechallenge':
+        // @ts-ignore
+        return <PoseChallengeGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'caro':
+        // @ts-ignore
+        return <CaroGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'whackamole':
+        // @ts-ignore
+        return <WhackMoleGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'classification':
+        // @ts-ignore
+        return <ClassificationGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'flagcapture':
+        // @ts-ignore
+        return <FlagCaptureGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'sackrace':
+        // @ts-ignore
+        return <SackRaceGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'snailwordsearch':
+        // @ts-ignore
+        return <SnailWordSearchGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'mineboom':
+        // @ts-ignore
+        return <MineBoomGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'chess':
+        // @ts-ignore
+        return <ChessGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'goldminer':
+        // @ts-ignore
+        return <GoldMinerGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'bearpass':
+        // @ts-ignore
+        return <BearPassingGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'letterarrange':
+        // @ts-ignore
+        return <LetterArrangeGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'applepick':
+        // @ts-ignore
+        return <ApplePickingGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'sontinhthuytinh':
+        // @ts-ignore
+        return <SonTinhThuyTinhGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'cothu':
+        // @ts-ignore
+        return <CoThuGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'monopoly':
+        // @ts-ignore
+        return <MonopolyGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'werewolf':
+        // @ts-ignore
+        return <WerewolfGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'case_investigation':
+        // @ts-ignore
+        return <CaseInvestigationGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'teabattle':
+        // @ts-ignore
+        return <TeaBattleGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'bowling':
+        // @ts-ignore
+        return <BowlingGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'chase':
+        // @ts-ignore
+        return <ChaseGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'mancala':
+        // @ts-ignore
+        return <MancalaGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'ai_star_call':
+        // @ts-ignore
+        return <AICameraCallGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'ai_galaxy_call':
+        // @ts-ignore
+        return <AICameraCallGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'ai_nebula_call':
+        // @ts-ignore
+        return <AICameraCallGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'ai_bubble_call':
+        // @ts-ignore
+        return <AICameraCallGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'ludo':
+        // @ts-ignore
+        return <LudoGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
+      case 'betting':
+        // @ts-ignore
+        return <BettingGame config={baseMockConfig as any} questions={currentQuestions} onGameEnd={() => {}} />;
     }
-    if (gameId === 'random_call' || gameId === 'randomcall') {
-      return (
-        <RandomCallGame
-          config={{ ...baseMockConfig, gameId: 'randomcall' }}
-          questions={currentQuestions}
-          onGameEnd={() => {}}
-        />
-      );
-    }
-    if (gameId === 'egg_call' || gameId === 'eggcall') {
-      return (
-        <EggCallGame
-          config={{ ...baseMockConfig, gameId: 'eggcall' }}
-          questions={currentQuestions}
-          onGameEnd={() => {}}
-        />
-      );
-    }
-    if (gameId === 'openbox') {
-      return (
-        <OpenBoxGame
-          config={{ ...baseMockConfig, gameId: 'openbox' }}
-          questions={currentQuestions}
-          onGameEnd={() => {}}
-        />
-      );
-    }
-    if (gameId === 'wheel') {
-      return (
-        <WheelGame
-          config={{ ...baseMockConfig, gameId: 'wheel' }}
-          questions={currentQuestions}
-          onGameEnd={() => {}}
-        />
-      );
-    }
-    if (gameId === 'bingo') {
-      return (
-        <BingoGame
-          config={{ ...baseMockConfig, gameId: 'bingo' }}
-          questions={currentQuestions}
-          onGameEnd={() => {}}
-        />
-      );
-    }
-    if (gameId === 'territory') {
-      return (
-        <TerritoryGame
-          config={{ ...baseMockConfig, gameId: 'territory' }}
-          questions={currentQuestions}
-          onGameEnd={() => {}}
-        />
-      );
-    }
-    if (gameId === 'tug_of_war' || gameId === 'tugofwar') {
-      return (
-        <TugOfWarGame
-          config={{ ...baseMockConfig, gameId: 'tugofwar' }}
-          questions={currentQuestions}
-          onGameEnd={() => {}}
-        />
-      );
-    }
+
     return (
-      <div className="h-full flex flex-col items-center justify-center p-8 text-center bg-slate-900 text-white rounded-2xl">
+      <div className="h-full flex flex-col items-center justify-center p-8 text-center bg-slate-50 text-slate-800 rounded-2xl">
         <h3 className="text-xl font-bold mb-2">Đang xem trước trò chơi {gameId}</h3>
-        <p className="text-sm text-slate-400">Chọn các thành phần giao diện trên thanh công cụ để chỉnh sửa trực tiếp.</p>
+        <p className="text-sm text-slate-500">Chọn các thành phần giao diện trên thanh công cụ để chỉnh sửa trực tiếp.</p>
       </div>
     );
   };
@@ -340,6 +403,7 @@ export default function App() {
       announcement: "",
       primaryTheme: "pastel",
       randomCallConfetti: true,
+      randomCallConfettiIntensity: 50,
     };
   });
 
@@ -1280,7 +1344,8 @@ export default function App() {
               <RandomCallGame
                 config={{
                   ...activeGameConfig,
-                  randomCallConfetti: activeGameConfig.randomCallConfetti ?? webConfig.randomCallConfetti ?? true
+                  randomCallConfetti: activeGameConfig.randomCallConfetti ?? webConfig.randomCallConfetti ?? true,
+                  randomCallConfettiIntensity: activeGameConfig.randomCallConfettiIntensity ?? webConfig.randomCallConfettiIntensity ?? 50
                 }}
                 questions={currentQuestions}
                 onGameEnd={handleEndGame}

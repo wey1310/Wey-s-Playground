@@ -262,6 +262,7 @@ export interface GameSetupConfig {
   randomCallSkipQuestions?: boolean;
   skipQuestions?: boolean;
   randomCallConfetti?: boolean;
+  randomCallConfettiIntensity?: number;
   confettiEnabled?: boolean;
 
   // 1. Whack-A-Mole Config
@@ -663,5 +664,7 @@ export interface WebConfig {
   announcement: string;
   primaryTheme: 'pastel' | 'brightclassroom' | 'deepspace' | 'matcha' | 'sakura' | 'sky' | 'mono';
   gameAvatars?: Record<string, string>;
+  randomCallConfetti?: boolean;
+  randomCallConfettiIntensity?: number;
 }
 
