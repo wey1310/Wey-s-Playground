@@ -48,7 +48,7 @@ Mục tiêu: Tiếp tục phát triển project hiện tại, **KHÔNG** xây l�
 ## 6. Assets (`public/assets/` & `src/assets/`)
 - `public/assets/games/`: Hình ảnh, sprite, GIF icon cho từng minigame (betting, ludo, openbox, pokemon, territory, v.v.).
 - `public/assets/themes/`: Hình nền chủ đề (cloud.jpg, cowboy.jpg, ocean.jpg, rainbow.jpg).
-- `public/assets/home-bg.webp` & `public/assets/logo.png`: Hình nền trang chủ và logo ứng dụng.
+- `public/assets/home-bg.webp` & `public/assets/logo1.png`: Hình nền trang chủ và logo ứng dụng.
 
 ---
 
